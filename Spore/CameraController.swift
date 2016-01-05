@@ -18,6 +18,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet var closeButton: UIButton!
     @IBOutlet var photoSendButton: UIButton!
     @IBOutlet var cameraSwitchButton: UIButton!
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    
     
     var previewLayer = AVCaptureVideoPreviewLayer?()
     var captureSession = AVCaptureSession()
@@ -35,9 +37,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
     
     override func viewDidLoad() {
         
-        //Initialize objects
-        closeButton.hidden = true
-        photoSendButton.hidden = true
+        //Initialize location manager
         locManager = CLLocationManager.init()
         self.locManager.delegate = self
         
@@ -69,6 +69,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
+    override func viewWillAppear(animated: Bool) {
+        
+        //Initialize buttons
+        self.closeButton.hidden = true
+        self.photoSendButton.hidden = true
+        self.backButton.hidden = false
+        self.captureButton.hidden = false
+        self.cameraSwitchButton.hidden = false
+    }
+    
     override func viewDidLayoutSubviews() {
         
         
@@ -78,7 +88,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         previewLayer!.bounds = bounds
         previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
     }
-    
     
     internal func beginSession() {
         
@@ -95,7 +104,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
             
             //Error message for no camera found, or camera permission denied by user
             print("Camera not found.")
-            let alert = UIAlertController(title: "This device does not have a camera.", message: "", preferredStyle: UIAlertControllerStyle.Alert)
+            let alert = UIAlertController(title: "Error displaying camera.", message: "", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
             
             presentViewController(alert, animated: true, completion: nil)
@@ -105,7 +114,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         print("add session to layer")
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         
-        //Add layer and run
+        //Add layer, run camera and configure layout subviews
         print("add camera image")
         cameraImage.layer.addSublayer(self.previewLayer!)
         print("start running")
@@ -116,6 +125,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
     
     @IBAction func switchCamera(sender: AnyObject) {
         
+        //Reconfigure all parameters & stop cuurrent session
         let devices = AVCaptureDevice.devices()
         let position = captureDevice!.position
         
@@ -123,15 +133,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         
         captureSession = AVCaptureSession()
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
-
-
-/*
-        print("remove output")
-        captureSession.removeOutput(self.stillImageOutput)
-
-        print("remove input")
-        captureSession.removeInput(captureSession.inputs[0] as! AVCaptureInput)
-        */
         
         previewLayer!.removeFromSuperlayer()
 
@@ -150,6 +151,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
             }
         }
         
+        //Begin camera session again with the new camera
         beginSession()
     }
     
@@ -195,30 +197,36 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
     
     @IBAction func sendPhoto(sender: AnyObject) {
         
+        
+        //Kick off activity indicator
+        activityIndicator.startAnimating()
+        
         //Initialization of photo object in database
         updateUserPhotos()
         
         let photoObject = PFObject(className:"photo")
-                
+        
+        //Set date and sender
         let date = NSDate()
         print(date)
         photoObject["sentAt"] = date
         print(userEmail)
         photoObject["sentBy"] = userEmail
         
+        //Set user's geolocation
         print(String(userLocation.latitude) + ", " + String(userLocation.longitude))
         photoObject["sentFrom"] = self.userLocation
         
+        //Set user's country's code
         print(userCountryCode)
         photoObject["countryCode"] = userCountryCode
         photoObject["spam"] = false
         
+        //Set photo just taken by user as PFFile
         photoObject["photo"] = PFFile(data: UIImageJPEGRepresentation(self.cameraImage.image!, CGFloat(0.5))!)
-        
         print("saved photo to PFFile")
         
-        
-        //Send photo to database
+        //Send the updated photo object to database
         photoObject.saveInBackgroundWithBlock {
             (success: Bool, error: NSError?) -> Void in
             if (success) {
@@ -226,6 +234,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
                 // The photo has been saved, seque back to the table screen
                 print("New photo saved!")
                 self.segueToNextView("CameraToMain")
+                self.activityIndicator.stopAnimating()
             }
             else {
                 
@@ -236,7 +245,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    
     internal func getUserLocation() {
         
         //Gets the user's current location
@@ -246,16 +254,17 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
     
     internal func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        //Gets user location and adds it to the global location variable
+        //Gets user location and adds it to the main location variable
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
         userLocation = PFGeoPoint(latitude: locValue.latitude, longitude: locValue.longitude)
         print("locations = \(locValue.latitude) \(locValue.longitude)")
+        
+        //Stop updating location and get the country code for this location
         locManager.stopUpdatingLocation()
-        getCountry(userLocation)
+        getCountryCode(userLocation)
     }
     
-    
-    internal func getCountry(locGeoPoint: PFGeoPoint) {
+    internal func getCountryCode(locGeoPoint: PFGeoPoint) {
         
         //Get country for current row
         let location = CLLocation(latitude: locGeoPoint.latitude, longitude: locGeoPoint.longitude)
@@ -269,12 +278,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
             }
             else if placemarks!.count > 0 {
                 
-                print(placemarks![0].country)
-                print(placemarks![0].ISOcountryCode)
-                print(placemarks![0].postalCode)
-                print(placemarks![0].region)
-                print(placemarks![0].timeZone)
-                
+                print("Geo location country code: " + String(placemarks![0].ISOcountryCode))
                 self.userCountryCode = placemarks![0].ISOcountryCode!.lowercaseString
             }
             else {
