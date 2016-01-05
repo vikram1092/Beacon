@@ -15,7 +15,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     var timer = NSTimer()
     
     var initialRowLoad = true
-    var userList = Array<PFObject>()
+    var userList = UserList()
     var userName = ""
     var userEmail = ""
     var userToReceivePhotos = 2
