@@ -70,7 +70,7 @@
                                 </textAttributes>
                                 <items>
                                     <navigationItem title="Spore" id="FNA-nf-9kg">
-                                        <barButtonItem key="leftBarButtonItem" image="Settings.png" style="plain" id="fmi-vV-A4L">
+                                        <barButtonItem key="leftBarButtonItem" image="SettingsButton.png" width="25" style="plain" id="fmi-vV-A4L">
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
                                                 <segue destination="d16-QO-sve" kind="show" identifier="MainToSettings" id="wLC-Be-Nm4"/>
@@ -106,6 +106,7 @@
                             </tableView>
                             <imageView userInteractionEnabled="NO" alpha="0.0" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Jj8-ef-WaI">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <gestureRecognizers/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -174,7 +175,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="NOTIFICATIONS" id="xi1-En-Ccq">
+                            <tableViewSection headerTitle="PLACEHOLDER" id="xi1-En-Ccq">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="z0z-Kd-bkC">
                                         <rect key="frame" x="0.0" y="143.5" width="600" height="44"/>
@@ -183,7 +184,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notifications" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A6w-T2-Rro">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Placeholder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A6w-T2-Rro">
                                                     <rect key="frame" x="8" y="11" width="215" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="UFq-x0-HT6"/>
@@ -243,7 +244,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KNs-Sl-JKn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1654" y="-445"/>
+            <point key="canvasLocation" x="1752" y="-445"/>
         </scene>
         <!--Settings Controller-->
         <scene sceneID="Esq-U9-eSz">
@@ -380,7 +381,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="closePhoto:" destination="GJW-g9-4yK" eventType="touchUpInside" id="atv-yD-jg7"/>
                                     <action selector="sendPhoto:" destination="GJW-g9-4yK" eventType="touchUpInside" id="7wF-pV-At3"/>
                                 </connections>
                             </button>
@@ -395,9 +395,17 @@
                                     <action selector="switchCamera:" destination="GJW-g9-4yK" eventType="touchUpInside" id="Sjf-Ft-aFV"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="5cv-KH-Psv">
+                                <rect key="frame" x="290" y="290" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="271-Tk-qeb"/>
+                                    <constraint firstAttribute="height" constant="20" id="WRb-xB-3IK"/>
+                                </constraints>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="5cv-KH-Psv" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="E7r-ka-TiI"/>
                             <constraint firstAttribute="trailing" secondItem="9aK-Ms-lBE" secondAttribute="trailing" id="IPz-wM-srR"/>
                             <constraint firstItem="nSA-7F-9Ew" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="K9m-QS-jlU"/>
                             <constraint firstItem="9aK-Ms-lBE" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="MQ9-Zp-PQf"/>
@@ -405,6 +413,7 @@
                             <constraint firstItem="9aK-Ms-lBE" firstAttribute="bottom" secondItem="RHl-1r-erk" secondAttribute="top" id="O61-ss-O7K"/>
                             <constraint firstItem="6kZ-YB-AMf" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" constant="15" id="T9k-ZP-fLJ"/>
                             <constraint firstItem="iHt-xd-9r4" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="UUN-ao-EyO"/>
+                            <constraint firstItem="5cv-KH-Psv" firstAttribute="centerY" secondItem="BHi-eI-7If" secondAttribute="centerY" id="gi7-d8-6ed"/>
                             <constraint firstItem="euw-Gq-Mbr" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" constant="23" id="hDR-WV-ZrK"/>
                             <constraint firstItem="TR3-R2-xgu" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="iIF-Nt-puV"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="TR3-R2-xgu" secondAttribute="bottom" constant="19" id="kOn-EV-BEk"/>
@@ -415,6 +424,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="5cv-KH-Psv" id="3FP-o8-5DW"/>
                         <outlet property="backButton" destination="nSA-7F-9Ew" id="ip7-73-UiR"/>
                         <outlet property="cameraImage" destination="9aK-Ms-lBE" id="6AR-SV-eLl"/>
                         <outlet property="cameraSwitchButton" destination="euw-Gq-Mbr" id="i39-li-shn"/>
@@ -431,7 +441,7 @@
     <resources>
         <image name="CameraBack.png" width="128" height="128"/>
         <image name="CameraSwitch.png" width="180" height="180"/>
-        <image name="Settings.png" width="22" height="22"/>
+        <image name="SettingsButton.png" width="30" height="30"/>
         <image name="cameraButton.png" width="100" height="100"/>
     </resources>
     <inferredMetricsTieBreakers>

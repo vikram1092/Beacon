@@ -13,21 +13,24 @@ import Parse
 
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
+    
     @IBOutlet var bannedLabel: UILabel!
     @IBOutlet var loginButton: FBSDKLoginButton!
     var userName = ""
     var userEmail = ""
     var bannedText = "You have been suspended due to some photos you've sent. Please allow us to investigate and reach a decision."
     
+    
     override func viewDidLoad() {
         
         //Initialize objects and check for login status
         bannedLabel.alpha = 0
         loginButton = FBSDKLoginButton.init()
-        
-        //Check if already logged in
+        loginButton.frame = CGRect(x: loginButton.frame.origin.x, y: loginButton.frame.origin.y, width: CGFloat(200), height: CGFloat(50))
+        //Check if  already logged in
         if(FBSDKAccessToken.currentAccessToken() != nil) {
-
+            
+            //Perform database operations for user
             checkWithDatabase()
         }
         else {
@@ -143,7 +146,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 print("error \(error)")
             }
         })
-
     }
     
     internal func segueToNextView(identifier: String) {

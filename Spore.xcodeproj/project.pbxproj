@@ -25,9 +25,9 @@
 		D15658B01C2CA08400CC43EB /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658AE1C2CA08400CC43EB /* libz.tbd */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
 		D18448031C243CC100E32DBB /* Zion Fullscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = D18448021C243CC100E32DBB /* Zion Fullscreen.png */; };
-		D188D7B31C28390F0066E773 /* Settings.png in Resources */ = {isa = PBXBuildFile; fileRef = D188D7B21C28390F0066E773 /* Settings.png */; };
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
 		D18A82B11C23895B002F3296 /* Zion.png in Resources */ = {isa = PBXBuildFile; fileRef = D18A82B01C23895B002F3296 /* Zion.png */; };
+		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
 		D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */; };
 		D1B9C71C1C2258B800D9AEE7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */; };
 		D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */; };
@@ -67,9 +67,9 @@
 		D17A5F0F1C335C8800EE94DE /* PFObject+NSCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PFObject+NSCoding.h"; path = "../../../../Documents/Parse-NSCoding-master/PFObject+NSCoding.h"; sourceTree = "<group>"; };
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = ../../CameraSwitch.png; sourceTree = "<group>"; };
 		D18448021C243CC100E32DBB /* Zion Fullscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Zion Fullscreen.png"; sourceTree = "<group>"; };
-		D188D7B21C28390F0066E773 /* Settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Settings.png; sourceTree = "<group>"; };
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		D18A82B01C23895B002F3296 /* Zion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Zion.png; sourceTree = "<group>"; };
+		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = ../../SettingsButton.png; sourceTree = "<group>"; };
 		D1B9C7161C2258B800D9AEE7 /* Spore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
@@ -138,7 +138,7 @@
 				D18A82B01C23895B002F3296 /* Zion.png */,
 				D18448021C243CC100E32DBB /* Zion Fullscreen.png */,
 				D1DE875B1C27A92400E48721 /* cameraButton.png */,
-				D188D7B21C28390F0066E773 /* Settings.png */,
+				D1A459781C3ABBFF00B35452 /* SettingsButton.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -263,9 +263,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */,
 				D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */,
 				D1B9C7211C2258B800D9AEE7 /* Assets.xcassets in Resources */,
-				D188D7B31C28390F0066E773 /* Settings.png in Resources */,
 				D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */,
 				D18448031C243CC100E32DBB /* Zion Fullscreen.png in Resources */,
 				D18A82B11C23895B002F3296 /* Zion.png in Resources */,

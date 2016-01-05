@@ -30,9 +30,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     override func viewDidLoad() {
         
         //Initialize values
-        initialRowLoad = true
         snap.alpha = 0
-        
         
         /* Not working right now
         //Retreive local history list
@@ -44,19 +42,15 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         }
         */
         
-        
         //Load view
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
         
-        
-        //Retrieve photos pending for user
-        if userDefaults.integerForKey("userToReceivePhotos") > 0 {
-            
-            userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
-            print("User received photos: " + String(userToReceivePhotos))
-        }
-        
-        
+        //Initialize row load
+        initialRowLoad = true
+        super.viewWillAppear(true)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -73,7 +67,6 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         
         //Update user list and reload the table
         updateUserList()
-        
         
         //Congifure gestures & snap
         snap.userInteractionEnabled = true
@@ -123,13 +116,13 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         
         //If user is to receive photos, execute the following
         if userToReceivePhotos > 0 {
-            //Get unsent photos in the database
+            
+            //Get unsent photos in the database equal to how many the user gets
             let query = PFQuery(className:"photo")
             query.whereKeyDoesNotExist("receivedBy")
             query.limit = userToReceivePhotos
             
-            //Get first object
-
+            //Query with above conditions
             query.findObjectsInBackgroundWithBlock({ (photos, error) -> Void in
                 
                     
@@ -146,7 +139,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                 else {
                     
                     print("photo count: " + String(photos!.count))
-                    //Run for as many photos needed by user
+                    //Run for each returned object
                     for photoObject in photos!{
                         
                         //Attach receipt details to object
@@ -167,35 +160,17 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                         print("Saving object!")
                         photoObject.saveInBackground()
                         print("Saved object!")
-                        
-                        /*
-                        query.getObjectInBackgroundWithId(photoObject.objectId!) { (result, resultError) -> Void in
-                            
-                            if resultError != nil {
-                                
-                                //Error finding object
-                                print("DB Saving Error:" + resultError!.description)
-                            }
-                            else {
-                                
-                                //Modify object
-                                print("Readying object to save")
-                                let objectToSave = photoObject
-                                //Save object to database
-                                print("Saving object!")
-                                objectToSave.saveInBackground()
-                                print("Saved object!")
-                            }
-                        }
-                        */
-                        
-                        
                         print("userList count: " + String(self.userList.count))
                     }
                     
-                    //Reset user photos to zero
+                    //Reset user photos to zero once photos are retreived
                     print("Resetting user photos")
                     self.userDefaults.setInteger(0, forKey: "userToReceivePhotos")
+                    
+                    self.delay(0.5, closure: { () -> () in
+                        
+                        self.initialRowLoad = false
+                    })
                     
                 }
             })
@@ -292,15 +267,12 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
             }
             else {
                 
+                //Configure and display image for user
                 self.snap.image = UIImage(data: photoData!)
                 self.snap.alpha = 1
                 
-                //No need for a delay, made photo UX dependent
-                /*
-                self.delay(8.0) {
-                    if(
-                    self.snap.alpha = 0
-                } */
+                //Deselect row
+                tableView.deselectRowAtIndexPath(indexPath, animated: false)
             }
         }
     }
@@ -366,7 +338,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         ["Benin","bj"],
         ["Bermuda","bm"],
         ["Bhutan","bt"],
-        ["Bolivia (Plurinational State of)","bo"],
+        ["Bolivia","bo"],
         ["Bonaire, Sint Eustatius and Saba","bq"],
         ["Bosnia and Herzegovina","ba"],
         ["Botswana","bw"],
@@ -391,7 +363,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         ["Colombia","co"],
         ["Comoros","km"],
         ["Congo","cg"],
-        ["Congo (Democratic Republic of the)","cd"],
+        ["Congo","cd"],
         ["Cook Islands","ck"],
         ["Costa Rica","cr"],
         ["Côte d'Ivoire","ci"],
@@ -444,7 +416,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         ["Iceland","is"],
         ["India","in"],
         ["Indonesia","id"],
-        ["Iran (Islamic Republic of)","ir"],
+        ["Iran","ir"],
         ["Iraq","iq"],
         ["Ireland","ie"],
         ["Isle of Man","im"],
@@ -457,8 +429,8 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         ["Kazakhstan","kz"],
         ["Kenya","ke"],
         ["Kiribati","ki"],
-        ["Korea (Democratic People's Republic of)","kp"],
-        ["Korea (Republic of)","kr"],
+        ["North Korea","kp"],
+        ["South Korea","kr"],
         ["Kuwait","kw"],
         ["Kyrgyzstan","kg"],
         ["Lao People's Democratic Republic","la"],
@@ -471,7 +443,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         ["Lithuania","lt"],
         ["Luxembourg","lu"],
         ["Macao","mo"],
-        ["Macedonia (the former Yugoslav Republic of)","mk"],
+        ["Macedonia ","mk"],
         ["Madagascar","mg"],
         ["Malawi","mw"],
         ["Malaysia","my"],
@@ -484,8 +456,8 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         ["Mauritius","mu"],
         ["Mayotte","yt"],
         ["Mexico","mx"],
-        ["Micronesia (Federated States of)","fm"],
-        ["Moldova (Republic of)","md"],
+        ["Micronesia","fm"],
+        ["Moldova","md"],
         ["Monaco","mc"],
         ["Mongolia","mn"],
         ["Montenegro","me"],
@@ -557,9 +529,9 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         ["Sweden","se"],
         ["Switzerland","ch"],
         ["Syrian Arab Republic","sy"],
-        ["Taiwan, Province of China[a]","tw"],
+        ["Taiwan","tw"],
         ["Tajikistan","tj"],
-        ["Tanzania, United Republic of","tz"],
+        ["Tanzania","tz"],
         ["Thailand","th"],
         ["Timor-Leste","tl"],
         ["Togo","tg"],
@@ -574,14 +546,14 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         ["Uganda","ug"],
         ["Ukraine","ua"],
         ["United Arab Emirates","ae"],
-        ["United Kingdom of Great Britain and Northern Ireland","gb"],
+        ["United Kingdom","gb"],
         ["United States of America","us"],
         ["United States Minor Outlying Islands","um"],
         ["Uruguay","uy"],
         ["Uzbekistan","uz"],
         ["Vanuatu","vu"],
-        ["Venezuela (Bolivarian Republic of)","ve"],
-        ["Viet Nam","vn"],
+        ["Venezuela","ve"],
+        ["Vietnam","vn"],
         ["Virgin Islands (British)","vg"],
         ["Virgin Islands (U.S.)","vi"],
         ["Wallis and Futuna","wf"],
