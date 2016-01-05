@@ -23,6 +23,7 @@
 		D15658AC1C2CA06600CC43EB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658AB1C2CA06600CC43EB /* SystemConfiguration.framework */; };
 		D15658AF1C2CA08400CC43EB /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658AD1C2CA08400CC43EB /* libsqlite3.tbd */; };
 		D15658B01C2CA08400CC43EB /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658AE1C2CA08400CC43EB /* libz.tbd */; };
+		D17866DD1C3C28D100842DB8 /* UserList.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17866DC1C3C28D100842DB8 /* UserList.swift */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
 		D18448031C243CC100E32DBB /* Zion Fullscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = D18448021C243CC100E32DBB /* Zion Fullscreen.png */; };
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
@@ -60,6 +61,7 @@
 		D15658AB1C2CA06600CC43EB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D15658AD1C2CA08400CC43EB /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		D15658AE1C2CA08400CC43EB /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		D17866DC1C3C28D100842DB8 /* UserList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserList.swift; sourceTree = "<group>"; };
 		D17A5F0B1C335C8800EE94DE /* NSObject+Properties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+Properties.h"; path = "../../../../Documents/Parse-NSCoding-master/NSObject+Properties.h"; sourceTree = "<group>"; };
 		D17A5F0C1C335C8800EE94DE /* PFACL+NSCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PFACL+NSCoding.h"; path = "../../../../Documents/Parse-NSCoding-master/PFACL+NSCoding.h"; sourceTree = "<group>"; };
 		D17A5F0D1C335C8800EE94DE /* PFFile+NSCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PFFile+NSCoding.h"; path = "../../../../Documents/Parse-NSCoding-master/PFFile+NSCoding.h"; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
 				D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */,
 				D1B9C72B1C22608600D9AEE7 /* MainController.swift */,
+				D17866DC1C3C28D100842DB8 /* UserList.swift */,
 				D1ED12CC1C25F61300987D98 /* CameraController.swift */,
 				D188D7B41C283A5F0066E773 /* SettingsController.swift */,
 				D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */,
@@ -287,6 +290,7 @@
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1ED12CD1C25F61300987D98 /* CameraController.swift in Sources */,
+				D17866DD1C3C28D100842DB8 /* UserList.swift in Sources */,
 				D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
