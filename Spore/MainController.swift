@@ -14,11 +14,11 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     var timer = NSTimer()
     
-    var initialRowLoad = true
+    var initialRowLoad = false
     var userList = UserList()
     var userName = ""
     var userEmail = ""
-    var userToReceivePhotos = 2
+    var userToReceivePhotos = 0
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     @IBOutlet var table: UITableView!
@@ -29,18 +29,6 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     override func viewDidLoad() {
         
-        //Initialize values
-        snap.alpha = 0
-        
-        /* Not working right now
-        //Retreive local history list
-        if userDefaults.objectForKey("userList") != nil {
-            
-            let temp = userDefaults.objectForKey("userList") as! NSData
-            userList = NSKeyedUnarchiver.unarchiveObjectWithData(temp) as! Array<PFObject>
-            
-        }
-        */
         
         //Load view
         super.viewDidLoad()
@@ -48,8 +36,10 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     override func viewWillAppear(animated: Bool) {
         
-        //Initialize row load
-        initialRowLoad = true
+        //Initialize values
+        snap.alpha = 0
+
+        
         super.viewWillAppear(true)
     }
     
@@ -58,12 +48,21 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         //Run like usual
         super.viewDidAppear(true)
         
-        //Retrieve photos pending for user
-        if userDefaults.integerForKey("userToReceivePhotos") > 0 {
+        
+        //Retreive local history list
+        if userDefaults.objectForKey("userList") != nil {
             
-            userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
-            print("User received photos: " + String(userToReceivePhotos))
+            let temp = userDefaults.objectForKey("userList") as! NSData
+            userList = NSKeyedUnarchiver.unarchiveObjectWithData(temp) as! UserList
+            
         }
+        
+        //Turn on table animations
+        print("Turning on animations")
+        initialRowLoad = true
+        
+        //Reload table
+        table.reloadData()
         
         //Update user list and reload the table
         updateUserList()
@@ -95,7 +94,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
             self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y + self.snap.bounds.height + 100)
         }
         
-        delay(1) { () -> () in
+        delay(0.4) { () -> () in
             
             self.snap.alpha = 0
             self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y - self.snap.bounds.height - 100)
@@ -104,12 +103,17 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     internal func saveUserList() {
         
-        /*
-        let listData = NSKeyedArchiver.archivedDataWithRootObject(userList)
-        userDefaults.setObject(listData, forKey: "userList")
-        */
-        print("Reloading table")
-        table.reloadData()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+            
+            let listData = NSKeyedArchiver.archivedDataWithRootObject(self.userList)
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                self.userDefaults.setObject(listData, forKey: "userList")
+            })
+        }
+        
+        
     }
     
     internal func updateUserList() {
@@ -149,19 +153,25 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                         
                         //Add object to userList
                         self.userList.append(photoObject)
-                        print("userList count: " + String(self.userList.count))
+                        print("userList count: " + String(self.userList.list.count))
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
-                            self.saveUserList()
+                            self.table.reloadData()
                         })
                         
                         //Save object to database
                         print("Saving object!")
                         photoObject.saveInBackground()
                         print("Saved object!")
-                        print("userList count: " + String(self.userList.count))
+                        print("userList count: " + String(self.userList.list.count))
                     }
+                    
+                    //Save user list
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.saveUserList()
+                    })
                     
                     //Reset user photos to zero once photos are retreived
                     print("Resetting user photos")
@@ -169,11 +179,18 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                     
                     self.delay(0.5, closure: { () -> () in
                         
+                        print("Turning off animations")
                         self.initialRowLoad = false
                     })
                     
                 }
             })
+        }
+        else {
+            
+            //Only turn off initial row load animations
+            print("Turning off animations")
+            initialRowLoad = false
         }
     }
     
@@ -182,11 +199,11 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         //Initialize variables
         print("Reached cell")
         let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Unread")
-        let userListLength = userList.count - 1
+        let userListLength = userList.list.count - 1
         print(userListLength)
         
-        let time = userList[userListLength - indexPath.row]["receivedAt"]
-        let countryCode = userList[userListLength - indexPath.row]["countryCode"]
+        let time = userList.list[userListLength - indexPath.row]["receivedAt"]
+        let countryCode = userList.list[userListLength - indexPath.row]["countryCode"]
         
         //Configure image
         cell.imageView!.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
@@ -231,7 +248,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         if initialRowLoad {
             
             cell.center = CGPointMake(cell.center.x+100, cell.center.y)
-            UIView.animateWithDuration(0.2 + Double(indexPath.row)/10) { () -> Void in
+            UIView.animateWithDuration(0.2 + Double(indexPath.row)/40) { () -> Void in
                 
                 cell.center = CGPointMake(cell.center.x-100, cell.center.y)
             }
@@ -241,7 +258,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     internal func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return userList.count
+        return userList.list.count
     }
     
     internal func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -250,15 +267,15 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
             userList.removeAtIndex(indexPath.row)
         }
     
-        userDefaults.setObject(userList, forKey: "userList")
+        saveUserList()
         
         table.reloadData()
     }
     
     internal func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let index = userList.count - 1 - indexPath.row
-        let photoToDisplay = userList[index]["photo"] as! PFFile
+        let index = userList.list.count - 1 - indexPath.row
+        let photoToDisplay = userList.list[index]["photo"] as! PFFile
         photoToDisplay.getDataInBackgroundWithBlock { (photoData, photoConvError) -> Void in
             
             if photoConvError != nil {
