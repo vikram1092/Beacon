@@ -11,7 +11,13 @@ import Parse
 
 class UserList: NSObject, NSCoding {
     
-    var userList = Array<PFObject>()
+    var list = Array<PFObject>()
+    
+    
+    override init() {
+        
+        super.init()
+    }
     
     required init(coder aDecoder: NSCoder) {
         
@@ -21,22 +27,23 @@ class UserList: NSObject, NSCoding {
         
         for var index = 0; index < count; index++ {
             
-            let object = PFObject()
+            let object = PFObject(className: "photo")
             
             //Get time received
             print("Decoding receivedAt")
-            object["receivedAt"] = aDecoder.decodeObjectForKey("receivedAt") as! NSDate
+            print("Decoding countryCode" + String(aDecoder.decodeObjectForKey("receivedAt" + String(index))))
+            object["receivedAt"] = aDecoder.decodeObjectForKey("receivedAt" + String(index)) as! NSDate
             
             //Get country code
-            print("Decoding countryCode")
-            object["countryCode"] = aDecoder.decodeObjectForKey("countryCode") as! String
+            print("Decoding countryCode" + String(aDecoder.decodeObjectForKey("countryCode" + String(index))))
+            object["countryCode"] = aDecoder.decodeObjectForKey("countryCode" + String(index)) as! String
             
             //Get photo
             print("Decoding photo")
-            let photoImage = aDecoder.decodeObjectForKey("photo") as! UIImage
+            let photoImage = aDecoder.decodeObjectForKey("photo" + String(index)) as! UIImage
             object["photo"] = PFFile(data: UIImageJPEGRepresentation(photoImage, CGFloat(1.0))!)
             
-            userList.append(object)
+            list.append(object)
         }
     }
     
@@ -44,21 +51,39 @@ class UserList: NSObject, NSCoding {
     func encodeWithCoder(aCoder: NSCoder) {
         
         //Encode count of userList for decoding purposes
-        aCoder.encodeInteger(userList.count, forKey: "count")
+        aCoder.encodeInteger(list.count as Int, forKey: "count")
         
-        for index in userList {
+        for index in list {
             
             //Encode time received at
-            print("Encoding receivedAt")
-            aCoder.encodeObject(index["receivedAt"], forKey: "receivedAt")
+            print("Encoding receivedAt" + String(list.indexOf(index)!))
+            aCoder.encodeObject(index["receivedAt"] as! NSDate, forKey: "receivedAt" + String(list.indexOf(index)!))
             
             //Encode country code
             print("Encoding countryCode")
-            aCoder.encodeObject(index["countryCode"], forKey: "countryCode")
+            aCoder.encodeObject(index["countryCode"] as! String, forKey: "countryCode" + String(list.indexOf(index)!))
             
             //Encode picture received
             print("Encoding photo")
-            aCoder.encodeObject(index["photo"], forKey: "photo")
+            let photoFile = index["photo"] as! PFFile
+            var photoData = NSData()
+            
+            do{
+                photoData = try photoFile.getData()
+            }
+            catch _ { print("Error converting photo data")}
+            
+            aCoder.encodeObject(UIImage(data: photoData), forKey: "photo" + String(list.indexOf(index)!))
         }
+    }
+    
+    func append(object: PFObject) {
+        
+        list.append(object)
+    }
+    
+    func removeAtIndex(index: Int) {
+        
+        list.removeAtIndex(index)
     }
 }
