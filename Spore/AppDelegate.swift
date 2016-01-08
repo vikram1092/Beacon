@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        Parse.enableLocalDatastore()
         Parse.setApplicationId("n2yOGaNe4AU0PHvX1yZ9ySGXh0jDN3SX2ii2gYCM", clientKey: "sMaWI9Q6yw292Ak7gD93e7iVYAHdOPapUqAlyNQ6")
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -53,7 +54,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 

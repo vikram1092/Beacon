@@ -13,7 +13,6 @@ class UserList: NSObject, NSCoding {
     
     var list = Array<PFObject>()
     
-    
     override init() {
         
         super.init()
@@ -38,12 +37,15 @@ class UserList: NSObject, NSCoding {
             print("Decoding countryCode" + String(aDecoder.decodeObjectForKey("countryCode" + String(index))))
             object["countryCode"] = aDecoder.decodeObjectForKey("countryCode" + String(index)) as! String
             
-            //Get photo
-            print("Decoding photo")
-            let photoImage = aDecoder.decodeObjectForKey("photo" + String(index)) as! UIImage
-            object["photo"] = PFFile(data: UIImageJPEGRepresentation(photoImage, CGFloat(1.0))!)
-            
             list.append(object)
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                
+                //Get photo
+                print("Decoding photo" + String(index))
+                let photoImage = aDecoder.decodeObjectForKey("photo" + String(index)) as! UIImage
+                self.list[index]["photo"] = PFFile(data: UIImageJPEGRepresentation(photoImage, CGFloat(1.0))!)
+            })
         }
     }
     

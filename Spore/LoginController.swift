@@ -19,6 +19,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     var userName = ""
     var userEmail = ""
     var bannedText = "You have been suspended due to some photos you've sent. Please allow us to investigate and reach a decision."
+    let userDefaults = NSUserDefaults.standardUserDefaults()
     
     
     override func viewDidLoad() {
@@ -32,6 +33,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             
             //Perform database operations for user
             checkWithDatabase()
+            
         }
         else {
             
@@ -81,6 +83,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 //Query to find email ID in database. If it doesn't exist, create it.
                 self.userName = userResult["name"] as! String
                 self.userEmail = userResult["email"] as! String
+                
+                //Save details
+                self.saveNameAndEmail(self.userName, email: self.userEmail)
                 
                 //Initialize query
                 let query = PFQuery(className:"users")
@@ -148,6 +153,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         })
     }
     
+    internal func saveNameAndEmail(name: String, email: String) {
+        
+        userDefaults.setObject(name, forKey: "userName")
+        userDefaults.setObject(email, forKey: "userEmail")
+    }
+    
     internal func segueToNextView(identifier: String) {
         
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -155,15 +166,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             self.dismissViewControllerAnimated(true, completion: nil)
             self.performSegueWithIdentifier(identifier, sender: self)
         })
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if(segue.identifier == "LoginToMain") {
-            let nextView = segue.destinationViewController as! MainController
-            nextView.userName = self.userName
-            nextView.userEmail = self.userEmail
-        }
     }
     
     internal func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {

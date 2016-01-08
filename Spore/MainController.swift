@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import Foundation
 
 class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDelegate {
     
@@ -15,7 +16,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     var timer = NSTimer()
     
     var initialRowLoad = false
-    var userList = UserList()
+    var userList = Array<PFObject>()
     var userName = ""
     var userEmail = ""
     var userToReceivePhotos = 0
@@ -29,40 +30,49 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     override func viewDidLoad() {
         
-        
-        //Load view
-        super.viewDidLoad()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        
-        //Initialize values
-        snap.alpha = 0
 
+        //Retreive user details
+        userName = userDefaults.objectForKey("userName") as! String
+        userEmail = userDefaults.objectForKey("userEmail") as! String
         
-        super.viewWillAppear(true)
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        
-        //Run like usual
-        super.viewDidAppear(true)
-        
-        
-        //Retreive local history list
-        if userDefaults.objectForKey("userList") != nil {
+        let query = PFQuery(className: "photo")
+        query.fromLocalDatastore()
+        query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
             
-            let temp = userDefaults.objectForKey("userList") as! NSData
-            userList = NSKeyedUnarchiver.unarchiveObjectWithData(temp) as! UserList
-            
+            if retreivalError != nil {
+                
+                print("Problem retreiving list: " + retreivalError!.description)
+            }
+            else if objects!.count > 0 {
+                
+                //Save list of objects & reload table
+                self.userList = objects!
+                self.table.reloadData()
+            }
         }
         
         //Turn on table animations
         print("Turning on animations")
         initialRowLoad = true
         
-        //Reload table
-        table.reloadData()
+        //Load view
+        super.viewDidLoad()
+    }
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        //Initialize values
+        snap.alpha = 0
+        
+        super.viewWillAppear(true)
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        //Run like usual
+        super.viewDidAppear(true)
         
         //Update user list and reload the table
         updateUserList()
@@ -103,17 +113,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     internal func saveUserList() {
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
-            
-            let listData = NSKeyedArchiver.archivedDataWithRootObject(self.userList)
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                
-                self.userDefaults.setObject(listData, forKey: "userList")
-            })
-        }
-        
-        
+        PFObject.pinAllInBackground(userList)
     }
     
     internal func updateUserList() {
@@ -153,7 +153,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                         
                         //Add object to userList
                         self.userList.append(photoObject)
-                        print("userList count: " + String(self.userList.list.count))
+                        print("userList count: " + String(self.userList.count))
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
@@ -164,7 +164,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                         print("Saving object!")
                         photoObject.saveInBackground()
                         print("Saved object!")
-                        print("userList count: " + String(self.userList.list.count))
+                        print("userList count: " + String(self.userList.count))
                     }
                     
                     //Save user list
@@ -196,14 +196,15 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     internal func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        //Initialize variables
+        //Initialize variables: 
+        //Array is printed backwards so userListLength is initialized
         print("Reached cell")
         let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Unread")
-        let userListLength = userList.list.count - 1
+        let userListLength = userList.count - 1
         print(userListLength)
         
-        let time = userList.list[userListLength - indexPath.row]["receivedAt"]
-        let countryCode = userList.list[userListLength - indexPath.row]["countryCode"]
+        let time = timeAgoSinceDate((userList[userListLength - indexPath.row]["receivedAt"] as! NSDate), numericDates: true)
+        let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
         //Configure image
         cell.imageView!.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
@@ -226,7 +227,6 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     }
     
     internal func getCountryName(countryCode: String) -> String {
-        
         
         var countryName = "Spain"
         print("Country:" + countryCode)
@@ -258,7 +258,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     internal func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return userList.list.count
+        return userList.count
     }
     
     internal func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -274,8 +274,10 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     internal func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let index = userList.list.count - 1 - indexPath.row
-        let photoToDisplay = userList.list[index]["photo"] as! PFFile
+        //Flip index to access correct array element
+        let index = userList.count - 1 - indexPath.row
+        
+        let photoToDisplay = userList[index]["photo"] as! PFFile
         photoToDisplay.getDataInBackgroundWithBlock { (photoData, photoConvError) -> Void in
             
             if photoConvError != nil {
@@ -284,7 +286,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
             }
             else {
                 
-                //Configure and display image for user
+                //Decode and display image for user
                 self.snap.image = UIImage(data: photoData!)
                 self.snap.alpha = 1
                 
@@ -299,35 +301,76 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
     }
     
-    
-    internal func segueToNextView(identifier: String) {
-        
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            
-            self.dismissViewControllerAnimated(true, completion: nil)
-            self.performSegueWithIdentifier(identifier, sender: self)
-        })
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if(segue.identifier == "MainToCamera") {
-            let nextView = segue.destinationViewController as! CameraController
-            nextView.userName = self.userName
-            nextView.userEmail = self.userEmail
-        }
-        else if(segue.identifier == "MainToSettings") {
-            let nextView = segue.destinationViewController as! SettingsController
-            nextView.userName = self.userName
-            nextView.userEmail = self.userEmail
-        }
-        
-    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+    func timeAgoSinceDate(date:NSDate, numericDates:Bool) -> String {
+        
+        let calendar = NSCalendar.currentCalendar()
+        let now = NSDate()
+        let earliest = now.earlierDate(date)
+        let latest = (earliest == now) ? date : now
+        let components:NSDateComponents = calendar.components([.Minute, .Hour, .Day, .WeekOfYear, .Month, .Year, .Second], fromDate: earliest, toDate: latest, options: [])
+        
+        if (components.year >= 2) {
+            return "\(components.year) years ago"
+        } else if (components.year >= 1){
+            if (numericDates){
+                return "1 year ago"
+            } else {
+                return "Last year"
+            }
+        } else if (components.month >= 2) {
+            return "\(components.month) months ago"
+        } else if (components.month >= 1){
+            if (numericDates){
+                return "1 month ago"
+            } else {
+                return "Last month"
+            }
+        } else if (components.weekOfYear >= 2) {
+            return "\(components.weekOfYear) weeks ago"
+        } else if (components.weekOfYear >= 1){
+            if (numericDates){
+                return "1 week ago"
+            } else {
+                return "Last week"
+            }
+        } else if (components.day >= 2) {
+            return "\(components.day) days ago"
+        } else if (components.day >= 1){
+            if (numericDates){
+                return "1 day ago"
+            } else {
+                return "Yesterday"
+            }
+        } else if (components.hour >= 2) {
+            return "\(components.hour) hours ago"
+        } else if (components.hour >= 1){
+            if (numericDates){
+                return "1 hour ago"
+            } else {
+                return "An hour ago"
+            }
+        } else if (components.minute >= 2) {
+            return "\(components.minute) minutes ago"
+        } else if (components.minute >= 1){
+            if (numericDates){
+                return "1 minute ago"
+            } else {
+                return "A minute ago"
+            }
+        } else if (components.second >= 3) {
+            return "\(components.second) seconds ago"
+        } else {
+            return "Just now"
+        }
+        
+    }
+    
     
     var countryTable = [["Afghanistan","af"],
         ["Åland Islands","ax"],

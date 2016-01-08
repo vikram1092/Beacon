@@ -6,10 +6,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Login Controller-->
+        <!--Login-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="LoginController" id="BYZ-38-t0r" customClass="LoginController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginController" title="Login" id="BYZ-38-t0r" customClass="LoginController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -18,11 +18,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WcE-ue-Ohx">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WcE-ue-Ohx">
                                 <rect key="frame" x="0.0" y="267" width="600" height="65"/>
                                 <color key="backgroundColor" red="0.76047585230101" green="0.063826253492100041" blue="0.11659503586086616" alpha="0.75" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="65" id="mdD-zp-7re"/>
+                                    <constraint firstAttribute="height" constant="65" id="q9l-81-gLv"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -31,20 +31,20 @@
                         </subviews>
                         <color key="backgroundColor" red="0.5490196078431373" green="0.8901960784313725" blue="0.70196078431372544" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="WcE-ue-Ohx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="8kI-s9-HbM"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="WcE-ue-Ohx" secondAttribute="trailing" constant="-20" id="Rc8-Jj-3vC"/>
-                            <constraint firstItem="WcE-ue-Ohx" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="267" id="UaD-Hr-aYC"/>
-                            <constraint firstItem="WcE-ue-Ohx" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="bfL-b5-zCN"/>
+                            <constraint firstItem="WcE-ue-Ohx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="4Bb-mF-O2o"/>
+                            <constraint firstItem="WcE-ue-Ohx" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="247" id="fYS-B2-mHQ"/>
+                            <constraint firstAttribute="trailing" secondItem="WcE-ue-Ohx" secondAttribute="trailing" id="kan-LE-0PB"/>
+                            <constraint firstItem="WcE-ue-Ohx" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="xOK-L7-u0S"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="bannedLabel" destination="WcE-ue-Ohx" id="6rk-Gi-qVM"/>
-                        <segue destination="Obd-UH-7yy" kind="show" identifier="LoginToMain" animates="NO" id="Wg1-g1-ZKT"/>
+                        <segue destination="npX-OU-O46" kind="show" identifier="LoginToMain" id="QNG-im-sh6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="245" y="305"/>
+            <point key="canvasLocation" x="-533" y="305"/>
         </scene>
         <!--Main-->
         <scene sceneID="pei-fE-jWm">
@@ -70,7 +70,7 @@
                                 </textAttributes>
                                 <items>
                                     <navigationItem title="Spore" id="FNA-nf-9kg">
-                                        <barButtonItem key="leftBarButtonItem" image="SettingsButton.png" width="25" style="plain" id="fmi-vV-A4L">
+                                        <barButtonItem key="leftBarButtonItem" image="SettingsButton.png" width="25" style="done" id="fmi-vV-A4L">
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
                                                 <segue destination="d16-QO-sve" kind="show" identifier="MainToSettings" id="wLC-Be-Nm4"/>
@@ -111,23 +111,24 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="XhY-Ul-YGP" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leading" id="6vK-et-jH2"/>
-                            <constraint firstItem="XhY-Ul-YGP" firstAttribute="top" secondItem="JB1-sV-LGU" secondAttribute="bottom" id="DR1-n2-Pv0"/>
-                            <constraint firstItem="B10-2q-2m4" firstAttribute="bottom" secondItem="69W-9e-QTv" secondAttribute="top" id="Gyj-0k-1j6"/>
-                            <constraint firstItem="Jj8-ef-WaI" firstAttribute="trailing" secondItem="XhY-Ul-YGP" secondAttribute="trailing" id="JCD-lv-jNS"/>
-                            <constraint firstItem="Jj8-ef-WaI" firstAttribute="top" secondItem="Nc3-uR-38l" secondAttribute="top" id="Q1o-H5-9kb"/>
-                            <constraint firstAttribute="trailing" secondItem="XhY-Ul-YGP" secondAttribute="trailing" id="QfN-Wg-9Dt"/>
-                            <constraint firstItem="B10-2q-2m4" firstAttribute="top" secondItem="Fbr-kv-fRZ" secondAttribute="bottom" constant="43" id="UyS-XC-9rW"/>
-                            <constraint firstItem="B10-2q-2m4" firstAttribute="trailing" secondItem="XhY-Ul-YGP" secondAttribute="trailing" id="Wqt-7w-63R"/>
-                            <constraint firstItem="Fbr-kv-fRZ" firstAttribute="top" secondItem="Jj8-ef-WaI" secondAttribute="top" id="aiQ-Pp-5vD"/>
-                            <constraint firstItem="Fbr-kv-fRZ" firstAttribute="leading" secondItem="XhY-Ul-YGP" secondAttribute="leading" id="b77-JP-5uh"/>
-                            <constraint firstItem="Fbr-kv-fRZ" firstAttribute="trailing" secondItem="XhY-Ul-YGP" secondAttribute="trailing" id="g2u-nJ-gpl"/>
-                            <constraint firstItem="Jj8-ef-WaI" firstAttribute="leading" secondItem="B10-2q-2m4" secondAttribute="leading" id="jXI-aw-cNw"/>
-                            <constraint firstItem="B10-2q-2m4" firstAttribute="top" secondItem="XhY-Ul-YGP" secondAttribute="bottom" id="kyc-Rd-qKb"/>
-                            <constraint firstItem="B10-2q-2m4" firstAttribute="leading" secondItem="XhY-Ul-YGP" secondAttribute="leading" id="mnN-rx-oCM"/>
-                            <constraint firstItem="Jj8-ef-WaI" firstAttribute="bottom" secondItem="69W-9e-QTv" secondAttribute="top" id="qem-jF-DlY"/>
+                            <constraint firstItem="B10-2q-2m4" firstAttribute="top" secondItem="Fbr-kv-fRZ" secondAttribute="bottom" constant="43" id="0r7-je-XsB"/>
+                            <constraint firstAttribute="trailing" secondItem="B10-2q-2m4" secondAttribute="trailing" id="12t-VO-1rn"/>
+                            <constraint firstItem="Jj8-ef-WaI" firstAttribute="top" secondItem="Fbr-kv-fRZ" secondAttribute="top" id="283-Iw-Cdf"/>
+                            <constraint firstItem="XhY-Ul-YGP" firstAttribute="trailing" secondItem="Fbr-kv-fRZ" secondAttribute="trailing" id="5XL-rL-cBH"/>
+                            <constraint firstItem="B10-2q-2m4" firstAttribute="leading" secondItem="Jj8-ef-WaI" secondAttribute="leading" id="5rv-1j-3ge"/>
+                            <constraint firstItem="XhY-Ul-YGP" firstAttribute="trailing" secondItem="B10-2q-2m4" secondAttribute="trailing" id="EPr-We-j5z"/>
+                            <constraint firstItem="B10-2q-2m4" firstAttribute="top" secondItem="XhY-Ul-YGP" secondAttribute="bottom" id="LYP-2B-BOS"/>
+                            <constraint firstItem="Jj8-ef-WaI" firstAttribute="bottom" secondItem="69W-9e-QTv" secondAttribute="top" id="S3C-eV-Tsu"/>
+                            <constraint firstItem="Fbr-kv-fRZ" firstAttribute="leading" secondItem="XhY-Ul-YGP" secondAttribute="leading" id="SKI-3f-Qc5"/>
+                            <constraint firstItem="B10-2q-2m4" firstAttribute="bottom" secondItem="69W-9e-QTv" secondAttribute="top" id="XZM-fF-eOT"/>
+                            <constraint firstItem="XhY-Ul-YGP" firstAttribute="leading" secondItem="B10-2q-2m4" secondAttribute="leading" id="XsD-H6-ouU"/>
+                            <constraint firstItem="XhY-Ul-YGP" firstAttribute="top" secondItem="JB1-sV-LGU" secondAttribute="bottom" id="gIN-II-85g"/>
+                            <constraint firstItem="Fbr-kv-fRZ" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leading" id="iYb-ww-Mlf"/>
+                            <constraint firstItem="B10-2q-2m4" firstAttribute="trailing" secondItem="Jj8-ef-WaI" secondAttribute="trailing" id="jdB-sK-EqU"/>
+                            <constraint firstItem="Jj8-ef-WaI" firstAttribute="top" secondItem="Nc3-uR-38l" secondAttribute="top" id="wJm-xE-3Dh"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="cK4-7q-eyL"/>
                     <connections>
                         <outlet property="settingsButton" destination="fmi-vV-A4L" id="kqq-1a-M75"/>
                         <outlet property="snap" destination="Jj8-ef-WaI" id="eRJ-Pi-Vja"/>
@@ -138,10 +139,10 @@
             </objects>
             <point key="canvasLocation" x="993" y="305"/>
         </scene>
-        <!--Settings Table Controller-->
+        <!--Settings Table-->
         <scene sceneID="yag-I6-doL">
             <objects>
-                <tableViewController id="5sm-ep-AXT" customClass="SettingsTableController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Settings Table" id="5sm-ep-AXT" customClass="SettingsTableController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="AAP-IP-RLk">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -244,12 +245,28 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KNs-Sl-JKn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1752" y="-445"/>
+            <point key="canvasLocation" x="210" y="-477"/>
         </scene>
-        <!--Settings Controller-->
+        <!--Navigation Controller-->
+        <scene sceneID="O5P-QE-wXh">
+            <objects>
+                <navigationController navigationBarHidden="YES" id="npX-OU-O46" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RaP-bO-l4N">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Obd-UH-7yy" kind="relationship" relationship="rootViewController" id="4Fy-5B-O1R"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Kdh-Gn-CkQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="210" y="305"/>
+        </scene>
+        <!--Settings-->
         <scene sceneID="Esq-U9-eSz">
             <objects>
-                <viewController storyboardIdentifier="SettingsController" id="d16-QO-sve" customClass="SettingsController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsController" title="Settings" id="d16-QO-sve" customClass="SettingsController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="G7p-g5-E2m"/>
                         <viewControllerLayoutGuide type="bottom" id="HSU-i7-9f1"/>
@@ -289,7 +306,7 @@
                                     <navigationItem title="Settings" id="fsY-aE-g9O">
                                         <barButtonItem key="leftBarButtonItem" title="&lt;Back" id="TpT-pP-aqb">
                                             <connections>
-                                                <segue destination="Obd-UH-7yy" kind="show" id="Dqe-ia-Q7B"/>
+                                                <action selector="backButtonPressed:" destination="d16-QO-sve" id="j3H-E8-kWF"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -445,6 +462,6 @@
         <image name="cameraButton.png" width="100" height="100"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Wg1-g1-ZKT"/>
+        <segue reference="4Fy-5B-O1R"/>
     </inferredMetricsTieBreakers>
 </document>

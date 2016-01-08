@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import AVFoundation
 
-class CameraController: UIViewController, CLLocationManagerDelegate {
+class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet var cameraImage: UIImageView!
     @IBOutlet var captureButton: UIButton!
@@ -36,6 +36,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
     var captureDevice : AVCaptureDevice?
     
     override func viewDidLoad() {
+        
+        
+        //Retreive user details
+        userName = userDefaults.objectForKey("userName") as! String
+        userEmail = userDefaults.objectForKey("userEmail") as! String
         
         //Initialize location manager
         locManager = CLLocationManager.init()
@@ -77,7 +82,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         self.backButton.hidden = false
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
+        
+        //Add navigation swipe functionality
+        self.navigationController!.interactivePopGestureRecognizer!.delegate = self
+        
+        //Run as normal
+        super.viewWillAppear(true)
     }
+    
+    
     
     override func viewDidLayoutSubviews() {
         
