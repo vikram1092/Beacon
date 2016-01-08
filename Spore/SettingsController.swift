@@ -31,6 +31,12 @@ class SettingsController: UIViewController, UIGestureRecognizerDelegate {
         self.navigationController!.interactivePopGestureRecognizer!.delegate = self
     }
     
+    @IBAction func backButtonPressed(sender: AnyObject) {
+        
+        //Pop off from navigation controller
+        self.navigationController!.popViewControllerAnimated(true)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

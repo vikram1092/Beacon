@@ -136,6 +136,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         viewDidLayoutSubviews()
     }
     
+    @IBAction func backButtonPressed(sender: AnyObject) {
+        
+        //Pop off from navigation controller
+        self.navigationController!.popViewControllerAnimated(true)
+    }
+    
     @IBAction func switchCamera(sender: AnyObject) {
         
         //Reconfigure all parameters & stop cuurrent session
@@ -205,7 +211,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         let userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos") + 1
         print("userToReceiveStatus saving..." + String(userToReceivePhotos))
         userDefaults.setInteger(userToReceivePhotos, forKey: "userToReceivePhotos")
-        print("Recorded Picture Taken")
+        print("Saved userToReceivePhotos")
     }
     
     @IBAction func sendPhoto(sender: AnyObject) {
@@ -244,9 +250,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             (success: Bool, error: NSError?) -> Void in
             if (success) {
                 
-                // The photo has been saved, seque back to the table screen
+                // The photo has been saved, go back to the main screen
                 print("New photo saved!")
-                self.segueToNextView("CameraToMain")
+                
+                //Pop off navigation controller
+                self.navigationController!.popViewControllerAnimated(true)
                 self.activityIndicator.stopAnimating()
             }
             else {
@@ -298,17 +306,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 print("Problem with the data received from geocoder")
             }
         }
-    }
-    
-    internal func segueToNextView(identifier: String) {
-        
-        print("reached segue in camera")
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            
-            print("reached segue in camera")
-            self.dismissViewControllerAnimated(true, completion: nil)
-            self.performSegueWithIdentifier(identifier, sender: self)
-        })
     }
     
     override func prefersStatusBarHidden() -> Bool {

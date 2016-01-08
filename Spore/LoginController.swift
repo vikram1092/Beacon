@@ -161,11 +161,17 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     internal func segueToNextView(identifier: String) {
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        if self.navigationController == nil {
             
-            self.dismissViewControllerAnimated(true, completion: nil)
-            self.performSegueWithIdentifier(identifier, sender: self)
-        })
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                self.dismissViewControllerAnimated(true, completion: nil)
+                self.performSegueWithIdentifier(identifier, sender: self)
+            })
+        }
+        else {
+            self.navigationController!.popToRootViewControllerAnimated(true)
+        }
     }
     
     internal func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {

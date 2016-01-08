@@ -74,6 +74,9 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         //Run like usual
         super.viewDidAppear(true)
         
+        //
+        userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
+        
         //Update user list and reload the table
         updateUserList()
         
@@ -171,11 +174,11 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
                         self.saveUserList()
+                        //Reset user photos to zero once photos are retreived
+                        print("Resetting user photos")
+                        self.userDefaults.setInteger(0, forKey: "userToReceivePhotos")
                     })
                     
-                    //Reset user photos to zero once photos are retreived
-                    print("Resetting user photos")
-                    self.userDefaults.setInteger(0, forKey: "userToReceivePhotos")
                     
                     self.delay(0.5, closure: { () -> () in
                         
