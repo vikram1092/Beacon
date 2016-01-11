@@ -16,6 +16,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     var timer = NSTimer()
     
     var initialRowLoad = false
+    var viewLoad = false
     var userList = Array<PFObject>()
     var userName = ""
     var userEmail = ""
@@ -30,13 +31,21 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     override func viewDidLoad() {
         
-
+        
+        //Turn on table animations
+        print("Turning on animations")
+        initialRowLoad = true
+        
         //Retreive user details
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
         
+        
+        //Retreive local user photo list
         let query = PFQuery(className: "photo")
         query.fromLocalDatastore()
+
+        print("Querying localuserList")
         query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
             
             if retreivalError != nil {
@@ -47,13 +56,19 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                 
                 //Save list of objects & reload table
                 self.userList = objects!
-                self.table.reloadData()
+                self.viewLoad = true
+                print("viewLoad: " + String(self.viewLoad))
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    //Update user list with new photos
+                    print("Reloading table after local retreival")
+                    self.table.reloadData()
+                    print("Adding new photos")
+                    self.updateUserList()
+                })
             }
         }
-        
-        //Turn on table animations
-        print("Turning on animations")
-        initialRowLoad = true
         
         //Load view
         super.viewDidLoad()
@@ -74,20 +89,30 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         //Run like usual
         super.viewDidAppear(true)
         
-        //
-        userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
+        //Get userToReceivePhotos
+        if userDefaults.integerForKey("userToReceivePhotos") > 0 {
+            userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
+        }
         
         //Update user list and reload the table
-        updateUserList()
+        print("viewDidAppear: viewLoad: " + String(viewLoad))
+        if !viewLoad {
+            updateUserList()
+        }
         
         //Congifure gestures & snap
         snap.userInteractionEnabled = true
-        
         let tap = UITapGestureRecognizer(target: self, action: ("snapTapped"))
-        let swipe = UISwipeGestureRecognizer(target: self, action: Selector("snapSwiped"))
-        swipe.direction = .Down
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: Selector("snapSwipedDown"))
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: Selector("snapSwipedUp"))
+        swipeDown.direction = .Down
+        swipeUp.direction = .Up
         snap.addGestureRecognizer(tap)
-        snap.addGestureRecognizer(swipe)
+        snap.addGestureRecognizer(swipeDown)
+        snap.addGestureRecognizer(swipeUp)
+        
+        //Trigger variable for checking  if viewDidLoad
+        viewLoad = false
     }
     
     internal func snapTapped() {
@@ -99,7 +124,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         }
     }
     
-    internal func snapSwiped() {
+    internal func snapSwipedDown() {
         
         print("Swiping!")
         UIView.animateWithDuration(0.3) { () -> Void in
@@ -111,6 +136,21 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
             
             self.snap.alpha = 0
             self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y - self.snap.bounds.height - 100)
+        }
+    }
+    
+    internal func snapSwipedUp() {
+        
+        print("Swiping!")
+        UIView.animateWithDuration(0.3) { () -> Void in
+            
+            self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y - self.snap.bounds.height - 100)
+        }
+        
+        delay(0.4) { () -> () in
+            
+            self.snap.alpha = 0
+            self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y + self.snap.bounds.height + 100)
         }
     }
     
@@ -146,22 +186,20 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                 else {
                     
                     print("photo count: " + String(photos!.count))
-                    //Run for each returned object
+                    
+                    //Create temporary list and run for each returned object
+                    var tempList = Array<PFObject>()
+                    
                     for photoObject in photos!{
                         
                         //Attach receipt details to object
                         photoObject["receivedAt"] = NSDate()
                         photoObject["receivedBy"] = self.userEmail
                         
-                        
                         //Add object to userList
-                        self.userList.append(photoObject)
+                        tempList.append(photoObject)
                         print("userList count: " + String(self.userList.count))
                         
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            
-                            self.table.reloadData()
-                        })
                         
                         //Save object to database
                         print("Saving object!")
@@ -170,30 +208,29 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                         print("userList count: " + String(self.userList.count))
                     }
                     
-                    //Save user list
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    //Add objects to user list
+                    print("Adding new objects to userList")
+                    self.delay(1.0, closure: { () -> () in
                         
-                        self.saveUserList()
-                        //Reset user photos to zero once photos are retreived
-                        print("Resetting user photos")
-                        self.userDefaults.setInteger(0, forKey: "userToReceivePhotos")
-                    })
-                    
-                    
-                    self.delay(0.5, closure: { () -> () in
+                        for object in tempList {
+                            self.userList.append(object)
+                        }
                         
-                        print("Turning off animations")
-                        self.initialRowLoad = false
+                        print("Reloading table after new objects")
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
+                            //Reload table
+                            self.table.reloadData()
+                            //Save user list
+                            print("Saving user list")
+                            self.saveUserList()
+                            //Reset user photos to zero once photos are retreived
+                            print("Resetting user photos")
+                            self.userDefaults.setInteger(0, forKey: "userToReceivePhotos")
+                        })
                     })
-                    
                 }
             })
-        }
-        else {
-            
-            //Only turn off initial row load animations
-            print("Turning off animations")
-            initialRowLoad = false
         }
     }
     
@@ -201,7 +238,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         
         //Initialize variables: 
         //Array is printed backwards so userListLength is initialized
-        print("Reached cell")
+        print("Reached cell" + String(indexPath.row))
         let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Unread")
         let userListLength = userList.count - 1
         print(userListLength)
@@ -211,7 +248,9 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         
         //Configure image
         cell.imageView!.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        
         cell.imageView!.tintColor = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
+        
         
         //Configure text
         cell.textLabel!.text = getCountryName(countryCode as! String)
@@ -255,6 +294,13 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                 
                 cell.center = CGPointMake(cell.center.x-100, cell.center.y)
             }
+        }
+        
+        //Turn off animations when we reach the last cell
+        print("Numberofrowsinsection: " + String(tableView.numberOfRowsInSection(0) - 1))
+        if initialRowLoad && indexPath.row == tableView.indexPathsForVisibleRows!.last!.row {
+            print("Turning off animations")
+            initialRowLoad = false
         }
     }
     

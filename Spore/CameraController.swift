@@ -220,7 +220,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Kick off activity indicator
         activityIndicator.startAnimating()
         
-        //Initialization of photo object in database
+        //Update user photos
         updateUserPhotos()
         
         let photoObject = PFObject(className:"photo")
