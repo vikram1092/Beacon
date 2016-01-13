@@ -1,14 +1,18 @@
 //
-//  SettingsController.swift
+//  MapController.swift
 //  Spore
 //
-//  Created by Vikram Ramkumar on 12/21/15.
-//  Copyright © 2015 Vikram Ramkumar. All rights reserved.
+//  Created by Vikram Ramkumar on 1/11/16.
+//  Copyright © 2016 Vikram Ramkumar. All rights reserved.
 //
 
+import Foundation
 import UIKit
+import MapKit
 
-class SettingsController: UIViewController, UIGestureRecognizerDelegate {
+class MapController: UIViewController {
+    
+    @IBOutlet var mapView: MKMapView!
     
     var userName = ""
     var userEmail = ""
@@ -20,6 +24,7 @@ class SettingsController: UIViewController, UIGestureRecognizerDelegate {
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
         
+        
         //Run view load as normal
         super.viewDidLoad()
     }
@@ -29,6 +34,4 @@ class SettingsController: UIViewController, UIGestureRecognizerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    
-
 }

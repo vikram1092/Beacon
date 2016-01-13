@@ -14,6 +14,7 @@ import Parse
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
     
+    @IBOutlet var imageView: UIImageView!
     @IBOutlet var bannedLabel: UILabel!
     @IBOutlet var loginButton: FBSDKLoginButton!
     var userName = ""
@@ -24,8 +25,13 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     override func viewDidLoad() {
         
-        //Initialize objects and check for login status
+        //Initialize UI objects
         bannedLabel.alpha = 0
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
+        blurView.frame = self.imageView.bounds
+        imageView.addSubview(blurView)
+        
+        //Check for login status
         loginButton = FBSDKLoginButton.init()
         loginButton.frame = CGRect(x: loginButton.frame.origin.x, y: loginButton.frame.origin.y, width: CGFloat(200), height: CGFloat(50))
         //Check if  already logged in
@@ -48,7 +54,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             self.view.addSubview(loginButton)
         }
     }
-    
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult loginResult: FBSDKLoginManagerLoginResult!, error: NSError!) {
         
@@ -161,7 +166,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     internal func segueToNextView(identifier: String) {
         
-        if self.navigationController == nil {
+        if  self.tabBarController == nil {
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
@@ -170,7 +175,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             })
         }
         else {
-            self.navigationController!.popToRootViewControllerAnimated(true)
+            
+            //What to do?
+            //self.tabBarController.
         }
     }
     

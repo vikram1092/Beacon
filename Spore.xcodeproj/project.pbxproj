@@ -10,6 +10,20 @@
 		D1329C491C28E93A000427B7 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1329C461C28E93A000427B7 /* FBSDKCoreKit.framework */; };
 		D1329C4A1C28E93A000427B7 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1329C471C28E93A000427B7 /* FBSDKLoginKit.framework */; };
 		D1329C4B1C28E93A000427B7 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1329C481C28E93A000427B7 /* FBSDKMessengerShareKit.framework */; };
+		D144F1DF1C43F6E300E07700 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D144F1DE1C43F6E300E07700 /* MapController.swift */; };
+		D144F1E91C440F1700E07700 /* globe.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E31C440F1700E07700 /* globe.png */; };
+		D144F1EA1C440F1700E07700 /* globe@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E41C440F1700E07700 /* globe@x3.png */; };
+		D144F1EB1C440F1700E07700 /* UserList.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E51C440F1700E07700 /* UserList.png */; };
+		D144F1EC1C440F1700E07700 /* UserList@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E61C440F1700E07700 /* UserList@x3.png */; };
+		D144F1ED1C440F1700E07700 /* userSettings.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E71C440F1700E07700 /* userSettings.png */; };
+		D144F1EE1C440F1700E07700 /* userSettings@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E81C440F1700E07700 /* userSettings@x3.png */; };
+		D144F1F11C4412D500E07700 /* CancelPhoto.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1EF1C4412D500E07700 /* CancelPhoto.png */; };
+		D144F1F21C4412D500E07700 /* CancelPhoto@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1F01C4412D500E07700 /* CancelPhoto@x3.png */; };
+		D144F1F41C4414A300E07700 /* CameraSwitch@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1F31C4414A300E07700 /* CameraSwitch@x3.png */; };
+		D144F1F71C44178500E07700 /* SendPhoto.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1F51C44178500E07700 /* SendPhoto.png */; };
+		D144F1F81C44178500E07700 /* SendPhoto@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1F61C44178500E07700 /* SendPhoto@x3.png */; };
+		D144F1FC1C44242600E07700 /* Zion Valley copy 2.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1FB1C44242600E07700 /* Zion Valley copy 2.png */; };
+		D14907911C455F7500F2C635 /* Tangela.JPG in Resources */ = {isa = PBXBuildFile; fileRef = D14907901C455F7500F2C635 /* Tangela.JPG */; };
 		D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */; };
 		D156589A1C2C9FE600CC43EB /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658991C2C9FE600CC43EB /* Accounts.framework */; };
 		D156589C1C2C9FFB00CC43EB /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D156589B1C2C9FFB00CC43EB /* AudioToolbox.framework */; };
@@ -19,7 +33,6 @@
 		D15658A41C2CA02500CC43EB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658A11C2CA02500CC43EB /* QuartzCore.framework */; };
 		D15658A61C2CA04500CC43EB /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658A51C2CA04500CC43EB /* Security.framework */; };
 		D15658A81C2CA04D00CC43EB /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658A71C2CA04D00CC43EB /* Social.framework */; };
-		D15658AA1C2CA05700CC43EB /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658A91C2CA05700CC43EB /* StoreKit.framework */; };
 		D15658AC1C2CA06600CC43EB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658AB1C2CA06600CC43EB /* SystemConfiguration.framework */; };
 		D15658AF1C2CA08400CC43EB /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658AD1C2CA08400CC43EB /* libsqlite3.tbd */; };
 		D15658B01C2CA08400CC43EB /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D15658AE1C2CA08400CC43EB /* libz.tbd */; };
@@ -46,6 +59,20 @@
 		D1329C461C28E93A000427B7 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		D1329C471C28E93A000427B7 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		D1329C481C28E93A000427B7 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
+		D144F1DE1C43F6E300E07700 /* MapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
+		D144F1E31C440F1700E07700 /* globe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = globe.png; path = "../../Spore Images/globe.png"; sourceTree = "<group>"; };
+		D144F1E41C440F1700E07700 /* globe@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "globe@x3.png"; path = "../../Spore Images/globe@x3.png"; sourceTree = "<group>"; };
+		D144F1E51C440F1700E07700 /* UserList.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = UserList.png; path = "../../Spore Images/UserList.png"; sourceTree = "<group>"; };
+		D144F1E61C440F1700E07700 /* UserList@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "UserList@x3.png"; path = "../../Spore Images/UserList@x3.png"; sourceTree = "<group>"; };
+		D144F1E71C440F1700E07700 /* userSettings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userSettings.png; path = "../../Spore Images/userSettings.png"; sourceTree = "<group>"; };
+		D144F1E81C440F1700E07700 /* userSettings@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "userSettings@x3.png"; path = "../../Spore Images/userSettings@x3.png"; sourceTree = "<group>"; };
+		D144F1EF1C4412D500E07700 /* CancelPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CancelPhoto.png; path = "../../Spore Images/CancelPhoto.png"; sourceTree = "<group>"; };
+		D144F1F01C4412D500E07700 /* CancelPhoto@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CancelPhoto@x3.png"; path = "../../Spore Images/CancelPhoto@x3.png"; sourceTree = "<group>"; };
+		D144F1F31C4414A300E07700 /* CameraSwitch@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CameraSwitch@x3.png"; path = "../../Spore Images/CameraSwitch@x3.png"; sourceTree = "<group>"; };
+		D144F1F51C44178500E07700 /* SendPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SendPhoto.png; path = "../../Spore Images/SendPhoto.png"; sourceTree = "<group>"; };
+		D144F1F61C44178500E07700 /* SendPhoto@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SendPhoto@x3.png"; path = "../../Spore Images/SendPhoto@x3.png"; sourceTree = "<group>"; };
+		D144F1FB1C44242600E07700 /* Zion Valley copy 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Zion Valley copy 2.png"; sourceTree = SOURCE_ROOT; };
+		D14907901C455F7500F2C635 /* Tangela.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tangela.JPG; path = "../../Spore Images/Tangela.JPG"; sourceTree = "<group>"; };
 		D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableController.swift; sourceTree = "<group>"; };
 		D15658991C2C9FE600CC43EB /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		D156589B1C2C9FFB00CC43EB /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -55,7 +82,6 @@
 		D15658A11C2CA02500CC43EB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D15658A51C2CA04500CC43EB /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		D15658A71C2CA04D00CC43EB /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		D15658A91C2CA05700CC43EB /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		D15658AB1C2CA06600CC43EB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D15658AD1C2CA08400CC43EB /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		D15658AE1C2CA08400CC43EB /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -65,9 +91,9 @@
 		D17A5F0D1C335C8800EE94DE /* PFFile+NSCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PFFile+NSCoding.h"; path = "../../../../Documents/Parse-NSCoding-master/PFFile+NSCoding.h"; sourceTree = "<group>"; };
 		D17A5F0E1C335C8800EE94DE /* PFGeoPoint+NSCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PFGeoPoint+NSCoding.h"; path = "../../../../Documents/Parse-NSCoding-master/PFGeoPoint+NSCoding.h"; sourceTree = "<group>"; };
 		D17A5F0F1C335C8800EE94DE /* PFObject+NSCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PFObject+NSCoding.h"; path = "../../../../Documents/Parse-NSCoding-master/PFObject+NSCoding.h"; sourceTree = "<group>"; };
-		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = ../../CameraSwitch.png; sourceTree = "<group>"; };
+		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
-		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = ../../SettingsButton.png; sourceTree = "<group>"; };
+		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = "../../Spore Images/SettingsButton.png"; sourceTree = "<group>"; };
 		D1B9C7161C2258B800D9AEE7 /* Spore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
@@ -75,7 +101,7 @@
 		D1B9C7201C2258B800D9AEE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D1B9C7251C2258B800D9AEE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1B9C72B1C22608600D9AEE7 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
-		D1C083E41C42003000A9C281 /* settingsButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "settingsButton@x3.png"; path = "../../settingsButton@x3.png"; sourceTree = "<group>"; };
+		D1C083E41C42003000A9C281 /* settingsButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "settingsButton@x3.png"; path = "../../Spore Images/settingsButton@x3.png"; sourceTree = "<group>"; };
 		D1DC38791C2C9DBD00C093AA /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		D1DC387A1C2C9DBD00C093AA /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		D1DC387B1C2C9DBD00C093AA /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
@@ -105,7 +131,6 @@
 				D15658A41C2CA02500CC43EB /* QuartzCore.framework in Frameworks */,
 				D15658A61C2CA04500CC43EB /* Security.framework in Frameworks */,
 				D15658A81C2CA04D00CC43EB /* Social.framework in Frameworks */,
-				D15658AA1C2CA05700CC43EB /* StoreKit.framework in Frameworks */,
 				D15658AC1C2CA06600CC43EB /* SystemConfiguration.framework in Frameworks */,
 				D15658AF1C2CA08400CC43EB /* libsqlite3.tbd in Frameworks */,
 				D15658B01C2CA08400CC43EB /* libz.tbd in Frameworks */,
@@ -115,6 +140,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D144F1E21C440DE700E07700 /* TabBarButtons */ = {
+			isa = PBXGroup;
+			children = (
+				D144F1E31C440F1700E07700 /* globe.png */,
+				D144F1E41C440F1700E07700 /* globe@x3.png */,
+				D144F1E51C440F1700E07700 /* UserList.png */,
+				D144F1E61C440F1700E07700 /* UserList@x3.png */,
+				D144F1E71C440F1700E07700 /* userSettings.png */,
+				D144F1E81C440F1700E07700 /* userSettings@x3.png */,
+			);
+			name = TabBarButtons;
+			sourceTree = "<group>";
+		};
 		D17A5F0A1C335C6600EE94DE /* Parse-NSCoding */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,7 +168,15 @@
 		D18AE6861C2DC24F00B74ED0 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				D14907901C455F7500F2C635 /* Tangela.JPG */,
+				D144F1FB1C44242600E07700 /* Zion Valley copy 2.png */,
+				D144F1F51C44178500E07700 /* SendPhoto.png */,
+				D144F1F61C44178500E07700 /* SendPhoto@x3.png */,
 				D17A5F101C338BA000EE94DE /* CameraSwitch.png */,
+				D144F1F31C4414A300E07700 /* CameraSwitch@x3.png */,
+				D144F1EF1C4412D500E07700 /* CancelPhoto.png */,
+				D144F1F01C4412D500E07700 /* CancelPhoto@x3.png */,
+				D144F1E21C440DE700E07700 /* TabBarButtons */,
 				D1EC295B1C2E1E850014DE7E /* Countries */,
 				D1ED12CE1C25F92C00987D98 /* CameraBack.png */,
 				D1DE875B1C27A92400E48721 /* cameraButton.png */,
@@ -166,6 +212,7 @@
 				D1785A551C3F68280020AD99 /* CameraController.swift */,
 				D188D7B41C283A5F0066E773 /* SettingsController.swift */,
 				D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */,
+				D144F1DE1C43F6E300E07700 /* MapController.swift */,
 				D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */,
 				D18AE6861C2DC24F00B74ED0 /* Images */,
 				D1B9C7171C2258B800D9AEE7 /* Products */,
@@ -182,7 +229,6 @@
 				D15658AD1C2CA08400CC43EB /* libsqlite3.tbd */,
 				D15658AE1C2CA08400CC43EB /* libz.tbd */,
 				D15658AB1C2CA06600CC43EB /* SystemConfiguration.framework */,
-				D15658A91C2CA05700CC43EB /* StoreKit.framework */,
 				D15658A71C2CA04D00CC43EB /* Social.framework */,
 				D15658A51C2CA04500CC43EB /* Security.framework */,
 				D156589F1C2CA02500CC43EB /* CoreGraphics.framework */,
@@ -235,6 +281,11 @@
 					D1B9C7151C2258B800D9AEE7 = {
 						CreatedOnToolsVersion = 7.1.1;
 						DevelopmentTeam = 53738Y87UZ;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -261,14 +312,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D144F1F21C4412D500E07700 /* CancelPhoto@x3.png in Resources */,
 				D1C083E51C42003000A9C281 /* settingsButton@x3.png in Resources */,
+				D144F1EB1C440F1700E07700 /* UserList.png in Resources */,
+				D144F1FC1C44242600E07700 /* Zion Valley copy 2.png in Resources */,
 				D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */,
+				D144F1ED1C440F1700E07700 /* userSettings.png in Resources */,
+				D144F1F11C4412D500E07700 /* CancelPhoto.png in Resources */,
 				D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */,
+				D144F1EC1C440F1700E07700 /* UserList@x3.png in Resources */,
+				D144F1E91C440F1700E07700 /* globe.png in Resources */,
 				D1B9C7211C2258B800D9AEE7 /* Assets.xcassets in Resources */,
+				D144F1F41C4414A300E07700 /* CameraSwitch@x3.png in Resources */,
+				D14907911C455F7500F2C635 /* Tangela.JPG in Resources */,
 				D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */,
 				D1EC295C1C2E1E850014DE7E /* Countries in Resources */,
+				D144F1EA1C440F1700E07700 /* globe@x3.png in Resources */,
+				D144F1F81C44178500E07700 /* SendPhoto@x3.png in Resources */,
 				D1DE875C1C27A92400E48721 /* cameraButton.png in Resources */,
 				D1ED12CF1C25F92C00987D98 /* CameraBack.png in Resources */,
+				D144F1F71C44178500E07700 /* SendPhoto.png in Resources */,
+				D144F1EE1C440F1700E07700 /* userSettings@x3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +344,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D1B9C71C1C2258B800D9AEE7 /* LoginController.swift in Sources */,
+				D144F1DF1C43F6E300E07700 /* MapController.swift in Sources */,
 				D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */,
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
