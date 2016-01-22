@@ -9,6 +9,7 @@
 import UIKit
 import Parse
 import FBSDKCoreKit
+import GoogleMaps
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -22,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Parse.setApplicationId("n2yOGaNe4AU0PHvX1yZ9ySGXh0jDN3SX2ii2gYCM", clientKey: "sMaWI9Q6yw292Ak7gD93e7iVYAHdOPapUqAlyNQ6")
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        GMSServices.provideAPIKey("AIzaSyB3_U_sLBe6WFrUZh_y_OtFSICd1sLArkU")
         
         return true
     }

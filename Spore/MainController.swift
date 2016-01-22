@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import ParseUI
 import Foundation
 
 class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDelegate {
@@ -25,7 +26,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     @IBOutlet var table: UITableView!
     @IBOutlet var settingsButton: UIBarButtonItem!
-    @IBOutlet var snap: UIImageView!
+    @IBOutlet var snap: PFImageView!
     
     
     
@@ -121,21 +122,25 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         UIView.animateWithDuration(0.3) { () -> Void in
             
             self.snap.alpha = 0
+            self.tabBarController?.tabBar.hidden = false
         }
     }
     
     internal func snapSwipedDown() {
         
         print("Swiping!")
-        UIView.animateWithDuration(0.3) { () -> Void in
+        UIView.animateWithDuration(0.3, animations: { () -> Void in
             
             self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y + self.snap.bounds.height + 100)
-        }
-        
-        delay(0.4) { () -> () in
-            
-            self.snap.alpha = 0
-            self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y - self.snap.bounds.height - 100)
+            }) { (flag) -> Void in
+                
+                UIView.animateWithDuration(0.4, animations: { () -> Void in
+                    
+                    self.tabBarController?.tabBar.hidden = false
+                })
+                
+                self.snap.alpha = 0
+                self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y - self.snap.bounds.height - 100)
         }
     }
     
@@ -145,6 +150,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         UIView.animateWithDuration(0.3) { () -> Void in
             
             self.snap.center = CGPoint(x: self.snap.center.x, y: self.snap.center.y - self.snap.bounds.height - 100)
+            self.tabBarController?.tabBar.hidden = false
         }
         
         delay(0.4) { () -> () in
@@ -327,7 +333,10 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         let index = userList.count - 1 - indexPath.row
         
         let photoToDisplay = userList[index]["photo"] as! PFFile
-        photoToDisplay.getDataInBackgroundWithBlock { (photoData, photoConvError) -> Void in
+        
+        snap.file = photoToDisplay
+
+        snap.loadInBackground { (photoData, photoConvError) -> Void in
             
             if photoConvError != nil {
                 
@@ -336,7 +345,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
             else {
                 
                 //Decode and display image for user
-                self.snap.image = UIImage(data: photoData!)
+                self.tabBarController!.tabBar.hidden = true
                 self.snap.alpha = 1
                 
                 //Deselect row

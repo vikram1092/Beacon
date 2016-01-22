@@ -8,11 +8,9 @@
 
 import Foundation
 import UIKit
-import MapKit
+import GoogleMaps
 
 class MapController: UIViewController {
-    
-    @IBOutlet var mapView: MKMapView!
     
     var userName = ""
     var userEmail = ""
@@ -20,14 +18,24 @@ class MapController: UIViewController {
     
     override func viewDidLoad() {
         
+        //Run view load as normal
+        super.viewDidLoad()
+        
         //Retreive user details
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
         
+        let camera = GMSCameraPosition.cameraWithLatitude(-33.86,
+            longitude: 151.20, zoom: 0)
         
-        //Run view load as normal
-        super.viewDidLoad()
+        let mapView = GMSMapView.mapWithFrame(CGRectZero, camera: camera)
+        mapView.myLocationEnabled = true
+        self.view = mapView
+        
+        
+        //mapView.animateToLocation(mapView.myLocation.coordinate)
     }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

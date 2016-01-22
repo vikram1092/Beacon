@@ -82,9 +82,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         self.backButton.hidden = false
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
-        
-        //Add navigation swipe functionality
-        self.navigationController!.interactivePopGestureRecognizer!.delegate = self
+        self.tabBarController!.tabBar.hidden = true
         
         //Run as normal
         super.viewWillAppear(true)
@@ -138,8 +136,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     @IBAction func backButtonPressed(sender: AnyObject) {
         
-        //Pop off from navigation controller
-        self.navigationController!.popViewControllerAnimated(true)
+        //Move within tab controller
+        self.tabBarController?.selectedIndex = 0
+        self.tabBarController!.tabBar.hidden = false
     }
     
     @IBAction func switchCamera(sender: AnyObject) {
@@ -253,9 +252,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 // The photo has been saved, go back to the main screen
                 print("New photo saved!")
                 
-                //Pop off navigation controller
-                self.navigationController!.popViewControllerAnimated(true)
+                //Move within tab controller
                 self.activityIndicator.stopAnimating()
+                self.tabBarController!.selectedIndex = 0
+                self.tabBarController!.tabBar.hidden = false
             }
             else {
                 
