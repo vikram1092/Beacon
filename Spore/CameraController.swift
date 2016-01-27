@@ -255,7 +255,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 //Move within tab controller
                 self.activityIndicator.stopAnimating()
                 self.tabBarController!.selectedIndex = 0
-                self.tabBarController!.tabBar.hidden = false
+                self.closePhoto(self)
             }
             else {
                 

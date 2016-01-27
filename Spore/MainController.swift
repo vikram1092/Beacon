@@ -23,6 +23,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     var userEmail = ""
     var userToReceivePhotos = 0
     let userDefaults = NSUserDefaults.standardUserDefaults()
+    let refreshControl = UIRefreshControl()
     
     @IBOutlet var table: UITableView!
     @IBOutlet var settingsButton: UIBarButtonItem!
@@ -47,6 +48,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         query.fromLocalDatastore()
 
         print("Querying localuserList")
+        query.addAscendingOrder("updatedAt")
         query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
             
             if retreivalError != nil {
@@ -71,6 +73,10 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
             }
         }
         
+        //Configure refresh control for table
+        refreshControl.backgroundColor = UIColor(red: 246.0/255.0, green: 165.0/255.0, blue: 141.0/255.0, alpha: 1)
+        refreshControl.addTarget(self.table, action: Selector("updateUserList"), forControlEvents: UIControlEvents.ValueChanged)
+        
         //Load view
         super.viewDidLoad()
     }
@@ -80,6 +86,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         
         //Initialize values
         snap.alpha = 0
+        self.tabBarController?.tabBar.hidden = false
         
         super.viewWillAppear(true)
     }
@@ -167,12 +174,16 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     internal func updateUserList() {
         
+        //Initialize for subtracting from userToReceivePhotos list
+        var userReceivedPhotos = 0
+        
         //If user is to receive photos, execute the following
         if userToReceivePhotos > 0 {
             
             //Get unsent photos in the database equal to how many the user gets
             let query = PFQuery(className:"photo")
             query.whereKeyDoesNotExist("receivedBy")
+            //query.whereKey("sentBy", notEqualTo: userEmail)
             query.limit = userToReceivePhotos
             
             //Query with above conditions
@@ -186,8 +197,9 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                     
                     //Let the user know that the database is empty
                     print("Database empty.")
-                    let alert = UIAlertController(title: "", message: "Please wait a while and try again.", preferredStyle: UIAlertControllerStyle.Alert)
+                    let alert = UIAlertController(title: "Photos To Come!", message: "People will be sharing their pics very soon, check back to see what you get!", preferredStyle: UIAlertControllerStyle.Alert)
                     alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
                 }
                 else {
                     
@@ -197,6 +209,9 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                     var tempList = Array<PFObject>()
                     
                     for photoObject in photos!{
+                        
+                        //Increment how much user receives
+                        userReceivedPhotos++
                         
                         //Attach receipt details to object
                         photoObject["receivedAt"] = NSDate()
@@ -232,12 +247,16 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                             self.saveUserList()
                             //Reset user photos to zero once photos are retreived
                             print("Resetting user photos")
-                            self.userDefaults.setInteger(0, forKey: "userToReceivePhotos")
+                            self.userToReceivePhotos -= userReceivedPhotos
+                            self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
                         })
                     })
                 }
             })
         }
+        
+        //End refreshing
+        self.refreshControl.endRefreshing()
     }
     
     internal func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

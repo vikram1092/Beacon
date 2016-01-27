@@ -4,7 +4,7 @@
 //
 //  Created by Vikram Ramkumar on 1/11/16.
 //  Copyright © 2016 Vikram Ramkumar. All rights reserved.
-//
+// 4 & 39
 
 import Foundation
 import UIKit
@@ -31,7 +31,6 @@ class MapController: UIViewController {
         let mapView = GMSMapView.mapWithFrame(CGRectZero, camera: camera)
         mapView.myLocationEnabled = true
         self.view = mapView
-        
         
         //mapView.animateToLocation(mapView.myLocation.coordinate)
     }
