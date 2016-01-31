@@ -31,6 +31,9 @@ class SettingsTableController: UITableViewController {
         //Perform logout if tag matches Logout button tag
         if cell!.tag == 1 {
             
+            //Segue back to the login screen
+            performSegueWithIdentifier("Logout", sender: self)
+            
             //Logout user
             let loginManager = FBSDKLoginManager()
             loginManager.logOut()
@@ -39,8 +42,6 @@ class SettingsTableController: UITableViewController {
             userDefaults.setObject(nil, forKey: "userName")
             userDefaults.setObject(nil, forKey: "userEmail")
             
-            //Segue back to the login screen
-            performSegueWithIdentifier("Logout", sender: self)
         }
     }
     

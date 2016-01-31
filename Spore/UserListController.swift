@@ -43,31 +43,29 @@ class UserListController: UITableViewController {
         print("Checking user login status")
         if userDefaults.objectForKey("userName") != nil {
             
-            
-            //Turn on table animations
-            print("Turning on animations")
-            initialRowLoad = true
-            
-            //Retreive user details
-            userName = userDefaults.objectForKey("userName") as! String
-            userEmail = userDefaults.objectForKey("userEmail") as! String
-            
-            //Get userToReceivePhotos
-            if userDefaults.integerForKey("userToReceivePhotos") > 0 {
-                userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
-            }
-            
-            //Load & update user list
-            print("viewDidAppear: viewLoad: " + String(viewLoad))
+            //Load user list if it hasn't loaded, or else update what's loaded
+            print("viewDidAppear: " + String(viewLoad))
             if viewLoad {
                 updateUserList()
             }
             else {
+                
+                //Turn on table animations
+                print("Turning on animations")
+                initialRowLoad = true
+                
+                //Retreive user details
+                userName = userDefaults.objectForKey("userName") as! String
+                userEmail = userDefaults.objectForKey("userEmail") as! String
+                
+                //Get userToReceivePhotos
+                if userDefaults.integerForKey("userToReceivePhotos") > 0 {
+                    userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
+                }
+                
+                //Load user list
                 loadUserList()
             }
-            
-            //Trigger variable for checking  if viewDidLoad
-            viewLoad = false
         }
         else {
         
@@ -210,6 +208,7 @@ class UserListController: UITableViewController {
         //End refreshing
         sender.endRefreshing()
     }
+    
     
     internal func delay(delay: Double, closure:()->()) {
         

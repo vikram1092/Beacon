@@ -34,26 +34,19 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         //Check for login status
         loginButton = FBSDKLoginButton.init()
         loginButton.frame = CGRect(x: loginButton.frame.origin.x, y: loginButton.frame.origin.y, width: CGFloat(200), height: CGFloat(50))
-        //Check if  already logged in
-        if(FBSDKAccessToken.currentAccessToken() != nil) {
-            
-            //Perform database operations for user
-            checkWithDatabase()
-            
-        }
-        else {
-            
-            //Obtain permissions from Facebook
-            loginButton.readPermissions = ["public_profile", "email", "user_friends"]
-            //If user is not logged in, load views
-            super.viewDidLoad()
-            
-            // Configure login button
-            loginButton.delegate = self
-            loginButton.center = self.view.center
-            self.view.addSubview(loginButton)
-        }
+
+        //Obtain permissions from Facebook
+        loginButton.readPermissions = ["public_profile", "email", "user_friends"]
+        
+        // Configure login button
+        loginButton.delegate = self
+        loginButton.center = self.view.center
+        self.view.addSubview(loginButton)
+        
+        //Load as normal
+        super.viewDidLoad()
     }
+    
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult loginResult: FBSDKLoginManagerLoginResult!, error: NSError!) {
         
@@ -74,20 +67,22 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         }
     }
     
-    //Function to retrieve FB information, save it, 
+    
+    //Function to retrieve FB information, save it, and segue
     internal func checkWithDatabase() {
         
         //Create request to obtain user email and name
         let accessToken = FBSDKAccessToken.currentAccessToken()
         let req = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"email,name"], tokenString: accessToken.tokenString, version: nil, HTTPMethod: "GET")
         
-        req.startWithCompletionHandler({ (connection, userResult, error : NSError!) -> Void in
+        req.startWithCompletionHandler({ (connection, result, error : NSError!) -> Void in
             
             if(error == nil){
                 
+                let userResult = result as! NSDictionary
                 //Query to find email ID in database. If it doesn't exist, create it.
-                self.userName = userResult["name"] as! String
-                self.userEmail = userResult["email"] as! String
+                self.userName = userResult.objectForKey("name") as! String
+                self.userEmail = userResult.objectForKey("email") as! String
                 
                 //Save details
                 self.saveNameAndEmail(self.userName, email: self.userEmail)
@@ -105,12 +100,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         let userBanned = users![0]["banned"] as! BooleanLiteralType
                         print(userBanned)
                         
-                        //If user is not banned, segue on
-                        if userBanned == false {
-                            self.segueToNextView("LoginToMain")
-                        }
                         //If user is banned, show message stating ban
-                        else {
+                        if userBanned == true {
                             self.bannedLabel.text = self.bannedText
                             self.bannedLabel.font = UIFont(name: "Helvetica", size: 13.0)
                             self.bannedLabel.sizeToFit()
@@ -118,6 +109,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                                 
                                 self.bannedLabel.alpha = 1
                             }
+                        }
+                        else {
+                            
+                            // The user is not banned, seque to next screen
+                            print("User logged in, segue-ing")
+                            self.segueToNextView("LoginToMain")
                         }
                     }
                     else if error == nil && users!.count < 1 {
@@ -147,7 +144,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         print("Error: " + String(error))
                     }
                 })
-                
                 
                 print("result \(userResult)")
             }

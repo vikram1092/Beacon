@@ -216,8 +216,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     @IBAction func sendPhoto(sender: AnyObject) {
         
         
-        //Kick off activity indicator
+        //Kick off activity indicator & hide button
         activityIndicator.startAnimating()
+        photoSendButton.hidden = true
         
         //Update user photos
         updateUserPhotos()

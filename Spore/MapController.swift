@@ -37,7 +37,24 @@ class MapController: UIViewController, MGLMapViewDelegate {
         
         mapView.animateToLocation(mapView.myLocation.coordinate)*/
         
+        delay(1) { () -> () in
+            
+            let classes = self.mapView.annotations!
+            
+            print("classes length: " + String(classes.count))
+            for x in classes {
+                
+                print("Class: " + x.description)
+            }
+        }
+
         
+    }
+    
+    
+    internal func delay(delay: Double, closure:()->()) {
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
     }
     
     
