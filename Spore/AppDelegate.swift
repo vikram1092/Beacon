@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import FBSDKCoreKit
 import GoogleMaps
+import Mapbox
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

@@ -12,6 +12,8 @@ import FBSDKLoginKit
 
 class SettingsTableController: UITableViewController {
     
+    let userDefaults = NSUserDefaults.standardUserDefaults()
+    
     @IBOutlet var logoutButton: UIView!
     @IBOutlet var profilePicture: UIImageView!
     
@@ -29,8 +31,13 @@ class SettingsTableController: UITableViewController {
         //Perform logout if tag matches Logout button tag
         if cell!.tag == 1 {
             
+            //Logout user
             let loginManager = FBSDKLoginManager()
             loginManager.logOut()
+            
+            //Reset name and email local variables
+            userDefaults.setObject(nil, forKey: "userName")
+            userDefaults.setObject(nil, forKey: "userEmail")
             
             //Segue back to the login screen
             performSegueWithIdentifier("Logout", sender: self)

@@ -9,12 +9,15 @@
 import Foundation
 import UIKit
 import GoogleMaps
+import Mapbox
 
-class MapController: UIViewController {
+class MapController: UIViewController, MGLMapViewDelegate {
     
     var userName = ""
     var userEmail = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
+    
+    @IBOutlet var mapView: MGLMapView!
     
     override func viewDidLoad() {
         
@@ -25,14 +28,16 @@ class MapController: UIViewController {
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
         
-        let camera = GMSCameraPosition.cameraWithLatitude(-33.86,
+        /*let camera = GMSCameraPosition.cameraWithLatitude(-33.86,
             longitude: 151.20, zoom: 0)
         
         let mapView = GMSMapView.mapWithFrame(CGRectZero, camera: camera)
         mapView.myLocationEnabled = true
         self.view = mapView
         
-        //mapView.animateToLocation(mapView.myLocation.coordinate)
+        mapView.animateToLocation(mapView.myLocation.coordinate)*/
+        
+        
     }
     
     
