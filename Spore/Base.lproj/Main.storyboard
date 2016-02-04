@@ -201,38 +201,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FZu-uJ-Une" customClass="MGLMapView">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9zD-hA-Q8J" customClass="GMSMapView">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                                 <color key="backgroundColor" red="0.88857323229999996" green="0.62122989179999999" blue="0.56672111459999996" alpha="1" colorSpace="calibratedRGB"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="latitude">
-                                        <real key="value" value="38.894368"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="longitude">
-                                        <real key="value" value="-77.036486999999994"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="zoomLevel">
-                                        <real key="value" value="2"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="styleURL__" value="mapbox://styles/vikram1092/cik1xkquz00qdqtkqliy9p57g"/>
-                                </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <outlet property="delegate" destination="mKN-em-9dv" id="GzM-sd-zK1"/>
+                                    <outlet property="delegate" destination="mKN-em-9dv" id="WWm-4f-16M"/>
                                 </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="FZu-uJ-Une" firstAttribute="leading" secondItem="RFN-qL-fP1" secondAttribute="leadingMargin" constant="-20" id="LNy-mv-0eS"/>
-                            <constraint firstItem="FZu-uJ-Une" firstAttribute="centerX" secondItem="RFN-qL-fP1" secondAttribute="centerX" id="X2A-dN-qHL"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="FZu-uJ-Une" secondAttribute="trailing" constant="-20" id="fR4-qJ-mZ8"/>
-                            <constraint firstItem="frc-ec-ku7" firstAttribute="top" secondItem="FZu-uJ-Une" secondAttribute="bottom" constant="-49" id="nYY-Lg-eUz"/>
-                            <constraint firstItem="FZu-uJ-Une" firstAttribute="top" secondItem="RFN-qL-fP1" secondAttribute="topMargin" id="ndd-px-6ec"/>
+                            <constraint firstItem="frc-ec-ku7" firstAttribute="top" secondItem="9zD-hA-Q8J" secondAttribute="bottom" id="6Zb-Uu-mc1"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="9zD-hA-Q8J" secondAttribute="trailing" constant="-20" id="AiT-xQ-YZR"/>
+                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="top" secondItem="RFN-qL-fP1" secondAttribute="topMargin" id="Ouf-Jx-WPh"/>
+                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="centerX" secondItem="RFN-qL-fP1" secondAttribute="centerX" id="Tjg-7U-TMb"/>
+                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="leading" secondItem="RFN-qL-fP1" secondAttribute="leadingMargin" constant="-20" id="rFN-E8-Lun"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="World" image="Globe" id="NCb-7x-d4X"/>
                     <connections>
-                        <outlet property="mapView" destination="FZu-uJ-Une" id="e1e-cj-y32"/>
+                        <outlet property="mapView" destination="9zD-hA-Q8J" id="4Zu-Dj-B0c"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BLW-Kf-hKR" userLabel="First Responder" sceneMemberID="firstResponder"/>

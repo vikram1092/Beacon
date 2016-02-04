@@ -9,15 +9,20 @@
 import Foundation
 import UIKit
 import GoogleMaps
-import Mapbox
+//import Mapbox
+import Parse
 
-class MapController: UIViewController, MGLMapViewDelegate {
+class MapController: UIViewController, GMSMapViewDelegate {
     
+    var json = NSDictionary()
     var userName = ""
     var userEmail = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
+    var userList = Array<PFObject>()
+    var loadedCountries = Array<String>()
     
-    @IBOutlet var mapView: MGLMapView!
+    @IBOutlet var mapView: GMSMapView!
+    
     
     override func viewDidLoad() {
         
@@ -28,27 +33,151 @@ class MapController: UIViewController, MGLMapViewDelegate {
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
         
-        /*let camera = GMSCameraPosition.cameraWithLatitude(-33.86,
-            longitude: 151.20, zoom: 0)
+        let camera = GMSCameraPosition.cameraWithLatitude(-33.86,
+            longitude: 151.20, zoom: 10)
         
         let mapView = GMSMapView.mapWithFrame(CGRectZero, camera: camera)
         mapView.myLocationEnabled = true
-        self.view = mapView
         
-        mapView.animateToLocation(mapView.myLocation.coordinate)*/
+        //mapView.animateToLocation(mapView.myLocation.coordinate)
         
-        delay(1) { () -> () in
+        //Load the user list onto the map
+        loadUserList()
+    }
+    
+    
+    internal func loadUserList() {
+        
+        //Retreive local user photo list
+        let query = PFQuery(className: "photo")
+        query.fromLocalDatastore()
+        
+        print("Querying local userList")
+        query.addAscendingOrder("updatedAt")
+        query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
             
-            let classes = self.mapView.annotations!
-            
-            print("classes length: " + String(classes.count))
-            for x in classes {
+            if retreivalError != nil {
                 
-                print("Class: " + x.description)
+                print("Problem retreiving list: " + retreivalError!.description)
+            }
+            else if objects!.count > 0 {
+                
+                //Save list of objects & reload table
+                self.userList = objects!
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                    
+                    //Update user list with new photos
+                    print("Running map annotations")
+                    self.displayUserList()
+                })
             }
         }
-
+    }
+    
+    
+    internal func displayUserList() {
         
+        print("Starting to display userList")
+        let filePath = NSBundle.mainBundle().pathForResource("Countries", ofType: "geojson")
+        print(filePath)
+        let data = NSData(contentsOfFile: filePath!)!
+        
+        do {
+            //Instantiate country GeoJSON data
+            json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+            
+            for element in userList {
+                getDetailsToDrawCountry(element.objectForKey("countryCode") as! String)
+            }
+        }
+        catch let error as NSError { print("Error getting GeoJSON data:" + error.description) }
+    }
+    
+    
+    internal func getDetailsToDrawCountry(countryCode: String) {
+        
+        
+        //Get array of countries
+        var index = -1
+        let countries = json.objectForKey("features") as! NSArray
+        
+        //Get index of country
+        for countryElement in countries {
+            
+            let isoCode = countryElement.objectForKey("properties")!.objectForKey("ISO_A2") as! String
+            
+            //Check if iso code matches and if it has already been loaded
+            //in order to prevent memory intensive repetition of loading
+            if isoCode == countryCode.uppercaseString && loadedCountries.indexOf(isoCode) == nil {
+                
+                print(countryElement.objectForKey("properties")!.objectForKey("ISO_A2") as! String)
+                index = countries.indexOfObject(countryElement)
+                loadedCountries.append(isoCode)
+                break
+            }
+        }
+        
+        //Draw country on map if index is valid
+        if (index != -1) {
+            
+            //Set color for country
+            let color = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
+
+            
+            //Check if country is one polygon or multiple.
+            //If multiple, handle each one of them
+            if countries[index].objectForKey("geometry")!.objectForKey("type") as! String == "Polygon" {
+                
+                //Get single polygon and draw
+                let polygon = countries[index].objectForKey("geometry")!.objectForKey("coordinates") as! NSMutableArray
+                drawCountry(polygon, color: color)
+            }
+            else {
+                
+                //Get array of polygons and draw all of them
+                let polygons = countries[index].objectForKey("geometry")!.objectForKey("coordinates") as! NSMutableArray
+                
+                for polygon in polygons {
+                    
+                    drawCountry(polygon as! NSMutableArray, color: color)
+                }
+            }
+        }
+    }
+    
+    
+    internal func drawCountry(polygon: NSMutableArray, color: UIColor) {
+        
+        //Configure path
+        var location = CLLocationCoordinate2D()
+        let path = GMSMutablePath()
+        
+        //Iterate through all coordinates in polygon & add to path
+        for element in polygon {
+            for currentCoord in (element as! NSMutableArray) {
+                
+                let coordinate = currentCoord as! NSMutableArray
+                location.longitude = coordinate[0] as! CLLocationDegrees
+                location.latitude = coordinate[1] as! CLLocationDegrees
+                
+                path.addCoordinate(location)
+            }
+        }
+        
+        //Configure polygon with path
+        let country = GMSPolygon(path: path)
+        country.fillColor = color
+        country.geodesic = false
+        
+        
+        print("Adding polygon!")
+        country.map = self.mapView
+        
+        //Add polygon to map in main thread
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            
+        })
     }
     
     

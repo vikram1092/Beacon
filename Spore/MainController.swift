@@ -26,7 +26,6 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         
         //Load view
         super.viewDidLoad()
-        
     }
     
     

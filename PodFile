@@ -8,5 +8,4 @@ pod ‘Parse’
 pod ‘Bolts’
 pod 'ParseFacebookUtilsV4'
 pod ‘ParseUI’
-pod 'Mapbox-iOS-SDK'
 use_frameworks!

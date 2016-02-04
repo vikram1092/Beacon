@@ -32,6 +32,7 @@
 		D1785A561C3F68280020AD99 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1785A551C3F68280020AD99 /* CameraController.swift */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
+		D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D192652E1C60E4AC00517A8E /* Countries.geojson */; };
 		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
 		D1B49D381C5868400085EF2B /* UserListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B49D371C5868400085EF2B /* UserListController.swift */; };
 		D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */; };
@@ -44,7 +45,6 @@
 		D1DE875C1C27A92400E48721 /* photoButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DE875B1C27A92400E48721 /* photoButton.png */; };
 		D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E08D1E1C5D430E0070DA9A /* MapKit.framework */; };
 		D1EC295C1C2E1E850014DE7E /* Countries in Resources */ = {isa = PBXBuildFile; fileRef = D1EC295B1C2E1E850014DE7E /* Countries */; };
-		D1ED12CF1C25F92C00987D98 /* CameraBack.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ED12CE1C25F92C00987D98 /* CameraBack.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +75,7 @@
 		D1785A551C3F68280020AD99 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		D192652E1C60E4AC00517A8E /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
 		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = "../../Spore Images/SettingsButton.png"; sourceTree = "<group>"; };
 		D1B49D371C5868400085EF2B /* UserListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListController.swift; sourceTree = "<group>"; };
 		D1B9C7161C2258B800D9AEE7 /* Spore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spore.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,7 +90,6 @@
 		D1DE875B1C27A92400E48721 /* photoButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoButton.png; sourceTree = "<group>"; };
 		D1E08D1E1C5D430E0070DA9A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D1EC295B1C2E1E850014DE7E /* Countries */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Countries; path = ../../Countries; sourceTree = "<group>"; };
-		D1ED12CE1C25F92C00987D98 /* CameraBack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CameraBack.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,7 +155,6 @@
 				D144F1FB1C44242600E07700 /* Zion Valley copy 2.png */,
 				D144F1E21C440DE700E07700 /* TabBarButtons */,
 				D1EC295B1C2E1E850014DE7E /* Countries */,
-				D1ED12CE1C25F92C00987D98 /* CameraBack.png */,
 				D1A459781C3ABBFF00B35452 /* SettingsButton.png */,
 				D1C083E41C42003000A9C281 /* settingsButton@x3.png */,
 			);
@@ -197,6 +196,7 @@
 				D1B9C7171C2258B800D9AEE7 /* Products */,
 				D1B9C7201C2258B800D9AEE7 /* Assets.xcassets */,
 				D1B9C7251C2258B800D9AEE7 /* Info.plist */,
+				D192652E1C60E4AC00517A8E /* Countries.geojson */,
 			);
 			path = Spore;
 			sourceTree = "<group>";
@@ -279,6 +279,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */,
 				D144F1F21C4412D500E07700 /* CancelPhoto@x3.png in Resources */,
 				D1C083E51C42003000A9C281 /* settingsButton@x3.png in Resources */,
 				D144F1EB1C440F1700E07700 /* UserList.png in Resources */,
@@ -300,7 +301,6 @@
 				D144F1EA1C440F1700E07700 /* globe@x3.png in Resources */,
 				D144F1F81C44178500E07700 /* SendPhoto@x3.png in Resources */,
 				D1DE875C1C27A92400E48721 /* photoButton.png in Resources */,
-				D1ED12CF1C25F92C00987D98 /* CameraBack.png in Resources */,
 				D144F1F71C44178500E07700 /* SendPhoto.png in Resources */,
 				D154E7241C478B2400CF3A63 /* ProfilePicture.png in Resources */,
 				D136589F1C55BF5C005AEC61 /* cameraButton@x3.png in Resources */,
