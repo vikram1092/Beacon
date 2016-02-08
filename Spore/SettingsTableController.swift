@@ -17,12 +17,14 @@ class SettingsTableController: UITableViewController {
     @IBOutlet var logoutButton: UIView!
     @IBOutlet var profilePicture: UIImageView!
     
+    
     override func viewDidLoad() {
         //Run view load as normal
         super.viewDidLoad()
         profilePicture.layer.cornerRadius = profilePicture.frame.size.width/2
         profilePicture.clipsToBounds = true
     }
+    
     
     internal override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -44,6 +46,7 @@ class SettingsTableController: UITableViewController {
             
         }
     }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

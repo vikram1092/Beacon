@@ -14,7 +14,7 @@ import Parse
 
 class MapController: UIViewController, GMSMapViewDelegate {
     
-    var json = NSDictionary()
+    var countries = NSArray()
     var userName = ""
     var userEmail = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
@@ -69,15 +69,16 @@ class MapController: UIViewController, GMSMapViewDelegate {
                     
                     //Update user list with new photos
                     print("Running map annotations")
-                    self.displayUserList()
+                    self.processUserList()
                 })
             }
         }
     }
     
     
-    internal func displayUserList() {
+    internal func processUserList() {
         
+        //Get JSON data
         print("Starting to display userList")
         let filePath = NSBundle.mainBundle().pathForResource("Countries", ofType: "geojson")
         print(filePath)
@@ -85,10 +86,20 @@ class MapController: UIViewController, GMSMapViewDelegate {
         
         do {
             //Instantiate country GeoJSON data
-            json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+            let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
             
+            //Get array of countries from JSON
+            countries = json.objectForKey("features") as! NSArray
+            
+            //Loop through all userlist elements
             for element in userList {
-                getDetailsToDrawCountry(element.objectForKey("countryCode") as! String)
+                
+                //Check if country already loaded. If not, proceed & add the country to loaded list
+                if loadedCountries.indexOf(element.objectForKey("countryCode") as! String) == nil {
+                    
+                    getDetailsToDrawCountry(element.objectForKey("countryCode") as! String)
+                    loadedCountries.append(element.objectForKey("countryCode") as! String)
+                }
             }
         }
         catch let error as NSError { print("Error getting GeoJSON data:" + error.description) }
@@ -98,22 +109,19 @@ class MapController: UIViewController, GMSMapViewDelegate {
     internal func getDetailsToDrawCountry(countryCode: String) {
         
         
-        //Get array of countries
+        //Initialize dummy index
         var index = -1
-        let countries = json.objectForKey("features") as! NSArray
         
         //Get index of country
         for countryElement in countries {
             
             let isoCode = countryElement.objectForKey("properties")!.objectForKey("ISO_A2") as! String
             
-            //Check if iso code matches and if it has already been loaded
-            //in order to prevent memory intensive repetition of loading
-            if isoCode == countryCode.uppercaseString && loadedCountries.indexOf(isoCode) == nil {
+            //Check if current JSON country iso code matches with desired country
+            if isoCode == countryCode.uppercaseString {
                 
                 print(countryElement.objectForKey("properties")!.objectForKey("ISO_A2") as! String)
                 index = countries.indexOfObject(countryElement)
-                loadedCountries.append(isoCode)
                 break
             }
         }
@@ -122,7 +130,7 @@ class MapController: UIViewController, GMSMapViewDelegate {
         if (index != -1) {
             
             //Set color for country
-            let color = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
+            let color = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 1)
 
             
             //Check if country is one polygon or multiple.
@@ -166,8 +174,9 @@ class MapController: UIViewController, GMSMapViewDelegate {
         }
         
         //Configure polygon with path
-        let country = GMSPolygon(path: path)
-        country.fillColor = color
+        let country = GMSPolyline(path: path)
+        country.strokeColor = color
+        country.strokeWidth = 2
         country.geodesic = false
         
         

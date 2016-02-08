@@ -11,6 +11,8 @@ import UIKit
 import Parse
 import ParseUI
 import Foundation
+import FBSDKCoreKit
+import FBSDKLoginKit
 
 
 class UserListController: UITableViewController {
@@ -30,6 +32,7 @@ class UserListController: UITableViewController {
         
         //Load view as usual
         super.viewDidLoad()
+        
     }
     
     
@@ -38,10 +41,28 @@ class UserListController: UITableViewController {
         //Run like usual
         super.viewDidAppear(true)
         
+        //Retreive user details
+        if userDefaults.objectForKey("userName") != nil {
+            
+            userName = userDefaults.objectForKey("userName") as! String
+            userEmail = userDefaults.objectForKey("userEmail") as! String
+        }
         
         //Check user login status
         print("Checking user login status")
         if userDefaults.objectForKey("userName") != nil {
+            
+            
+            //Check if user is banned in background
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                
+                self.userIsBanned()
+                })
+                
+            //Get userToReceivePhotos
+            if userDefaults.integerForKey("userToReceivePhotos") > 0 {
+                userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
+            }
             
             //Load user list if it hasn't loaded, or else update what's loaded
             print("viewDidAppear: " + String(viewLoad))
@@ -54,31 +75,69 @@ class UserListController: UITableViewController {
                 print("Turning on animations")
                 initialRowLoad = true
                 
-                //Retreive user details
-                userName = userDefaults.objectForKey("userName") as! String
-                userEmail = userDefaults.objectForKey("userEmail") as! String
-                
-                //Get userToReceivePhotos
-                if userDefaults.integerForKey("userToReceivePhotos") > 0 {
-                    userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
-                }
-                
                 //Load user list
                 loadUserList()
             }
         }
         else {
-        
-            //Segue to login screen
-            print("Segue-ing")
-            performSegueWithIdentifier("UserListToLoginSegue", sender: self)
+            segueToLogin()
         }
     }
+    
+    
+    internal func userIsBanned() {
+    
+        let query = PFQuery(className: "users")
+        print("user email: " + userEmail)
+        query.whereKey("email", equalTo: userEmail)
+        query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
+            
+            if error != nil {
+                
+                print("Error getting user banned status: " + error!.description)
+            }
+            else {
+                
+                let bannedStatus = userObject!.objectForKey("banned") as! BooleanLiteralType
+                
+                if bannedStatus {
+                    
+                    //Alert user about ban & segue
+                    print("User banned.")
+                    let alert = UIAlertController(title: "You've been banned", message: "Allow us to investigate this issue & check back soon.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
+                        
+                        self.logoutUser()
+                        self.segueToLogin()
+                    }))
+                    
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+    
+    
+    internal func logoutUser() {
+        
+        //Logout user
+        let loginManager = FBSDKLoginManager()
+        loginManager.logOut()
+        
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            //Reset name and email local variables
+            self.userDefaults.setObject(nil, forKey: "userName")
+            self.userDefaults.setObject(nil, forKey: "userEmail")
+        }
+    }
+    
     
     internal func saveUserList() {
         
         PFObject.pinAllInBackground(userList)
     }
+    
     
     internal func loadUserList() {
         
@@ -113,6 +172,7 @@ class UserListController: UITableViewController {
             }
         }
     }
+    
     
     internal func updateUserList() {
         
@@ -163,7 +223,6 @@ class UserListController: UITableViewController {
                         tempList.append(photoObject)
                         print("userList count: " + String(self.userList.count))
                         
-                        
                         //Save object to database
                         print("Saving object!")
                         photoObject.saveInBackground()
@@ -173,25 +232,25 @@ class UserListController: UITableViewController {
                     
                     //Add objects to user list
                     print("Adding new objects to userList")
-                    self.delay(1.0, closure: { () -> () in
+
+                    for object in tempList {
+                        self.userList.append(object)
+                    }
+                    
+                    print("Reloading table after new objects")
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        for object in tempList {
-                            self.userList.append(object)
-                        }
+                        //Reload table
+                        self.table.reloadData()
                         
-                        print("Reloading table after new objects")
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            
-                            //Reload table
-                            self.table.reloadData()
-                            //Save user list
-                            print("Saving user list")
-                            self.saveUserList()
-                            //Reset user photos to zero once photos are retreived
-                            print("Resetting user photos")
-                            self.userToReceivePhotos -= userReceivedPhotos
-                            self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
-                        })
+                        //Save user list
+                        print("Saving user list")
+                        self.saveUserList()
+                        
+                        //Reset user photos to zero once photos are retreived
+                        print("Resetting user photos")
+                        self.userToReceivePhotos -= userReceivedPhotos
+                        self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
                     })
                 }
             })
@@ -244,11 +303,13 @@ class UserListController: UITableViewController {
         return cell
     }
     
+    
     internal func getCountryImage(countryCode: String) -> UIImage {
         
         let link  = "Countries/" + countryCode + "/128.png"
         return UIImage(named: link)!
     }
+    
     
     internal func getCountryName(countryCode: String) -> String {
         
@@ -266,6 +327,7 @@ class UserListController: UITableViewController {
         
         return countryName
     }
+    
     
     internal override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -292,6 +354,7 @@ class UserListController: UITableViewController {
         return userList.count
     }
     
+    
     internal override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if editingStyle == UITableViewCellEditingStyle.Delete {
@@ -302,6 +365,7 @@ class UserListController: UITableViewController {
         
         table.reloadData()
     }
+    
     
     internal override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -330,6 +394,15 @@ class UserListController: UITableViewController {
                 tableView.deselectRowAtIndexPath(indexPath, animated: false)
             }
         }
+    }
+    
+    
+    internal func segueToLogin() {
+        
+        //Segue to login screen
+        print("Segue-ing")
+        performSegueWithIdentifier("UserListToLoginSegue", sender: self)
+        
     }
     
     
