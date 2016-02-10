@@ -280,7 +280,11 @@ class UserListController: UITableViewController {
         //Initialize variables:
         //Array is printed backwards so userListLength is initialized
         print("Reached cell" + String(indexPath.row))
-        let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Unread")
+        let cell = tableView.dequeueReusableCellWithIdentifier("Unread")!
+        let imageView = cell.viewWithTag(100) as! UIImageView
+        let titleView = cell.viewWithTag(101) as! UILabel
+        let subTitleView = cell.viewWithTag(102) as! UILabel
+        
         let userListLength = userList.count - 1
         print(userListLength)
         
@@ -288,17 +292,18 @@ class UserListController: UITableViewController {
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
         //Configure image
-        cell.imageView!.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        imageView.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         
-        cell.imageView!.tintColor = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
+        imageView.tintColor = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
         
         
         //Configure text
-        cell.textLabel!.text = getCountryName(countryCode as! String)
+        titleView.text = getCountryName(countryCode as! String)
         
         //Configure subtext
-        cell.detailTextLabel!.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
-        cell.detailTextLabel!.text = String(time)
+        subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
+        subTitleView.text = String(time)
+        
         
         return cell
     }
@@ -313,7 +318,7 @@ class UserListController: UITableViewController {
     
     internal func getCountryName(countryCode: String) -> String {
         
-        var countryName = "Spain"
+        var countryName = "India"
         print("Country:" + countryCode)
         
         //Find country and obtain the 2 digit ISO code

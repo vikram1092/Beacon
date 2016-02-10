@@ -184,10 +184,10 @@
 			children = (
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
 				D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */,
-				D17439411C48000C005CF819 /* NavigationController.swift */,
 				D1B9C72B1C22608600D9AEE7 /* MainController.swift */,
 				D1B49D371C5868400085EF2B /* UserListController.swift */,
 				D1785A551C3F68280020AD99 /* CameraController.swift */,
+				D17439411C48000C005CF819 /* NavigationController.swift */,
 				D188D7B41C283A5F0066E773 /* SettingsController.swift */,
 				D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */,
 				D144F1DE1C43F6E300E07700 /* MapController.swift */,

@@ -14,6 +14,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     
     @IBOutlet var cameraImage: UIImageView!
+    @IBOutlet var flashButton: UIButton!
     @IBOutlet var captureButton: UIButton!
     @IBOutlet var backButton: UIButton!
     @IBOutlet var closeButton: UIButton!
@@ -30,6 +31,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     var userCountryCode = ""
     var userName = ""
     var userEmail = ""
+    var flashToggle = false
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     
@@ -38,6 +40,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     override func viewDidLoad() {
         
+        //Initialize flash variable
+        flashToggle = false
         
         //Retreive user details
         userName = userDefaults.objectForKey("userName") as! String
@@ -79,9 +83,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Initialize buttons
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true
+        self.flashButton.hidden = false
         self.backButton.hidden = false
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
+        
         self.tabBarController!.tabBar.hidden = true
         
         //Run as normal
@@ -141,6 +147,42 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     }
     
     
+    @IBAction func flashButtonPressed(sender: AnyObject) {
+        
+        //Toggle the flash variable
+        print("Toggling flash!")
+        flashToggle = !flashToggle
+        
+        //Configure flash according to toggle
+        if flashToggle {
+            
+            print("Flash is on")
+            flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
+            flashButton.reloadInputViews()
+            
+            do {
+                try captureDevice?.lockForConfiguration()
+            } catch _ {print("Error getting loc for device")}
+            
+            captureDevice!.flashMode = AVCaptureFlashMode.On
+            captureDevice!.unlockForConfiguration()
+        }
+        else {
+            
+            print("Flash is off")
+            flashButton.setImage(UIImage(named: "FlashButtonOff"), forState: UIControlState.Normal)
+            flashButton.reloadInputViews()
+            
+            do {
+                try captureDevice?.lockForConfiguration()
+            } catch _ {print("Error getting loc for device")}
+            
+            captureDevice!.flashMode = AVCaptureFlashMode.On
+            captureDevice!.unlockForConfiguration()
+        }
+    }
+    
+    
     @IBAction func backButtonPressed(sender: AnyObject) {
         
         //Segue back
@@ -169,9 +211,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 // Finally check the position and confirm we've got the OTHER camera
                 if(device.position == AVCaptureDevicePosition.Back && position == AVCaptureDevicePosition.Front) {
                     captureDevice = device as? AVCaptureDevice
+                    
+                    //Enable flash
+                    flashButton.enabled = true
                 }
                 else if(device.position == AVCaptureDevicePosition.Front && position == AVCaptureDevicePosition.Back) {
                     captureDevice = device as? AVCaptureDevice
+                    
+                    //Disable flash
+                    flashButton.enabled = false
                 }
             }
         }
@@ -190,12 +238,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             
             let image = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
             let data_image = UIImage(data: image)
-            self.captureSession.stopRunning()
             self.cameraImage.image = data_image
+            self.captureSession.stopRunning()
             
             //Change buttons on screen
             self.backButton.hidden = true
             self.captureButton.hidden = true
+            self.flashButton.hidden = true
             self.cameraSwitchButton.hidden = true
             self.closeButton.hidden = false
             self.photoSendButton.hidden = false
@@ -209,6 +258,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         self.captureSession.startRunning()
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true
+        self.flashButton.hidden = false
         self.backButton.hidden = false
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
