@@ -14,43 +14,48 @@ import Parse
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
     
-    @IBOutlet var bannedLabel: UILabel!
+    @IBOutlet var blurView: UIVisualEffectView!
+    @IBOutlet var imageView: UIImageView!
+    @IBOutlet var bannedButton: UIButton!
     @IBOutlet var loginButton: FBSDKLoginButton!
     var userName = ""
     var userEmail = ""
     var bannedText = "You have been suspended due to some photos you've sent. Please allow us to investigate and reach a decision."
+    let userDefaults = NSUserDefaults.standardUserDefaults()
     
     
     override func viewDidLoad() {
         
-        //Initialize objects and check for login status
-        bannedLabel.alpha = 0
+        //Initialize UI objects
+        bannedButton.alpha = 0
+        blurView.effect = UIBlurEffect(style: .Light)
+        //let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
+        //blurView.frame = self.view.bounds
+        imageView.addSubview(blurView)
+        
+        //Check for login status
         loginButton = FBSDKLoginButton.init()
         loginButton.frame = CGRect(x: loginButton.frame.origin.x, y: loginButton.frame.origin.y, width: CGFloat(200), height: CGFloat(50))
-        //Check if  already logged in
-        if(FBSDKAccessToken.currentAccessToken() != nil) {
-            
-            //Perform database operations for user
-            checkWithDatabase()
-        }
-        else {
-            
-            //Obtain permissions from Facebook
-            loginButton.readPermissions = ["public_profile", "email", "user_friends"]
-            //If user is not logged in, load views
-            super.viewDidLoad()
-            
-            // Configure login button
-            loginButton.delegate = self
-            loginButton.center = self.view.center
-            self.view.addSubview(loginButton)
-        }
+
+        //Obtain permissions from Facebook
+        loginButton.readPermissions = ["public_profile", "email", "user_friends"]
+        
+        // Configure login button
+        loginButton.delegate = self
+        loginButton.center = self.view.center
+        self.view.addSubview(loginButton)
+        
+        //Load as normal
+        super.viewDidLoad()
+    }
+    
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
     }
     
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult loginResult: FBSDKLoginManagerLoginResult!, error: NSError!) {
-        
-        print("User Logged In")
         
         if ((error) != nil){
             //Process error
@@ -62,29 +67,34 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         }
         else {
             //Call function to check with database
-            print("Checking with database")
+            print("User Logged In: checking with database")
             checkWithDatabase()
         }
     }
     
-    //Function to retrieve FB information, save it, 
+    
+    //Function to retrieve FB information, save it, and segue
     internal func checkWithDatabase() {
         
         //Create request to obtain user email and name
         let accessToken = FBSDKAccessToken.currentAccessToken()
         let req = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"email,name"], tokenString: accessToken.tokenString, version: nil, HTTPMethod: "GET")
         
-        req.startWithCompletionHandler({ (connection, userResult, error : NSError!) -> Void in
+        req.startWithCompletionHandler({ (connection, result, error : NSError!) -> Void in
             
             if(error == nil){
                 
+                let userResult = result as! NSDictionary
                 //Query to find email ID in database. If it doesn't exist, create it.
-                self.userName = userResult["name"] as! String
-                self.userEmail = userResult["email"] as! String
+                self.userName = userResult.objectForKey("name") as! String
+                self.userEmail = userResult.objectForKey("email") as! String
+                
+                //Save details
+                self.saveNameAndEmail(self.userName, email: self.userEmail)
                 
                 //Initialize query
                 let query = PFQuery(className:"users")
-                query.whereKey("email", containsString: self.userEmail)
+                query.whereKey("email", equalTo: self.userEmail)
                 
                 query.findObjectsInBackgroundWithBlock({ (users, error) -> Void in
                     
@@ -95,19 +105,15 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         let userBanned = users![0]["banned"] as! BooleanLiteralType
                         print(userBanned)
                         
-                        //If user is not banned, segue on
-                        if userBanned == false {
-                            self.segueToNextView("LoginToMain")
-                        }
                         //If user is banned, show message stating ban
+                        if userBanned == true {
+                            self.displaybannedButton()
+                        }
                         else {
-                            self.bannedLabel.text = self.bannedText
-                            self.bannedLabel.font = UIFont(name: "Helvetica", size: 13.0)
-                            self.bannedLabel.sizeToFit()
-                            UIView.animateWithDuration(0.4) { () -> Void in
-                                
-                                self.bannedLabel.alpha = 1
-                            }
+                            
+                            // The user is not banned, seque to next screen
+                            print("User logged in, segue-ing")
+                            self.segueToNextView("LoginToMain")
                         }
                     }
                     else if error == nil && users!.count < 1 {
@@ -138,31 +144,77 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                     }
                 })
                 
-                
                 print("result \(userResult)")
             }
             else{
                 
-                print("error \(error)")
+                print("error \(error.description)")
             }
         })
     }
     
-    internal func segueToNextView(identifier: String) {
+    
+    internal func displaybannedButton() {
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        self.bannedButton.setTitle(self.bannedText, forState: .Normal)
+        self.bannedButton.sizeToFit()
+        
+        UIView.animateWithDuration(0.4) { () -> Void in
             
-            self.dismissViewControllerAnimated(true, completion: nil)
-            self.performSegueWithIdentifier(identifier, sender: self)
-        })
+            self.loginButton.alpha = 0
+            self.bannedButton.alpha = 1
+        }
+        
+        //Logout user
+        logoutUser()
+        
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    
+    @IBAction func bannedLabelPressed(sender: AnyObject) {
         
-        if(segue.identifier == "LoginToMain") {
-            let nextView = segue.destinationViewController as! MainController
-            nextView.userName = self.userName
-            nextView.userEmail = self.userEmail
+        UIView.animateWithDuration(0.4) { () -> Void in
+            
+            self.loginButton.alpha = 1
+            self.bannedButton.alpha = 0
+        }
+    }
+    
+    
+    internal func logoutUser() {
+        
+        //Logout user
+        let loginManager = FBSDKLoginManager()
+        loginManager.logOut()
+        
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            //Reset name and email local variables
+            self.userDefaults.setObject(nil, forKey: "userName")
+            self.userDefaults.setObject(nil, forKey: "userEmail")
+        }
+    }
+    
+    internal func saveNameAndEmail(name: String, email: String) {
+        
+        userDefaults.setObject(name, forKey: "userName")
+        userDefaults.setObject(email, forKey: "userEmail")
+    }
+    
+    
+    internal func segueToNextView(identifier: String) {
+        
+        if  self.tabBarController == nil {
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                self.dismissViewControllerAnimated(true, completion: nil)
+                self.performSegueWithIdentifier(identifier, sender: self)
+            })
+        }
+        else {
+            
+            //What to do?
         }
     }
     

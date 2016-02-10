@@ -10,9 +10,11 @@ import UIKit
 import Parse
 import AVFoundation
 
-class CameraController: UIViewController, CLLocationManagerDelegate {
+class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
+    
     
     @IBOutlet var cameraImage: UIImageView!
+    @IBOutlet var flashButton: UIButton!
     @IBOutlet var captureButton: UIButton!
     @IBOutlet var backButton: UIButton!
     @IBOutlet var closeButton: UIButton!
@@ -29,6 +31,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
     var userCountryCode = ""
     var userName = ""
     var userEmail = ""
+    var flashToggle = false
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     
@@ -36,6 +39,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
     var captureDevice : AVCaptureDevice?
     
     override func viewDidLoad() {
+        
+        //Initialize flash variable
+        flashToggle = false
+        
+        //Retreive user details
+        userName = userDefaults.objectForKey("userName") as! String
+        userEmail = userDefaults.objectForKey("userEmail") as! String
         
         //Initialize location manager
         locManager = CLLocationManager.init()
@@ -65,7 +75,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         //If camera is found, begin session and capture user location in background
         if captureDevice != nil {
             beginSession()
-            getUserLocation()
         }
     }
     
@@ -74,10 +83,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         //Initialize buttons
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true
+        self.flashButton.hidden = false
         self.backButton.hidden = false
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
+        
+        self.tabBarController!.tabBar.hidden = true
+        
+        //Run as normal
+        super.viewWillAppear(true)
     }
+    
+    
     
     override func viewDidLayoutSubviews() {
         
@@ -87,6 +104,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
         previewLayer!.bounds = bounds
         previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        //Get user location every time view appears
+        getUserLocation()
     }
     
     internal func beginSession() {
@@ -123,6 +146,50 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         viewDidLayoutSubviews()
     }
     
+    
+    @IBAction func flashButtonPressed(sender: AnyObject) {
+        
+        //Toggle the flash variable
+        print("Toggling flash!")
+        flashToggle = !flashToggle
+        
+        //Configure flash according to toggle
+        if flashToggle {
+            
+            print("Flash is on")
+            flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
+            flashButton.reloadInputViews()
+            
+            do {
+                try captureDevice?.lockForConfiguration()
+            } catch _ {print("Error getting loc for device")}
+            
+            captureDevice!.flashMode = AVCaptureFlashMode.On
+            captureDevice!.unlockForConfiguration()
+        }
+        else {
+            
+            print("Flash is off")
+            flashButton.setImage(UIImage(named: "FlashButtonOff"), forState: UIControlState.Normal)
+            flashButton.reloadInputViews()
+            
+            do {
+                try captureDevice?.lockForConfiguration()
+            } catch _ {print("Error getting loc for device")}
+            
+            captureDevice!.flashMode = AVCaptureFlashMode.On
+            captureDevice!.unlockForConfiguration()
+        }
+    }
+    
+    
+    @IBAction func backButtonPressed(sender: AnyObject) {
+        
+        //Segue back
+        segueBackToTable()
+    }
+    
+    
     @IBAction func switchCamera(sender: AnyObject) {
         
         //Reconfigure all parameters & stop cuurrent session
@@ -144,9 +211,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
                 // Finally check the position and confirm we've got the OTHER camera
                 if(device.position == AVCaptureDevicePosition.Back && position == AVCaptureDevicePosition.Front) {
                     captureDevice = device as? AVCaptureDevice
+                    
+                    //Enable flash
+                    flashButton.enabled = true
                 }
                 else if(device.position == AVCaptureDevicePosition.Front && position == AVCaptureDevicePosition.Back) {
                     captureDevice = device as? AVCaptureDevice
+                    
+                    //Disable flash
+                    flashButton.enabled = false
                 }
             }
         }
@@ -154,6 +227,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         //Begin camera session again with the new camera
         beginSession()
     }
+    
     
     @IBAction func takePhoto(sender: AnyObject) {
         
@@ -164,17 +238,19 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
             
             let image = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
             let data_image = UIImage(data: image)
-            self.captureSession.stopRunning()
             self.cameraImage.image = data_image
+            self.captureSession.stopRunning()
             
             //Change buttons on screen
             self.backButton.hidden = true
             self.captureButton.hidden = true
+            self.flashButton.hidden = true
             self.cameraSwitchButton.hidden = true
             self.closeButton.hidden = false
             self.photoSendButton.hidden = false
         }
     }
+    
     
     @IBAction func closePhoto(sender: AnyObject) {
         
@@ -182,26 +258,30 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         self.captureSession.startRunning()
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true
+        self.flashButton.hidden = false
         self.backButton.hidden = false
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
     }
+    
     
     internal func updateUserPhotos() {
         
         let userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos") + 1
         print("userToReceiveStatus saving..." + String(userToReceivePhotos))
         userDefaults.setInteger(userToReceivePhotos, forKey: "userToReceivePhotos")
-        print("Recorded Picture Taken")
+        print("Saved userToReceivePhotos")
     }
+    
     
     @IBAction func sendPhoto(sender: AnyObject) {
         
         
-        //Kick off activity indicator
+        //Kick off activity indicator & hide button
         activityIndicator.startAnimating()
+        photoSendButton.hidden = true
         
-        //Initialization of photo object in database
+        //Update user photos
         updateUserPhotos()
         
         let photoObject = PFObject(className:"photo")
@@ -231,10 +311,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
             (success: Bool, error: NSError?) -> Void in
             if (success) {
                 
-                // The photo has been saved, seque back to the table screen
+                // The photo has been saved, go back to the main screen
                 print("New photo saved!")
-                self.segueToNextView("CameraToMain")
+                
+                //Segue back to table
                 self.activityIndicator.stopAnimating()
+                self.segueBackToTable()
+                self.closePhoto(self)
             }
             else {
                 
@@ -245,6 +328,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
+    
     internal func getUserLocation() {
         
         //Gets the user's current location
@@ -252,17 +336,32 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         locManager.startUpdatingLocation()
     }
     
+    
     internal func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         //Gets user location and adds it to the main location variable
-        let locValue:CLLocationCoordinate2D = manager.location!.coordinate
-        userLocation = PFGeoPoint(latitude: locValue.latitude, longitude: locValue.longitude)
-        print("locations = \(locValue.latitude) \(locValue.longitude)")
-        
-        //Stop updating location and get the country code for this location
-        locManager.stopUpdatingLocation()
-        getCountryCode(userLocation)
+        if let locValue:CLLocationCoordinate2D = manager.location!.coordinate {
+            userLocation = PFGeoPoint(latitude: locValue.latitude, longitude: locValue.longitude)
+            print("locations = \(locValue.latitude) \(locValue.longitude)")
+            
+            //Stop updating location and get the country code for this location
+            locManager.stopUpdatingLocation()
+            getCountryCode(userLocation)
+        }
+        else {
+            
+            //Error message for user location not found
+            let alert = UIAlertController(title: "Error getting user location.", message: "Please check your internet connection or permissions.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
+            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
+                
+                self.segueBackToTable()
+            }))
+            
+            presentViewController(alert, animated: true, completion: nil)
+        }
     }
+    
     
     internal func getCountryCode(locGeoPoint: PFGeoPoint) {
         
@@ -272,9 +371,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         
         CLGeocoder().reverseGeocodeLocation(location) { (placemarks, locationError) -> Void in
             
-            print(placemarks!.count)
             if locationError != nil {
+                
                 print("Reverse geocoder error: " + locationError!.description)
+                
+                //Error message for user location not found
+                let alert = UIAlertController(title: "Error getting user location.", message: "Please check your internet connection or permissions.", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
+                    
+                    self.segueBackToTable()
+                }))
+                
+                self.presentViewController(alert, animated: true, completion: nil)
             }
             else if placemarks!.count > 0 {
                 
@@ -287,19 +395,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    internal func segueToNextView(identifier: String) {
-        
-        print("reached segue in camera")
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            
-            print("reached segue in camera")
-            self.dismissViewControllerAnimated(true, completion: nil)
-            self.performSegueWithIdentifier(identifier, sender: self)
-        })
-    }
-    
     override func prefersStatusBarHidden() -> Bool {
         return true
+    }
+    
+    internal func segueBackToTable() {
+        
+        //Move within tab controller
+        self.tabBarController?.selectedIndex = 0
+        self.tabBarController!.tabBar.hidden = false
     }
     
     override func didReceiveMemoryWarning() {

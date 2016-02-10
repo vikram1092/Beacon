@@ -1,0 +1,57 @@
+
+/* Class = "UITabBarItem"; title = "Camera"; ObjectID = "0HC-P9-ynW"; */
+"0HC-P9-ynW.title" = "Camera";
+
+/* Class = "UILabel"; text = "Spore"; ObjectID = "4vD-J8-1Oq"; */
+"4vD-J8-1Oq.text" = "Spore";
+
+/* Class = "UITableViewController"; title = "Settings Table"; ObjectID = "5sm-ep-AXT"; */
+"5sm-ep-AXT.title" = "Settings Table";
+
+/* Class = "UILabel"; text = "Logout"; ObjectID = "6fY-ie-kWd"; */
+"6fY-ie-kWd.text" = "Logout";
+
+/* Class = "UILabel"; text = "Placeholder"; ObjectID = "A6w-T2-Rro"; */
+"A6w-T2-Rro.text" = "Placeholder";
+
+/* Class = "UIViewController"; title = "Login"; ObjectID = "BYZ-38-t0r"; */
+"BYZ-38-t0r.title" = "Login";
+
+/* Class = "UILabel"; text = "My Profile"; ObjectID = "DD7-fq-JWD"; */
+"DD7-fq-JWD.text" = "My Profile";
+
+/* Class = "UINavigationItem"; title = "Spore"; ObjectID = "FNA-nf-9kg"; */
+"FNA-nf-9kg.title" = "Spore";
+
+/* Class = "UIViewController"; title = "Camera"; ObjectID = "GJW-g9-4yK"; */
+"GJW-g9-4yK.title" = "Camera";
+
+/* Class = "UITableViewSection"; headerTitle = "LOGOUT"; ObjectID = "LVa-QP-fwT"; */
+"LVa-QP-fwT.headerTitle" = "LOGOUT";
+
+/* Class = "UITabBarItem"; title = "World"; ObjectID = "NCb-7x-d4X"; */
+"NCb-7x-d4X.title" = "World";
+
+/* Class = "UIViewController"; title = "Main"; ObjectID = "Obd-UH-7yy"; */
+"Obd-UH-7yy.title" = "Main";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "WcE-ue-Ohx"; */
+"WcE-ue-Ohx.text" = "Label";
+
+/* Class = "UIViewController"; title = "Settings"; ObjectID = "d16-QO-sve"; */
+"d16-QO-sve.title" = "Settings";
+
+/* Class = "UINavigationItem"; title = "Settings"; ObjectID = "fsY-aE-g9O"; */
+"fsY-aE-g9O.title" = "Settings";
+
+/* Class = "UITableViewSection"; headerTitle = "USER SETTINGS"; ObjectID = "uZF-Rr-RM8"; */
+"uZF-Rr-RM8.headerTitle" = "USER SETTINGS";
+
+/* Class = "UITabBarItem"; title = "Settings"; ObjectID = "wSs-1d-LYf"; */
+"wSs-1d-LYf.title" = "Settings";
+
+/* Class = "UITableViewSection"; headerTitle = "PLACEHOLDER"; ObjectID = "xi1-En-Ccq"; */
+"xi1-En-Ccq.headerTitle" = "PLACEHOLDER";
+
+/* Class = "UITabBarItem"; title = "Photos"; ObjectID = "ydQ-on-oUq"; */
+"ydQ-on-oUq.title" = "Photos";
