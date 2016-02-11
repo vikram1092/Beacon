@@ -288,13 +288,14 @@ class UserListController: UITableViewController {
         let userListLength = userList.count - 1
         print(userListLength)
         
-        let time = timeAgoSinceDate((userList[userListLength - indexPath.row]["receivedAt"] as! NSDate), numericDates: true)
+        let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
+        let timeString = timeSinceDate(date, numericDates: true)
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
         //Configure image
         imageView.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         
-        imageView.tintColor = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
+        imageView.tintColor = getColorForCell(date)
         
         
         //Configure text
@@ -302,38 +303,13 @@ class UserListController: UITableViewController {
         
         //Configure subtext
         subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
-        subTitleView.text = String(time)
+        subTitleView.text = String(timeString)
         
         
         return cell
     }
     
-    
-    internal func getCountryImage(countryCode: String) -> UIImage {
-        
-        let link  = "Countries/" + countryCode + "/128.png"
-        return UIImage(named: link)!
-    }
-    
-    
-    internal func getCountryName(countryCode: String) -> String {
-        
-        var countryName = "India"
-        print("Country:" + countryCode)
-        
-        //Find country and obtain the 2 digit ISO code
-        for country in countryTable {
-            
-            if country[1] == countryCode {
-                countryName = country[0]
-                break
-            }
-        }
-        
-        return countryName
-    }
-    
-    
+
     internal override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if initialRowLoad {
@@ -411,7 +387,59 @@ class UserListController: UITableViewController {
     }
     
     
-    func timeAgoSinceDate(date:NSDate, numericDates:Bool) -> String {
+    internal func getCountryImage(countryCode: String) -> UIImage {
+        
+        let link  = "Countries/" + countryCode + "/128.png"
+        return UIImage(named: link)!
+    }
+    
+    
+    internal func getCountryName(countryCode: String) -> String {
+        
+        var countryName = "India"
+        print("Country:" + countryCode)
+        
+        //Find country and obtain the 2 digit ISO code
+        for country in countryTable {
+            
+            if country[1] == countryCode {
+                countryName = country[0]
+                break
+            }
+        }
+        
+        return countryName
+    }
+    
+    
+    func getColorForCell(date: NSDate) -> UIColor {
+        
+        if withinTime(date) {
+            
+            return UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
+        }
+        else {
+            
+            return UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.2)
+        }
+    }
+    
+    
+    func withinTime(date: NSDate) -> BooleanLiteralType {
+        
+        //Get calendar and current date, compare it to given date
+        let calendar = NSCalendar.currentCalendar()
+        let difference = calendar.component(NSCalendarUnit.Day, fromDate: date)
+        print("difference: " + String(difference))
+        if difference >= 2 {
+            return false
+        }
+        
+        return true
+    }
+    
+    
+    func timeSinceDate(date:NSDate, numericDates:Bool) -> String {
         
         let calendar = NSCalendar.currentCalendar()
         let now = NSDate()

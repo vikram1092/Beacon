@@ -31,7 +31,11 @@ class SettingsTableController: UITableViewController {
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         
         //Perform logout if tag matches Logout button tag
-        if cell!.tag == 1 {
+        if cell!.tag == 3 {
+            
+            performSegueWithIdentifier("PrivacyPolicySegue", sender: self)
+        }
+        if cell!.tag == 5 {
             
             //Segue back to the login screen
             performSegueWithIdentifier("Logout", sender: self)
