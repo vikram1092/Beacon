@@ -350,30 +350,61 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        //Flip index to access correct array element
+        //Flip index to access correct array element & check time constraint of photos
         let index = userList.count - 1 - indexPath.row
+        let inTime = withinTime(userList[index].objectForKey("receivedAt") as! NSDate)
         
-        let parent = self.parentViewController as! MainController
-        let photoToDisplay = userList[index]["photo"] as! PFFile
-        
-        parent.snap.file = photoToDisplay
-        
-        parent.snap.loadInBackground { (photoData, photoConvError) -> Void in
+        //If photo within time, display photo
+        if inTime {
             
-            if photoConvError != nil {
+            let parent = self.parentViewController as! MainController
+            let photoToDisplay = userList[index]["photo"] as! PFFile
+            
+            parent.snap.file = photoToDisplay
+            
+            parent.snap.loadInBackground { (photoData, photoConvError) -> Void in
                 
-                print("Error converting photo from file: " + photoConvError!.description)
+                if photoConvError != nil {
+                    
+                    print("Error converting photo from file: " + photoConvError!.description)
+                }
+                else {
+                    
+                    //Decode and display image for user
+                    parent.snap.center = parent.view.center
+                    self.tabBarController!.tabBar.hidden = true
+                    parent.snap.alpha = 1
+                    
+                    //Deselect row
+                    tableView.deselectRowAtIndexPath(indexPath, animated: false)
+                }
             }
-            else {
+        }
+        //If photo not within time, display cell bounce animation
+        else {
+            
+            let cell = tableView.dequeueReusableCellWithIdentifier("Unread", forIndexPath: indexPath)
+            let image = cell.viewWithTag(100)
+            let title = cell.viewWithTag(101)
+            let subtitle = cell.viewWithTag(102)
+            
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
                 
-                //Decode and display image for user
-                parent.snap.center = parent.view.center
-                self.tabBarController!.tabBar.hidden = true
-                parent.snap.alpha = 1
+                image!.center = CGPoint(x: image!.center.x+100, y: image!.center.y)
+                title!.center = CGPoint(x: title!.center.x+100, y: title!.center.y)
+                subtitle!.center = CGPoint(x: subtitle!.center.x+100, y: subtitle!.center.y)
                 
-                //Deselect row
-                tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            }
+                
+                image!.center = CGPoint(x: image!.center.x-150, y: image!.center.y)
+                title!.center = CGPoint(x: title!.center.x-150, y: title!.center.y)
+                subtitle!.center = CGPoint(x: subtitle!.center.x-150, y: subtitle!.center.y)
+                
+                
+                image!.center = CGPoint(x: image!.center.x+50, y: image!.center.y)
+                title!.center = CGPoint(x: title!.center.x+50, y: title!.center.y)
+                subtitle!.center = CGPoint(x: subtitle!.center.x+50, y: subtitle!.center.y)
+                
+            })
         }
     }
     
@@ -416,7 +447,7 @@ class UserListController: UITableViewController {
         
         if withinTime(date) {
             
-            return UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
+            return UIColor(red: CGFloat(arc4random_uniform(180))/255.0, green: CGFloat(arc4random_uniform(180))/255.0, blue: CGFloat(arc4random_uniform(180))/255.0, alpha: 0.5)
         }
         else {
             
@@ -429,9 +460,11 @@ class UserListController: UITableViewController {
         
         //Get calendar and current date, compare it to given date
         let calendar = NSCalendar.currentCalendar()
-        let difference = calendar.component(NSCalendarUnit.Day, fromDate: date)
-        print("difference: " + String(difference))
-        if difference >= 2 {
+        let difference = calendar.components([.Day, .WeekOfYear, .Month, .Year], fromDate: date, toDate: NSDate(), options: [])
+        
+        //Comapre all components of the difference to see if it's greater than 2 days
+        if difference.year > 0 || difference.month > 0 || difference.weekOfYear > 0 || difference.day >= 2
+        {
             return false
         }
         
