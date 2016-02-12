@@ -350,7 +350,11 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
+        //Deselect row
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        
         //Flip index to access correct array element & check time constraint of photos
+        let cell = tableView.cellForRowAtIndexPath(indexPath)!
         let index = userList.count - 1 - indexPath.row
         let inTime = withinTime(userList[index].objectForKey("receivedAt") as! NSDate)
         
@@ -362,7 +366,18 @@ class UserListController: UITableViewController {
             
             parent.snap.file = photoToDisplay
             
+            //Start UI animation
+            let activity = cell.viewWithTag(104) as! UIActivityIndicatorView
+            activity.startAnimating()
+            
+            
             parent.snap.loadInBackground { (photoData, photoConvError) -> Void in
+                
+                //Stop animation
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    activity.stopAnimating()
+                })
                 
                 if photoConvError != nil {
                     
@@ -375,37 +390,56 @@ class UserListController: UITableViewController {
                     self.tabBarController!.tabBar.hidden = true
                     parent.snap.alpha = 1
                     
-                    //Deselect row
-                    tableView.deselectRowAtIndexPath(indexPath, animated: false)
                 }
             }
         }
         //If photo not within time, display cell bounce animation
         else {
             
-            let cell = tableView.dequeueReusableCellWithIdentifier("Unread", forIndexPath: indexPath)
-            let image = cell.viewWithTag(100)
-            let title = cell.viewWithTag(101)
-            let subtitle = cell.viewWithTag(102)
-            
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
+            UIView.animateWithDuration(0.1, animations: { () -> Void in
                 
-                image!.center = CGPoint(x: image!.center.x+100, y: image!.center.y)
-                title!.center = CGPoint(x: title!.center.x+100, y: title!.center.y)
-                subtitle!.center = CGPoint(x: subtitle!.center.x+100, y: subtitle!.center.y)
+                cell.center = CGPoint(x: cell.center.x+30, y: cell.center.y)
                 
-                
-                image!.center = CGPoint(x: image!.center.x-150, y: image!.center.y)
-                title!.center = CGPoint(x: title!.center.x-150, y: title!.center.y)
-                subtitle!.center = CGPoint(x: subtitle!.center.x-150, y: subtitle!.center.y)
-                
-                
-                image!.center = CGPoint(x: image!.center.x+50, y: image!.center.y)
-                title!.center = CGPoint(x: title!.center.x+50, y: title!.center.y)
-                subtitle!.center = CGPoint(x: subtitle!.center.x+50, y: subtitle!.center.y)
-                
+                }, completion: { (BooleanLiteralType) -> Void in
+                    
+                    UIView.animateWithDuration(0.1, animations: { () -> Void in
+                        
+                        cell.center = CGPoint(x: cell.center.x-30, y: cell.center.y)
+                        
+                        }, completion: { (BooleanLiteralType) -> Void in
+                            
+                            UIView.animateWithDuration(0.1, animations: { () -> Void in
+                                
+                                cell.center = CGPoint(x: cell.center.x+20, y: cell.center.y)
+                                
+                                }, completion: { (BooleanLiteralType) -> Void in
+                                    
+                                    UIView.animateWithDuration(0.1, animations: { () -> Void in
+                                        
+                                        cell.center = CGPoint(x: cell.center.x-20, y: cell.center.y)
+                                        
+                                        }, completion: { (BooleanLiteralType) -> Void in
+                                            
+                                            UIView.animateWithDuration(0.1, animations: { () -> Void in
+                                                
+                                                cell.center = CGPoint(x: cell.center.x+7, y: cell.center.y)
+                                                
+                                                }, completion: { (BooleanLiteralType) -> Void in
+                                                    
+                                                    UIView.animateWithDuration(0.1, animations: { () -> Void in
+                                                        
+                                                        cell.center = CGPoint(x: cell.center.x-7, y: cell.center.y)
+                                                        
+                                                        })
+                                            })
+                                    })
+                                    
+                            })
+                    })
             })
+
         }
+        
     }
     
     
@@ -443,7 +477,7 @@ class UserListController: UITableViewController {
     }
     
     
-    func getColorForCell(date: NSDate) -> UIColor {
+    internal func getColorForCell(date: NSDate) -> UIColor {
         
         if withinTime(date) {
             
@@ -451,12 +485,12 @@ class UserListController: UITableViewController {
         }
         else {
             
-            return UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.2)
+            return UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.3)
         }
     }
     
     
-    func withinTime(date: NSDate) -> BooleanLiteralType {
+    internal func withinTime(date: NSDate) -> BooleanLiteralType {
         
         //Get calendar and current date, compare it to given date
         let calendar = NSCalendar.currentCalendar()
@@ -472,7 +506,7 @@ class UserListController: UITableViewController {
     }
     
     
-    func timeSinceDate(date:NSDate, numericDates:Bool) -> String {
+    internal func timeSinceDate(date:NSDate, numericDates:Bool) -> String {
         
         let calendar = NSCalendar.currentCalendar()
         let now = NSDate()

@@ -31,6 +31,7 @@
 		D17439421C48000C005CF819 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17439411C48000C005CF819 /* NavigationController.swift */; };
 		D1785A561C3F68280020AD99 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1785A551C3F68280020AD99 /* CameraController.swift */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
+		D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */; };
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
 		D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D192652E1C60E4AC00517A8E /* Countries.geojson */; };
 		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
@@ -74,6 +75,7 @@
 		D17439411C48000C005CF819 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationController.swift; path = ../NavigationController.swift; sourceTree = "<group>"; };
 		D1785A551C3F68280020AD99 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
+		D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrivacyPolicyController.swift; path = ../PrivacyPolicyController.swift; sourceTree = "<group>"; };
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		D192652E1C60E4AC00517A8E /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
 		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = "../../Spore Images/SettingsButton.png"; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 				D17439411C48000C005CF819 /* NavigationController.swift */,
 				D188D7B41C283A5F0066E773 /* SettingsController.swift */,
 				D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */,
+				D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */,
 				D144F1DE1C43F6E300E07700 /* MapController.swift */,
 				D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */,
 				D18AE6861C2DC24F00B74ED0 /* Images */,
@@ -364,6 +367,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */,
 				D1B9C71C1C2258B800D9AEE7 /* LoginController.swift in Sources */,
 				D17439421C48000C005CF819 /* NavigationController.swift in Sources */,
 				D1B49D381C5868400085EF2B /* UserListController.swift in Sources */,

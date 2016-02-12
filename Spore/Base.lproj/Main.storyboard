@@ -191,12 +191,13 @@
         <scene sceneID="JQP-Dr-PXd">
             <objects>
                 <tableViewController id="WEH-9b-AKs" customClass="UserListController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" id="xjG-fJ-7nf">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" id="xjG-fJ-7nf">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="separatorColor" white="0.91827713815789469" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" indentationLevel="1" indentationWidth="10" reuseIdentifier="Unread" rowHeight="70" id="pPu-3q-Byg">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationLevel="1" indentationWidth="10" reuseIdentifier="Unread" rowHeight="70" id="pPu-3q-Byg">
                                 <rect key="frame" x="0.0" y="28" width="600" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pPu-3q-Byg" id="uoS-7a-B7W">
@@ -204,10 +205,10 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
-                                            <rect key="frame" x="10" y="5" width="60" height="60"/>
+                                            <rect key="frame" x="10" y="2" width="66" height="66"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="60" id="7jk-7S-zmz"/>
-                                                <constraint firstAttribute="height" constant="60" id="xrv-57-cBV"/>
+                                                <constraint firstAttribute="width" constant="66" id="7jk-7S-zmz"/>
+                                                <constraint firstAttribute="height" constant="66" id="xrv-57-cBV"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="101" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afh-sq-STl">
@@ -216,6 +217,13 @@
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" tag="104" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="J19-KJ-JkN">
+                                            <rect key="frame" x="33" y="25" width="20" height="20"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="20" id="QCL-lm-0wd"/>
+                                                <constraint firstAttribute="height" constant="20" id="TJL-j1-aoQ"/>
+                                            </constraints>
+                                        </activityIndicatorView>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="102" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
                                             <rect key="frame" x="84" y="36" width="508" height="21"/>
                                             <constraints>
@@ -227,10 +235,13 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="Cbp-co-DR1" secondAttribute="trailing" constant="14" id="CQm-wf-koX"/>
+                                        <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="Cbp-co-DR1" secondAttribute="trailing" constant="8" id="CQm-wf-koX"/>
                                         <constraint firstItem="Cbp-co-DR1" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="2" id="DB3-Cy-rys"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="J19-KJ-JkN" secondAttribute="bottom" constant="16.5" id="Gh0-By-p30"/>
                                         <constraint firstItem="afh-sq-STl" firstAttribute="trailing" secondItem="92K-U2-lbN" secondAttribute="trailing" id="L4r-XO-P6d"/>
+                                        <constraint firstItem="J19-KJ-JkN" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="25" id="LHI-3b-6cX"/>
                                         <constraint firstItem="92K-U2-lbN" firstAttribute="trailing" secondItem="uoS-7a-B7W" secondAttribute="trailingMargin" id="UBl-8r-ZDn"/>
+                                        <constraint firstItem="J19-KJ-JkN" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="17" id="WIC-LQ-AFd"/>
                                         <constraint firstItem="Cbp-co-DR1" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="YdY-lR-b31"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="92K-U2-lbN" secondAttribute="bottom" constant="4.5" id="l3F-r8-8R2"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="afh-sq-STl" secondAttribute="bottom" constant="20.5" id="lpk-cR-elc"/>
@@ -262,10 +273,10 @@
             </objects>
             <point key="canvasLocation" x="2500" y="304.5"/>
         </scene>
-        <!--Delegate-->
+        <!--Map-->
         <scene sceneID="JdA-pl-hey">
             <objects>
-                <viewController id="mKN-em-9dv" customClass="MapController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Map" id="mKN-em-9dv" userLabel="Map" customClass="MapController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="x2Z-zG-Pqh"/>
                         <viewControllerLayoutGuide type="bottom" id="frc-ec-ku7"/>
@@ -303,7 +314,7 @@
         <!--Privacy Policy-->
         <scene sceneID="BtV-6N-FDs">
             <objects>
-                <viewController title="Privacy Policy" id="W9D-9n-th5" sceneMemberID="viewController">
+                <viewController title="Privacy Policy" id="W9D-9n-th5" customClass="PrivacyPolicyController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="EBQ-sh-A9H"/>
                         <viewControllerLayoutGuide type="bottom" id="J0f-90-a8d"/>
@@ -312,11 +323,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mqL-5j-2JW">
-                                <rect key="frame" x="20" y="20" width="4101" height="447"/>
-                                <string key="text">Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy Privacy </string>
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mqL-5j-2JW">
+                                <rect key="frame" x="20" y="20" width="560" height="447"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -329,6 +339,10 @@
                             <constraint firstItem="J0f-90-a8d" firstAttribute="top" secondItem="mqL-5j-2JW" secondAttribute="bottom" constant="20" id="n0O-O3-NE9"/>
                         </constraints>
                     </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
+                    <connections>
+                        <outlet property="privacyPolicy" destination="mqL-5j-2JW" id="4ue-EU-MCO"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rzr-U1-gfx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -706,7 +720,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" id="Z7Z-K5-cIg" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="aJK-XO-EX3">
+                    <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" id="aJK-XO-EX3">
                         <autoresizingMask key="autoresizingMask"/>
                     </tabBar>
                     <connections>
@@ -737,6 +751,6 @@
         <image name="photoButton.png" width="100" height="100"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="fzn-UV-xBd"/>
+        <segue reference="QO0-KK-nXy"/>
     </inferredMetricsTieBreakers>
 </document>
