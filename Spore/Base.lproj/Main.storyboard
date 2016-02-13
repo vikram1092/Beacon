@@ -229,7 +229,7 @@
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="yvS-Qr-DUw"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -285,7 +285,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9zD-hA-Q8J" customClass="GMSMapView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9zD-hA-Q8J" customClass="MKMapView">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                                 <connections>
                                     <outlet property="delegate" destination="mKN-em-9dv" id="WWm-4f-16M"/>
@@ -304,7 +304,7 @@
                     <tabBarItem key="tabBarItem" title="World" image="Globe" id="NCb-7x-d4X"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
-                        <outlet property="mapView" destination="9zD-hA-Q8J" id="4Zu-Dj-B0c"/>
+                        <outlet property="mapView" destination="9zD-hA-Q8J" id="vWC-L1-tOH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BLW-Kf-hKR" userLabel="First Responder" sceneMemberID="firstResponder"/>

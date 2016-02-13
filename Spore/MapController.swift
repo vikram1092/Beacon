@@ -8,11 +8,12 @@
 
 import Foundation
 import UIKit
-import GoogleMaps
+//import GoogleMaps
 //import Mapbox
 import Parse
+import MapKit
 
-class MapController: UIViewController, GMSMapViewDelegate {
+class MapController: UIViewController, MKMapViewDelegate {
     
     var countries = NSArray()
     var userName = ""
@@ -20,8 +21,9 @@ class MapController: UIViewController, GMSMapViewDelegate {
     var userDefaults = NSUserDefaults.standardUserDefaults()
     var userList = Array<PFObject>()
     var loadedCountries = Array<String>()
+    var countryColor = UIColor()
     
-    @IBOutlet var mapView: GMSMapView!
+    @IBOutlet var mapView: MKMapView!
     
     
     override func viewDidLoad() {
@@ -29,6 +31,7 @@ class MapController: UIViewController, GMSMapViewDelegate {
         //Run view load as normal
         super.viewDidLoad()
         
+        /*
         //Retreive user details
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
@@ -40,6 +43,7 @@ class MapController: UIViewController, GMSMapViewDelegate {
         mapView.myLocationEnabled = true
         
         //mapView.animateToLocation(mapView.myLocation.coordinate)
+        */
         
         //Load the user list onto the map
         loadUserList()
@@ -159,7 +163,8 @@ class MapController: UIViewController, GMSMapViewDelegate {
         
         //Configure path
         var location = CLLocationCoordinate2D()
-        let path = GMSMutablePath()
+        var path = Array<CLLocationCoordinate2D>()
+        //let path = GMSMutablePath()
         
         //Iterate through all coordinates in polygon & add to path
         for element in polygon {
@@ -169,24 +174,41 @@ class MapController: UIViewController, GMSMapViewDelegate {
                 location.longitude = coordinate[0] as! CLLocationDegrees
                 location.latitude = coordinate[1] as! CLLocationDegrees
                 
-                path.addCoordinate(location)
+                path.append(location)
+                //path.addCoordinate(location)
             }
         }
         
+        /*
         //Configure polygon with path
         let country = GMSPolyline(path: path)
         country.strokeColor = color
         country.strokeWidth = 2
-        country.geodesic = false
+        country.geodesic = true
         
-        
-        print("Adding polygon!")
         country.map = self.mapView
+*/
+        let pointer = UnsafeMutablePointer<CLLocationCoordinate2D>(path)
+        let country = CountryPolyline(coordinates: pointer, count: path.count)
+        
+        //Assign color
+        country.color = color
         
         //Add polygon to map in main thread
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             
+            print("Adding polygon!")
+            self.mapView.addOverlay(country)
         })
+    }
+    
+    
+    internal func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+        
+        let polylineRenderer = MKPolylineRenderer(overlay: overlay)
+        polylineRenderer.strokeColor = (polylineRenderer.overlay as! CountryPolyline).color
+        polylineRenderer.lineWidth = 1
+        return polylineRenderer
     }
     
     

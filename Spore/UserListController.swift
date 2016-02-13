@@ -26,13 +26,11 @@ class UserListController: UITableViewController {
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     @IBOutlet var table: UITableView!
-
     
     override func viewDidLoad() {
         
         //Load view as usual
         super.viewDidLoad()
-        
     }
     
     
@@ -135,6 +133,16 @@ class UserListController: UITableViewController {
     
     internal func saveUserList() {
         
+        //Clean old photos to save local space
+        for object in userList {
+            
+            if(!withinTime(object.objectForKey("receivedAt") as! NSDate)) {
+                
+                object.setValue(nil, forKey: "photo")
+            }
+        }
+        
+        //Save everything
         PFObject.pinAllInBackground(userList)
     }
     
@@ -253,9 +261,16 @@ class UserListController: UITableViewController {
                         self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
                     })
                 }
+                
+                //Stop refreshing
+
             })
         }
         
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            
+            self.refreshControl!.endRefreshing()
+        })
     }
 
     
@@ -263,9 +278,6 @@ class UserListController: UITableViewController {
         
         //Refresh data and reload table within that function
         updateUserList()
-        
-        //End refreshing
-        sender.endRefreshing()
     }
     
     
@@ -293,13 +305,14 @@ class UserListController: UITableViewController {
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
         //Configure image
+        
+        let color = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
         imageView.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        
-        imageView.tintColor = getColorForCell(date)
-        
+        imageView.tintColor = color
         
         //Configure text
         titleView.text = getCountryName(countryCode as! String)
+        titleView.textColor = getColorForCell(date)
         
         //Configure subtext
         subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
@@ -481,11 +494,11 @@ class UserListController: UITableViewController {
         
         if withinTime(date) {
             
-            return UIColor(red: CGFloat(arc4random_uniform(180))/255.0, green: CGFloat(arc4random_uniform(180))/255.0, blue: CGFloat(arc4random_uniform(180))/255.0, alpha: 0.5)
+            return UIColor(red: CGFloat(0), green: CGFloat(0), blue: CGFloat(0), alpha: 1)
         }
         else {
             
-            return UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.3)
+            return UIColor(red: CGFloat(0.4), green: CGFloat(0.4), blue: CGFloat(0.4), alpha: 1)
         }
     }
     

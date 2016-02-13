@@ -26,6 +26,7 @@
 		D144F1F81C44178500E07700 /* SendPhoto@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1F61C44178500E07700 /* SendPhoto@x3.png */; };
 		D144F1FC1C44242600E07700 /* Zion Valley copy 2.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1FB1C44242600E07700 /* Zion Valley copy 2.png */; };
 		D14907911C455F7500F2C635 /* Tangela.JPG in Resources */ = {isa = PBXBuildFile; fileRef = D14907901C455F7500F2C635 /* Tangela.JPG */; };
+		D1494C121C6F6B9C00A386DE /* CountryPolyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */; };
 		D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */; };
 		D154E7241C478B2400CF3A63 /* ProfilePicture.png in Resources */ = {isa = PBXBuildFile; fileRef = D154E7231C478B2400CF3A63 /* ProfilePicture.png */; };
 		D17439421C48000C005CF819 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17439411C48000C005CF819 /* NavigationController.swift */; };
@@ -70,6 +71,7 @@
 		D144F1F61C44178500E07700 /* SendPhoto@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SendPhoto@x3.png"; path = "../../Spore Images/SendPhoto@x3.png"; sourceTree = "<group>"; };
 		D144F1FB1C44242600E07700 /* Zion Valley copy 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Zion Valley copy 2.png"; sourceTree = SOURCE_ROOT; };
 		D14907901C455F7500F2C635 /* Tangela.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tangela.JPG; path = "../../Spore Images/Tangela.JPG"; sourceTree = "<group>"; };
+		D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryPolyline.swift; sourceTree = "<group>"; };
 		D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableController.swift; sourceTree = "<group>"; };
 		D154E7231C478B2400CF3A63 /* ProfilePicture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProfilePicture.png; sourceTree = "<group>"; };
 		D17439411C48000C005CF819 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationController.swift; path = ../NavigationController.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */,
 				D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */,
 				D144F1DE1C43F6E300E07700 /* MapController.swift */,
+				D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */,
 				D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */,
 				D18AE6861C2DC24F00B74ED0 /* Images */,
 				D1B9C7171C2258B800D9AEE7 /* Products */,
@@ -367,6 +370,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1494C121C6F6B9C00A386DE /* CountryPolyline.swift in Sources */,
 				D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */,
 				D1B9C71C1C2258B800D9AEE7 /* LoginController.swift in Sources */,
 				D17439421C48000C005CF819 /* NavigationController.swift in Sources */,

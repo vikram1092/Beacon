@@ -106,11 +106,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
     }
     
+    
     override func viewDidAppear(animated: Bool) {
         
         //Get user location every time view appears
         getUserLocation()
     }
+    
     
     internal func beginSession() {
         
