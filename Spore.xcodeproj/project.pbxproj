@@ -29,12 +29,14 @@
 		D1494C121C6F6B9C00A386DE /* CountryPolyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */; };
 		D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */; };
 		D154E7241C478B2400CF3A63 /* ProfilePicture.png in Resources */ = {isa = PBXBuildFile; fileRef = D154E7231C478B2400CF3A63 /* ProfilePicture.png */; };
+		D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BBFD11C7358AF00C0CC6E /* SnapController.swift */; };
 		D17439421C48000C005CF819 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17439411C48000C005CF819 /* NavigationController.swift */; };
 		D1785A561C3F68280020AD99 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1785A551C3F68280020AD99 /* CameraController.swift */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
 		D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */; };
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
 		D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D192652E1C60E4AC00517A8E /* Countries.geojson */; };
+		D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D195159C1C7232F600053A22 /* VideoDelegate.swift */; };
 		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
 		D1B49D381C5868400085EF2B /* UserListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B49D371C5868400085EF2B /* UserListController.swift */; };
 		D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */; };
@@ -74,12 +76,14 @@
 		D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryPolyline.swift; sourceTree = "<group>"; };
 		D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableController.swift; sourceTree = "<group>"; };
 		D154E7231C478B2400CF3A63 /* ProfilePicture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProfilePicture.png; sourceTree = "<group>"; };
+		D15BBFD11C7358AF00C0CC6E /* SnapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapController.swift; sourceTree = "<group>"; };
 		D17439411C48000C005CF819 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationController.swift; path = ../NavigationController.swift; sourceTree = "<group>"; };
 		D1785A551C3F68280020AD99 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
 		D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrivacyPolicyController.swift; path = ../PrivacyPolicyController.swift; sourceTree = "<group>"; };
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		D192652E1C60E4AC00517A8E /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
+		D195159C1C7232F600053A22 /* VideoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDelegate.swift; sourceTree = "<group>"; };
 		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = "../../Spore Images/SettingsButton.png"; sourceTree = "<group>"; };
 		D1B49D371C5868400085EF2B /* UserListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListController.swift; sourceTree = "<group>"; };
 		D1B9C7161C2258B800D9AEE7 /* Spore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spore.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -188,9 +192,11 @@
 			children = (
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
 				D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */,
+				D15BBFD11C7358AF00C0CC6E /* SnapController.swift */,
 				D1B9C72B1C22608600D9AEE7 /* MainController.swift */,
 				D1B49D371C5868400085EF2B /* UserListController.swift */,
 				D1785A551C3F68280020AD99 /* CameraController.swift */,
+				D195159C1C7232F600053A22 /* VideoDelegate.swift */,
 				D17439411C48000C005CF819 /* NavigationController.swift */,
 				D188D7B41C283A5F0066E773 /* SettingsController.swift */,
 				D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */,
@@ -370,6 +376,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */,
 				D1494C121C6F6B9C00A386DE /* CountryPolyline.swift in Sources */,
 				D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */,
 				D1B9C71C1C2258B800D9AEE7 /* LoginController.swift in Sources */,
@@ -380,6 +387,7 @@
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
+				D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */,
 				D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

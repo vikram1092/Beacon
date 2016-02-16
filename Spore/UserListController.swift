@@ -11,6 +11,7 @@ import UIKit
 import Parse
 import ParseUI
 import Foundation
+import AVFoundation
 import FBSDKCoreKit
 import FBSDKLoginKit
 
@@ -23,6 +24,8 @@ class UserListController: UITableViewController {
     var userName = ""
     var userEmail = ""
     var userToReceivePhotos = 0
+    let fileManager = NSFileManager.defaultManager()
+    let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     @IBOutlet var table: UITableView!
@@ -138,7 +141,7 @@ class UserListController: UITableViewController {
             
             if(!withinTime(object.objectForKey("receivedAt") as! NSDate)) {
                 
-                object.setValue(nil, forKey: "photo")
+                object.removeObjectForKey("photo")
             }
         }
         
@@ -193,6 +196,7 @@ class UserListController: UITableViewController {
             //Get unsent photos in the database equal to how many the user gets
             let query = PFQuery(className:"photo")
             query.whereKeyDoesNotExist("receivedBy")
+            query.whereKey("isVideo", equalTo: true)
             //query.whereKey("sentBy", notEqualTo: userEmail)
             query.limit = userToReceivePhotos
             
@@ -374,37 +378,101 @@ class UserListController: UITableViewController {
         //If photo within time, display photo
         if inTime {
             
+            //Initialize parent VC variables
             let parent = self.parentViewController as! MainController
-            let photoToDisplay = userList[index]["photo"] as! PFFile
+            parent.snap.image = nil
             
-            parent.snap.file = photoToDisplay
+            //Get video trigger from DB object
+            var isVideo = false
+            
+            //Check if object is a video
+            if userList[index]["isVideo"] != nil {
+                
+                isVideo = userList[index]["isVideo"] as! BooleanLiteralType
+            }
+            
+            //Get PFFile
+            let objectToDisplay = userList[index]["photo"] as! PFFile
             
             //Start UI animation
             let activity = cell.viewWithTag(104) as! UIActivityIndicatorView
             activity.startAnimating()
             
-            
-            parent.snap.loadInBackground { (photoData, photoConvError) -> Void in
+            //Handle for videos and pictures uniqeuly
+            if isVideo {
                 
-                //Stop animation
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                objectToDisplay.getDataInBackgroundWithBlock({ (videoData, videoError) -> Void in
                     
-                    activity.stopAnimating()
+                    if videoError != nil {
+                        print("Error converting video: \(videoError)")
+                    }
+                    else {
+                        
+                        videoData?.writeToFile(self.videoPath, atomically: true)
+                        
+                        //Initialize movie layer
+                        print("Initilizing video player")
+                        let player = AVPlayer(URL: NSURL(fileURLWithPath: self.videoPath))
+                        parent.moviePlayer = AVPlayerLayer(player: player)
+                        
+                        //Set frame and video gravity
+                        parent.moviePlayer.frame = parent.snap.bounds
+                        parent.moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                        
+                        //Set close function
+                        NSNotificationCenter.defaultCenter().addObserver(self,
+                            selector: "closeVideo",
+                            name: AVPlayerItemDidPlayToEndTimeNotification,
+                            object: parent.moviePlayer.player!.currentItem)
+                        
+                        //Update UI in main queue
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
+                            print("Adding video player")
+                            activity.stopAnimating()
+                            
+                            parent.snap.layer.addSublayer(parent.moviePlayer)
+                            parent.snap.center = parent.view.center
+                            parent.snap.alpha = 1
+                            
+                            //Play video
+                            parent.moviePlayer.player!.play()
+                            
+                            
+                            self.tabBarController!.tabBar.hidden = true
+                        })
+                        
+                    }
                 })
+            }
+            else {
                 
-                if photoConvError != nil {
+                
+                parent.snap.file = objectToDisplay
+                
+                parent.snap.loadInBackground { (photoData, photoConvError) -> Void in
                     
-                    print("Error converting photo from file: " + photoConvError!.description)
-                }
-                else {
+                    //Stop animation
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        activity.stopAnimating()
+                    })
                     
-                    //Decode and display image for user
-                    parent.snap.center = parent.view.center
-                    self.tabBarController!.tabBar.hidden = true
-                    parent.snap.alpha = 1
-                    
+                    if photoConvError != nil {
+                        
+                        print("Error converting photo from file: " + photoConvError!.description)
+                    }
+                    else {
+                        
+                        //Decode and display image for user
+                        parent.snap.center = parent.view.center
+                        self.tabBarController!.tabBar.hidden = true
+                        parent.snap.alpha = 1
+                        
+                    }
                 }
             }
+            
         }
         //If photo not within time, display cell bounce animation
         else {
@@ -453,6 +521,29 @@ class UserListController: UITableViewController {
 
         }
         
+    }
+    
+    
+    internal func closeVideo() {
+        
+        let parent = self.parentViewController as! MainController
+        
+        parent.moviePlayer.player = nil
+        parent.moviePlayer.removeFromSuperlayer()
+        parent.snap.alpha = 0
+        
+        clearVideoTempFile()
+    }
+    
+    
+    internal func clearVideoTempFile() {
+        
+        do {
+            try fileManager.removeItemAtPath(videoPath)
+        }
+        catch let error as NSError {
+            print("Error deleting video: \(error)")
+        }
     }
     
     

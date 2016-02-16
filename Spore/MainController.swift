@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import ParseUI
 import Foundation
+import AVFoundation
 
 class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDelegate {
     
@@ -17,6 +18,8 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     var timer = NSTimer()
     var lastLocation = CGPointMake(0, 0)
     let userDefaults = NSUserDefaults.standardUserDefaults()
+    var moviePlayer = AVPlayerLayer()
+    let fileManager = NSFileManager.defaultManager()
     
     @IBOutlet var table: UIView!
 
@@ -50,6 +53,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         let panRecognizer = UIPanGestureRecognizer(target: self, action: "detectPan:")
         snap.addGestureRecognizer(tap)
         snap.addGestureRecognizer(panRecognizer)
+        
     }
     
     
@@ -60,6 +64,8 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
             
             self.snap.alpha = 0
             self.tabBarController!.tabBar.hidden = false
+            self.moviePlayer.player = nil
+            self.moviePlayer.removeFromSuperlayer()
         }
     }
     
@@ -91,6 +97,8 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
                     
                     self.snap.center.y = ((self.snap.center.y - self.view.center.y)/abs(self.snap.center.y - self.view.center.y) * self.view.bounds.height * 2) + self.view.center.y
                     self.tabBarController!.tabBar.hidden = false
+                    self.moviePlayer.player = nil
+                    self.moviePlayer.removeFromSuperlayer()
                 }
             }
         default:

@@ -25,27 +25,41 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     var previewLayer = AVCaptureVideoPreviewLayer?()
     var captureSession = AVCaptureSession()
-    var stillImageOutput = AVCaptureStillImageOutput!()
+    var stillImageOutput = AVCaptureStillImageOutput()
+    var movieFileOutput = AVCaptureMovieFileOutput()
     var locManager = CLLocationManager()
     var userLocation = PFGeoPoint()
     var userCountryCode = ""
     var userName = ""
     var userEmail = ""
     var flashToggle = false
+    let videoPath = NSTemporaryDirectory() + "userVideo.mov"
+    var moviePlayer = AVPlayerLayer()
+    let fileManager = NSFileManager.defaultManager()
     let userDefaults = NSUserDefaults.standardUserDefaults()
-    
     
     //If we find a device we'll store it here for later use
     var captureDevice : AVCaptureDevice?
+    var microphone : AVCaptureDevice?
+    
     
     override func viewDidLoad() {
-        
-        //Initialize flash variable
-        flashToggle = false
         
         //Retreive user details
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
+        
+        //Initialize flash variable
+        flashToggle = false
+        
+        //Clear video temp file
+        clearVideoTempFile()
+        
+        //Initialize gesture recognizers and add to capture button
+        let tap = UITapGestureRecognizer(target: self, action: Selector("takePhoto"))
+        let hold = UILongPressGestureRecognizer(target: self, action: Selector("takeVideo:"))
+        captureButton.addGestureRecognizer(tap)
+        captureButton.addGestureRecognizer(hold)
         
         //Initialize location manager
         locManager = CLLocationManager.init()
@@ -57,8 +71,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Ask for location services permission
         self.locManager.requestWhenInUseAuthorization()
         
-        // Set up camera session
+        // Set up camera session & microphone
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
+        microphone = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
         let devices = AVCaptureDevice.devices()
         
         // Loop through all the capture devices on this phone
@@ -67,6 +82,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             if (device.hasMediaType(AVMediaTypeVideo)) {
                 // Finally check the position and confirm we've got the back camera
                 if(device.position == AVCaptureDevicePosition.Back) {
+                    
                     captureDevice = device as? AVCaptureDevice
                 }
             }
@@ -78,22 +94,22 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         }
     }
     
+    
     override func viewWillAppear(animated: Bool) {
         
         //Initialize buttons
-        self.closeButton.hidden = true
-        self.photoSendButton.hidden = true
-        self.flashButton.hidden = false
-        self.backButton.hidden = false
-        self.captureButton.hidden = false
-        self.cameraSwitchButton.hidden = false
+        closeButton.hidden = true
+        photoSendButton.hidden = true
+        flashButton.hidden = false
+        backButton.hidden = false
+        captureButton.hidden = false
+        cameraSwitchButton.hidden = false
         
         self.tabBarController!.tabBar.hidden = true
         
         //Run as normal
         super.viewWillAppear(true)
     }
-    
     
     
     override func viewDidLayoutSubviews() {
@@ -116,14 +132,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     internal func beginSession() {
         
-        //Start camera session
+        //Start camera session & outputs
         stillImageOutput = AVCaptureStillImageOutput()
-        print("add output")
-        captureSession.addOutput(self.stillImageOutput)
+        movieFileOutput = AVCaptureMovieFileOutput()
+        movieFileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale())
+        captureSession.addOutput(stillImageOutput)
+        captureSession.addOutput(movieFileOutput)
+        //captureSession.addOutput()
         
         do {
-            print("add input")
+            print("add inputs")
             try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
+            try captureSession.addInput(AVCaptureDeviceInput(device: microphone))
         }
         catch {
             
@@ -145,6 +165,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         print("start running")
         
         captureSession.startRunning()
+        
+        //Perform view fixes again
         viewDidLayoutSubviews()
     }
     
@@ -166,6 +188,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 try captureDevice?.lockForConfiguration()
             } catch _ {print("Error getting loc for device")}
             
+            if captureDevice!.isTorchModeSupported(AVCaptureTorchMode.On) {
+                captureDevice!.torchMode = AVCaptureTorchMode.On
+            }
+            
             captureDevice!.flashMode = AVCaptureFlashMode.On
             captureDevice!.unlockForConfiguration()
         }
@@ -174,6 +200,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             print("Flash is off")
             flashButton.setImage(UIImage(named: "FlashButtonOff"), forState: UIControlState.Normal)
             flashButton.reloadInputViews()
+            
+            if captureDevice!.torchMode == AVCaptureTorchMode.On {
+                captureDevice!.torchMode = AVCaptureTorchMode.Off
+            }
             
             do {
                 try captureDevice?.lockForConfiguration()
@@ -231,7 +261,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     }
     
     
-    @IBAction func takePhoto(sender: AnyObject) {
+    internal func takePhoto() {
         
         print("Pressed!")
         
@@ -243,7 +273,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             self.cameraImage.image = data_image
             self.captureSession.stopRunning()
             
-            //Change buttons on screen
+            //Change elements on screen
             self.backButton.hidden = true
             self.captureButton.hidden = true
             self.flashButton.hidden = true
@@ -254,16 +284,91 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     }
     
     
+    internal func takeVideo(gestureRecognizer: UILongPressGestureRecognizer) {
+        
+        if gestureRecognizer.state == UIGestureRecognizerState.Began {
+            
+            print("Beginning video recording")
+            let url = NSURL(fileURLWithPath: videoPath)
+            
+            movieFileOutput.startRecordingToOutputFileURL(url, recordingDelegate: VideoDelegate())
+        }
+        else if gestureRecognizer.state == UIGestureRecognizerState.Ended {
+            
+            //Stop everything
+            print("Ending video recording")
+            movieFileOutput.stopRecording()
+            captureSession.stopRunning()
+            
+            //Change elements on screen
+            self.backButton.hidden = true
+            self.captureButton.hidden = true
+            self.flashButton.hidden = true
+            self.cameraSwitchButton.hidden = true
+            self.closeButton.hidden = false
+            self.photoSendButton.hidden = false
+            
+            //Initialize movie layer
+            let player = AVPlayer(URL: NSURL(fileURLWithPath: videoPath))
+            moviePlayer = AVPlayerLayer(player: player)
+            
+            //Set frame and video gravity
+            moviePlayer.frame = self.view.bounds
+            moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+           
+            //Set loop function
+            NSNotificationCenter.defaultCenter().addObserver(self,
+                selector: "restartVideoFromBeginning",
+                name: AVPlayerItemDidPlayToEndTimeNotification,
+                object: moviePlayer.player!.currentItem)
+            cameraImage.layer.addSublayer(moviePlayer)
+            
+            //Play video
+            moviePlayer.player!.play()
+            
+        }
+    }
+    
+    //function to restart the video
+    internal func restartVideoFromBeginning()  {
+        
+        //create a CMTime for zero seconds so we can go back to the beginning
+        let seconds : Int64 = 0
+        let preferredTimeScale : Int32 = 1
+        let seekTime : CMTime = CMTimeMake(seconds, preferredTimeScale)
+        
+        moviePlayer.player!.seekToTime(seekTime)
+        
+        moviePlayer.player!.play()
+        
+    }
+    
+    
     @IBAction func closePhoto(sender: AnyObject) {
         
-        //Begin camera session again & toggle buttons
-        self.captureSession.startRunning()
+        //Begin camera session again, stop video, & toggle buttons
+        captureSession.startRunning()
+        moviePlayer.player = nil
+        moviePlayer.removeFromSuperlayer()
+        clearVideoTempFile()
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true
         self.flashButton.hidden = false
         self.backButton.hidden = false
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
+        self.cameraImage.image = nil
+    }
+    
+    
+    internal func clearVideoTempFile() {
+        
+        do {
+            try fileManager.removeItemAtPath(videoPath)
+        }
+        catch let error as NSError {
+            print("Error deleting video: \(error)")
+        }
     }
     
     
@@ -304,9 +409,21 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         photoObject["countryCode"] = userCountryCode
         photoObject["spam"] = false
         
-        //Set photo just taken by user as PFFile
-        photoObject["photo"] = PFFile(data: UIImageJPEGRepresentation(self.cameraImage.image!, CGFloat(0.5))!)
-        print("saved photo to PFFile")
+        if fileManager.fileExistsAtPath(videoPath) {
+            
+            //Set video just taken by user as PFFile
+            photoObject["photo"] = PFFile(data: NSData(contentsOfFile: videoPath)!)
+            photoObject["isVideo"] = true
+            clearVideoTempFile()
+            print("saved video to PFFile")
+        }
+        else {
+            
+            //Set photo just taken by user as PFFile
+            photoObject["photo"] = PFFile(data: UIImageJPEGRepresentation(self.cameraImage.image!, CGFloat(0.6))!)
+            photoObject["isVideo"] = false
+            print("saved photo to PFFile")
+        }
         
         //Send the updated photo object to database
         photoObject.saveInBackgroundWithBlock {
@@ -397,9 +514,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         }
     }
     
+    
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
+    
     
     internal func segueBackToTable() {
         
@@ -407,6 +526,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         self.tabBarController?.selectedIndex = 0
         self.tabBarController!.tabBar.hidden = false
     }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
