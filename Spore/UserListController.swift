@@ -196,7 +196,7 @@ class UserListController: UITableViewController {
             //Get unsent photos in the database equal to how many the user gets
             let query = PFQuery(className:"photo")
             query.whereKeyDoesNotExist("receivedBy")
-            query.whereKey("isVideo", equalTo: true)
+            //query.whereKey("isVideo", equalTo: true)
             //query.whereKey("sentBy", notEqualTo: userEmail)
             query.limit = userToReceivePhotos
             
@@ -375,17 +375,15 @@ class UserListController: UITableViewController {
         let index = userList.count - 1 - indexPath.row
         let inTime = withinTime(userList[index].objectForKey("receivedAt") as! NSDate)
         
-        //If photo within time, display photo
+        //If photo within time, display photo or video
         if inTime {
             
             //Initialize parent VC variables
-            let parent = self.parentViewController as! MainController
-            parent.snap.image = nil
+            let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
+            grandparent.snap.image = nil
             
             //Get video trigger from DB object
             var isVideo = false
-            
-            //Check if object is a video
             if userList[index]["isVideo"] != nil {
                 
                 isVideo = userList[index]["isVideo"] as! BooleanLiteralType
@@ -413,17 +411,16 @@ class UserListController: UITableViewController {
                         //Initialize movie layer
                         print("Initilizing video player")
                         let player = AVPlayer(URL: NSURL(fileURLWithPath: self.videoPath))
-                        parent.moviePlayer = AVPlayerLayer(player: player)
+                        grandparent.moviePlayer = AVPlayerLayer(player: player)
                         
-                        //Set frame and video gravity
-                        parent.moviePlayer.frame = parent.snap.bounds
-                        parent.moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                        //Set video gravity
+                        grandparent.moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
                         
                         //Set close function
                         NSNotificationCenter.defaultCenter().addObserver(self,
                             selector: "closeVideo",
                             name: AVPlayerItemDidPlayToEndTimeNotification,
-                            object: parent.moviePlayer.player!.currentItem)
+                            object: grandparent.moviePlayer.player!.currentItem)
                         
                         //Update UI in main queue
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -431,15 +428,14 @@ class UserListController: UITableViewController {
                             print("Adding video player")
                             activity.stopAnimating()
                             
-                            parent.snap.layer.addSublayer(parent.moviePlayer)
-                            parent.snap.center = parent.view.center
-                            parent.snap.alpha = 1
+                            grandparent.snap.backgroundColor = UIColor.blackColor()
+                            grandparent.moviePlayer.frame = grandparent.snap.bounds
+                            grandparent.snap.layer.addSublayer(grandparent.moviePlayer)
+                            grandparent.snap.alpha = 1
                             
                             //Play video
-                            parent.moviePlayer.player!.play()
+                            grandparent.moviePlayer.player!.play()
                             
-                            
-                            self.tabBarController!.tabBar.hidden = true
                         })
                         
                     }
@@ -448,9 +444,9 @@ class UserListController: UITableViewController {
             else {
                 
                 
-                parent.snap.file = objectToDisplay
+                grandparent.snap.file = objectToDisplay
                 
-                parent.snap.loadInBackground { (photoData, photoConvError) -> Void in
+                grandparent.snap.loadInBackground { (photoData, photoConvError) -> Void in
                     
                     //Stop animation
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -464,11 +460,12 @@ class UserListController: UITableViewController {
                     }
                     else {
                         
-                        //Decode and display image for user
-                        parent.snap.center = parent.view.center
-                        self.tabBarController!.tabBar.hidden = true
-                        parent.snap.alpha = 1
-                        
+                        //Stop animation
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
+                            //Decode and display image for user
+                            grandparent.snap.alpha = 1
+                        })
                     }
                 }
             }
@@ -479,25 +476,25 @@ class UserListController: UITableViewController {
             
             UIView.animateWithDuration(0.1, animations: { () -> Void in
                 
-                cell.center = CGPoint(x: cell.center.x+30, y: cell.center.y)
+                cell.center = CGPoint(x: cell.center.x+25, y: cell.center.y)
                 
                 }, completion: { (BooleanLiteralType) -> Void in
                     
                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                         
-                        cell.center = CGPoint(x: cell.center.x-30, y: cell.center.y)
+                        cell.center = CGPoint(x: cell.center.x-25, y: cell.center.y)
                         
                         }, completion: { (BooleanLiteralType) -> Void in
                             
                             UIView.animateWithDuration(0.1, animations: { () -> Void in
                                 
-                                cell.center = CGPoint(x: cell.center.x+20, y: cell.center.y)
+                                cell.center = CGPoint(x: cell.center.x+15, y: cell.center.y)
                                 
                                 }, completion: { (BooleanLiteralType) -> Void in
                                     
                                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                                         
-                                        cell.center = CGPoint(x: cell.center.x-20, y: cell.center.y)
+                                        cell.center = CGPoint(x: cell.center.x-15, y: cell.center.y)
                                         
                                         }, completion: { (BooleanLiteralType) -> Void in
                                             
@@ -526,11 +523,15 @@ class UserListController: UITableViewController {
     
     internal func closeVideo() {
         
-        let parent = self.parentViewController as! MainController
+        let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
         
-        parent.moviePlayer.player = nil
-        parent.moviePlayer.removeFromSuperlayer()
-        parent.snap.alpha = 0
+        //Stop animation
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            
+            grandparent.moviePlayer.player = nil
+            grandparent.moviePlayer.removeFromSuperlayer()
+            grandparent.snap.alpha = 0
+            })
         
         clearVideoTempFile()
     }

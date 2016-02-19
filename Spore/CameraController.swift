@@ -49,6 +49,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
         
+        
         //Initialize flash variable
         flashToggle = false
         
@@ -61,15 +62,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         captureButton.addGestureRecognizer(tap)
         captureButton.addGestureRecognizer(hold)
         
-        //Initialize location manager
-        locManager = CLLocationManager.init()
-        self.locManager.delegate = self
-        
         //Run view load as normal
         super.viewDidLoad()
         
         //Ask for location services permission
         self.locManager.requestWhenInUseAuthorization()
+        
+        //Initialize location manager
+        locManager = CLLocationManager.init()
+        self.locManager.delegate = self
         
         // Set up camera session & microphone
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
@@ -105,17 +106,19 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         captureButton.hidden = false
         cameraSwitchButton.hidden = false
         
+        //Hide status bar
+        
         self.tabBarController!.tabBar.hidden = true
         
         //Run as normal
         super.viewWillAppear(true)
     }
     
-    
     override func viewDidLayoutSubviews() {
         
         
         //Adjusts camera to the screen after loading view
+        self.setNeedsStatusBarAppearanceUpdate()
         let bounds = cameraImage.bounds
         previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
         previewLayer!.bounds = bounds
@@ -127,6 +130,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         
         //Get user location every time view appears
         getUserLocation()
+        super.viewDidAppear(true)
     }
     
     
@@ -177,16 +181,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         print("Toggling flash!")
         flashToggle = !flashToggle
         
+        //Get configuration lock on device
+        do {
+            try captureDevice?.lockForConfiguration()
+        } catch _ {print("Error getting loc for device")}
+        
+        
         //Configure flash according to toggle
         if flashToggle {
             
             print("Flash is on")
             flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
             flashButton.reloadInputViews()
-            
-            do {
-                try captureDevice?.lockForConfiguration()
-            } catch _ {print("Error getting loc for device")}
             
             if captureDevice!.isTorchModeSupported(AVCaptureTorchMode.On) {
                 captureDevice!.torchMode = AVCaptureTorchMode.On
@@ -329,7 +335,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         }
     }
     
-    //function to restart the video
+    //Function to loop the video taken
     internal func restartVideoFromBeginning()  {
         
         //create a CMTime for zero seconds so we can go back to the beginning
@@ -363,11 +369,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     internal func clearVideoTempFile() {
         
-        do {
-            try fileManager.removeItemAtPath(videoPath)
-        }
-        catch let error as NSError {
-            print("Error deleting video: \(error)")
+        if fileManager.fileExistsAtPath(videoPath) {
+            
+            do {
+                
+                try fileManager.removeItemAtPath(videoPath)
+            }
+            catch let error as NSError {
+                
+                print("Error deleting video: \(error)")
+            }
         }
     }
     
@@ -382,7 +393,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     
     @IBAction func sendPhoto(sender: AnyObject) {
-        
         
         //Kick off activity indicator & hide button
         activityIndicator.startAnimating()

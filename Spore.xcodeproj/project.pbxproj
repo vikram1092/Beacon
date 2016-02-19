@@ -37,6 +37,7 @@
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
 		D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D192652E1C60E4AC00517A8E /* Countries.geojson */; };
 		D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D195159C1C7232F600053A22 /* VideoDelegate.swift */; };
+		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
 		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
 		D1B49D381C5868400085EF2B /* UserListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B49D371C5868400085EF2B /* UserListController.swift */; };
 		D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */; };
@@ -50,6 +51,16 @@
 		D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E08D1E1C5D430E0070DA9A /* MapKit.framework */; };
 		D1EC295C1C2E1E850014DE7E /* Countries in Resources */ = {isa = PBXBuildFile; fileRef = D1EC295B1C2E1E850014DE7E /* Countries */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D19E95E41C753473000106DE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D1B9C70E1C2258B800D9AEE7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1B9C7151C2258B800D9AEE7;
+			remoteInfo = Spore;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		009B0B61EF1DEC35F92C2FAC /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,6 +95,9 @@
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		D192652E1C60E4AC00517A8E /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
 		D195159C1C7232F600053A22 /* VideoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDelegate.swift; sourceTree = "<group>"; };
+		D19E95DF1C753473000106DE /* SporeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SporeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D19E95E11C753473000106DE /* SporeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SporeTests.swift; sourceTree = "<group>"; };
+		D19E95E31C753473000106DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = "../../Spore Images/SettingsButton.png"; sourceTree = "<group>"; };
 		D1B49D371C5868400085EF2B /* UserListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListController.swift; sourceTree = "<group>"; };
 		D1B9C7161C2258B800D9AEE7 /* Spore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spore.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +115,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D19E95DC1C753473000106DE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D1B9C7131C2258B800D9AEE7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -169,11 +190,21 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
+		D19E95E01C753473000106DE /* SporeTests */ = {
+			isa = PBXGroup;
+			children = (
+				D19E95E11C753473000106DE /* SporeTests.swift */,
+				D19E95E31C753473000106DE /* Info.plist */,
+			);
+			path = SporeTests;
+			sourceTree = "<group>";
+		};
 		D1B9C70D1C2258B800D9AEE7 = {
 			isa = PBXGroup;
 			children = (
 				D1B9C7181C2258B800D9AEE7 /* Spore */,
 				D9CDAC2BB88D7D39085B896F /* Pods */,
+				D19E95E01C753473000106DE /* SporeTests */,
 				7004F287B6C8D91AAD51E180 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -182,6 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				D1B9C7161C2258B800D9AEE7 /* Spore.app */,
+				D19E95DF1C753473000106DE /* SporeTests.xctest */,
 			);
 			name = Products;
 			path = ..;
@@ -225,6 +257,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D19E95DE1C753473000106DE /* SporeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D19E95E81C753473000106DE /* Build configuration list for PBXNativeTarget "SporeTests" */;
+			buildPhases = (
+				D19E95DB1C753473000106DE /* Sources */,
+				D19E95DC1C753473000106DE /* Frameworks */,
+				D19E95DD1C753473000106DE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D19E95E51C753473000106DE /* PBXTargetDependency */,
+			);
+			name = SporeTests;
+			productName = SporeTests;
+			productReference = D19E95DF1C753473000106DE /* SporeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D1B9C7151C2258B800D9AEE7 /* Spore */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D1B9C7281C2258B800D9AEE7 /* Build configuration list for PBXNativeTarget "Spore" */;
@@ -251,10 +301,14 @@
 		D1B9C70E1C2258B800D9AEE7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0710;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Vikram Ramkumar";
 				TargetAttributes = {
+					D19E95DE1C753473000106DE = {
+						CreatedOnToolsVersion = 7.2.1;
+						TestTargetID = D1B9C7151C2258B800D9AEE7;
+					};
 					D1B9C7151C2258B800D9AEE7 = {
 						CreatedOnToolsVersion = 7.1.1;
 						DevelopmentTeam = 53738Y87UZ;
@@ -282,11 +336,19 @@
 			projectRoot = "";
 			targets = (
 				D1B9C7151C2258B800D9AEE7 /* Spore */,
+				D19E95DE1C753473000106DE /* SporeTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D19E95DD1C753473000106DE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D1B9C7141C2258B800D9AEE7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -372,6 +434,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D19E95DB1C753473000106DE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D19E95E21C753473000106DE /* SporeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D1B9C7121C2258B800D9AEE7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -394,6 +464,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D19E95E51C753473000106DE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D1B9C7151C2258B800D9AEE7 /* Spore */;
+			targetProxy = D19E95E41C753473000106DE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -406,6 +484,32 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		D19E95E61C753473000106DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = SporeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vikram.SporeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Spore.app/Spore";
+			};
+			name = Debug;
+		};
+		D19E95E71C753473000106DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = SporeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vikram.SporeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Spore.app/Spore";
+			};
+			name = Release;
+		};
 		D1B9C7261C2258B800D9AEE7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -532,6 +636,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D19E95E81C753473000106DE /* Build configuration list for PBXNativeTarget "SporeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D19E95E61C753473000106DE /* Debug */,
+				D19E95E71C753473000106DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		D1B9C7111C2258B800D9AEE7 /* Build configuration list for PBXProject "Spore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
