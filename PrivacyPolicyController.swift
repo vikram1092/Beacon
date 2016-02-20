@@ -22,7 +22,6 @@ class PrivacyPolicyController: UIViewController {
         //Load view as normal
         super.viewDidLoad()
         
-        //
         privacyPolicy.text = privacyText
     }
     

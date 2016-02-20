@@ -10,7 +10,8 @@ import UIKit
 import FBSDKCoreKit
 import FBSDKLoginKit
 
-class SettingsTableController: UITableViewController {
+class SettingsTableController: UITableViewController, UIGestureRecognizerDelegate {
+    
     
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
@@ -21,6 +22,10 @@ class SettingsTableController: UITableViewController {
     override func viewDidLoad() {
         //Run view load as normal
         super.viewDidLoad()
+        
+        // Enable swipe back when no navigation bar
+        self.navigationController!.interactivePopGestureRecognizer!.delegate = self
+        
         profilePicture.layer.cornerRadius = profilePicture.frame.size.width/2
         profilePicture.clipsToBounds = true
     }
@@ -49,6 +54,15 @@ class SettingsTableController: UITableViewController {
             userDefaults.setObject(nil, forKey: "userEmail")
             
         }
+    }
+    
+    
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        
+        if(navigationController!.viewControllers.count > 1){
+            return true
+        }
+        return false
     }
     
     

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SettingsController: UIViewController, UIGestureRecognizerDelegate {
+class SettingsController: UIViewController {
     
     var userName = ""
     var userEmail = ""
@@ -22,13 +22,14 @@ class SettingsController: UIViewController, UIGestureRecognizerDelegate {
         
         //Run view load as normal
         super.viewDidLoad()
+        
     }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
     
 
 }

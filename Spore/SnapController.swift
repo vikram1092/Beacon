@@ -19,6 +19,7 @@ class SnapController: UIViewController {
     var moviePlayer = AVPlayerLayer()
     let fileManager = NSFileManager.defaultManager()
     let userDefaults = NSUserDefaults.standardUserDefaults()
+    var childController = TabBarController()
     
     @IBOutlet var snap: PFImageView!
     @IBOutlet var container: UIView!
@@ -27,13 +28,14 @@ class SnapController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
     }
     
     override func viewWillAppear(animated: Bool) {
         
         //Initialize values
+        self.snap.userInteractionEnabled = false
         snap.alpha = 0
+        super.viewWillAppear(true)
     }
     
     
@@ -55,12 +57,16 @@ class SnapController: UIViewController {
     internal func snapTapped() {
         
         print("Tapped!")
+        
+        self.snap.userInteractionEnabled = false
+        
         UIView.animateWithDuration(0.3) { () -> Void in
             
             self.snap.alpha = 0
             self.moviePlayer.player = nil
             self.moviePlayer.removeFromSuperlayer()
         }
+        
     }
     
     
@@ -99,13 +105,13 @@ class SnapController: UIViewController {
                         self.moviePlayer.removeFromSuperlayer()
                         self.snap.alpha = 0
                         self.snap.center.y = self.view.center.y
+                        self.snap.userInteractionEnabled = false
                 })
             }
         default:
             print("default")
         }
     }
-    
     
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -116,5 +122,21 @@ class SnapController: UIViewController {
         
     }
     
+    override func childViewControllerForStatusBarHidden() -> UIViewController? {
+        
+        print("Status bar config")
+        return childController
+    }
     
+    
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "SnapToTabBarSegue" {
+            
+            print("Setting child controller")
+            self.childController = segue.destinationViewController as! TabBarController
+            
+        }
+    }
 }

@@ -27,7 +27,6 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     override func viewDidAppear(animated: Bool) {
         
         //Run like usual
-        self.setNeedsStatusBarAppearanceUpdate()
         super.viewDidAppear(true)
     }
     
@@ -36,5 +35,6 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 }
 

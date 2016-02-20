@@ -106,9 +106,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         captureButton.hidden = false
         cameraSwitchButton.hidden = false
         
-        //Hide status bar
-        
+        //Hide tab bar
         self.tabBarController!.tabBar.hidden = true
+        
+        if !captureSession.running && captureDevice != nil {
+            beginSession()
+        }
         
         //Run as normal
         super.viewWillAppear(true)
@@ -116,9 +119,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     override func viewDidLayoutSubviews() {
         
-        
         //Adjusts camera to the screen after loading view
-        self.setNeedsStatusBarAppearanceUpdate()
         let bounds = cameraImage.bounds
         previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
         previewLayer!.bounds = bounds
@@ -194,9 +195,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
             flashButton.reloadInputViews()
             
-            if captureDevice!.isTorchModeSupported(AVCaptureTorchMode.On) {
-                captureDevice!.torchMode = AVCaptureTorchMode.On
-            }
             
             captureDevice!.flashMode = AVCaptureFlashMode.On
             captureDevice!.unlockForConfiguration()
@@ -279,14 +277,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             self.cameraImage.image = data_image
             self.captureSession.stopRunning()
             
-            //Change elements on screen
-            self.backButton.hidden = true
-            self.captureButton.hidden = true
-            self.flashButton.hidden = true
-            self.cameraSwitchButton.hidden = true
-            self.closeButton.hidden = false
-            self.photoSendButton.hidden = false
         }
+        
+        //Change elements on screen
+        self.backButton.hidden = true
+        self.captureButton.hidden = true
+        self.flashButton.hidden = true
+        self.cameraSwitchButton.hidden = true
+        self.closeButton.hidden = false
+        self.photoSendButton.hidden = false
     }
     
     
@@ -294,10 +293,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         
         if gestureRecognizer.state == UIGestureRecognizerState.Began {
             
-            print("Beginning video recording")
+            //Turn on torch if flash is on
+            toggleTorchMode()
+            
             let url = NSURL(fileURLWithPath: videoPath)
             
+            print("Beginning video recording")
             movieFileOutput.startRecordingToOutputFileURL(url, recordingDelegate: VideoDelegate())
+            
         }
         else if gestureRecognizer.state == UIGestureRecognizerState.Ended {
             
@@ -305,6 +308,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             print("Ending video recording")
             movieFileOutput.stopRecording()
             captureSession.stopRunning()
+            
+            //Turn off torch if it was turned on
+            toggleTorchMode()
             
             //Change elements on screen
             self.backButton.hidden = true
@@ -335,8 +341,31 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         }
     }
     
-    //Function to loop the video taken
+    internal func toggleTorchMode() {
+        
+        //Toggle torch mode if user wants flash and if device has flash
+        if flashToggle && captureDevice!.hasFlash {
+            
+            do {
+                try captureDevice!.lockForConfiguration()
+            } catch _ {print("Error getting loc for device")}
+            
+            if captureDevice!.torchMode == AVCaptureTorchMode.Off {
+                
+                captureDevice!.torchMode = AVCaptureTorchMode.On
+                captureDevice!.unlockForConfiguration()
+            }
+            else {
+                
+                captureDevice!.torchMode = AVCaptureTorchMode.Off
+                captureDevice!.unlockForConfiguration()
+            }
+        }
+    }
+    
     internal func restartVideoFromBeginning()  {
+        
+        //Function to loop the video taken
         
         //create a CMTime for zero seconds so we can go back to the beginning
         let seconds : Int64 = 0
@@ -353,9 +382,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     @IBAction func closePhoto(sender: AnyObject) {
         
         //Begin camera session again, stop video, & toggle buttons
-        captureSession.startRunning()
         moviePlayer.player = nil
         moviePlayer.removeFromSuperlayer()
+        captureSession.startRunning()
         clearVideoTempFile()
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true

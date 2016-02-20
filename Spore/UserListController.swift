@@ -30,6 +30,7 @@ class UserListController: UITableViewController {
     
     @IBOutlet var table: UITableView!
     
+    
     override func viewDidLoad() {
         
         //Load view as usual
@@ -52,7 +53,6 @@ class UserListController: UITableViewController {
         //Check user login status
         print("Checking user login status")
         if userDefaults.objectForKey("userName") != nil {
-            
             
             //Check if user is banned in background
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
@@ -428,6 +428,7 @@ class UserListController: UITableViewController {
                             print("Adding video player")
                             activity.stopAnimating()
                             
+                            grandparent.snap.userInteractionEnabled = true
                             grandparent.snap.backgroundColor = UIColor.blackColor()
                             grandparent.moviePlayer.frame = grandparent.snap.bounds
                             grandparent.snap.layer.addSublayer(grandparent.moviePlayer)
@@ -442,7 +443,6 @@ class UserListController: UITableViewController {
                 })
             }
             else {
-                
                 
                 grandparent.snap.file = objectToDisplay
                 
@@ -464,6 +464,7 @@ class UserListController: UITableViewController {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             //Decode and display image for user
+                            grandparent.snap.userInteractionEnabled = true
                             grandparent.snap.alpha = 1
                         })
                     }
@@ -560,7 +561,13 @@ class UserListController: UITableViewController {
     internal func getCountryImage(countryCode: String) -> UIImage {
         
         let link  = "Countries/" + countryCode + "/128.png"
-        return UIImage(named: link)!
+        
+        if let image = UIImage(named: link) {
+            
+            return image
+        }
+        
+        return UIImage(named: "Countries/Unknown/128.png")!
     }
     
     
