@@ -117,6 +117,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         super.viewWillAppear(true)
     }
     
+    
     override func viewDidLayoutSubviews() {
         
         //Adjusts camera to the screen after loading view
@@ -341,6 +342,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         }
     }
     
+    
     internal func toggleTorchMode() {
         
         //Toggle torch mode if user wants flash and if device has flash
@@ -362,6 +364,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             }
         }
     }
+    
     
     internal func restartVideoFromBeginning()  {
         

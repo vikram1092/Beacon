@@ -310,9 +310,9 @@ class UserListController: UITableViewController {
         
         //Configure image
         
-        let color = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
+        //let color = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
         imageView.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        imageView.tintColor = color
+        //imageView.tintColor = color
         
         //Configure text
         titleView.text = getCountryName(countryCode as! String)

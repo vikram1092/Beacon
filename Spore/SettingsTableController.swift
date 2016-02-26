@@ -57,6 +57,8 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     }
     
     
+    
+    
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         
         if(navigationController!.viewControllers.count > 1){
