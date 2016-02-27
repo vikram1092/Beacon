@@ -86,6 +86,7 @@ class UserListController: UITableViewController {
     }
     
     
+    //Show alert if user is banned
     internal func userIsBanned() {
     
         let query = PFQuery(className: "users")
@@ -296,7 +297,7 @@ class UserListController: UITableViewController {
         //Initialize variables:
         //Array is printed backwards so userListLength is initialized
         print("Reached cell" + String(indexPath.row))
-        let cell = tableView.dequeueReusableCellWithIdentifier("Unread")!
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
         let imageView = cell.viewWithTag(100) as! UIImageView
         let titleView = cell.viewWithTag(101) as! UILabel
         let subTitleView = cell.viewWithTag(102) as! UILabel
@@ -350,6 +351,79 @@ class UserListController: UITableViewController {
     internal override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return userList.count
+    }
+    
+    
+    internal override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        
+        //Declare spam button with functionality
+        let spam = UITableViewRowAction(style: .Normal, title: "Spam") { (action, index) -> Void in
+            
+            print("Marked as spam")
+            
+            //Do in background
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+                
+                //Get user from table and ban
+                let userListLength = self.userList.count - 1
+                let object = self.userList[userListLength - indexPath.row]
+                object.setObject(true, forKey: "spam")
+                object.saveInBackground()
+                
+                //Run method to check if user ban-worthy
+                self.banUser(object.objectForKey("sentBy") as! String)
+            })
+            
+            //End editing view
+            tableView.setEditing(false, animated: true)
+        }
+        
+        return [spam]
+    }
+    
+    
+    internal func banUser(sentBy: String) {
+        
+        print(sentBy)
+        
+        //Count rows reported belonging to user
+        let countQuery = PFQuery(className: "photo")
+        countQuery.whereKey("sentBy", equalTo: sentBy)
+        countQuery.whereKey("spam", equalTo: true)
+        countQuery.findObjectsInBackgroundWithBlock { (rows, rowsError) -> Void in
+            
+            //Display error getting row count
+            if rowsError != nil {
+                print("Error retrieving row count: \(rowsError)")
+            }
+            //Ban user if this is the second strike
+            else if rows!.count > 1 {
+                
+                //Query to ban user
+                print(rows!.count)
+                let query = PFQuery(className: "users")
+                query.whereKey("email", equalTo: sentBy)
+                query.getFirstObjectInBackgroundWithBlock({ (userObject, userError) -> Void in
+                    
+                    if userError != nil {
+                        
+                        //Display error getting result
+                        print("Error retreiving user: \(userError) ")
+                    }
+                    else if userObject == nil {
+                        
+                        //Print error getting user
+                        print("Error retreiving user: User does not exist to mark as spam")
+                    }
+                    else {
+                        
+                        //Update banned flag for user in database
+                        userObject!.setObject(true, forKey: "banned")
+                        userObject!.saveInBackground()
+                    }
+                })
+            }
+        }
     }
     
     
