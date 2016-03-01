@@ -48,6 +48,11 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
+    override func viewDidAppear(animated: Bool) {
+        
+        super.viewDidAppear(true)
+    }
+    
     internal func loadUserList() {
         
         //Retreive local user photo list
@@ -209,6 +214,11 @@ class MapController: UIViewController, MKMapViewDelegate {
         return polylineRenderer
     }
     
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        
+        return UIStatusBarStyle.Default
+    }
     
     internal func delay(delay: Double, closure:()->()) {
         

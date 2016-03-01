@@ -31,6 +31,7 @@
 		D154E7241C478B2400CF3A63 /* ProfilePicture.png in Resources */ = {isa = PBXBuildFile; fileRef = D154E7231C478B2400CF3A63 /* ProfilePicture.png */; };
 		D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BBFD11C7358AF00C0CC6E /* SnapController.swift */; };
 		D17439421C48000C005CF819 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17439411C48000C005CF819 /* NavigationController.swift */; };
+		D176D4731C852077004A812E /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = D176D4721C852077004A812E /* Line.swift */; };
 		D1785A561C3F68280020AD99 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1785A551C3F68280020AD99 /* CameraController.swift */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
 		D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */; };
@@ -90,6 +91,7 @@
 		D154E7231C478B2400CF3A63 /* ProfilePicture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProfilePicture.png; sourceTree = "<group>"; };
 		D15BBFD11C7358AF00C0CC6E /* SnapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapController.swift; sourceTree = "<group>"; };
 		D17439411C48000C005CF819 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationController.swift; path = ../NavigationController.swift; sourceTree = "<group>"; };
+		D176D4721C852077004A812E /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		D1785A551C3F68280020AD99 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
 		D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrivacyPolicyController.swift; path = ../PrivacyPolicyController.swift; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 			children = (
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
 				D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */,
+				D176D4721C852077004A812E /* Line.swift */,
 				D15BBFD11C7358AF00C0CC6E /* SnapController.swift */,
 				D1A3E8A01C78F70A00E115FC /* TabBarController.swift */,
 				D1B9C72B1C22608600D9AEE7 /* MainController.swift */,
@@ -458,6 +461,7 @@
 				D144F1DF1C43F6E300E07700 /* MapController.swift in Sources */,
 				D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */,
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
+				D176D4731C852077004A812E /* Line.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
 				D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */,

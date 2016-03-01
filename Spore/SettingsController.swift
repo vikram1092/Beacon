@@ -25,6 +25,17 @@ class SettingsController: UIViewController {
         
     }
     
+    override func viewDidAppear(animated: Bool) {
+        
+        super.viewDidAppear(true)
+    }
+    
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        
+        return UIStatusBarStyle.LightContent
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

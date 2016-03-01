@@ -16,7 +16,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     @IBOutlet var blurView: UIVisualEffectView!
     @IBOutlet var imageView: UIImageView!
-    @IBOutlet var bannedButton: UIButton!
+    @IBOutlet var alertButton: UIButton!
     @IBOutlet var loginButton: FBSDKLoginButton!
     var userName = ""
     var userEmail = ""
@@ -27,37 +27,33 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     override func viewDidLoad() {
         
         //Initialize UI objects
-        bannedButton.alpha = 0
+        alertButton.alpha = 0
         blurView.effect = UIBlurEffect(style: .Light)
         //let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
         //blurView.frame = self.view.bounds
         imageView.addSubview(blurView)
-        
-        //Check for login status
-        loginButton = FBSDKLoginButton.init()
-        loginButton.frame = CGRect(x: loginButton.frame.origin.x, y: loginButton.frame.origin.y, width: CGFloat(200), height: CGFloat(50))
 
-        //Obtain permissions from Facebook
+        //Set permissions to get from Facebook
         loginButton.readPermissions = ["public_profile", "email", "user_friends"]
         
         // Configure login button
         loginButton.delegate = self
-        loginButton.center = self.view.center
-        self.view.addSubview(loginButton)
         
         //Load as normal
         super.viewDidLoad()
     }
     
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        
+        return UIStatusBarStyle.LightContent
     }
     
     
+    //Configure Facebook login button
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult loginResult: FBSDKLoginManagerLoginResult!, error: NSError!) {
         
-        if ((error) != nil){
+        if (error != nil){
             //Process error
             print("Facebook Login Error: " + error.description)
         }
@@ -69,6 +65,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             //Call function to check with database
             print("User Logged In: checking with database")
             checkWithDatabase()
+            
+            //Hide button
+            loginButton.alpha = 0
         }
     }
     
@@ -107,7 +106,11 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         
                         //If user is banned, show message stating ban
                         if userBanned == true {
-                            self.displaybannedButton()
+                            
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                
+                                self.displayAlertButton(self.bannedText)
+                            })
                         }
                         else {
                             
@@ -154,15 +157,15 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     
-    internal func displaybannedButton() {
+    internal func displayAlertButton(text: String) {
         
-        self.bannedButton.setTitle(self.bannedText, forState: .Normal)
-        self.bannedButton.sizeToFit()
+        self.alertButton.setTitle(text, forState: .Normal)
+        self.alertButton.sizeToFit()
         
         UIView.animateWithDuration(0.4) { () -> Void in
             
             self.loginButton.alpha = 0
-            self.bannedButton.alpha = 1
+            self.alertButton.alpha = 1
         }
         
         //Logout user
@@ -171,12 +174,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     
-    @IBAction func bannedLabelPressed(sender: AnyObject) {
+    @IBAction func alertButtonPressed(sender: AnyObject) {
         
         UIView.animateWithDuration(0.4) { () -> Void in
             
             self.loginButton.alpha = 1
-            self.bannedButton.alpha = 0
+            self.alertButton.alpha = 0
         }
     }
     
@@ -214,7 +217,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         }
         else {
             
-            //What to do?
+            //Go to user list table
+            self.tabBarController?.selectedIndex = 0
         }
     }
     

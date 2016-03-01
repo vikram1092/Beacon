@@ -632,6 +632,20 @@ class UserListController: UITableViewController {
     }
     
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        
+        if segue.identifier == "UserListToLoginSegue" && segue.destinationViewController.isViewLoaded() {
+            
+            let loginController = segue.destinationViewController as! LoginController
+            
+            //Set buttons on appearance
+            loginController.loginButton.alpha = 1
+            loginController.alertButton.alpha = 0
+        }
+    }
+    
+    
     internal func getCountryImage(countryCode: String) -> UIImage {
         
         let link  = "Countries/" + countryCode + "/128.png"
