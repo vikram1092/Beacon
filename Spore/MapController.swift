@@ -22,26 +22,13 @@ class MapController: UIViewController, MKMapViewDelegate {
     var countryColor = UIColor()
     
     @IBOutlet var mapView: MKMapView!
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
     
     
     override func viewDidLoad() {
         
         //Run view load as normal
         super.viewDidLoad()
-        
-        /*
-        //Retreive user details
-        userName = userDefaults.objectForKey("userName") as! String
-        userEmail = userDefaults.objectForKey("userEmail") as! String
-        
-        let camera = GMSCameraPosition.cameraWithLatitude(-33.86,
-            longitude: 151.20, zoom: 10)
-        
-        let mapView = GMSMapView.mapWithFrame(CGRectZero, camera: camera)
-        mapView.myLocationEnabled = true
-        
-        //mapView.animateToLocation(mapView.myLocation.coordinate)
-        */
         
         //Load the user list onto the map
         loadUserList()
@@ -85,6 +72,12 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func processUserList() {
         
+        
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            self.activityIndicator.startAnimating()
+        }
+        
         //Get JSON data
         print("Starting to display userList")
         let filePath = NSBundle.mainBundle().pathForResource("Countries", ofType: "geojson")
@@ -107,6 +100,11 @@ class MapController: UIViewController, MKMapViewDelegate {
                     getDetailsToDrawCountry(element.objectForKey("countryCode") as! String)
                     loadedCountries.append(element.objectForKey("countryCode") as! String)
                 }
+            }
+            
+            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                
+                self.activityIndicator.stopAnimating()
             }
         }
         catch let error as NSError { print("Error getting GeoJSON data:" + error.description) }

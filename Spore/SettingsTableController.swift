@@ -17,17 +17,21 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     
     @IBOutlet var logoutButton: UIView!
     @IBOutlet var profilePicture: UIImageView!
-    
+    @IBOutlet var usernameCell: UILabel!
     
     override func viewDidLoad() {
         //Run view load as normal
         super.viewDidLoad()
         
-        // Enable swipe back when no navigation bar
-        self.navigationController!.interactivePopGestureRecognizer!.delegate = self
+        // Enable swipe back
+        //self.navigationController!.interactivePopGestureRecognizer!.delegate = self
         
+        //Configure profile picture
         profilePicture.layer.cornerRadius = profilePicture.frame.size.width/2
         profilePicture.clipsToBounds = true
+        
+        //Configure username adress label
+        usernameCell.text = userDefaults.valueForKey("userName") as? String
     }
     
     

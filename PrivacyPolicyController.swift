@@ -15,7 +15,9 @@ class PrivacyPolicyController: UIViewController {
     
     @IBOutlet var privacyPolicy: UILabel!
     
-    let privacyText = "PRIVACY POLICY \n \n Your pictures will not be shared with random people. "
+    let privacyText = "PRIVACY POLICY \n \n Your pictures will be shared with random people, but not your identity. "
+    
+    
     
     override func viewDidLoad() {
         
@@ -24,6 +26,7 @@ class PrivacyPolicyController: UIViewController {
         
         privacyPolicy.text = privacyText
     }
+    
     
     override func didReceiveMemoryWarning() {
         

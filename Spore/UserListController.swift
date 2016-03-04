@@ -27,6 +27,7 @@ class UserListController: UITableViewController {
     let fileManager = NSFileManager.defaultManager()
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
     let userDefaults = NSUserDefaults.standardUserDefaults()
+    let calendar = NSCalendar.currentCalendar()
     
     @IBOutlet var table: UITableView!
     
@@ -157,6 +158,7 @@ class UserListController: UITableViewController {
         //Retreive local user photo list
         let query = PFQuery(className: "photo")
         query.fromLocalDatastore()
+        query.whereKey("receivedBy", equalTo: userEmail)
         
         print("Querying localuserList")
         query.addAscendingOrder("updatedAt")
@@ -301,6 +303,7 @@ class UserListController: UITableViewController {
         let imageView = cell.viewWithTag(100) as! UIImageView
         let titleView = cell.viewWithTag(101) as! UILabel
         let subTitleView = cell.viewWithTag(102) as! UILabel
+        let progressView = cell.viewWithTag(105) as! UIProgressView
         
         let userListLength = userList.count - 1
         print(userListLength)
@@ -310,14 +313,20 @@ class UserListController: UITableViewController {
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
         //Configure image
-        
-        //let color = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 0.5)
         imageView.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        //imageView.tintColor = color
+        
+        //Configure time left for photo
+        if withinTime(date) {
+            progressView.alpha = 1
+            progressView.progress = getTimeFraction(date)
+        }
+        else {
+            print("Hiding progress view")
+            progressView.alpha = 0
+        }
         
         //Configure text
         titleView.text = getCountryName(countryCode as! String)
-        titleView.textColor = getColorForCell(date)
         
         //Configure subtext
         subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
@@ -677,6 +686,8 @@ class UserListController: UITableViewController {
     }
     
     
+    //Not used anymore, will remove if confirmed in more testing that UI will go another way
+    /*
     internal func getColorForCell(date: NSDate) -> UIColor {
         
         if withinTime(date) {
@@ -687,16 +698,15 @@ class UserListController: UITableViewController {
             
             return UIColor(red: CGFloat(0.4), green: CGFloat(0.4), blue: CGFloat(0.4), alpha: 1)
         }
-    }
+    }*/
     
     
     internal func withinTime(date: NSDate) -> BooleanLiteralType {
         
         //Get calendar and current date, compare it to given date
-        let calendar = NSCalendar.currentCalendar()
         let difference = calendar.components([.Day, .WeekOfYear, .Month, .Year], fromDate: date, toDate: NSDate(), options: [])
         
-        //Comapre all components of the difference to see if it's greater than 2 days
+        //Compare all components of the difference to see if it's greater than 2 days
         if difference.year > 0 || difference.month > 0 || difference.weekOfYear > 0 || difference.day >= 2
         {
             return false
@@ -706,9 +716,19 @@ class UserListController: UITableViewController {
     }
     
     
+    internal func getTimeFraction(date: NSDate) -> Float {
+        
+        //Get calendar and current date, compare it to given date
+        let difference = calendar.components([.Day, .Hour, .Minute], fromDate: date, toDate: NSDate(), options: [])
+        let timeElapsed = (difference.day * 24 * 60) + (difference.hour * 60) + (difference.minute)
+        
+        //Return fraction of elapsed time over two days
+        return 1.0 - Float(timeElapsed)/2880
+        
+    }
+    
     internal func timeSinceDate(date:NSDate, numericDates:Bool) -> String {
         
-        let calendar = NSCalendar.currentCalendar()
         let now = NSDate()
         let earliest = now.earlierDate(date)
         let latest = (earliest == now) ? date : now
