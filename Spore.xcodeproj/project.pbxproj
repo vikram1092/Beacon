@@ -12,6 +12,10 @@
 		D136589A1C55BC4A005AEC61 /* backButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D13658981C55BC4A005AEC61 /* backButton@x3.png */; };
 		D136589E1C55BF5C005AEC61 /* cameraButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D136589C1C55BF5C005AEC61 /* cameraButton.png */; };
 		D136589F1C55BF5C005AEC61 /* cameraButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D136589D1C55BF5C005AEC61 /* cameraButton@x3.png */; };
+		D1372FD71C959274009DCA29 /* flashDisabledButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD31C959273009DCA29 /* flashDisabledButton.png */; };
+		D1372FD81C959274009DCA29 /* flashDisabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */; };
+		D1372FD91C959274009DCA29 /* flashEnabledButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD51C959274009DCA29 /* flashEnabledButton.png */; };
+		D1372FDA1C959274009DCA29 /* flashEnabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */; };
 		D144F1DF1C43F6E300E07700 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D144F1DE1C43F6E300E07700 /* MapController.swift */; };
 		D144F1E91C440F1700E07700 /* globe.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E31C440F1700E07700 /* globe.png */; };
 		D144F1EA1C440F1700E07700 /* globe@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E41C440F1700E07700 /* globe@x3.png */; };
@@ -72,6 +76,10 @@
 		D13658981C55BC4A005AEC61 /* backButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "backButton@x3.png"; path = "../../Spore Images/backButton@x3.png"; sourceTree = "<group>"; };
 		D136589C1C55BF5C005AEC61 /* cameraButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cameraButton.png; path = "../../Spore Images/cameraButton.png"; sourceTree = "<group>"; };
 		D136589D1C55BF5C005AEC61 /* cameraButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cameraButton@x3.png"; path = "../../Spore Images/cameraButton@x3.png"; sourceTree = "<group>"; };
+		D1372FD31C959273009DCA29 /* flashDisabledButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flashDisabledButton.png; sourceTree = "<group>"; };
+		D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashDisabledButton@x3.png"; sourceTree = "<group>"; };
+		D1372FD51C959274009DCA29 /* flashEnabledButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flashEnabledButton.png; sourceTree = "<group>"; };
+		D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashEnabledButton@x3.png"; sourceTree = "<group>"; };
 		D144F1DE1C43F6E300E07700 /* MapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
 		D144F1E31C440F1700E07700 /* globe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = globe.png; path = "../../Spore Images/globe.png"; sourceTree = "<group>"; };
 		D144F1E41C440F1700E07700 /* globe@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "globe@x3.png"; path = "../../Spore Images/globe@x3.png"; sourceTree = "<group>"; };
@@ -151,6 +159,10 @@
 		D136589B1C55BC59005AEC61 /* CameraButtons */ = {
 			isa = PBXGroup;
 			children = (
+				D1372FD31C959273009DCA29 /* flashDisabledButton.png */,
+				D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */,
+				D1372FD51C959274009DCA29 /* flashEnabledButton.png */,
+				D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */,
 				D1DE875B1C27A92400E48721 /* photoButton.png */,
 				D144F1F51C44178500E07700 /* SendPhoto.png */,
 				D144F1F61C44178500E07700 /* SendPhoto@x3.png */,
@@ -359,6 +371,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1372FD71C959274009DCA29 /* flashDisabledButton.png in Resources */,
+				D1372FD81C959274009DCA29 /* flashDisabledButton@x3.png in Resources */,
+				D1372FDA1C959274009DCA29 /* flashEnabledButton@x3.png in Resources */,
 				D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */,
 				D144F1F21C4412D500E07700 /* CancelPhoto@x3.png in Resources */,
 				D1C083E51C42003000A9C281 /* settingsButton@x3.png in Resources */,
@@ -369,6 +384,7 @@
 				D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */,
 				D144F1ED1C440F1700E07700 /* userSettings.png in Resources */,
 				D144F1F11C4412D500E07700 /* CancelPhoto.png in Resources */,
+				D1372FD91C959274009DCA29 /* flashEnabledButton.png in Resources */,
 				D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */,
 				D144F1EC1C440F1700E07700 /* UserList@x3.png in Resources */,
 				D144F1E91C440F1700E07700 /* globe.png in Resources */,

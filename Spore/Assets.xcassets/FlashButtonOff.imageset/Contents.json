@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "backButton.png",
+      "filename" : "flashDisabledButton.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "backButton-1.png",
+      "filename" : "flashDisabledButton@x3.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "backButton@x3.png",
+      "filename" : "flashDisabledButton@x3-1.png",
       "scale" : "3x"
     }
   ],

@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "CameraSwitch.png",
+      "filename" : "flashEnabledButton.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "CameraSwitch-1.png",
+      "filename" : "flashEnabledButton@x3.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "CameraSwitch@x3.png",
+      "filename" : "flashEnabledButton@x3-1.png",
       "scale" : "3x"
     }
   ],

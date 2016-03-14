@@ -23,9 +23,6 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         //Run view load as normal
         super.viewDidLoad()
         
-        // Enable swipe back
-        //self.navigationController!.interactivePopGestureRecognizer!.delegate = self
-        
         //Configure profile picture
         profilePicture.layer.cornerRadius = profilePicture.frame.size.width/2
         profilePicture.clipsToBounds = true

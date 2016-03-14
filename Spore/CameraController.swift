@@ -19,9 +19,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     @IBOutlet var backButton: UIButton!
     @IBOutlet var closeButton: UIButton!
     @IBOutlet var photoSendButton: UIButton!
+    @IBOutlet var videoDurationLabel: UILabel!
     @IBOutlet var cameraSwitchButton: UIButton!
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
-    
     
     var previewLayer = AVCaptureVideoPreviewLayer?()
     var captureSession = AVCaptureSession()
@@ -30,11 +30,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     var locManager = CLLocationManager()
     var userLocation = PFGeoPoint()
     var userCountryCode = ""
+    var userCountryReceived = false
     var userName = ""
     var userEmail = ""
     var flashToggle = false
     let videoPath = NSTemporaryDirectory() + "userVideo.mov"
     var moviePlayer = AVPlayerLayer()
+    var videoDuration = 0
+    var videoTimer = NSTimer()
     let fileManager = NSFileManager.defaultManager()
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
@@ -101,6 +104,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Initialize buttons
         closeButton.hidden = true
         photoSendButton.hidden = true
+        videoDurationLabel.hidden = true
         flashButton.hidden = false
         backButton.hidden = false
         captureButton.hidden = false
@@ -143,8 +147,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         movieFileOutput = AVCaptureMovieFileOutput()
         movieFileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale())
         captureSession.addOutput(stillImageOutput)
-        captureSession.addOutput(movieFileOutput)
-        //captureSession.addOutput()
         
         do {
             print("add inputs")
@@ -268,7 +270,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     internal func takePhoto() {
         
-        print("Pressed!")
         
         //Capture image
         stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
@@ -279,6 +280,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             self.captureSession.stopRunning()
             
         }
+        
+        print("Pressed!")
         
         //Change elements on screen
         self.backButton.hidden = true
@@ -292,15 +295,36 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     internal func takeVideo(gestureRecognizer: UILongPressGestureRecognizer) {
         
+        
         if gestureRecognizer.state == UIGestureRecognizerState.Began {
+            
+            //Change elements on screen
+            self.backButton.hidden = true
+            self.captureButton.hidden = true
+            self.flashButton.hidden = true
+            self.cameraSwitchButton.hidden = true
+            self.videoDurationLabel.hidden = false
+            self.closeButton.hidden = false
+            self.photoSendButton.hidden = false
+            
+            //Add movie file output
+            print("Adding output")
+            captureSession.addOutput(movieFileOutput)
             
             //Turn on torch if flash is on
             toggleTorchMode()
             
+            //Set path for video
             let url = NSURL(fileURLWithPath: videoPath)
             
+            //Start recording
             print("Beginning video recording")
             movieFileOutput.startRecordingToOutputFileURL(url, recordingDelegate: VideoDelegate())
+            
+            //Start timer for video
+            videoDuration = 0
+            videoDurationLabel.text = "0"
+            videoTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("incrementTimer"), userInfo: nil, repeats: true)
             
         }
         else if gestureRecognizer.state == UIGestureRecognizerState.Ended {
@@ -309,6 +333,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             print("Ending video recording")
             movieFileOutput.stopRecording()
             captureSession.stopRunning()
+            videoTimer.invalidate()
+            
+            //Remove movie file output
+            captureSession.removeOutput(movieFileOutput)
             
             //Turn off torch if it was turned on
             toggleTorchMode()
@@ -338,8 +366,27 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             
             //Play video
             moviePlayer.player!.play()
+            dispatch_after(1, dispatch_get_main_queue(), { () -> Void in
+                
+                self.videoTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("decrementTimer"), userInfo: nil, repeats: true)
+            })
             
         }
+    }
+    
+    
+    internal func incrementTimer() {
+        
+        videoDuration += 1
+        videoDurationLabel.text = String(videoDuration)
+    }
+    
+    
+    internal func decrementTimer() {
+        
+        var temp = Int(videoDurationLabel.text!)!
+        temp -= 1
+        videoDurationLabel.text = String(temp)
     }
     
     
@@ -368,15 +415,23 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     internal func restartVideoFromBeginning()  {
         
-        //Function to loop the video taken
         
-        //create a CMTime for zero seconds so we can go back to the beginning
+        //Create a CMTime for zero seconds so we can go back to the beginning
         let seconds : Int64 = 0
         let preferredTimeScale : Int32 = 1
         let seekTime : CMTime = CMTimeMake(seconds, preferredTimeScale)
         
         moviePlayer.player!.seekToTime(seekTime)
         
+        //Reset video duration label
+        videoTimer.invalidate()
+        videoDurationLabel.text = String(videoDuration)
+        dispatch_after(1, dispatch_get_main_queue(), { () -> Void in
+            
+            self.videoTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("decrementTimer"), userInfo: nil, repeats: true)
+        })
+        
+        //Play movie
         moviePlayer.player!.play()
         
     }
@@ -389,8 +444,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         moviePlayer.removeFromSuperlayer()
         captureSession.startRunning()
         clearVideoTempFile()
+        
+        //Update screen elements
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true
+        self.videoDurationLabel.hidden = true
         self.flashButton.hidden = false
         self.backButton.hidden = false
         self.captureButton.hidden = false
@@ -425,13 +483,26 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     
     @IBAction func sendPhoto(sender: AnyObject) {
+    
         
         //Kick off activity indicator & hide button
         activityIndicator.startAnimating()
         photoSendButton.hidden = true
         
-        //Update user photos
-        updateUserPhotos()
+        
+        if userCountryCode == "" {
+            
+            getUserLocation()
+            sendPhotoToDatabase()
+        }
+        else {
+            sendPhotoToDatabase()
+        }
+    }
+    
+    
+    internal func sendPhotoToDatabase() {
+        
         
         let photoObject = PFObject(className:"photo")
         
@@ -472,8 +543,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             (success: Bool, error: NSError?) -> Void in
             if (success) {
                 
-                // The photo has been saved, go back to the main screen
+                // The photo has been saved, update user photos
                 print("New photo saved!")
+                self.updateUserPhotos()
                 
                 //Segue back to table
                 self.activityIndicator.stopAnimating()
@@ -547,8 +619,17 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             }
             else if placemarks!.count > 0 {
                 
-                print("Geo location country code: " + String(placemarks![0].ISOcountryCode))
+                //Get and save user's country
+                print("Geo location country code: " + String(placemarks![0].ISOcountryCode!))
                 self.userCountryCode = placemarks![0].ISOcountryCode!.lowercaseString
+                
+                //Save counry as user country
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    print("Saving user's country")
+                    self.userDefaults.setObject(self.userCountryCode, forKey: "userCountry")
+                })
+                
             }
             else {
                 print("Problem with the data received from geocoder")

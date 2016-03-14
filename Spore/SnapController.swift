@@ -128,10 +128,9 @@ class SnapController: UIViewController {
         return childController
     }
     
-    
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    override func childViewControllerForStatusBarStyle() -> UIViewController? {
         
-        return UIStatusBarStyle.LightContent
+        return childController
     }
     
     

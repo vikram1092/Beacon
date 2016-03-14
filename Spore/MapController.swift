@@ -73,6 +73,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     internal func processUserList() {
         
         
+        //Start activity indicator
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             
             self.activityIndicator.startAnimating()
@@ -102,6 +103,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 }
             }
             
+            //Stop activity indicator
             dispatch_async(dispatch_get_main_queue()) { () -> Void in
                 
                 self.activityIndicator.stopAnimating()

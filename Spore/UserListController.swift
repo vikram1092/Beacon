@@ -23,6 +23,7 @@ class UserListController: UITableViewController {
     var userList = Array<PFObject>()
     var userName = ""
     var userEmail = ""
+    var userCountry = ""
     var userToReceivePhotos = 0
     let fileManager = NSFileManager.defaultManager()
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
@@ -51,6 +52,12 @@ class UserListController: UITableViewController {
             userEmail = userDefaults.objectForKey("userEmail") as! String
         }
         
+        if userDefaults.objectForKey("userCountry") != nil {
+            
+            userCountry = userDefaults.objectForKey("userCountry") as! String
+        }
+        
+        
         //Check user login status
         print("Checking user login status")
         if userDefaults.objectForKey("userName") != nil {
@@ -64,12 +71,13 @@ class UserListController: UITableViewController {
             //Get userToReceivePhotos
             if userDefaults.integerForKey("userToReceivePhotos") > 0 {
                 userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
+                print("usertoReceivePhotos: " + String(userToReceivePhotos))
             }
             
             //Load user list if it hasn't loaded, or else update what's loaded
             print("viewDidAppear: " + String(viewLoad))
             if viewLoad {
-                updateUserList()
+                updateUserList(false)
             }
             else {
                 
@@ -87,9 +95,9 @@ class UserListController: UITableViewController {
     }
     
     
-    //Show alert if user is banned
     internal func userIsBanned() {
-    
+        
+        //Show alert if user is banned
         let query = PFQuery(className: "users")
         print("user email: " + userEmail)
         query.whereKey("email", equalTo: userEmail)
@@ -132,6 +140,7 @@ class UserListController: UITableViewController {
             //Reset name and email local variables
             self.userDefaults.setObject(nil, forKey: "userName")
             self.userDefaults.setObject(nil, forKey: "userEmail")
+            self.userDefaults.setObject(nil, forKey: "userCountry")
         }
     }
     
@@ -181,14 +190,14 @@ class UserListController: UITableViewController {
                     print("Reloading table after local retreival")
                     self.table.reloadData()
                     print("Adding new photos")
-                    self.updateUserList()
+                    self.updateUserList(false)
                 })
             }
         }
     }
     
     
-    internal func updateUserList() {
+    internal func updateUserList(sameCountry: Bool) {
         
         //Initialize for subtracting from userToReceivePhotos list
         var userReceivedPhotos = 0
@@ -199,24 +208,39 @@ class UserListController: UITableViewController {
             //Get unsent photos in the database equal to how many the user gets
             let query = PFQuery(className:"photo")
             query.whereKeyDoesNotExist("receivedBy")
-            //query.whereKey("isVideo", equalTo: true)
+            
+            if !sameCountry {
+                
+                print("Adding country restriction")
+                query.whereKey("countryCode", notEqualTo: userCountry)
+            }
             //query.whereKey("sentBy", notEqualTo: userEmail)
             query.limit = userToReceivePhotos
             
             //Query with above conditions
             query.findObjectsInBackgroundWithBlock({ (photos, error) -> Void in
                 
-                
                 if error != nil {
                     print("Photo query error: " + error!.description)
                 }
                 else if photos!.count < 1 {
                     
-                    //Let the user know that the database is empty
-                    print("Database empty.")
-                    let alert = UIAlertController(title: "Photos To Come!", message: "People will be sharing their pics very soon, check back to see what you get!", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
+                    //Either recurse the same method with different parameters or end search
+                    if self.userToReceivePhotos > 0 {
+                        if sameCountry {
+                            
+                            //Let the user know that the database is empty
+                            print("Database empty.")
+                            let alert = UIAlertController(title: "Photos To Come!", message: "People will be sharing their pics very soon, check back to see what you get!", preferredStyle: UIAlertControllerStyle.Alert)
+                            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
+                            self.presentViewController(alert, animated: true, completion: nil)
+                        }
+                        else {
+                            
+                            //Query for pictures from the same country
+                            self.updateUserList(true)
+                        }
+                    }
                 }
                 else {
                     
@@ -269,11 +293,11 @@ class UserListController: UITableViewController {
                     })
                 }
                 
-                //Stop refreshing
 
             })
         }
         
+        //Stop refreshing
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             
             self.refreshControl!.endRefreshing()
@@ -284,7 +308,7 @@ class UserListController: UITableViewController {
     @IBAction func refreshControl(sender: AnyObject) {
         
         //Refresh data and reload table within that function
-        updateUserList()
+        updateUserList(false)
     }
     
     
@@ -686,21 +710,6 @@ class UserListController: UITableViewController {
     }
     
     
-    //Not used anymore, will remove if confirmed in more testing that UI will go another way
-    /*
-    internal func getColorForCell(date: NSDate) -> UIColor {
-        
-        if withinTime(date) {
-            
-            return UIColor(red: CGFloat(0), green: CGFloat(0), blue: CGFloat(0), alpha: 1)
-        }
-        else {
-            
-            return UIColor(red: CGFloat(0.4), green: CGFloat(0.4), blue: CGFloat(0.4), alpha: 1)
-        }
-    }*/
-    
-    
     internal func withinTime(date: NSDate) -> BooleanLiteralType {
         
         //Get calendar and current date, compare it to given date
@@ -726,6 +735,7 @@ class UserListController: UITableViewController {
         return 1.0 - Float(timeElapsed)/2880
         
     }
+    
     
     internal func timeSinceDate(date:NSDate, numericDates:Bool) -> String {
         

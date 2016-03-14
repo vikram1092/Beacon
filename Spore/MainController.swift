@@ -14,9 +14,11 @@ import AVFoundation
 
 class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDelegate {
     
+    
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     @IBOutlet var table: UIView!
+    
     
     override func viewDidLoad() {
         
@@ -34,6 +36,12 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        
+        return UIStatusBarStyle.LightContent
     }
     
 }

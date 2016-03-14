@@ -207,7 +207,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     internal func segueToNextView(identifier: String) {
         
-        if  self.tabBarController == nil {
+        
+        if self.tabBarController == nil {
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
@@ -219,6 +220,18 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             
             //Go to user list table
             self.tabBarController?.selectedIndex = 0
+        }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "LoginToMain" {
+            
+            let destinationController = segue.destinationViewController as! SnapController
+            let destinationChildController = destinationController.childController 
+            
+            destinationChildController.selectedIndex = 0
+            
         }
     }
     

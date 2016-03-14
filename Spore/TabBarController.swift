@@ -14,9 +14,13 @@ class TabBarController: UITabBarController {
     
     override func viewDidAppear(animated: Bool) {
         
-        
         self.setNeedsStatusBarAppearanceUpdate()
         super.viewDidAppear(true)
+    }
+    
+    override func childViewControllerForStatusBarStyle() -> UIViewController? {
+        
+        return self.selectedViewController
     }
     
     override func childViewControllerForStatusBarHidden() -> UIViewController? {
