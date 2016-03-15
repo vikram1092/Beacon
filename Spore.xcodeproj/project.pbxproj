@@ -38,6 +38,7 @@
 		D176D4731C852077004A812E /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = D176D4721C852077004A812E /* Line.swift */; };
 		D1785A561C3F68280020AD99 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1785A551C3F68280020AD99 /* CameraController.swift */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
+		D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17B2CD51C977BA100CD6782 /* CountryTable.swift */; };
 		D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */; };
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
 		D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D192652E1C60E4AC00517A8E /* Countries.geojson */; };
@@ -102,6 +103,7 @@
 		D176D4721C852077004A812E /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		D1785A551C3F68280020AD99 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
+		D17B2CD51C977BA100CD6782 /* CountryTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryTable.swift; sourceTree = "<group>"; };
 		D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrivacyPolicyController.swift; path = ../PrivacyPolicyController.swift; sourceTree = "<group>"; };
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		D192652E1C60E4AC00517A8E /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
 				D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */,
 				D176D4721C852077004A812E /* Line.swift */,
+				D17B2CD51C977BA100CD6782 /* CountryTable.swift */,
 				D15BBFD11C7358AF00C0CC6E /* SnapController.swift */,
 				D1A3E8A01C78F70A00E115FC /* TabBarController.swift */,
 				D1B9C72B1C22608600D9AEE7 /* MainController.swift */,
@@ -477,6 +480,7 @@
 				D144F1DF1C43F6E300E07700 /* MapController.swift in Sources */,
 				D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */,
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
+				D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */,
 				D176D4731C852077004A812E /* Line.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
