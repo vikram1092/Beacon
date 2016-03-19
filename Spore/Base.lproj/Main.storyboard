@@ -155,9 +155,10 @@
                                 <textAttributes key="titleTextAttributes">
                                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <offsetWrapper key="textShadowOffset" horizontal="0.0" vertical="0.0"/>
                                 </textAttributes>
                                 <items>
-                                    <navigationItem title="c o u n t r i e" id="FNA-nf-9kg"/>
+                                    <navigationItem id="FNA-nf-9kg"/>
                                 </items>
                             </navigationBar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cgw-w3-t6s">
@@ -199,6 +200,7 @@
                     <navigationItem key="navigationItem" id="cK4-7q-eyL"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
+                        <outlet property="navItem" destination="XhY-Ul-YGP" id="Nvy-oI-hi2"/>
                         <outlet property="table" destination="Heo-1G-5Mg" id="3d6-l3-FV1"/>
                     </connections>
                 </viewController>

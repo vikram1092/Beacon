@@ -35,6 +35,8 @@
 		D154E7241C478B2400CF3A63 /* ProfilePicture.png in Resources */ = {isa = PBXBuildFile; fileRef = D154E7231C478B2400CF3A63 /* ProfilePicture.png */; };
 		D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BBFD11C7358AF00C0CC6E /* SnapController.swift */; };
 		D17439421C48000C005CF819 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17439411C48000C005CF819 /* NavigationController.swift */; };
+		D174B6C51C9DC1050005F4C1 /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = D174B6C31C9DC1050005F4C1 /* Logo.png */; };
+		D174B6C61C9DC1050005F4C1 /* Logo@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D174B6C41C9DC1050005F4C1 /* Logo@x3.png */; };
 		D176D4731C852077004A812E /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = D176D4721C852077004A812E /* Line.swift */; };
 		D1785A561C3F68280020AD99 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1785A551C3F68280020AD99 /* CameraController.swift */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
@@ -100,6 +102,8 @@
 		D154E7231C478B2400CF3A63 /* ProfilePicture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProfilePicture.png; sourceTree = "<group>"; };
 		D15BBFD11C7358AF00C0CC6E /* SnapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapController.swift; sourceTree = "<group>"; };
 		D17439411C48000C005CF819 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationController.swift; path = ../NavigationController.swift; sourceTree = "<group>"; };
+		D174B6C31C9DC1050005F4C1 /* Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Logo.png; path = "../../Spore Images/Logo.png"; sourceTree = "<group>"; };
+		D174B6C41C9DC1050005F4C1 /* Logo@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Logo@x3.png"; path = "../../Spore Images/Logo@x3.png"; sourceTree = "<group>"; };
 		D176D4721C852077004A812E /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		D1785A551C3F68280020AD99 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
@@ -199,6 +203,8 @@
 				D136589B1C55BC59005AEC61 /* CameraButtons */,
 				D154E7231C478B2400CF3A63 /* ProfilePicture.png */,
 				D14907901C455F7500F2C635 /* Tangela.JPG */,
+				D174B6C31C9DC1050005F4C1 /* Logo.png */,
+				D174B6C41C9DC1050005F4C1 /* Logo@x3.png */,
 				D144F1FB1C44242600E07700 /* Zion Valley copy 2.png */,
 				D144F1E21C440DE700E07700 /* TabBarButtons */,
 				D1EC295B1C2E1E850014DE7E /* Countries */,
@@ -386,12 +392,14 @@
 				D144F1FC1C44242600E07700 /* Zion Valley copy 2.png in Resources */,
 				D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */,
 				D144F1ED1C440F1700E07700 /* userSettings.png in Resources */,
+				D174B6C51C9DC1050005F4C1 /* Logo.png in Resources */,
 				D144F1F11C4412D500E07700 /* CancelPhoto.png in Resources */,
 				D1372FD91C959274009DCA29 /* flashEnabledButton.png in Resources */,
 				D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */,
 				D144F1EC1C440F1700E07700 /* UserList@x3.png in Resources */,
 				D144F1E91C440F1700E07700 /* globe.png in Resources */,
 				D1B9C7211C2258B800D9AEE7 /* Assets.xcassets in Resources */,
+				D174B6C61C9DC1050005F4C1 /* Logo@x3.png in Resources */,
 				D144F1F41C4414A300E07700 /* CameraSwitch@x3.png in Resources */,
 				D14907911C455F7500F2C635 /* Tangela.JPG in Resources */,
 				D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */,
