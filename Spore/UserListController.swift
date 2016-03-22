@@ -325,10 +325,10 @@ class UserListController: UITableViewController {
         //Array is printed backwards so userListLength is initialized
         print("Reached cell" + String(indexPath.row))
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
-        let imageView = cell.viewWithTag(100) as! UIImageView
-        let titleView = cell.viewWithTag(101) as! UILabel
-        let subTitleView = cell.viewWithTag(102) as! UILabel
-        let progressView = cell.viewWithTag(105) as! UIProgressView
+        let imageView = cell.viewWithTag(5) as! UIImageView
+        let titleView = cell.viewWithTag(1) as! UILabel
+        let subTitleView = cell.viewWithTag(2) as! UILabel
+        let progressView = cell.viewWithTag(3) as! UIProgressView
         
         let userListLength = userList.count - 1
         print(userListLength)
@@ -337,8 +337,8 @@ class UserListController: UITableViewController {
         let timeString = timeSinceDate(date, numericDates: true)
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
-        //Configure image - change tag to identify row and add tap listener
-        imageView.tag = userListLength - indexPath.row
+        //Configure image - change tag to identify row and add offset to
+        //accommodate for other views with tags. Add tap listener.
         imageView.image = countryTable.getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         
         let tap = UITapGestureRecognizer(target: self, action: Selector("countrySelected:"))
@@ -374,8 +374,9 @@ class UserListController: UITableViewController {
         let gesture = sender as! UIGestureRecognizer
         let userListIndex = gesture.view!.tag
         
-        let object = userList[userListIndex] as! PFObject
-        let country = object.valueForKey("
+        //Get object with index subtracted by tag offset
+        let object = userList[userListIndex - 10]
+        let country = object.valueForKey("countryCode")
         
         //Test alert for function
         let alert = UIAlertController(title: "Country Tapped", message: "You like countries?", preferredStyle: UIAlertControllerStyle.Alert)
@@ -491,7 +492,7 @@ class UserListController: UITableViewController {
             let objectToDisplay = userList[index]["photo"] as! PFFile
             
             //Start UI animation
-            let activity = cell.viewWithTag(104) as! UIActivityIndicatorView
+            let activity = cell.viewWithTag(4) as! UIActivityIndicatorView
             activity.startAnimating()
             
             //Handle for videos and pictures uniqeuly
