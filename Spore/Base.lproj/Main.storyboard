@@ -197,9 +197,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="552" height="69.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
+                                        <imageView tag="100" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
                                             <rect key="frame" x="10" y="2" width="66" height="66"/>
-                                            <color key="tintColor" red="1" green="0.34725865743649309" blue="0.40397979417844609" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="tintColor" red="1" green="0.33817066879060609" blue="0.45211587372915474" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="66" id="7jk-7S-zmz"/>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="66" id="NNn-kK-LeU"/>
@@ -794,7 +794,7 @@
                         <color key="backgroundColor" red="0.88963011058981234" green="0.87336962445395316" blue="0.85254794897214459" alpha="1" colorSpace="calibratedRGB"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
-                                <color key="value" red="0.052529591039999997" green="0.11747857170000001" blue="0.29459199060000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="value" red="0.18696556289999999" green="0.38122219860000001" blue="0.680211126" alpha="1" colorSpace="calibratedRGB"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </tabBar>

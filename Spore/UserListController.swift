@@ -337,8 +337,12 @@ class UserListController: UITableViewController {
         let timeString = timeSinceDate(date, numericDates: true)
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
-        //Configure image
+        //Configure image - change tag to identify row and add tap listener
+        imageView.tag = userListLength - indexPath.row
         imageView.image = countryTable.getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        
+        let tap = UITapGestureRecognizer(target: self, action: Selector("countrySelected:"))
+        imageView.addGestureRecognizer(tap)
         
         //Configure time left for photo
         if withinTime(date) {
@@ -360,6 +364,24 @@ class UserListController: UITableViewController {
         
         
         return cell
+    }
+    
+    
+    internal func countrySelected(sender: AnyObject) {
+        
+        print("Country selected")
+        
+        let gesture = sender as! UIGestureRecognizer
+        let userListIndex = gesture.view!.tag
+        
+        let object = userList[userListIndex] as! PFObject
+        let country = object.valueForKey("
+        
+        //Test alert for function
+        let alert = UIAlertController(title: "Country Tapped", message: "You like countries?", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
 
