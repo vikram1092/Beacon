@@ -9,6 +9,7 @@
 import UIKit
 import Parse
 import AVFoundation
+import Photos
 
 class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
     
@@ -279,6 +280,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             self.cameraImage.image = data_image
             self.captureSession.stopRunning()
             
+            //Save image to local library
+            UIImageWriteToSavedPhotosAlbum(data_image!, self, nil, nil)
+            
         }
         
         print("Pressed!")
@@ -371,6 +375,19 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 self.videoTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("decrementTimer"), userInfo: nil, repeats: true)
             })
             
+            //Save video
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                
+                PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                    
+                    PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(NSURL(fileURLWithPath: self.videoPath))
+                    
+                    }, completionHandler: { success, error in
+                        if !success { NSLog("Failed to create video: %@", error!) }
+                })
+                
+            })
+            
         }
     }
     
@@ -385,8 +402,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     internal func decrementTimer() {
         
         var temp = Int(videoDurationLabel.text!)!
-        temp -= 1
-        videoDurationLabel.text = String(temp)
+        if temp > 0 {
+            
+            temp -= 1
+            videoDurationLabel.text = String(temp)
+        }
     }
     
     
@@ -442,6 +462,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Begin camera session again, stop video, & toggle buttons
         moviePlayer.player = nil
         moviePlayer.removeFromSuperlayer()
+        videoTimer.invalidate()
         captureSession.startRunning()
         clearVideoTempFile()
         

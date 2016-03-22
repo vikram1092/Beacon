@@ -48,6 +48,8 @@
 		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
 		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
+		D1A641AB1C9EF0600025E03D /* Orbiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A641AA1C9EF0600025E03D /* Orbiter.swift */; };
+		D1A641AD1C9F60C30025E03D /* OrbitIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A641AC1C9F60C30025E03D /* OrbitIndicator.swift */; };
 		D1B49D381C5868400085EF2B /* UserListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B49D371C5868400085EF2B /* UserListController.swift */; };
 		D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */; };
 		D1B9C71C1C2258B800D9AEE7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */; };
@@ -56,6 +58,8 @@
 		D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C72B1C22608600D9AEE7 /* MainController.swift */; };
 		D1C083E51C42003000A9C281 /* settingsButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1C083E41C42003000A9C281 /* settingsButton@x3.png */; };
 		D1D8A5491C5D3AA100E95BCE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D1D8A5481C5D3AA100E95BCE /* Settings.bundle */; };
+		D1DC72031C9ED4CB00D8CCF1 /* LogoFront.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */; };
+		D1DC72041C9ED4CB00D8CCF1 /* LogoFront@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */; };
 		D1DE875C1C27A92400E48721 /* photoButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DE875B1C27A92400E48721 /* photoButton.png */; };
 		D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E08D1E1C5D430E0070DA9A /* MapKit.framework */; };
 		D1EC295C1C2E1E850014DE7E /* Countries in Resources */ = {isa = PBXBuildFile; fileRef = D1EC295B1C2E1E850014DE7E /* Countries */; };
@@ -117,6 +121,8 @@
 		D19E95E31C753473000106DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1A3E8A01C78F70A00E115FC /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = "../../Spore Images/SettingsButton.png"; sourceTree = "<group>"; };
+		D1A641AA1C9EF0600025E03D /* Orbiter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Orbiter.swift; sourceTree = "<group>"; };
+		D1A641AC1C9F60C30025E03D /* OrbitIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrbitIndicator.swift; sourceTree = "<group>"; };
 		D1B49D371C5868400085EF2B /* UserListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListController.swift; sourceTree = "<group>"; };
 		D1B9C7161C2258B800D9AEE7 /* Spore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -127,6 +133,8 @@
 		D1B9C72B1C22608600D9AEE7 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		D1C083E41C42003000A9C281 /* settingsButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "settingsButton@x3.png"; path = "../../Spore Images/settingsButton@x3.png"; sourceTree = "<group>"; };
 		D1D8A5481C5D3AA100E95BCE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LogoFront.png; path = "../../Spore Images/LogoFront.png"; sourceTree = "<group>"; };
+		D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LogoFront@x3.png"; path = "../../Spore Images/LogoFront@x3.png"; sourceTree = "<group>"; };
 		D1DE875B1C27A92400E48721 /* photoButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoButton.png; sourceTree = "<group>"; };
 		D1E08D1E1C5D430E0070DA9A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D1EC295B1C2E1E850014DE7E /* Countries */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Countries; path = ../../Countries; sourceTree = "<group>"; };
@@ -205,6 +213,8 @@
 				D14907901C455F7500F2C635 /* Tangela.JPG */,
 				D174B6C31C9DC1050005F4C1 /* Logo.png */,
 				D174B6C41C9DC1050005F4C1 /* Logo@x3.png */,
+				D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */,
+				D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */,
 				D144F1FB1C44242600E07700 /* Zion Valley copy 2.png */,
 				D144F1E21C440DE700E07700 /* TabBarButtons */,
 				D1EC295B1C2E1E850014DE7E /* Countries */,
@@ -249,6 +259,8 @@
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
 				D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */,
 				D176D4721C852077004A812E /* Line.swift */,
+				D1A641AA1C9EF0600025E03D /* Orbiter.swift */,
+				D1A641AC1C9F60C30025E03D /* OrbitIndicator.swift */,
 				D17B2CD51C977BA100CD6782 /* CountryTable.swift */,
 				D15BBFD11C7358AF00C0CC6E /* SnapController.swift */,
 				D1A3E8A01C78F70A00E115FC /* TabBarController.swift */,
@@ -392,6 +404,7 @@
 				D144F1FC1C44242600E07700 /* Zion Valley copy 2.png in Resources */,
 				D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */,
 				D144F1ED1C440F1700E07700 /* userSettings.png in Resources */,
+				D1DC72041C9ED4CB00D8CCF1 /* LogoFront@x3.png in Resources */,
 				D174B6C51C9DC1050005F4C1 /* Logo.png in Resources */,
 				D144F1F11C4412D500E07700 /* CancelPhoto.png in Resources */,
 				D1372FD91C959274009DCA29 /* flashEnabledButton.png in Resources */,
@@ -400,6 +413,7 @@
 				D144F1E91C440F1700E07700 /* globe.png in Resources */,
 				D1B9C7211C2258B800D9AEE7 /* Assets.xcassets in Resources */,
 				D174B6C61C9DC1050005F4C1 /* Logo@x3.png in Resources */,
+				D1DC72031C9ED4CB00D8CCF1 /* LogoFront.png in Resources */,
 				D144F1F41C4414A300E07700 /* CameraSwitch@x3.png in Resources */,
 				D14907911C455F7500F2C635 /* Tangela.JPG in Resources */,
 				D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */,
@@ -479,6 +493,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1A641AD1C9F60C30025E03D /* OrbitIndicator.swift in Sources */,
 				D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */,
 				D1494C121C6F6B9C00A386DE /* CountryPolyline.swift in Sources */,
 				D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */,
@@ -490,6 +505,7 @@
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
 				D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */,
 				D176D4731C852077004A812E /* Line.swift in Sources */,
+				D1A641AB1C9EF0600025E03D /* Orbiter.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
 				D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */,

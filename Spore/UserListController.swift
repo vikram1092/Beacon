@@ -346,6 +346,7 @@ class UserListController: UITableViewController {
             progressView.progress = getTimeFraction(date)
         }
         else {
+            //Hide progress view
             print("Hiding progress view")
             progressView.alpha = 0
         }
@@ -388,9 +389,24 @@ class UserListController: UITableViewController {
     }
     
     
+    internal override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        
+        let userListLength = self.userList.count - 1
+        let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
+        
+        if withinTime(date) {
+            
+            return true
+        }
+        
+        return false
+    }
+    
+    
     internal override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
-        //Declare spam button with functionality
+    
+        //Declare spam button
         let spam = UITableViewRowAction(style: .Normal, title: "Spam") { (action, index) -> Void in
             
             print("Marked as spam")
@@ -411,64 +427,16 @@ class UserListController: UITableViewController {
             //End editing view
             tableView.setEditing(false, animated: true)
         }
+        spam.backgroundColor = UIColor(red: 254.0/255.0, green: 90.0/255.0, blue: 93.0/255.0, alpha: 1)
         
         return [spam]
     }
     
     
-    internal func banUser(sentBy: String) {
-        
-        print(sentBy)
-        
-        //Count rows reported belonging to user
-        let countQuery = PFQuery(className: "photo")
-        countQuery.whereKey("sentBy", equalTo: sentBy)
-        countQuery.whereKey("spam", equalTo: true)
-        countQuery.findObjectsInBackgroundWithBlock { (rows, rowsError) -> Void in
-            
-            //Display error getting row count
-            if rowsError != nil {
-                print("Error retrieving row count: \(rowsError)")
-            }
-            //Ban user if this is the second strike
-            else if rows!.count > 1 {
-                
-                //Query to ban user
-                print(rows!.count)
-                let query = PFQuery(className: "users")
-                query.whereKey("email", equalTo: sentBy)
-                query.getFirstObjectInBackgroundWithBlock({ (userObject, userError) -> Void in
-                    
-                    if userError != nil {
-                        
-                        //Display error getting result
-                        print("Error retreiving user: \(userError) ")
-                    }
-                    else if userObject == nil {
-                        
-                        //Print error getting user
-                        print("Error retreiving user: User does not exist to mark as spam")
-                    }
-                    else {
-                        
-                        //Update banned flag for user in database
-                        userObject!.setObject(true, forKey: "banned")
-                        userObject!.saveInBackground()
-                    }
-                })
-            }
-        }
-    }
-    
-    
     internal override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        if editingStyle == UITableViewCellEditingStyle.Delete {
-            userList.removeAtIndex(indexPath.row)
-        }
         
         saveUserList()
-        
         table.reloadData()
     }
     
@@ -630,6 +598,51 @@ class UserListController: UITableViewController {
     }
     
     
+    internal func banUser(sentBy: String) {
+        
+        print(sentBy)
+        
+        //Count rows reported belonging to user
+        let countQuery = PFQuery(className: "photo")
+        countQuery.whereKey("sentBy", equalTo: sentBy)
+        countQuery.whereKey("spam", equalTo: true)
+        countQuery.findObjectsInBackgroundWithBlock { (rows, rowsError) -> Void in
+            
+            //Display error getting row count
+            if rowsError != nil {
+                print("Error retrieving row count: \(rowsError)")
+            }
+                //Ban user if this is the second strike
+            else if rows!.count > 1 {
+                
+                //Query to ban user
+                print(rows!.count)
+                let query = PFQuery(className: "users")
+                query.whereKey("email", equalTo: sentBy)
+                query.getFirstObjectInBackgroundWithBlock({ (userObject, userError) -> Void in
+                    
+                    if userError != nil {
+                        
+                        //Display error getting result
+                        print("Error retreiving user: \(userError) ")
+                    }
+                    else if userObject == nil {
+                        
+                        //Print error getting user
+                        print("Error retreiving user: User does not exist to mark as spam")
+                    }
+                    else {
+                        
+                        //Update banned flag for user in database
+                        userObject!.setObject(true, forKey: "banned")
+                        userObject!.saveInBackground()
+                    }
+                })
+            }
+        }
+    }
+    
+    
     internal func closeVideo() {
         
         let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
@@ -678,8 +691,6 @@ class UserListController: UITableViewController {
             loginController.alertButton.alpha = 0
         }
     }
-    
-    
     
     
     internal func withinTime(date: NSDate) -> BooleanLiteralType {
