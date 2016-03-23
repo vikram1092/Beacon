@@ -325,10 +325,11 @@ class UserListController: UITableViewController {
         //Array is printed backwards so userListLength is initialized
         print("Reached cell" + String(indexPath.row))
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
-        let imageView = cell.viewWithTag(5) as! UIImageView
         let titleView = cell.viewWithTag(1) as! UILabel
         let subTitleView = cell.viewWithTag(2) as! UILabel
         let progressView = cell.viewWithTag(3) as! UIProgressView
+        let imageView = cell.viewWithTag(5) as! UIImageView
+        let imageBackground = cell.viewWithTag(6) as! UIImageView
         
         let userListLength = userList.count - 1
         print(userListLength)
@@ -337,12 +338,18 @@ class UserListController: UITableViewController {
         let timeString = timeSinceDate(date, numericDates: true)
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
-        //Configure image - change tag to identify row and add offset to
-        //accommodate for other views with tags. Add tap listener.
+        
+        //Configure image background
+        imageBackground.layer.cornerRadius = imageBackground.frame.size.width/2
+        
+        
+        //Configure image
         imageView.image = countryTable.getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         
+        //Configure image listener
         let tap = UITapGestureRecognizer(target: self, action: Selector("countrySelected:"))
         imageView.addGestureRecognizer(tap)
+        
         
         //Configure time left for photo
         if withinTime(date) {
@@ -375,7 +382,7 @@ class UserListController: UITableViewController {
         let userListIndex = gesture.view!.tag
         
         //Get object with index subtracted by tag offset
-        let object = userList[userListIndex - 10]
+        let object = userList[userListIndex]
         let country = object.valueForKey("countryCode")
         
         //Test alert for function
