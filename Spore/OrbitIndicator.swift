@@ -22,7 +22,6 @@ class OrbitIndicator: UIView {
                 startSpinning()
             }
         }
-        
         didSet {
         }
     }

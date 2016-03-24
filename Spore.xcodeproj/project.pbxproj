@@ -16,6 +16,7 @@
 		D1372FD81C959274009DCA29 /* flashDisabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */; };
 		D1372FD91C959274009DCA29 /* flashEnabledButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD51C959274009DCA29 /* flashEnabledButton.png */; };
 		D1372FDA1C959274009DCA29 /* flashEnabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */; };
+		D13B0D481CA385BA0035759D /* CountryBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13B0D471CA385BA0035759D /* CountryBackground.swift */; };
 		D144F1DF1C43F6E300E07700 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D144F1DE1C43F6E300E07700 /* MapController.swift */; };
 		D144F1E91C440F1700E07700 /* globe.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E31C440F1700E07700 /* globe.png */; };
 		D144F1EA1C440F1700E07700 /* globe@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D144F1E41C440F1700E07700 /* globe@x3.png */; };
@@ -48,7 +49,6 @@
 		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
 		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
-		D1A641AB1C9EF0600025E03D /* Orbiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A641AA1C9EF0600025E03D /* Orbiter.swift */; };
 		D1A641AD1C9F60C30025E03D /* OrbitIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A641AC1C9F60C30025E03D /* OrbitIndicator.swift */; };
 		D1B49D381C5868400085EF2B /* UserListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B49D371C5868400085EF2B /* UserListController.swift */; };
 		D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */; };
@@ -87,6 +87,7 @@
 		D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashDisabledButton@x3.png"; sourceTree = "<group>"; };
 		D1372FD51C959274009DCA29 /* flashEnabledButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flashEnabledButton.png; sourceTree = "<group>"; };
 		D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashEnabledButton@x3.png"; sourceTree = "<group>"; };
+		D13B0D471CA385BA0035759D /* CountryBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryBackground.swift; sourceTree = "<group>"; };
 		D144F1DE1C43F6E300E07700 /* MapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
 		D144F1E31C440F1700E07700 /* globe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = globe.png; path = "../../Spore Images/globe.png"; sourceTree = "<group>"; };
 		D144F1E41C440F1700E07700 /* globe@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "globe@x3.png"; path = "../../Spore Images/globe@x3.png"; sourceTree = "<group>"; };
@@ -121,7 +122,6 @@
 		D19E95E31C753473000106DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1A3E8A01C78F70A00E115FC /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = "../../Spore Images/SettingsButton.png"; sourceTree = "<group>"; };
-		D1A641AA1C9EF0600025E03D /* Orbiter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Orbiter.swift; sourceTree = "<group>"; };
 		D1A641AC1C9F60C30025E03D /* OrbitIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrbitIndicator.swift; sourceTree = "<group>"; };
 		D1B49D371C5868400085EF2B /* UserListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListController.swift; sourceTree = "<group>"; };
 		D1B9C7161C2258B800D9AEE7 /* Spore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spore.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -259,8 +259,8 @@
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
 				D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */,
 				D176D4721C852077004A812E /* Line.swift */,
-				D1A641AA1C9EF0600025E03D /* Orbiter.swift */,
 				D1A641AC1C9F60C30025E03D /* OrbitIndicator.swift */,
+				D13B0D471CA385BA0035759D /* CountryBackground.swift */,
 				D17B2CD51C977BA100CD6782 /* CountryTable.swift */,
 				D15BBFD11C7358AF00C0CC6E /* SnapController.swift */,
 				D1A3E8A01C78F70A00E115FC /* TabBarController.swift */,
@@ -505,9 +505,9 @@
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
 				D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */,
 				D176D4731C852077004A812E /* Line.swift in Sources */,
-				D1A641AB1C9EF0600025E03D /* Orbiter.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
+				D13B0D481CA385BA0035759D /* CountryBackground.swift in Sources */,
 				D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */,
 				D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */,
 				D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */,

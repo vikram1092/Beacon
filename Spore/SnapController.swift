@@ -20,6 +20,7 @@ class SnapController: UIViewController {
     let fileManager = NSFileManager.defaultManager()
     let userDefaults = NSUserDefaults.standardUserDefaults()
     var childController = TabBarController()
+    var hideStatusBar = false
     
     @IBOutlet var snap: PFImageView!
     @IBOutlet var container: UIView!
@@ -59,12 +60,14 @@ class SnapController: UIViewController {
         print("Tapped!")
         
         self.snap.userInteractionEnabled = false
+        self.toggleStatusBar()
         
         UIView.animateWithDuration(0.3) { () -> Void in
             
             self.snap.alpha = 0
             self.moviePlayer.player = nil
             self.moviePlayer.removeFromSuperlayer()
+            
         }
         
     }
@@ -73,9 +76,13 @@ class SnapController: UIViewController {
     internal func detectPan(recognizer: UIPanGestureRecognizer) {
         
         let translation = recognizer.translationInView(snap.superview)
-        snap.center.y = CGPointMake(lastLocation.x + translation.x, lastLocation.y + translation.y).y
+        snap.center.y = lastLocation.y + translation.y
         
         switch recognizer.state {
+            
+        case .Began:
+            
+            toggleStatusBar()
             
         case .Ended:
             
@@ -90,9 +97,10 @@ class SnapController: UIViewController {
                 UIView.animateWithDuration(0.3) { () -> Void in
                     
                     self.snap.center.y = self.view.center.y
+                    self.toggleStatusBar()
                 }
             }
-            //Else, slipe off screen
+            //Else, slide off screen
             else {
                 print("Moving image off")
                 UIView.animateWithDuration(0.3, animations: { () -> Void in
@@ -122,15 +130,37 @@ class SnapController: UIViewController {
         
     }
     
+    
+    internal func toggleStatusBar() {
+        
+        hideStatusBar = !hideStatusBar
+        setNeedsStatusBarAppearanceUpdate()
+    }
+    
+    
     override func childViewControllerForStatusBarHidden() -> UIViewController? {
         
-        print("Status bar config")
+        print("Status bar hiding method")
+        if hideStatusBar {
+        
+            print("Status bar is in the center")
+            return nil
+        }
+        
         return childController
     }
     
+    
     override func childViewControllerForStatusBarStyle() -> UIViewController? {
         
+        print("Status bar style method")
         return childController
+    }
+    
+    
+    override func prefersStatusBarHidden() -> Bool {
+        
+        return true
     }
     
     

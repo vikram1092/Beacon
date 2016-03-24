@@ -25,7 +25,9 @@ class UserListController: UITableViewController {
     var userEmail = ""
     var userCountry = ""
     var userToReceivePhotos = 0
+    var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
+    var countryObject = UIView()
     let fileManager = NSFileManager.defaultManager()
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
     let userDefaults = NSUserDefaults.standardUserDefaults()
@@ -327,13 +329,10 @@ class UserListController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
         let titleView = cell.viewWithTag(1) as! UILabel
         let subTitleView = cell.viewWithTag(2) as! UILabel
-        let progressView = cell.viewWithTag(3) as! UIProgressView
         let imageView = cell.viewWithTag(5) as! UIImageView
-        let imageBackground = cell.viewWithTag(6) as! UIImageView
+        let imageBackground = cell.viewWithTag(6) as! CountryBackground
         
         let userListLength = userList.count - 1
-        print(userListLength)
-        
         let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
         let timeString = timeSinceDate(date, numericDates: true)
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
@@ -341,26 +340,24 @@ class UserListController: UITableViewController {
         
         //Configure image background
         imageBackground.layer.cornerRadius = imageBackground.frame.size.width/2
-        
-        
         //Configure image
         imageView.image = countryTable.getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        imageBackground.addSubview(imageView)
         
-        //Configure image listener
-        let tap = UITapGestureRecognizer(target: self, action: Selector("countrySelected:"))
-        imageView.addGestureRecognizer(tap)
+        //Configure image sliding and action
+        let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
+        imageBackground.addGestureRecognizer(pan)
+        //imageView.addGestureRecognizer(pan)
         
         
         //Configure time left for photo
         if withinTime(date) {
-            progressView.alpha = 1
-            progressView.progress = getTimeFraction(date)
+            imageBackground.setProgress(getTimeFraction(date))
         }
         else {
-            //Hide progress view
-            print("Hiding progress view")
-            progressView.alpha = 0
+            imageBackground.noProgress()
         }
+        
         
         //Configure text
         titleView.text = countryTable.getCountryName(countryCode as! String)
@@ -371,25 +368,6 @@ class UserListController: UITableViewController {
         
         
         return cell
-    }
-    
-    
-    internal func countrySelected(sender: AnyObject) {
-        
-        print("Country selected")
-        
-        let gesture = sender as! UIGestureRecognizer
-        let userListIndex = gesture.view!.tag
-        
-        //Get object with index subtracted by tag offset
-        let object = userList[userListIndex]
-        let country = object.valueForKey("countryCode")
-        
-        //Test alert for function
-        let alert = UIAlertController(title: "Country Tapped", message: "You like countries?", preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
     }
     
 
@@ -534,6 +512,7 @@ class UserListController: UITableViewController {
                             print("Adding video player")
                             activity.stopAnimating()
                             
+                            grandparent.toggleStatusBar()
                             grandparent.snap.userInteractionEnabled = true
                             grandparent.snap.backgroundColor = UIColor.blackColor()
                             grandparent.moviePlayer.frame = grandparent.snap.bounds
@@ -570,6 +549,7 @@ class UserListController: UITableViewController {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             //Decode and display image for user
+                            grandparent.toggleStatusBar()
                             grandparent.snap.userInteractionEnabled = true
                             grandparent.snap.alpha = 1
                         })
@@ -697,6 +677,93 @@ class UserListController: UITableViewController {
         catch let error as NSError {
             print("Error deleting video: \(error)")
         }
+    }
+    
+    
+    internal func detectPan(recognizer: UIPanGestureRecognizer) {
+        
+        
+        countryObject = recognizer.view!
+        let translation = recognizer.translationInView(recognizer.view!.superview)
+        let cell = recognizer.view!.superview!.superview as! UITableViewCell
+        var countryName = ""
+        
+        switch recognizer.state {
+            
+        case .Began:
+            
+            
+            //Save original center
+            print("Got country's original point")
+            if countryCenter == CGPoint(x: 0, y: 0) {
+                
+                countryCenter = countryObject.center
+            }
+            
+            //Hide all other cell subviews & obtain country name for potential map query
+            //Since content view is the direct subview layer, we have to first go into that
+            for subview in cell.subviews[0].subviews {
+                
+                //Ensure that the subview is not the image or its background
+                if subview.tag != 5 && subview.tag != 6 {
+                    
+                    UIView.animateWithDuration(0.2, animations: { () -> Void in
+                        
+                        subview.alpha = 0
+                    })
+                }
+                
+                if subview.tag == 1 {
+                    
+                    countryName = (subview as! UILabel).text!
+                }
+            }
+            
+        case .Ended:
+            
+            
+            //Calculate distance fraction
+            let countryDistance = abs(countryObject.center.x - countryCenter.x)
+            let distanceFraction = countryDistance/self.view.bounds.width
+            
+            //If moved to the other side of the screen, go to map and show country
+            if distanceFraction > 0.60 {
+                
+                segueToMap(countryName)
+            }
+            
+            //Move country back and bring back elements
+            print("Moving country back")
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+                
+                //Move object first
+                self.countryObject.center.x = self.countryCenter.x
+                
+                
+                //Since content view is the direct subview layer, we have to first go into that
+                for subview in cell.subviews[0].subviews {
+                    
+                    //Ensure that the subview is not the image or its background
+                    if subview.tag != 5 && subview.tag != 6 {
+                        
+                        subview.alpha = 1
+                    }
+                }
+                
+                }, completion: nil)
+            
+        default:
+            print("default")
+            countryObject.center.x = translation.x + countryCenter.x
+            
+        }
+    }
+    
+    
+    internal func segueToMap(country: String) {
+        
+        //Move to the map
+        self.tabBarController?.selectedIndex = 1
     }
     
     
