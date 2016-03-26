@@ -18,12 +18,15 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     @IBOutlet var table: UIView!
-    
+    @IBOutlet var navItem: UINavigationBar!
     
     override func viewDidLoad() {
         
         //Load view
         super.viewDidLoad()
+        let image = UIImage(named: "Logo")
+        navItem.topItem?.titleView = UIImageView(image: image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate))
+        navItem.topItem?.titleView!.tintColor = UIColor.whiteColor()
     }
     
     override func viewDidAppear(animated: Bool) {

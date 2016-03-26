@@ -14,18 +14,33 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     
     
     let userDefaults = NSUserDefaults.standardUserDefaults()
+    var userName = ""
+    var userEmail = ""
+    var userCountry = ""
+    let countryTable = CountryTable()
     
     @IBOutlet var logoutButton: UIView!
-    @IBOutlet var profilePicture: UIImageView!
+    @IBOutlet var countryPicture: UIImageView!
     @IBOutlet var usernameCell: UILabel!
     
     override func viewDidLoad() {
         //Run view load as normal
         super.viewDidLoad()
         
+        //Retreive user details
+        if userDefaults.objectForKey("userName") != nil {
+            
+            userName = userDefaults.objectForKey("userName") as! String
+            userEmail = userDefaults.objectForKey("userEmail") as! String
+        }
+        
+        if userDefaults.objectForKey("userCountry") != nil {
+            
+            userCountry = userDefaults.objectForKey("userCountry") as! String
+        }
+        
         //Configure profile picture
-        profilePicture.layer.cornerRadius = profilePicture.frame.size.width/2
-        profilePicture.clipsToBounds = true
+        countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         
         //Configure username adress label
         usernameCell.text = userDefaults.valueForKey("userName") as? String

@@ -14,8 +14,6 @@ import Parse
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
     
-    @IBOutlet var blurView: UIVisualEffectView!
-    @IBOutlet var imageView: UIImageView!
     @IBOutlet var alertButton: UIButton!
     @IBOutlet var loginButton: FBSDKLoginButton!
     var userName = ""
@@ -28,10 +26,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         //Initialize UI objects
         alertButton.alpha = 0
-        blurView.effect = UIBlurEffect(style: .Light)
-        //let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
-        //blurView.frame = self.view.bounds
-        imageView.addSubview(blurView)
 
         //Set permissions to get from Facebook
         loginButton.readPermissions = ["public_profile", "email", "user_friends"]
@@ -198,6 +192,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         }
     }
     
+    
     internal func saveNameAndEmail(name: String, email: String) {
         
         userDefaults.setObject(name, forKey: "userName")
@@ -223,6 +218,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         }
     }
     
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         if segue.identifier == "LoginToMain" {
@@ -234,6 +230,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             
         }
     }
+    
     
     internal func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
         print("User Logged Out")

@@ -40,6 +40,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         super.viewDidAppear(true)
     }
     
+    
     internal func loadUserList() {
         
         //Retreive local user photo list
@@ -110,6 +111,12 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
         }
         catch let error as NSError { print("Error getting GeoJSON data:" + error.description) }
+    }
+    
+    
+    internal func goToCountry(country: String) {
+        
+        
     }
     
     
@@ -219,6 +226,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         return UIStatusBarStyle.Default
     }
+    
     
     internal func delay(delay: Double, closure:()->()) {
         

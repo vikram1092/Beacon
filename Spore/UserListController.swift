@@ -25,6 +25,9 @@ class UserListController: UITableViewController {
     var userEmail = ""
     var userCountry = ""
     var userToReceivePhotos = 0
+    var countryCenter = CGPoint(x: 0,y: 0)
+    var countryTable = CountryTable()
+    var countryObject = UIView()
     let fileManager = NSFileManager.defaultManager()
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
     let userDefaults = NSUserDefaults.standardUserDefaults()
@@ -312,45 +315,46 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func delay(delay: Double, closure:()->()) {
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
-    }
-    
-    
     internal override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         //Initialize variables:
         //Array is printed backwards so userListLength is initialized
         print("Reached cell" + String(indexPath.row))
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
-        let imageView = cell.viewWithTag(100) as! UIImageView
-        let titleView = cell.viewWithTag(101) as! UILabel
-        let subTitleView = cell.viewWithTag(102) as! UILabel
-        let progressView = cell.viewWithTag(105) as! UIProgressView
+        let titleView = cell.viewWithTag(1) as! UILabel
+        let subTitleView = cell.viewWithTag(2) as! UILabel
+        let imageView = cell.viewWithTag(5) as! UIImageView
+        let imageBackground = cell.viewWithTag(6) as! CountryBackground
         
         let userListLength = userList.count - 1
-        print(userListLength)
-        
         let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
         let timeString = timeSinceDate(date, numericDates: true)
         let countryCode = userList[userListLength - indexPath.row]["countryCode"]
         
+        
+        //Configure image background
+        imageBackground.layer.cornerRadius = imageBackground.frame.size.width/2
         //Configure image
-        imageView.image = getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        imageView.image = countryTable.getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        imageBackground.addSubview(imageView)
+        
+        //Configure image sliding and action
+        let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
+        imageBackground.addGestureRecognizer(pan)
+        //imageView.addGestureRecognizer(pan)
+        
         
         //Configure time left for photo
         if withinTime(date) {
-            progressView.alpha = 1
-            progressView.progress = getTimeFraction(date)
+            imageBackground.setProgress(getTimeFraction(date))
         }
         else {
-            print("Hiding progress view")
-            progressView.alpha = 0
+            imageBackground.noProgress()
         }
         
+        
         //Configure text
-        titleView.text = getCountryName(countryCode as! String)
+        titleView.text = countryTable.getCountryName(countryCode as! String)
         
         //Configure subtext
         subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
@@ -387,9 +391,24 @@ class UserListController: UITableViewController {
     }
     
     
+    internal override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        
+        let userListLength = self.userList.count - 1
+        let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
+        
+        if withinTime(date) {
+            
+            return true
+        }
+        
+        return false
+    }
+    
+    
     internal override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
-        //Declare spam button with functionality
+    
+        //Declare spam button
         let spam = UITableViewRowAction(style: .Normal, title: "Spam") { (action, index) -> Void in
             
             print("Marked as spam")
@@ -410,64 +429,16 @@ class UserListController: UITableViewController {
             //End editing view
             tableView.setEditing(false, animated: true)
         }
+        spam.backgroundColor = UIColor(red: 254.0/255.0, green: 90.0/255.0, blue: 93.0/255.0, alpha: 1)
         
         return [spam]
     }
     
     
-    internal func banUser(sentBy: String) {
-        
-        print(sentBy)
-        
-        //Count rows reported belonging to user
-        let countQuery = PFQuery(className: "photo")
-        countQuery.whereKey("sentBy", equalTo: sentBy)
-        countQuery.whereKey("spam", equalTo: true)
-        countQuery.findObjectsInBackgroundWithBlock { (rows, rowsError) -> Void in
-            
-            //Display error getting row count
-            if rowsError != nil {
-                print("Error retrieving row count: \(rowsError)")
-            }
-            //Ban user if this is the second strike
-            else if rows!.count > 1 {
-                
-                //Query to ban user
-                print(rows!.count)
-                let query = PFQuery(className: "users")
-                query.whereKey("email", equalTo: sentBy)
-                query.getFirstObjectInBackgroundWithBlock({ (userObject, userError) -> Void in
-                    
-                    if userError != nil {
-                        
-                        //Display error getting result
-                        print("Error retreiving user: \(userError) ")
-                    }
-                    else if userObject == nil {
-                        
-                        //Print error getting user
-                        print("Error retreiving user: User does not exist to mark as spam")
-                    }
-                    else {
-                        
-                        //Update banned flag for user in database
-                        userObject!.setObject(true, forKey: "banned")
-                        userObject!.saveInBackground()
-                    }
-                })
-            }
-        }
-    }
-    
-    
     internal override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        if editingStyle == UITableViewCellEditingStyle.Delete {
-            userList.removeAtIndex(indexPath.row)
-        }
         
         saveUserList()
-        
         table.reloadData()
     }
     
@@ -500,7 +471,7 @@ class UserListController: UITableViewController {
             let objectToDisplay = userList[index]["photo"] as! PFFile
             
             //Start UI animation
-            let activity = cell.viewWithTag(104) as! UIActivityIndicatorView
+            let activity = cell.viewWithTag(4) as! UIActivityIndicatorView
             activity.startAnimating()
             
             //Handle for videos and pictures uniqeuly
@@ -513,6 +484,7 @@ class UserListController: UITableViewController {
                     }
                     else {
                         
+                        //Write video to a file
                         videoData?.writeToFile(self.videoPath, atomically: true)
                         
                         //Initialize movie layer
@@ -529,23 +501,34 @@ class UserListController: UITableViewController {
                             name: AVPlayerItemDidPlayToEndTimeNotification,
                             object: grandparent.moviePlayer.player!.currentItem)
                         
+                        
+                        
                         //Update UI in main queue
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             print("Adding video player")
                             activity.stopAnimating()
                             
+                            if !grandparent.hideStatusBar {
+                                
+                                grandparent.toggleStatusBar()
+                            }
                             grandparent.snap.userInteractionEnabled = true
                             grandparent.snap.backgroundColor = UIColor.blackColor()
                             grandparent.moviePlayer.frame = grandparent.snap.bounds
                             grandparent.snap.layer.addSublayer(grandparent.moviePlayer)
                             grandparent.snap.alpha = 1
                             
+                            //Bring timer to front
+                            grandparent.snap.bringSubviewToFront(grandparent.snapTimer)
+                            
                             //Play video
                             grandparent.moviePlayer.player!.play()
                             
+                            //Start timer
+                            grandparent.snapTimer.startTimer(player.currentItem!.asset.duration)
+                            
                         })
-                        
                     }
                 })
             }
@@ -571,7 +554,15 @@ class UserListController: UITableViewController {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             //Decode and display image for user
+                            if !grandparent.hideStatusBar {
+                                
+                                grandparent.toggleStatusBar()
+                            }
+                            
                             grandparent.snap.userInteractionEnabled = true
+                            
+                            //Hide timer
+                            grandparent.snapTimer.alpha = 0
                             grandparent.snap.alpha = 1
                         })
                     }
@@ -582,11 +573,12 @@ class UserListController: UITableViewController {
         //If photo not within time, display cell bounce animation
         else {
             
+            
             UIView.animateWithDuration(0.1, animations: { () -> Void in
                 
                 cell.center = CGPoint(x: cell.center.x+25, y: cell.center.y)
                 
-                }, completion: { (BooleanLiteralType) -> Void in
+                }, completion: { (Bool) -> Void in
                     
                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                         
@@ -616,16 +608,60 @@ class UserListController: UITableViewController {
                                                         
                                                         cell.center = CGPoint(x: cell.center.x-7, y: cell.center.y)
                                                         
-                                                        })
+                                                    })
                                             })
                                     })
-                                    
                             })
                     })
             })
 
         }
         
+    }
+    
+    
+    internal func banUser(sentBy: String) {
+        
+        print(sentBy)
+        
+        //Count rows reported belonging to user
+        let countQuery = PFQuery(className: "photo")
+        countQuery.whereKey("sentBy", equalTo: sentBy)
+        countQuery.whereKey("spam", equalTo: true)
+        countQuery.findObjectsInBackgroundWithBlock { (rows, rowsError) -> Void in
+            
+            //Display error getting row count
+            if rowsError != nil {
+                print("Error retrieving row count: \(rowsError)")
+            }
+                //Ban user if this is the second strike
+            else if rows!.count > 1 {
+                
+                //Query to ban user
+                print(rows!.count)
+                let query = PFQuery(className: "users")
+                query.whereKey("email", equalTo: sentBy)
+                query.getFirstObjectInBackgroundWithBlock({ (userObject, userError) -> Void in
+                    
+                    if userError != nil {
+                        
+                        //Display error getting result
+                        print("Error retreiving user: \(userError) ")
+                    }
+                    else if userObject == nil {
+                        
+                        //Print error getting user
+                        print("Error retreiving user: User does not exist to mark as spam")
+                    }
+                    else {
+                        
+                        //Update banned flag for user in database
+                        userObject!.setObject(true, forKey: "banned")
+                        userObject!.saveInBackground()
+                    }
+                })
+            }
+        }
     }
     
     
@@ -639,6 +675,12 @@ class UserListController: UITableViewController {
             grandparent.moviePlayer.player = nil
             grandparent.moviePlayer.removeFromSuperlayer()
             grandparent.snap.alpha = 0
+            
+            //Only toggle if status bar hidden
+            if grandparent.hideStatusBar {
+                
+                grandparent.toggleStatusBar()
+            }
             })
         
         clearVideoTempFile()
@@ -653,6 +695,95 @@ class UserListController: UITableViewController {
         catch let error as NSError {
             print("Error deleting video: \(error)")
         }
+    }
+    
+    
+    internal func detectPan(recognizer: UIPanGestureRecognizer) {
+        
+        
+        countryObject = recognizer.view!
+        let translation = recognizer.translationInView(recognizer.view!.superview)
+        let cell = recognizer.view!.superview!.superview as! UITableViewCell
+        var countryName = ""
+        
+        switch recognizer.state {
+            
+        case .Began:
+            
+            
+            //Save original center
+            print("Got country's original point")
+            if countryCenter == CGPoint(x: 0, y: 0) {
+                
+                countryCenter = countryObject.center
+            }
+            
+            //Hide all other cell subviews & obtain country name for potential map query
+            //Since content view is the direct subview layer, we have to first go into that
+            for subview in cell.subviews[0].subviews {
+                
+                //Ensure that the subview is not the image or its background
+                if subview.tag != 5 && subview.tag != 6 {
+                    
+                    UIView.animateWithDuration(0.1, animations: { () -> Void in
+                        
+                        subview.alpha = 0
+                    })
+                }
+                
+                if subview.tag == 1 {
+                    
+                    countryName = (subview as! UILabel).text!
+                }
+            }
+            
+        case .Ended:
+            
+            
+            //Calculate distance fraction
+            let countryDistance = abs(countryObject.center.x - countryCenter.x)
+            let distanceFraction = countryDistance/self.view.bounds.width
+            
+            //If moved to the other side of the screen, go to map and show country
+            if distanceFraction > 0.60 {
+                
+                segueToMap(countryName)
+            }
+            
+            //Move country back and bring back elements
+            print("Moving country back")
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+                
+                //Move object first
+                self.countryObject.center.x = self.countryCenter.x
+                
+                
+                //Since content view is the direct subview layer, we have to first go into that
+                for subview in cell.subviews[0].subviews {
+                    
+                    //Ensure that the subview is not the image or its background
+                    if subview.tag != 5 && subview.tag != 6 {
+                        
+                        subview.alpha = 1
+                    }
+                }
+                
+                }, completion: nil)
+            
+        default:
+            print("default")
+            countryObject.center.x = translation.x + countryCenter.x
+            
+        }
+    }
+    
+    
+    internal func segueToMap(country: String) {
+        
+        //Move to the map
+        self.tabBarController?.selectedIndex = 1
+        let map = tabBarController!.viewControllers![1]
+        
     }
     
     
@@ -676,37 +807,6 @@ class UserListController: UITableViewController {
             loginController.loginButton.alpha = 1
             loginController.alertButton.alpha = 0
         }
-    }
-    
-    
-    internal func getCountryImage(countryCode: String) -> UIImage {
-        
-        let link  = "Countries/" + countryCode + "/128.png"
-        
-        if let image = UIImage(named: link) {
-            
-            return image
-        }
-        
-        return UIImage(named: "Countries/Unknown/128.png")!
-    }
-    
-    
-    internal func getCountryName(countryCode: String) -> String {
-        
-        var countryName = "India"
-        print("Country:" + countryCode)
-        
-        //Find country and obtain the 2 digit ISO code
-        for country in countryTable {
-            
-            if country[1] == countryCode {
-                countryName = country[0]
-                break
-            }
-        }
-        
-        return countryName
     }
     
     
@@ -799,256 +899,5 @@ class UserListController: UITableViewController {
         }
         
     }
-    
-    
-    var countryTable = [["Afghanistan","af"],
-        ["Åland Islands","ax"],
-        ["Albania","al"],
-        ["Algeria","dz"],
-        ["American Samoa","as"],
-        ["Andorra","ad"],
-        ["Angola","ao"],
-        ["Anguilla","ai"],
-        ["Antarctica","aq"],
-        ["Antigua and Barbuda","ag"],
-        ["Argentina","ar"],
-        ["Armenia","am"],
-        ["Aruba","aw"],
-        ["Australia","au"],
-        ["Austria","at"],
-        ["Azerbaijan","az"],
-        ["Bahamas","bs"],
-        ["Bahrain","bh"],
-        ["Bangladesh","bd"],
-        ["Barbados","bb"],
-        ["Belarus","by"],
-        ["Belgium","be"],
-        ["Belize","bz"],
-        ["Benin","bj"],
-        ["Bermuda","bm"],
-        ["Bhutan","bt"],
-        ["Bolivia","bo"],
-        ["Bonaire, Sint Eustatius and Saba","bq"],
-        ["Bosnia and Herzegovina","ba"],
-        ["Botswana","bw"],
-        ["Bouvet Island","bv"],
-        ["Brazil","br"],
-        ["British Indian Ocean Territory","io"],
-        ["Brunei Darussalam","bn"],
-        ["Bulgaria","bg"],
-        ["Burkina Faso","bf"],
-        ["Burundi","bi"],
-        ["Cambodia","kh"],
-        ["Cameroon","cm"],
-        ["Canada","ca"],
-        ["Cabo Verde","cv"],
-        ["Cayman Islands","ky"],
-        ["Central African Republic","cf"],
-        ["Chad","td"],
-        ["Chile","cl"],
-        ["China","cn"],
-        ["Christmas Island","cx"],
-        ["Cocos (Keeling) Islands","cc"],
-        ["Colombia","co"],
-        ["Comoros","km"],
-        ["Congo","cg"],
-        ["Congo","cd"],
-        ["Cook Islands","ck"],
-        ["Costa Rica","cr"],
-        ["Côte d'Ivoire","ci"],
-        ["Croatia","hr"],
-        ["Cuba","cu"],
-        ["Curaçao","cw"],
-        ["Cyprus","cy"],
-        ["Czech Republic","cz"],
-        ["Denmark","dk"],
-        ["Djibouti","dj"],
-        ["Dominica","dm"],
-        ["Dominican Republic","do"],
-        ["Ecuador","ec"],
-        ["Egypt","eg"],
-        ["El Salvador","sv"],
-        ["Equatorial Guinea","gq"],
-        ["Eritrea","er"],
-        ["Estonia","ee"],
-        ["Ethiopia","et"],
-        ["Falkland Islands (Malvinas)","fk"],
-        ["Faroe Islands","fo"],
-        ["Fiji","fj"],
-        ["Finland","fi"],
-        ["France","fr"],
-        ["French Guiana","gf"],
-        ["French Polynesia","pf"],
-        ["French Southern Territories","tf"],
-        ["Gabon","ga"],
-        ["Gambia","gm"],
-        ["Georgia","ge"],
-        ["Germany","de"],
-        ["Ghana","gh"],
-        ["Gibraltar","gi"],
-        ["Greece","gr"],
-        ["Greenland","gl"],
-        ["Grenada","gd"],
-        ["Guadeloupe","gp"],
-        ["Guam","gu"],
-        ["Guatemala","gt"],
-        ["Guernsey","gg"],
-        ["Guinea","gn"],
-        ["Guinea-Bissau","gw"],
-        ["Guyana","gy"],
-        ["Haiti","ht"],
-        ["Heard Island and McDonald Islands","hm"],
-        ["Holy See","va"],
-        ["Honduras","hn"],
-        ["Hong Kong","hk"],
-        ["Hungary","hu"],
-        ["Iceland","is"],
-        ["India","in"],
-        ["Indonesia","id"],
-        ["Iran","ir"],
-        ["Iraq","iq"],
-        ["Ireland","ie"],
-        ["Isle of Man","im"],
-        ["Israel","il"],
-        ["Italy","it"],
-        ["Jamaica","jm"],
-        ["Japan","jp"],
-        ["Jersey","je"],
-        ["Jordan","jo"],
-        ["Kazakhstan","kz"],
-        ["Kenya","ke"],
-        ["Kiribati","ki"],
-        ["North Korea","kp"],
-        ["South Korea","kr"],
-        ["Kuwait","kw"],
-        ["Kyrgyzstan","kg"],
-        ["Lao People's Democratic Republic","la"],
-        ["Latvia","lv"],
-        ["Lebanon","lb"],
-        ["Lesotho","ls"],
-        ["Liberia","lr"],
-        ["Libya","ly"],
-        ["Liechtenstein","li"],
-        ["Lithuania","lt"],
-        ["Luxembourg","lu"],
-        ["Macao","mo"],
-        ["Macedonia ","mk"],
-        ["Madagascar","mg"],
-        ["Malawi","mw"],
-        ["Malaysia","my"],
-        ["Maldives","mv"],
-        ["Mali","ml"],
-        ["Malta","mt"],
-        ["Marshall Islands","mh"],
-        ["Martinique","mq"],
-        ["Mauritania","mr"],
-        ["Mauritius","mu"],
-        ["Mayotte","yt"],
-        ["Mexico","mx"],
-        ["Micronesia","fm"],
-        ["Moldova","md"],
-        ["Monaco","mc"],
-        ["Mongolia","mn"],
-        ["Montenegro","me"],
-        ["Montserrat","ms"],
-        ["Morocco","ma"],
-        ["Mozambique","mz"],
-        ["Myanmar","mm"],
-        ["Namibia","na"],
-        ["Nauru","nr"],
-        ["Nepal","np"],
-        ["Netherlands","nl"],
-        ["New Caledonia","nc"],
-        ["New Zealand","nz"],
-        ["Nicaragua","ni"],
-        ["Niger","ne"],
-        ["Nigeria","ng"],
-        ["Niue","nu"],
-        ["Norfolk Island","nf"],
-        ["Northern Mariana Islands","mp"],
-        ["Norway","no"],
-        ["Oman","om"],
-        ["Pakistan","pk"],
-        ["Palau","pw"],
-        ["Palestine, State of","ps"],
-        ["Panama","pa"],
-        ["Papua New Guinea","pg"],
-        ["Paraguay","py"],
-        ["Peru","pe"],
-        ["Philippines","ph"],
-        ["Pitcairn","pn"],
-        ["Poland","pl"],
-        ["Portugal","pt"],
-        ["Puerto Rico","pr"],
-        ["Qatar","qa"],
-        ["Réunion","re"],
-        ["Romania","ro"],
-        ["Russian Federation","ru"],
-        ["Rwanda","rw"],
-        ["Saint Barthélemy","bl"],
-        ["Saint Helena, Ascension and Tristan da Cunha","sh"],
-        ["Saint Kitts and Nevis","kn"],
-        ["Saint Lucia","lc"],
-        ["Saint Martin (French part)","mf"],
-        ["Saint Pierre and Miquelon","pm"],
-        ["Saint Vincent and the Grenadines","vc"],
-        ["Samoa","ws"],
-        ["San Marino","sm"],
-        ["Sao Tome and Principe","st"],
-        ["Saudi Arabia","sa"],
-        ["Senegal","sn"],
-        ["Serbia","rs"],
-        ["Seychelles","sc"],
-        ["Sierra Leone","sl"],
-        ["Singapore","sg"],
-        ["Sint Maarten (Dutch part)","sx"],
-        ["Slovakia","sk"],
-        ["Slovenia","si"],
-        ["Solomon Islands","sb"],
-        ["Somalia","so"],
-        ["South Africa","za"],
-        ["South Georgia and the South Sandwich Islands","gs"],
-        ["South Sudan","ss"],
-        ["Spain","es"],
-        ["Sri Lanka","lk"],
-        ["Sudan","sd"],
-        ["Suriname","sr"],
-        ["Svalbard and Jan Mayen","sj"],
-        ["Swaziland","sz"],
-        ["Sweden","se"],
-        ["Switzerland","ch"],
-        ["Syrian Arab Republic","sy"],
-        ["Taiwan","tw"],
-        ["Tajikistan","tj"],
-        ["Tanzania","tz"],
-        ["Thailand","th"],
-        ["Timor-Leste","tl"],
-        ["Togo","tg"],
-        ["Tokelau","tk"],
-        ["Tonga","to"],
-        ["Trinidad and Tobago","tt"],
-        ["Tunisia","tn"],
-        ["Turkey","tr"],
-        ["Turkmenistan","tm"],
-        ["Turks and Caicos Islands","tc"],
-        ["Tuvalu","tv"],
-        ["Uganda","ug"],
-        ["Ukraine","ua"],
-        ["United Arab Emirates","ae"],
-        ["United Kingdom","gb"],
-        ["United States of America","us"],
-        ["United States Minor Outlying Islands","um"],
-        ["Uruguay","uy"],
-        ["Uzbekistan","uz"],
-        ["Vanuatu","vu"],
-        ["Venezuela","ve"],
-        ["Vietnam","vn"],
-        ["Virgin Islands (British)","vg"],
-        ["Virgin Islands (U.S.)","vi"],
-        ["Wallis and Futuna","wf"],
-        ["Western Sahara","eh"],
-        ["Yemen","ye"],
-        ["Zambia","zm"],
-        ["Zimbabwe","zw"]]
     
 }
