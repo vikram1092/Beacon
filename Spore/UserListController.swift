@@ -315,12 +315,6 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func delay(delay: Double, closure:()->()) {
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
-    }
-    
-    
     internal override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         //Initialize variables:
@@ -490,6 +484,7 @@ class UserListController: UITableViewController {
                     }
                     else {
                         
+                        //Write video to a file
                         videoData?.writeToFile(self.videoPath, atomically: true)
                         
                         //Initialize movie layer
@@ -506,24 +501,34 @@ class UserListController: UITableViewController {
                             name: AVPlayerItemDidPlayToEndTimeNotification,
                             object: grandparent.moviePlayer.player!.currentItem)
                         
+                        
+                        
                         //Update UI in main queue
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             print("Adding video player")
                             activity.stopAnimating()
                             
-                            grandparent.toggleStatusBar()
+                            if !grandparent.hideStatusBar {
+                                
+                                grandparent.toggleStatusBar()
+                            }
                             grandparent.snap.userInteractionEnabled = true
                             grandparent.snap.backgroundColor = UIColor.blackColor()
                             grandparent.moviePlayer.frame = grandparent.snap.bounds
                             grandparent.snap.layer.addSublayer(grandparent.moviePlayer)
                             grandparent.snap.alpha = 1
                             
+                            //Bring timer to front
+                            grandparent.snap.bringSubviewToFront(grandparent.snapTimer)
+                            
                             //Play video
                             grandparent.moviePlayer.player!.play()
                             
+                            //Start timer
+                            grandparent.snapTimer.startTimer(player.currentItem!.asset.duration)
+                            
                         })
-                        
                     }
                 })
             }
@@ -549,8 +554,15 @@ class UserListController: UITableViewController {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             //Decode and display image for user
-                            grandparent.toggleStatusBar()
+                            if !grandparent.hideStatusBar {
+                                
+                                grandparent.toggleStatusBar()
+                            }
+                            
                             grandparent.snap.userInteractionEnabled = true
+                            
+                            //Hide timer
+                            grandparent.snapTimer.alpha = 0
                             grandparent.snap.alpha = 1
                         })
                     }
@@ -561,11 +573,12 @@ class UserListController: UITableViewController {
         //If photo not within time, display cell bounce animation
         else {
             
+            
             UIView.animateWithDuration(0.1, animations: { () -> Void in
                 
                 cell.center = CGPoint(x: cell.center.x+25, y: cell.center.y)
                 
-                }, completion: { (BooleanLiteralType) -> Void in
+                }, completion: { (Bool) -> Void in
                     
                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                         
@@ -595,10 +608,9 @@ class UserListController: UITableViewController {
                                                         
                                                         cell.center = CGPoint(x: cell.center.x-7, y: cell.center.y)
                                                         
-                                                        })
+                                                    })
                                             })
                                     })
-                                    
                             })
                     })
             })
@@ -663,6 +675,12 @@ class UserListController: UITableViewController {
             grandparent.moviePlayer.player = nil
             grandparent.moviePlayer.removeFromSuperlayer()
             grandparent.snap.alpha = 0
+            
+            //Only toggle if status bar hidden
+            if grandparent.hideStatusBar {
+                
+                grandparent.toggleStatusBar()
+            }
             })
         
         clearVideoTempFile()
@@ -707,7 +725,7 @@ class UserListController: UITableViewController {
                 //Ensure that the subview is not the image or its background
                 if subview.tag != 5 && subview.tag != 6 {
                     
-                    UIView.animateWithDuration(0.2, animations: { () -> Void in
+                    UIView.animateWithDuration(0.1, animations: { () -> Void in
                         
                         subview.alpha = 0
                     })
@@ -764,6 +782,8 @@ class UserListController: UITableViewController {
         
         //Move to the map
         self.tabBarController?.selectedIndex = 1
+        let map = tabBarController!.viewControllers![1]
+        
     }
     
     

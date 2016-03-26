@@ -510,7 +510,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         activityIndicator.startAnimating()
         photoSendButton.hidden = true
         
-        
         if userCountryCode == "" {
             
             getUserLocation()
@@ -570,8 +569,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 
                 //Segue back to table
                 self.activityIndicator.stopAnimating()
-                self.segueBackToTable()
                 self.closePhoto(self)
+                self.segueBackToTable()
             }
             else {
                 

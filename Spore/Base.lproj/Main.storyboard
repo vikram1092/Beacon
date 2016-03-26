@@ -143,20 +143,11 @@
                                     <navigationItem id="FNA-nf-9kg"/>
                                 </items>
                             </navigationBar>
-                            <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bfk-OJ-nCH" customClass="OrbitIndicator" customModule="Spore" customModuleProvider="target">
-                                <rect key="frame" x="290" y="290" width="20" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="PiO-6d-h5I"/>
-                                    <constraint firstAttribute="height" constant="20" id="fA7-1Q-BbE"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Heo-1G-5Mg" firstAttribute="trailing" secondItem="Nc3-uR-38l" secondAttribute="trailingMargin" constant="-4" id="4fM-4l-YS6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="XhY-Ul-YGP" secondAttribute="trailing" constant="-20" id="7E0-ju-Prf"/>
-                            <constraint firstItem="bfk-OJ-nCH" firstAttribute="centerX" secondItem="Nc3-uR-38l" secondAttribute="centerX" id="9SP-sl-sIg"/>
-                            <constraint firstItem="bfk-OJ-nCH" firstAttribute="centerY" secondItem="Nc3-uR-38l" secondAttribute="centerY" id="k1H-j7-zY1"/>
                             <constraint firstItem="69W-9e-QTv" firstAttribute="top" secondItem="Heo-1G-5Mg" secondAttribute="bottom" id="llt-2n-nsg"/>
                             <constraint firstItem="Heo-1G-5Mg" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leadingMargin" constant="4" id="sV0-tO-FIy"/>
                             <constraint firstItem="XhY-Ul-YGP" firstAttribute="top" secondItem="JB1-sV-LGU" secondAttribute="bottom" constant="20" id="scP-RY-aah"/>
@@ -199,20 +190,24 @@
                                     <subviews>
                                         <view tag="6" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZG5-GW-eje" customClass="CountryBackground" customModule="Spore" customModuleProvider="target">
                                             <rect key="frame" x="13" y="8" width="85" height="83"/>
+                                            <subviews>
+                                                <imageView tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
+                                                    <rect key="frame" x="13" y="12" width="59" height="59"/>
+                                                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="59" id="0Pc-2S-0LD"/>
+                                                        <constraint firstAttribute="width" constant="59" id="mKF-pA-kPj"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
+                                                <constraint firstItem="Cbp-co-DR1" firstAttribute="top" secondItem="ZG5-GW-eje" secondAttribute="top" constant="12" id="IHS-BR-Tox"/>
                                                 <constraint firstAttribute="height" constant="83" id="PR6-qv-qq2"/>
                                                 <constraint firstAttribute="width" constant="85" id="zIv-jr-Gr0"/>
+                                                <constraint firstItem="Cbp-co-DR1" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="leading" constant="13" id="zdh-gw-ina"/>
                                             </constraints>
                                         </view>
-                                        <imageView tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
-                                            <rect key="frame" x="26" y="21" width="59" height="59"/>
-                                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="59" id="0Pc-2S-0LD"/>
-                                                <constraint firstAttribute="width" constant="59" id="mKF-pA-kPj"/>
-                                            </constraints>
-                                        </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afh-sq-STl">
                                             <rect key="frame" x="106" y="21" width="423" height="29"/>
                                             <constraints>
@@ -225,17 +220,14 @@
                                         <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" tag="4" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="J19-KJ-JkN">
                                             <rect key="frame" x="45" y="41" width="20" height="20"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="20" id="4EI-GV-Syi"/>
-                                                <constraint firstAttribute="width" constant="20" id="APC-XX-sAj"/>
+                                                <constraint firstAttribute="width" constant="20" id="Hxs-YM-OMf"/>
+                                                <constraint firstAttribute="height" constant="20" id="ODv-ky-H8T"/>
                                             </constraints>
                                         </activityIndicatorView>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
-                                            <rect key="frame" x="106" y="41" width="80" height="25"/>
+                                            <rect key="frame" x="106" y="49" width="423" height="17"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="25" id="2zA-rd-ixb"/>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="96F-yS-T3m"/>
-                                                <constraint firstAttribute="height" constant="25" id="hgm-Jf-SRY"/>
-                                                <constraint firstAttribute="width" constant="80" id="uOB-EK-N2f"/>
+                                                <constraint firstAttribute="height" constant="17" id="MWH-WA-4Dt"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -244,18 +236,15 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="ZG5-GW-eje" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" id="3NL-l0-Fdz"/>
+                                        <constraint firstItem="J19-KJ-JkN" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="37" id="9Mu-lV-Swf"/>
                                         <constraint firstItem="afh-sq-STl" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="13" id="KWA-oj-oew"/>
-                                        <constraint firstItem="Cbp-co-DR1" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="18" id="Lo5-bB-gF3"/>
+                                        <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="8" id="OCT-il-ACU"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="afh-sq-STl" secondAttribute="trailing" constant="15" id="Pi0-32-kzR"/>
                                         <constraint firstItem="afh-sq-STl" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="8" id="R9q-a9-1sF"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="J19-KJ-JkN" secondAttribute="trailing" constant="479" id="dEX-3o-xjT"/>
-                                        <constraint firstItem="J19-KJ-JkN" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="33" id="h5V-0E-Pt8"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="92K-U2-lbN" secondAttribute="trailing" constant="15" id="Sh1-eX-wiO"/>
+                                        <constraint firstItem="J19-KJ-JkN" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="33" id="aDr-ff-rRY"/>
                                         <constraint firstItem="ZG5-GW-eje" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="5" id="hQN-KB-kVm"/>
-                                        <constraint firstItem="J19-KJ-JkN" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="37" id="hio-l1-zq0"/>
-                                        <constraint firstItem="Cbp-co-DR1" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="13" id="kbe-HL-OsL"/>
-                                        <constraint firstItem="92K-U2-lbN" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="33" id="nVi-oY-eiX"/>
-                                        <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="8" id="yvf-Hj-txJ"/>
-                                        <constraint firstItem="92K-U2-lbN" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="33" id="ztc-sy-1d6"/>
+                                        <constraint firstItem="92K-U2-lbN" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="41" id="jvw-Qy-aSX"/>
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -756,9 +745,18 @@
                                 <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
                                 <gestureRecognizers/>
                             </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FGc-5A-dxM" customClass="SnapTimer" customModule="Spore" customModuleProvider="target">
+                                <rect key="frame" x="512" y="40" width="20" height="20"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="5zB-tz-PXq"/>
+                                    <constraint firstAttribute="width" constant="20" id="X9A-02-S5b"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="FGc-5A-dxM" firstAttribute="top" secondItem="vF0-Rz-t1f" secondAttribute="bottom" constant="20" id="48a-rk-qsq"/>
                             <constraint firstAttribute="trailingMargin" secondItem="dnc-g5-sLL" secondAttribute="trailing" constant="-20" id="BCo-Dt-DFv"/>
                             <constraint firstItem="ODD-Ld-2eC" firstAttribute="top" secondItem="5nW-Kt-8r7" secondAttribute="bottom" id="ENm-xQ-A78"/>
                             <constraint firstAttribute="trailingMargin" secondItem="5nW-Kt-8r7" secondAttribute="trailing" constant="-20" id="EjQ-3T-4c1"/>
@@ -766,6 +764,7 @@
                             <constraint firstItem="ODD-Ld-2eC" firstAttribute="top" secondItem="dnc-g5-sLL" secondAttribute="bottom" id="RxS-3d-jFK"/>
                             <constraint firstItem="dnc-g5-sLL" firstAttribute="leading" secondItem="v8w-03-VWT" secondAttribute="leadingMargin" constant="-20" id="aZO-Vf-atN"/>
                             <constraint firstItem="5nW-Kt-8r7" firstAttribute="leading" secondItem="v8w-03-VWT" secondAttribute="leadingMargin" constant="-20" id="ah1-Gk-BtD"/>
+                            <constraint firstItem="FGc-5A-dxM" firstAttribute="trailing" secondItem="v8w-03-VWT" secondAttribute="trailingMargin" id="eRP-GY-oos"/>
                             <constraint firstItem="dnc-g5-sLL" firstAttribute="centerX" secondItem="v8w-03-VWT" secondAttribute="centerX" id="hIv-d2-CL0"/>
                             <constraint firstItem="5nW-Kt-8r7" firstAttribute="centerX" secondItem="v8w-03-VWT" secondAttribute="centerX" id="ify-HM-Pra"/>
                             <constraint firstItem="5nW-Kt-8r7" firstAttribute="top" secondItem="v8w-03-VWT" secondAttribute="topMargin" id="wct-hN-L4o"/>
@@ -776,11 +775,12 @@
                     <connections>
                         <outlet property="container" destination="dnc-g5-sLL" id="Ph0-Fp-hxM"/>
                         <outlet property="snap" destination="5nW-Kt-8r7" id="vas-JX-U17"/>
+                        <outlet property="snapTimer" destination="FGc-5A-dxM" id="bxs-YT-ozw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vn5-hO-nuP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="236" y="305"/>
+            <point key="canvasLocation" x="236" y="304"/>
         </scene>
         <!--TabBarController-->
         <scene sceneID="UkW-XZ-uV0">
@@ -788,10 +788,11 @@
                 <tabBarController storyboardIdentifier="TabBarController" title="TabBarController" extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" definesPresentationContext="YES" hidesBottomBarWhenPushed="YES" id="Z7Z-K5-cIg" customClass="TabBarController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" placeholderIntrinsicWidth="0.0" placeholderIntrinsicHeight="37" id="aJK-XO-EX3">
+                    <tabBar key="tabBar" contentMode="scaleToFill" placeholderIntrinsicWidth="0.0" placeholderIntrinsicHeight="49" id="aJK-XO-EX3">
                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.88963011058981234" green="0.87336962445395316" blue="0.85254794897214459" alpha="1" colorSpace="calibratedRGB"/>
+                        <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
                                 <color key="value" red="0.18696556289999999" green="0.38122219860000001" blue="0.680211126" alpha="1" colorSpace="calibratedRGB"/>
@@ -801,8 +802,8 @@
                     <connections>
                         <segue destination="Obd-UH-7yy" kind="relationship" relationship="viewControllers" id="dno-w5-yN5"/>
                         <segue destination="mKN-em-9dv" kind="relationship" relationship="viewControllers" id="6At-Un-ANr"/>
-                        <segue destination="d16-QO-sve" kind="relationship" relationship="viewControllers" id="wzP-FF-9a3"/>
                         <segue destination="GJW-g9-4yK" kind="relationship" relationship="viewControllers" id="1g0-Xp-EMV"/>
+                        <segue destination="d16-QO-sve" kind="relationship" relationship="viewControllers" id="wzP-FF-9a3"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C89-Te-vEP" userLabel="First Responder" sceneMemberID="firstResponder"/>
