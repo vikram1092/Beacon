@@ -20,26 +20,27 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     @IBOutlet var backButton: UIButton!
     @IBOutlet var closeButton: UIButton!
     @IBOutlet var photoSendButton: UIButton!
-    @IBOutlet var videoDurationLabel: UILabel!
     @IBOutlet var cameraSwitchButton: UIButton!
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet var snapTimer: SnapTimer!
+    @IBOutlet var captureShape: CaptureShape!
     
-    var previewLayer = AVCaptureVideoPreviewLayer?()
     var captureSession = AVCaptureSession()
     var stillImageOutput = AVCaptureStillImageOutput()
     var movieFileOutput = AVCaptureMovieFileOutput()
+    var previewLayer = AVCaptureVideoPreviewLayer?()
+    var moviePlayer = AVPlayerLayer()
+    let focusShape = CAShapeLayer()
     var locManager = CLLocationManager()
+    let fileManager = NSFileManager.defaultManager()
+    let videoPath = NSTemporaryDirectory() + "userVideo.mov"
+    
     var userLocation = PFGeoPoint()
     var userCountryCode = ""
     var userCountryReceived = false
     var userName = ""
     var userEmail = ""
     var flashToggle = false
-    let videoPath = NSTemporaryDirectory() + "userVideo.mov"
-    var moviePlayer = AVPlayerLayer()
-    var videoDuration = 0
-    var videoTimer = NSTimer()
-    let fileManager = NSFileManager.defaultManager()
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     //If we find a device we'll store it here for later use
@@ -60,6 +61,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Clear video temp file
         clearVideoTempFile()
         
+        //Add subviews to views
+        cameraImage.addSubview(snapTimer)
+        captureButton.addSubview(captureShape)
+        
         //Initialize gesture recognizers and add to capture button
         let tap = UITapGestureRecognizer(target: self, action: Selector("takePhoto"))
         let hold = UILongPressGestureRecognizer(target: self, action: Selector("takeVideo:"))
@@ -76,7 +81,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         locManager = CLLocationManager.init()
         self.locManager.delegate = self
         
-        // Set up camera session & microphone
+        // Set up camera session & microphones
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
         microphone = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
         let devices = AVCaptureDevice.devices()
@@ -105,7 +110,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Initialize buttons
         closeButton.hidden = true
         photoSendButton.hidden = true
-        videoDurationLabel.hidden = true
         flashButton.hidden = false
         backButton.hidden = false
         captureButton.hidden = false
@@ -304,12 +308,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             
             //Change elements on screen
             self.backButton.hidden = true
-            self.captureButton.hidden = true
             self.flashButton.hidden = true
             self.cameraSwitchButton.hidden = true
-            self.videoDurationLabel.hidden = false
-            self.closeButton.hidden = false
-            self.photoSendButton.hidden = false
             
             //Add movie file output
             print("Adding output")
@@ -325,10 +325,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             print("Beginning video recording")
             movieFileOutput.startRecordingToOutputFileURL(url, recordingDelegate: VideoDelegate())
             
-            //Start timer for video
-            videoDuration = 0
-            videoDurationLabel.text = "0"
-            videoTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("incrementTimer"), userInfo: nil, repeats: true)
+            //Start recording animation
+            captureShape.startRecording()
             
         }
         else if gestureRecognizer.state == UIGestureRecognizerState.Ended {
@@ -337,7 +335,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             print("Ending video recording")
             movieFileOutput.stopRecording()
             captureSession.stopRunning()
-            videoTimer.invalidate()
+            captureShape.stopRecording()
             
             //Remove movie file output
             captureSession.removeOutput(movieFileOutput)
@@ -368,12 +366,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 object: moviePlayer.player!.currentItem)
             cameraImage.layer.addSublayer(moviePlayer)
             
+            //Bring timer to front
+            cameraImage.bringSubviewToFront(snapTimer)
+            
             //Play video
             moviePlayer.player!.play()
-            dispatch_after(1, dispatch_get_main_queue(), { () -> Void in
-                
-                self.videoTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("decrementTimer"), userInfo: nil, repeats: true)
-            })
+            
+            //Start timer
+            snapTimer.startTimer(player.currentItem!.asset.duration)
             
             //Save video
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
@@ -390,25 +390,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             
         }
     }
-    
-    
-    internal func incrementTimer() {
-        
-        videoDuration += 1
-        videoDurationLabel.text = String(videoDuration)
-    }
-    
-    
-    internal func decrementTimer() {
-        
-        var temp = Int(videoDurationLabel.text!)!
-        if temp > 0 {
-            
-            temp -= 1
-            videoDurationLabel.text = String(temp)
-        }
-    }
-    
+
     
     internal func toggleTorchMode() {
         
@@ -441,18 +423,17 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         let preferredTimeScale : Int32 = 1
         let seekTime : CMTime = CMTimeMake(seconds, preferredTimeScale)
         
+        //Seek video to beginning
         moviePlayer.player!.seekToTime(seekTime)
         
-        //Reset video duration label
-        videoTimer.invalidate()
-        videoDurationLabel.text = String(videoDuration)
-        dispatch_after(1, dispatch_get_main_queue(), { () -> Void in
-            
-            self.videoTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("decrementTimer"), userInfo: nil, repeats: true)
-        })
+        //Bring timer to front
+        cameraImage.bringSubviewToFront(snapTimer)
         
         //Play movie
         moviePlayer.player!.play()
+        
+        //Reset timer
+        snapTimer.startTimer(moviePlayer.player!.currentItem!.asset.duration)
         
     }
     
@@ -462,14 +443,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Begin camera session again, stop video, & toggle buttons
         moviePlayer.player = nil
         moviePlayer.removeFromSuperlayer()
-        videoTimer.invalidate()
+        snapTimer.alpha = 0
         captureSession.startRunning()
         clearVideoTempFile()
         
         //Update screen elements
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true
-        self.videoDurationLabel.hidden = true
         self.flashButton.hidden = false
         self.backButton.hidden = false
         self.captureButton.hidden = false
@@ -655,6 +635,62 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 print("Problem with the data received from geocoder")
             }
         }
+    }
+    
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        
+        let touch = touches.first!
+        
+        if ((touch.view!.viewWithTag(1) != nil && captureDevice!.isFocusModeSupported(AVCaptureFocusMode.AutoFocus)) && captureSession.running) {
+            
+            //Get point
+            let focusPoint = CGPoint(x: touch.locationInView(self.view).x, y: touch.locationInView(self.view).y)
+            
+            //Draw focus shape
+            print("Focusing")
+            drawFocus(focusPoint)
+            
+            //Focus camera on point
+            do {
+                
+                print("Locking for shifting focus")
+                try captureDevice!.lockForConfiguration()
+                captureDevice!.focusPointOfInterest = focusPoint
+                captureDevice!.focusMode = AVCaptureFocusMode.AutoFocus
+                captureDevice?.unlockForConfiguration()
+                
+            }
+            catch let error as NSError { print("Error locking device for focus: \(error)") }
+        }
+    }
+    
+    
+    internal func drawFocus(focusPoint: CGPoint) {
+        
+        //Define focus shape
+        let objectSize = CGSize(width: 60.0, height: 60.0)
+        let focusShapeOrigin = CGPoint(x: focusPoint.x - 30.0, y: focusPoint.y - 30.0)
+        
+        focusShape.path = UIBezierPath(ovalInRect: CGRect(origin: focusShapeOrigin, size: objectSize)).CGPath
+        focusShape.fillColor = UIColor.clearColor().CGColor
+        focusShape.strokeColor = UIColor.whiteColor().CGColor
+        focusShape.strokeStart = 0.0
+        focusShape.strokeEnd = 1.0
+        
+        self.view.layer.addSublayer(focusShape)
+        
+        delay(1.5) { () -> () in
+            
+            
+            self.focusShape.removeFromSuperlayer()
+        }
+    }
+    
+    
+    internal func delay(delay: Double, closure:()->()) {
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
     }
     
     

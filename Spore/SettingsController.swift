@@ -14,6 +14,7 @@ class SettingsController: UIViewController {
     var userEmail = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
     
+    
     override func viewDidLoad() {
         
         //Retreive user details
@@ -24,6 +25,7 @@ class SettingsController: UIViewController {
         super.viewDidLoad()
         
     }
+    
     
     override func viewDidAppear(animated: Bool) {
         
@@ -41,6 +43,4 @@ class SettingsController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
 }

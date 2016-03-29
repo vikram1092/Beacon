@@ -23,7 +23,9 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     @IBOutlet var countryPicture: UIImageView!
     @IBOutlet var usernameCell: UILabel!
     
+    
     override func viewDidLoad() {
+        
         //Run view load as normal
         super.viewDidLoad()
         
@@ -52,11 +54,19 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         
         //Perform logout if tag matches Logout button tag
-        if cell!.tag == 3 {
+        if cell!.tag == 2 {
+            
+            performSegueWithIdentifier("TermsOfUseSegue", sender: self)
+        }
+        else if cell!.tag == 3 {
             
             performSegueWithIdentifier("PrivacyPolicySegue", sender: self)
         }
-        if cell!.tag == 5 {
+        else if cell!.tag == 4 {
+            
+            performSegueWithIdentifier("AboutSegue", sender: self)
+        }
+        else if cell!.tag == 5 {
             
             //Segue back to the login screen
             performSegueWithIdentifier("Logout", sender: self)

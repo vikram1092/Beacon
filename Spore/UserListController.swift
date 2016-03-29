@@ -704,7 +704,6 @@ class UserListController: UITableViewController {
         countryObject = recognizer.view!
         let translation = recognizer.translationInView(recognizer.view!.superview)
         let cell = recognizer.view!.superview!.superview as! UITableViewCell
-        var countryName = ""
         
         switch recognizer.state {
             
@@ -722,18 +721,21 @@ class UserListController: UITableViewController {
             //Since content view is the direct subview layer, we have to first go into that
             for subview in cell.subviews[0].subviews {
                 
-                //Ensure that the subview is not the image or its background
-                if subview.tag != 5 && subview.tag != 6 {
+                //Ensure that the subview is not the image, its background, or the map label
+                if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
                     
                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                         
                         subview.alpha = 0
                     })
                 }
-                
-                if subview.tag == 1 {
+                //Show map label
+                else if subview.tag == 3 {
                     
-                    countryName = (subview as! UILabel).text!
+                    UIView.animateWithDuration(0.1, animations: { () -> Void in
+                        
+                        subview.alpha = 1
+                    })
                 }
             }
             
@@ -747,26 +749,38 @@ class UserListController: UITableViewController {
             //If moved to the other side of the screen, go to map and show country
             if distanceFraction > 0.60 {
                 
-                segueToMap(countryName)
+                let index = tableView.indexPathForCell(cell)!.row
+                let userListIndex = userList.count - index - 1
+                let geoPoint = userList[userListIndex].valueForKey("sentFrom") as! PFGeoPoint
+                let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                segueToMap(location)
             }
             
             //Move country back and bring back elements
             print("Moving country back")
             UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
                 
-                //Move object first
-                self.countryObject.center.x = self.countryCenter.x
-                
-                
-                //Since content view is the direct subview layer, we have to first go into that
-                for subview in cell.subviews[0].subviews {
+                    //Move object first
+                    self.countryObject.center.x = self.countryCenter.x
                     
-                    //Ensure that the subview is not the image or its background
-                    if subview.tag != 5 && subview.tag != 6 {
+                    
+                    //Since content view is the direct subview layer, we have to first go into that
+                    for subview in cell.subviews[0].subviews {
                         
-                        subview.alpha = 1
+                        //Ensure that the subview is not the image, its background or the map label
+                        if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
+                            
+                            subview.alpha = 1
+                        }
+                        //Hide map label
+                        else if subview.tag == 3 {
+                            
+                            UIView.animateWithDuration(0.1, animations: { () -> Void in
+                                
+                                subview.alpha = 0
+                            })
+                        }
                     }
-                }
                 
                 }, completion: nil)
             
@@ -778,12 +792,12 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func segueToMap(country: String) {
+    internal func segueToMap(location: CLLocationCoordinate2D) {
         
         //Move to the map
         self.tabBarController?.selectedIndex = 1
-        let map = tabBarController!.viewControllers![1]
-        
+        let map = tabBarController!.viewControllers![1] as! MapController
+        map.goToCountry(location)
     }
     
     

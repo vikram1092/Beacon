@@ -114,9 +114,14 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    internal func goToCountry(country: String) {
+    internal func goToCountry(location: CLLocationCoordinate2D) {
         
+        print("User picture coordinates:" + String(location))
+        let span = MKCoordinateSpan(latitudeDelta: 4, longitudeDelta: 4)
+        let region = MKCoordinateRegion(center: location, span: span)
         
+        mapView.setRegion(region, animated: true)
+        mapView.regionThatFits(region)
     }
     
     
@@ -189,15 +194,6 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
         }
         
-        /*
-        //Configure polygon with path
-        let country = GMSPolyline(path: path)
-        country.strokeColor = color
-        country.strokeWidth = 2
-        country.geodesic = true
-        
-        country.map = self.mapView
-*/
         let pointer = UnsafeMutablePointer<CLLocationCoordinate2D>(path)
         let country = CountryPolyline(coordinates: pointer, count: path.count)
         

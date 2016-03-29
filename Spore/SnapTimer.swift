@@ -21,6 +21,8 @@ class SnapTimer: UIView {
         super.init(coder: aDecoder)
         
         let frame = super.frame
+        self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
+        
         //Set background
         timerBackground.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         timerBackground.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).CGColor
