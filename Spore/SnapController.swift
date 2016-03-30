@@ -62,6 +62,7 @@ class SnapController: UIViewController {
         print("Tapped!")
         
         self.snap.userInteractionEnabled = false
+        self.snapTimer.alpha = 0
         
         if self.hideStatusBar {
             

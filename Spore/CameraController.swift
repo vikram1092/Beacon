@@ -26,6 +26,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     @IBOutlet var captureShape: CaptureShape!
     
     var captureSession = AVCaptureSession()
+    var audioSession = AVAudioSession()
     var stillImageOutput = AVCaptureStillImageOutput()
     var movieFileOutput = AVCaptureMovieFileOutput()
     var previewLayer = AVCaptureVideoPreviewLayer?()
@@ -33,6 +34,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     let focusShape = CAShapeLayer()
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
+    let notifications = NSNotificationCenter.defaultCenter()
     let videoPath = NSTemporaryDirectory() + "userVideo.mov"
     
     var userLocation = PFGeoPoint()
@@ -50,13 +52,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     override func viewDidLoad() {
         
+        
         //Retreive user details
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
         
-        
-        //Initialize flash variable
-        flashToggle = false
+        //Configure interruption notifications
+        notifications.addObserver(self, selector: Selector("cameraInterrupted"), name: AVCaptureSessionWasInterruptedNotification, object: captureSession)
         
         //Clear video temp file
         clearVideoTempFile()
@@ -118,6 +120,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Hide tab bar
         self.tabBarController!.tabBar.hidden = true
         
+        //Configure capture session
+        print("Capture session running: " + String(captureSession.running))
         if !captureSession.running && captureDevice != nil {
             beginSession()
         }
@@ -139,36 +143,35 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     override func viewDidAppear(animated: Bool) {
         
-        //Get user location every time view appears
-        getUserLocation()
+        
         super.viewDidAppear(true)
+        
+        //Get user location every time view appears
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+            
+            self.getUserLocation()
+        }
     }
-    
+
     
     internal func beginSession() {
         
-        //Start camera session & outputs
-        stillImageOutput = AVCaptureStillImageOutput()
-        movieFileOutput = AVCaptureMovieFileOutput()
-        movieFileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale())
-        captureSession.addOutput(stillImageOutput)
         
+        //Setup audio session
         do {
-            print("add inputs")
-            try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
-            try captureSession.addInput(AVCaptureDeviceInput(device: microphone))
+            audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.MixWithOthers)
+            try audioSession.setActive(true)
         }
-        catch {
-            
-            //Error message for no camera found, or camera permission denied by user
-            print("Camera not found.")
-            let alert = UIAlertController(title: "Error displaying camera.", message: "", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
-            
-            presentViewController(alert, animated: true, completion: nil)
-        }
+        catch let error as NSError { print("Error setting audio session category \(error)") }
         
-        //Create and add the camera layer to Image View
+    
+        //Start camera session, outputs and inputs
+        captureSession = AVCaptureSession()
+        addCameraOutputs()
+        addCameraInputs()
+        
+        //Create and add the camera preview layer to camera image
         print("add session to layer")
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         
@@ -181,6 +184,51 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         
         //Perform view fixes again
         viewDidLayoutSubviews()
+    }
+    
+    
+    internal func addCameraOutputs() {
+        
+        //Configure outputs
+        stillImageOutput = AVCaptureStillImageOutput()
+        movieFileOutput = AVCaptureMovieFileOutput()
+        movieFileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale())
+        
+        //Add camera outputs
+        if captureSession.canAddOutput(stillImageOutput) {
+            
+            captureSession.addOutput(stillImageOutput)
+            captureSession.addOutput(movieFileOutput)
+        }
+    }
+    
+    
+    internal func addCameraInputs() {
+        
+        
+        //Add camera inputs
+        do {
+            
+            print("add inputs")
+            if try captureSession.canAddInput(AVCaptureDeviceInput(device: captureDevice)) {
+                
+                try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
+            }
+            
+            if try captureSession.canAddInput(AVCaptureDeviceInput(device: microphone)) {
+                
+                try captureSession.addInput(AVCaptureDeviceInput(device: microphone))
+            }
+        }
+        catch {
+            
+            //Error message for no camera found, or camera permission denied by user
+            print("Camera not found.")
+            let alert = UIAlertController(title: "Error displaying camera.", message: "", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
+            
+            presentViewController(alert, animated: true, completion: nil)
+        }
     }
     
     
@@ -203,7 +251,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
             flashButton.reloadInputViews()
             
-            
             captureDevice!.flashMode = AVCaptureFlashMode.On
             captureDevice!.unlockForConfiguration()
         }
@@ -216,10 +263,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             if captureDevice!.torchMode == AVCaptureTorchMode.On {
                 captureDevice!.torchMode = AVCaptureTorchMode.Off
             }
-            
-            do {
-                try captureDevice?.lockForConfiguration()
-            } catch _ {print("Error getting loc for device")}
             
             captureDevice!.flashMode = AVCaptureFlashMode.On
             captureDevice!.unlockForConfiguration()
@@ -236,7 +279,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     @IBAction func switchCamera(sender: AnyObject) {
         
-        //Reconfigure all parameters & stop cuurrent session
+        //Reconfigure all parameters & stop current session
         let devices = AVCaptureDevice.devices()
         let position = captureDevice!.position
         
@@ -258,12 +301,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                     
                     //Enable flash
                     flashButton.enabled = true
+                    
+                    break
                 }
                 else if(device.position == AVCaptureDevicePosition.Front && position == AVCaptureDevicePosition.Back) {
                     captureDevice = device as? AVCaptureDevice
                     
                     //Disable flash
                     flashButton.enabled = false
+                    
+                    break
                 }
             }
         }
@@ -311,10 +358,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             self.flashButton.hidden = true
             self.cameraSwitchButton.hidden = true
             
-            //Add movie file output
-            print("Adding output")
-            captureSession.addOutput(movieFileOutput)
-            
             //Turn on torch if flash is on
             toggleTorchMode()
             
@@ -323,6 +366,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             
             //Start recording
             print("Beginning video recording")
+            movieFileOutput.stopRecording()
             movieFileOutput.startRecordingToOutputFileURL(url, recordingDelegate: VideoDelegate())
             
             //Start recording animation
@@ -337,9 +381,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             captureSession.stopRunning()
             captureShape.stopRecording()
             
-            //Remove movie file output
-            captureSession.removeOutput(movieFileOutput)
-            
             //Turn off torch if it was turned on
             toggleTorchMode()
             
@@ -351,29 +392,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             self.closeButton.hidden = false
             self.photoSendButton.hidden = false
             
-            //Initialize movie layer
-            let player = AVPlayer(URL: NSURL(fileURLWithPath: videoPath))
-            moviePlayer = AVPlayerLayer(player: player)
-            
-            //Set frame and video gravity
-            moviePlayer.frame = self.view.bounds
-            moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-           
-            //Set loop function
-            NSNotificationCenter.defaultCenter().addObserver(self,
-                selector: "restartVideoFromBeginning",
-                name: AVPlayerItemDidPlayToEndTimeNotification,
-                object: moviePlayer.player!.currentItem)
-            cameraImage.layer.addSublayer(moviePlayer)
-            
-            //Bring timer to front
-            cameraImage.bringSubviewToFront(snapTimer)
-            
-            //Play video
-            moviePlayer.player!.play()
-            
-            //Start timer
-            snapTimer.startTimer(player.currentItem!.asset.duration)
+            //Start movie player
+            initializeMoviePlayer()
             
             //Save video
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
@@ -385,10 +405,37 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                     }, completionHandler: { success, error in
                         if !success { NSLog("Failed to create video: %@", error!) }
                 })
-                
             })
-            
         }
+    }
+    
+    
+    internal func initializeMoviePlayer() {
+        
+        
+        //Initialize movie layer
+        let player = AVPlayer(URL: NSURL(fileURLWithPath: videoPath))
+        moviePlayer = AVPlayerLayer(player: player)
+        
+        //Set frame and video gravity
+        moviePlayer.frame = self.view.bounds
+        moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        
+        //Set loop function
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: "restartVideoFromBeginning",
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object: moviePlayer.player!.currentItem)
+        cameraImage.layer.addSublayer(moviePlayer)
+        
+        //Bring timer to front
+        cameraImage.bringSubviewToFront(snapTimer)
+        
+        //Play video
+        moviePlayer.player!.play()
+        
+        //Start timer
+        snapTimer.startTimer(player.currentItem!.asset.duration)
     }
 
     
@@ -424,17 +471,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         let seekTime : CMTime = CMTimeMake(seconds, preferredTimeScale)
         
         //Seek video to beginning
-        moviePlayer.player!.seekToTime(seekTime)
-        
-        //Bring timer to front
-        cameraImage.bringSubviewToFront(snapTimer)
-        
-        //Play movie
-        moviePlayer.player!.play()
-        
-        //Reset timer
-        snapTimer.startTimer(moviePlayer.player!.currentItem!.asset.duration)
-        
+        if moviePlayer.player != nil {
+            moviePlayer.player!.seekToTime(seekTime)
+            
+            //Bring timer to front
+            cameraImage.bringSubviewToFront(snapTimer)
+            
+            //Play movie
+            moviePlayer.player!.play()
+            
+            //Reset timer
+            snapTimer.startTimer(moviePlayer.player!.currentItem!.asset.duration)
+        }
     }
     
     
@@ -609,7 +657,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 print("Reverse geocoder error: " + locationError!.description)
                 
                 //Error message for user location not found
-                let alert = UIAlertController(title: "Error getting user location.", message: "Please check your internet connection or permissions.", preferredStyle: UIAlertControllerStyle.Alert)
+                let alert = UIAlertController(title: "Error getting user country.", message: "Please check your internet connection or permissions.", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
                     
                     self.segueBackToTable()

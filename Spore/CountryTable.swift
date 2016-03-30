@@ -28,7 +28,7 @@ class CountryTable {
     
     internal func getCountryName(countryCode: String) -> String {
         
-        var countryName = "India"
+        var countryName = "Unknown"
         print("Country:" + countryCode)
         
         //Find country and obtain the 2 digit ISO code
