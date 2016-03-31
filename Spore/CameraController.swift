@@ -24,6 +24,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
     @IBOutlet var snapTimer: SnapTimer!
     @IBOutlet var captureShape: CaptureShape!
+    @IBOutlet var blurView: UIView!
+    @IBOutlet var alertButton: UIButton!
     
     var captureSession = AVCaptureSession()
     var audioSession = AVAudioSession()
@@ -56,6 +58,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Retreive user details
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
+        
+        
+        //Setup audio session
+        do {
+            audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.MixWithOthers)
+            try audioSession.setActive(true)
+        }
+        catch let error as NSError { print("Error setting audio session category \(error)") }
         
         //Configure interruption notifications
         notifications.addObserver(self, selector: Selector("cameraInterrupted"), name: AVCaptureSessionWasInterruptedNotification, object: captureSession)
@@ -117,6 +128,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         captureButton.hidden = false
         cameraSwitchButton.hidden = false
         
+        //Hide alert layers
+        blurView.alpha = 0
+        blurView.userInteractionEnabled = false
+        
         //Hide tab bar
         self.tabBarController!.tabBar.hidden = true
         
@@ -157,13 +172,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     internal func beginSession() {
         
         
-        //Setup audio session
-        do {
-            audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.MixWithOthers)
-            try audioSession.setActive(true)
-        }
-        catch let error as NSError { print("Error setting audio session category \(error)") }
         
     
         //Start camera session, outputs and inputs
@@ -330,10 +338,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             let data_image = UIImage(data: image)
             self.cameraImage.image = data_image
             self.captureSession.stopRunning()
-            
-            //Save image to local library
-            UIImageWriteToSavedPhotosAlbum(data_image!, self, nil, nil)
-            
         }
         
         print("Pressed!")
@@ -395,17 +399,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             //Start movie player
             initializeMoviePlayer()
             
-            //Save video
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                
-                PHPhotoLibrary.sharedPhotoLibrary().performChanges({
-                    
-                    PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(NSURL(fileURLWithPath: self.videoPath))
-                    
-                    }, completionHandler: { success, error in
-                        if !success { NSLog("Failed to create video: %@", error!) }
-                })
-            })
         }
     }
     
@@ -577,13 +570,28 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             photoObject["isVideo"] = true
             clearVideoTempFile()
             print("saved video to PFFile")
+            
+            
+            //Save video locally in background
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                
+                PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                    
+                    PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(NSURL(fileURLWithPath: self.videoPath))
+                    
+                    }, completionHandler: { success, error in
+                        if !success { NSLog("Failed to create video: %@", error!) }
+                })
+            })
         }
         else {
             
             //Set photo just taken by user as PFFile
             photoObject["photo"] = PFFile(data: UIImageJPEGRepresentation(self.cameraImage.image!, CGFloat(0.6))!)
             photoObject["isVideo"] = false
-            print("saved photo to PFFile")
+            
+            //Save image to local library
+            UIImageWriteToSavedPhotosAlbum(cameraImage.image!, self, nil, nil)
         }
         
         //Send the updated photo object to database
@@ -631,6 +639,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         }
         else {
             
+            showAlert("Error getting user's location. \nPlease check your internet connection or permissions.")
+            
+            /*
             //Error message for user location not found
             let alert = UIAlertController(title: "Error getting user location.", message: "Please check your internet connection or permissions.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
@@ -639,7 +650,20 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 self.segueBackToTable()
             }))
             
-            presentViewController(alert, animated: true, completion: nil)
+            presentViewController(alert, animated: true, completion: nil)*/
+        }
+    }
+    
+    
+    internal func showAlert(alertText: String) {
+        
+        alertButton.setTitle(alertText, forState: .Normal)
+        alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
+        alertButton.sizeToFit()
+        
+        UIView.animateWithDuration(1) { () -> Void in
+            
+            self.blurView.alpha = 1
         }
     }
     
@@ -656,6 +680,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 
                 print("Reverse geocoder error: " + locationError!.description)
                 
+                
+                self.showAlert("Error getting user's country. \nPlease check your internet connection or permissions.")
+                
+                /*
                 //Error message for user location not found
                 let alert = UIAlertController(title: "Error getting user country.", message: "Please check your internet connection or permissions.", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
@@ -663,7 +691,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                     self.segueBackToTable()
                 }))
                 
-                self.presentViewController(alert, animated: true, completion: nil)
+                self.presentViewController(alert, animated: true, completion: nil)*/
             }
             else if placemarks!.count > 0 {
                 
@@ -690,7 +718,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         
         let touch = touches.first!
         
-        if ((touch.view!.viewWithTag(1) != nil && captureDevice!.isFocusModeSupported(AVCaptureFocusMode.AutoFocus)) && captureSession.running) {
+        if (touch.view!.viewWithTag(1) != nil && captureDevice!.isFocusModeSupported(AVCaptureFocusMode.AutoFocus)) && captureSession.running && blurView.alpha == 0 {
             
             //Get point
             let focusPoint = CGPoint(x: touch.locationInView(self.view).x, y: touch.locationInView(self.view).y)
@@ -744,6 +772,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     override func prefersStatusBarHidden() -> Bool {
         return true
+    }
+    
+    
+    internal func cameraInterrupted() {
+        
+        print("Camera interrupted")
     }
     
     
