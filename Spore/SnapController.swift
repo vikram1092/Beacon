@@ -49,15 +49,11 @@ class SnapController: UIViewController {
         
         //Configure gestures & snap
         snap.userInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: ("snapTapped"))
-        let panRecognizer = UIPanGestureRecognizer(target: self, action: "snapSwiped:")
-        snap.addGestureRecognizer(tap)
-        snap.addGestureRecognizer(panRecognizer)
         
     }
     
     
-    internal func snapTapped() {
+    @IBAction func snapTapped(sender: AnyObject) {
         
         print("Tapped!")
         
@@ -75,14 +71,13 @@ class SnapController: UIViewController {
             self.moviePlayer.player = nil
             self.moviePlayer.removeFromSuperlayer()
         }
-        
     }
     
     
-    internal func snapSwiped(recognizer: UIPanGestureRecognizer) {
+    @IBAction func snapPanned(sender: UIPanGestureRecognizer) {
         
         
-        switch recognizer.state {
+        switch sender.state {
             
         case .Began:
             
@@ -94,7 +89,7 @@ class SnapController: UIViewController {
         case .Changed:
             
             //Move snap
-            let translation = recognizer.translationInView(snap.superview)
+            let translation = sender.translationInView(snap.superview)
             snap.center.y = lastLocation.y + translation.y
             
             
@@ -118,7 +113,7 @@ class SnapController: UIViewController {
                     }
                 }
             }
-            //Else, slide off screen
+                //Else, slide off screen
             else {
                 
                 print("Moving image off")

@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import FBSDKCoreKit
 import GoogleMaps
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,12 +18,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
         // Override point for customization after application launch.
         Parse.enableLocalDatastore()
         Parse.setApplicationId("n2yOGaNe4AU0PHvX1yZ9ySGXh0jDN3SX2ii2gYCM", clientKey: "sMaWI9Q6yw292Ak7gD93e7iVYAHdOPapUqAlyNQ6")
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         GMSServices.provideAPIKey("AIzaSyB3_U_sLBe6WFrUZh_y_OtFSICd1sLArkU")
+        
+        
+        //Setup audio session
+        do {
+            
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: [AVAudioSessionCategoryOptions.MixWithOthers, AVAudioSessionCategoryOptions.DefaultToSpeaker])
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+        }
+        catch let error as NSError { print("Error setting audio session category \(error)") }
         
         return true
     }

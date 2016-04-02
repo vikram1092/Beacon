@@ -11,7 +11,7 @@ import Parse
 import AVFoundation
 import Photos
 
-class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
+class CameraController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate, AVAudioSessionDelegate {
     
     
     @IBOutlet var cameraImage: UIImageView!
@@ -24,7 +24,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
     @IBOutlet var snapTimer: SnapTimer!
     @IBOutlet var captureShape: CaptureShape!
-    @IBOutlet var blurView: UIView!
+    @IBOutlet var alertView: UIView!
     @IBOutlet var alertButton: UIButton!
     
     var captureSession = AVCaptureSession()
@@ -38,9 +38,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     let fileManager = NSFileManager.defaultManager()
     let notifications = NSNotificationCenter.defaultCenter()
     let videoPath = NSTemporaryDirectory() + "userVideo.mov"
+    var commentCenter = CGPoint(x: 0, y: 0)
     
     var userLocation = PFGeoPoint()
-    var userCountryCode = ""
+    var userCountry = ""
     var userCountryReceived = false
     var userName = ""
     var userEmail = ""
@@ -59,18 +60,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         userName = userDefaults.objectForKey("userName") as! String
         userEmail = userDefaults.objectForKey("userEmail") as! String
         
-        
-        //Setup audio session
-        do {
-            audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.MixWithOthers)
-            try audioSession.setActive(true)
-        }
-        catch let error as NSError { print("Error setting audio session category \(error)") }
-        
-        //Configure interruption notifications
-        notifications.addObserver(self, selector: Selector("cameraInterrupted"), name: AVCaptureSessionWasInterruptedNotification, object: captureSession)
-        
         //Clear video temp file
         clearVideoTempFile()
         
@@ -78,23 +67,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         cameraImage.addSubview(snapTimer)
         captureButton.addSubview(captureShape)
         
-        //Initialize gesture recognizers and add to capture button
-        let tap = UITapGestureRecognizer(target: self, action: Selector("takePhoto"))
-        let hold = UILongPressGestureRecognizer(target: self, action: Selector("takeVideo:"))
-        captureButton.addGestureRecognizer(tap)
-        captureButton.addGestureRecognizer(hold)
-        
         //Run view load as normal
         super.viewDidLoad()
         
         //Ask for location services permission
         self.locManager.requestWhenInUseAuthorization()
         
+        
         //Initialize location manager
         locManager = CLLocationManager.init()
         self.locManager.delegate = self
         
-        // Set up camera session & microphones
+        // Set up camera session & microphone
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
         microphone = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
         let devices = AVCaptureDevice.devices()
@@ -129,8 +113,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         cameraSwitchButton.hidden = false
         
         //Hide alert layers
-        blurView.alpha = 0
-        blurView.userInteractionEnabled = false
+        alertView.alpha = 0
+        alertView.userInteractionEnabled = false
         
         //Hide tab bar
         self.tabBarController!.tabBar.hidden = true
@@ -138,7 +122,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         //Configure capture session
         print("Capture session running: " + String(captureSession.running))
         if !captureSession.running && captureDevice != nil {
-            beginSession()
+            captureSession.startRunning()
+        }
+        else if captureDevice == nil {
+            
+            showAlert("Camera not available.\nPlease check your settings.")
         }
         
         //Run as normal
@@ -171,9 +159,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     internal func beginSession() {
         
-        
-        
-    
+
         //Start camera session, outputs and inputs
         captureSession = AVCaptureSession()
         addCameraOutputs()
@@ -188,10 +174,23 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         cameraImage.layer.addSublayer(self.previewLayer!)
         print("start running")
         
+        //Configure capture session audio session
+        captureSession.automaticallyConfiguresApplicationAudioSession = false
+        
         captureSession.startRunning()
         
         //Perform view fixes again
         viewDidLayoutSubviews()
+    }
+    
+    
+    override func viewDidDisappear(animated: Bool) {
+        
+        //Stop session
+        if captureSession.running {
+            
+            captureSession.stopRunning()
+        }
     }
     
     
@@ -230,12 +229,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         }
         catch {
             
+            showAlert("Camera not found. \nPlease check your settings.")
+            
+            /*
             //Error message for no camera found, or camera permission denied by user
             print("Camera not found.")
             let alert = UIAlertController(title: "Error displaying camera.", message: "", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
             
-            presentViewController(alert, animated: true, completion: nil)
+            presentViewController(alert, animated: true, completion: nil)*/
         }
     }
     
@@ -328,7 +330,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     }
     
     
-    internal func takePhoto() {
+    @IBAction func takePhoto(sender: UITapGestureRecognizer) {
         
         
         //Capture image
@@ -352,10 +354,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     }
     
     
-    internal func takeVideo(gestureRecognizer: UILongPressGestureRecognizer) {
+    @IBAction func takeVideo(sender: UILongPressGestureRecognizer) {
         
         
-        if gestureRecognizer.state == UIGestureRecognizerState.Began {
+        if sender.state == UIGestureRecognizerState.Began {
+            
+            AVAudioSession.sharedInstance()
             
             //Change elements on screen
             self.backButton.hidden = true
@@ -377,7 +381,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
             captureShape.startRecording()
             
         }
-        else if gestureRecognizer.state == UIGestureRecognizerState.Ended {
+        else if sender.state == UIGestureRecognizerState.Ended {
             
             //Stop everything
             print("Ending video recording")
@@ -531,7 +535,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         activityIndicator.startAnimating()
         photoSendButton.hidden = true
         
-        if userCountryCode == "" {
+        if userCountry == "" {
             
             getUserLocation()
             sendPhotoToDatabase()
@@ -559,8 +563,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         photoObject["sentFrom"] = self.userLocation
         
         //Set user's country's code
-        print(userCountryCode)
-        photoObject["countryCode"] = userCountryCode
+        print(userCountry)
+        photoObject["countryCode"] = userCountry
         photoObject["spam"] = false
         
         if fileManager.fileExistsAtPath(videoPath) {
@@ -639,18 +643,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         }
         else {
             
-            showAlert("Error getting user's location. \nPlease check your internet connection or permissions.")
-            
-            /*
-            //Error message for user location not found
-            let alert = UIAlertController(title: "Error getting user location.", message: "Please check your internet connection or permissions.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
-            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
-                
-                self.segueBackToTable()
-            }))
-            
-            presentViewController(alert, animated: true, completion: nil)*/
+            showAlert("Error getting user's location. \nPlease check your location services settings or permissions.")
         }
     }
     
@@ -661,9 +654,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
         alertButton.sizeToFit()
         
+        alertView.alpha = 1
         UIView.animateWithDuration(1) { () -> Void in
             
-            self.blurView.alpha = 1
         }
     }
     
@@ -682,28 +675,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
                 
                 
                 self.showAlert("Error getting user's country. \nPlease check your internet connection or permissions.")
-                
-                /*
-                //Error message for user location not found
-                let alert = UIAlertController(title: "Error getting user country.", message: "Please check your internet connection or permissions.", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
-                    
-                    self.segueBackToTable()
-                }))
-                
-                self.presentViewController(alert, animated: true, completion: nil)*/
             }
             else if placemarks!.count > 0 {
                 
                 //Get and save user's country
                 print("Geo location country code: " + String(placemarks![0].ISOcountryCode!))
-                self.userCountryCode = placemarks![0].ISOcountryCode!.lowercaseString
+                self.userCountry = placemarks![0].ISOcountryCode!.lowercaseString
                 
                 //Save counry as user country
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
                     print("Saving user's country")
-                    self.userDefaults.setObject(self.userCountryCode, forKey: "userCountry")
+                    self.userDefaults.setObject(self.userCountry, forKey: "userCountry")
                 })
                 
             }
@@ -714,31 +697,39 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     }
     
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    @IBAction func cameraTapped(sender: UITapGestureRecognizer) {
         
-        let touch = touches.first!
-        
-        if (touch.view!.viewWithTag(1) != nil && captureDevice!.isFocusModeSupported(AVCaptureFocusMode.AutoFocus)) && captureSession.running && blurView.alpha == 0 {
+        if captureDevice!.isFocusModeSupported(AVCaptureFocusMode.AutoFocus) && captureSession.running && alertView.alpha == 0 {
             
-            //Get point
-            let focusPoint = CGPoint(x: touch.locationInView(self.view).x, y: touch.locationInView(self.view).y)
+            let focusPoint = sender.locationInView(sender.view)
             
             //Draw focus shape
             print("Focusing")
             drawFocus(focusPoint)
             
-            //Focus camera on point
-            do {
+            //Focus camera
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                 
-                print("Locking for shifting focus")
-                try captureDevice!.lockForConfiguration()
-                captureDevice!.focusPointOfInterest = focusPoint
-                captureDevice!.focusMode = AVCaptureFocusMode.AutoFocus
-                captureDevice?.unlockForConfiguration()
-                
-            }
-            catch let error as NSError { print("Error locking device for focus: \(error)") }
+                self.focusCamera(focusPoint)
+            })
         }
+    }
+    
+    
+    internal func focusCamera(focusPoint: CGPoint) {
+        
+        
+        //Focus camera on point
+        do {
+            
+            print("Locking for shifting focus")
+            try captureDevice!.lockForConfiguration()
+            captureDevice!.focusPointOfInterest = focusPoint
+            captureDevice!.focusMode = AVCaptureFocusMode.AutoFocus
+            captureDevice?.unlockForConfiguration()
+            
+        }
+        catch let error as NSError { print("Error locking device for focus: \(error)") }
     }
     
     
@@ -758,7 +749,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
         
         delay(1.5) { () -> () in
             
-            
             self.focusShape.removeFromSuperlayer()
         }
     }
@@ -772,12 +762,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UIGestureRe
     
     override func prefersStatusBarHidden() -> Bool {
         return true
-    }
-    
-    
-    internal func cameraInterrupted() {
-        
-        print("Camera interrupted")
     }
     
     

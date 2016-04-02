@@ -341,7 +341,6 @@ class UserListController: UITableViewController {
         //Configure image sliding and action
         let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
         imageBackground.addGestureRecognizer(pan)
-        //imageView.addGestureRecognizer(pan)
         
         
         //Configure time left for photo
@@ -697,7 +696,7 @@ class UserListController: UITableViewController {
         }
     }
     
-    
+
     internal func detectPan(recognizer: UIPanGestureRecognizer) {
         
         

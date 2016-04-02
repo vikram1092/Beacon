@@ -23,7 +23,7 @@ class CountryBackground: UIView {
         let frame = super.frame
         
         background.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        background.fillColor = UIColor(red: 255.0/255.0, green: 103.0/255.0, blue: 102.0/255.0, alpha: 1).CGColor
+        background.fillColor = UIColor(red: 248.0/255.0, green: 95.0/255.0, blue: 96.0/255.0, alpha: 1).CGColor
         
         self.layer.addSublayer(background)
     }
