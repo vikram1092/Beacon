@@ -33,19 +33,19 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var movieFileOutput = AVCaptureMovieFileOutput()
     var previewLayer = AVCaptureVideoPreviewLayer?()
     var moviePlayer = AVPlayerLayer()
+    let cameraQueue = dispatch_queue_create("", DISPATCH_QUEUE_SERIAL)
+    
     let focusShape = CAShapeLayer()
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
-    let notifications = NSNotificationCenter.defaultCenter()
     let videoPath = NSTemporaryDirectory() + "userVideo.mov"
-    var commentCenter = CGPoint(x: 0, y: 0)
     
     var userLocation = PFGeoPoint()
     var userCountry = ""
-    var userCountryReceived = false
     var userName = ""
     var userEmail = ""
     var flashToggle = false
+    var viewLoaded = true
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     //If we find a device we'll store it here for later use
@@ -55,6 +55,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     override func viewDidLoad() {
         
+        
+        //Run view load as normal
+        super.viewDidLoad()
         
         //Retreive user details
         userName = userDefaults.objectForKey("userName") as! String
@@ -67,19 +70,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         cameraImage.addSubview(snapTimer)
         captureButton.addSubview(captureShape)
         
-        //Run view load as normal
-        super.viewDidLoad()
-        
         //Ask for location services permission
         self.locManager.requestWhenInUseAuthorization()
-        
         
         //Initialize location manager
         locManager = CLLocationManager.init()
         self.locManager.delegate = self
         
         // Set up camera session & microphone
-        captureSession.sessionPreset = AVCaptureSessionPresetHigh
+        captureSession.sessionPreset = AVCaptureSessionPresetMedium
         microphone = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
         let devices = AVCaptureDevice.devices()
         
@@ -95,9 +94,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             }
         }
         
-        //If camera is found, begin session and capture user location in background
+        //If camera is found, begin session
         if captureDevice != nil {
-            beginSession()
+            
+            dispatch_async(cameraQueue, { () -> Void in
+                
+                self.beginSession()
+            })
         }
     }
     
@@ -121,8 +124,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Configure capture session
         print("Capture session running: " + String(captureSession.running))
-        if !captureSession.running && captureDevice != nil {
-            captureSession.startRunning()
+        if !captureSession.running && captureDevice != nil && !viewLoaded {
+            
+            dispatch_async(cameraQueue, { () -> Void in
+                
+                self.captureSession.startRunning()
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    self.cameraImage.layer.addSublayer(self.previewLayer!)
+                })
+            })
         }
         else if captureDevice == nil {
             
@@ -137,10 +148,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     override func viewDidLayoutSubviews() {
         
         //Adjusts camera to the screen after loading view
-        let bounds = cameraImage.bounds
-        previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
-        previewLayer!.bounds = bounds
-        previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
+        if previewLayer != nil {
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                let bounds = self.cameraImage.bounds
+                self.previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
+                self.previewLayer!.bounds = bounds
+                self.previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
+            })
+        }
     }
     
     
@@ -155,33 +172,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             self.getUserLocation()
         }
     }
-
-    
-    internal func beginSession() {
-        
-
-        //Start camera session, outputs and inputs
-        captureSession = AVCaptureSession()
-        addCameraOutputs()
-        addCameraInputs()
-        
-        //Create and add the camera preview layer to camera image
-        print("add session to layer")
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        
-        //Add layer, run camera and configure layout subviews
-        print("add camera image")
-        cameraImage.layer.addSublayer(self.previewLayer!)
-        print("start running")
-        
-        //Configure capture session audio session
-        captureSession.automaticallyConfiguresApplicationAudioSession = false
-        
-        captureSession.startRunning()
-        
-        //Perform view fixes again
-        viewDidLayoutSubviews()
-    }
     
     
     override func viewDidDisappear(animated: Bool) {
@@ -189,8 +179,71 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Stop session
         if captureSession.running {
             
-            captureSession.stopRunning()
+            dispatch_async(cameraQueue, { () -> Void in
+                
+                self.captureSession.stopRunning()
+                self.previewLayer!.removeFromSuperlayer()
+            })
         }
+    }
+    
+    
+    internal func beginSession() {
+        
+        //Start camera session, outputs and inputs
+        captureSession = AVCaptureSession()
+        addCameraOutputs()
+        addCameraInputs()
+        
+        //Configure device modes
+        initializeCaptureDevice()
+        
+        //Configure capture session audio session
+        captureSession.automaticallyConfiguresApplicationAudioSession = false
+        
+        //Create and add the camera preview layer to camera image
+        print("add session to layer")
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer!.hidden = true
+        
+        //Run camera, add layer and configure layout subviews
+        print("start running")
+        captureSession.startRunning()
+        
+        //Add preview layer and perform view fixes again
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            print("add camera image")
+            self.cameraImage.layer.addSublayer(self.previewLayer!)
+            self.previewLayer!.hidden = false
+            self.viewDidLayoutSubviews()
+            self.viewLoaded = false
+        }
+    }
+    
+    
+    internal func initializeCaptureDevice() {
+        
+        do {
+            
+            try captureDevice!.lockForConfiguration()
+        }
+        catch let error as NSError { print("Error locking device: \(error)") }
+        
+        
+        if captureDevice!.isFocusModeSupported(AVCaptureFocusMode.ContinuousAutoFocus) {
+            
+            print("Continuous auto focus supported")
+            captureDevice!.focusMode = AVCaptureFocusMode.ContinuousAutoFocus
+        }
+        
+        if captureDevice!.isExposureModeSupported(AVCaptureExposureMode.ContinuousAutoExposure){
+            
+            print("Continuous auto exposure supported")
+            captureDevice!.exposureMode = AVCaptureExposureMode.ContinuousAutoExposure
+        }
+        
+        captureDevice!.unlockForConfiguration()
     }
     
     
@@ -230,14 +283,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         catch {
             
             showAlert("Camera not found. \nPlease check your settings.")
-            
-            /*
-            //Error message for no camera found, or camera permission denied by user
-            print("Camera not found.")
-            let alert = UIAlertController(title: "Error displaying camera.", message: "", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
-            
-            presentViewController(alert, animated: true, completion: nil)*/
         }
     }
     
@@ -289,49 +334,63 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func switchCamera(sender: AnyObject) {
         
-        //Reconfigure all parameters & stop current session
-        let devices = AVCaptureDevice.devices()
-        let position = captureDevice!.position
         
-        captureSession.stopRunning()
-        
-        captureSession = AVCaptureSession()
-        captureSession.sessionPreset = AVCaptureSessionPresetHigh
-        
-        previewLayer!.removeFromSuperlayer()
-
-        
-        // Loop through all the capture devices on this phone
-        for device in devices {
-            // Make sure this particular device supports video
-            if (device.hasMediaType(AVMediaTypeVideo)) {
-                // Finally check the position and confirm we've got the OTHER camera
-                if(device.position == AVCaptureDevicePosition.Back && position == AVCaptureDevicePosition.Front) {
-                    captureDevice = device as? AVCaptureDevice
-                    
-                    //Enable flash
-                    flashButton.enabled = true
-                    
-                    break
-                }
-                else if(device.position == AVCaptureDevicePosition.Front && position == AVCaptureDevicePosition.Back) {
-                    captureDevice = device as? AVCaptureDevice
-                    
-                    //Disable flash
-                    flashButton.enabled = false
-                    
-                    break
+        dispatch_async(cameraQueue, { () -> Void in
+            
+            self.captureSession.stopRunning()
+            
+            //Reconfigure all parameters & stop current session
+            let devices = AVCaptureDevice.devices()
+            let position = self.captureDevice!.position
+            
+            
+            self.captureSession = AVCaptureSession()
+            self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                self.previewLayer!.removeFromSuperlayer()
+            })
+            
+            // Loop through all the capture devices on this phone
+            for device in devices {
+                // Make sure this particular device supports video
+                if (device.hasMediaType(AVMediaTypeVideo)) {
+                    // Finally check the position and confirm we've got the OTHER camera
+                    if(device.position == AVCaptureDevicePosition.Back && position == AVCaptureDevicePosition.Front) {
+                        
+                        self.captureDevice = device as? AVCaptureDevice
+                        
+                        //Enable flash
+                        self.flashButton.enabled = true
+                        
+                        //Configure device modes
+                        self.initializeCaptureDevice()
+                        
+                        break
+                    }
+                    else if(device.position == AVCaptureDevicePosition.Front && position == AVCaptureDevicePosition.Back) {
+                        
+                        self.captureDevice = device as? AVCaptureDevice
+                        
+                        //Disable flash
+                        self.flashButton.enabled = false
+                        
+                        //Configure device modes
+                        self.initializeCaptureDevice()
+                        
+                        break
+                    }
                 }
             }
-        }
-        
-        //Begin camera session again with the new camera
-        beginSession()
+            
+            //Begin camera session again with the new camera
+            self.beginSession()
+        })
     }
     
     
     @IBAction func takePhoto(sender: UITapGestureRecognizer) {
-        
         
         //Capture image
         stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
@@ -699,7 +758,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func cameraTapped(sender: UITapGestureRecognizer) {
         
-        if captureDevice!.isFocusModeSupported(AVCaptureFocusMode.AutoFocus) && captureSession.running && alertView.alpha == 0 {
+        if captureSession.running && alertView.alpha == 0 {
             
             let focusPoint = sender.locationInView(sender.view)
             
@@ -724,9 +783,28 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             print("Locking for shifting focus")
             try captureDevice!.lockForConfiguration()
-            captureDevice!.focusPointOfInterest = focusPoint
-            captureDevice!.focusMode = AVCaptureFocusMode.AutoFocus
-            captureDevice?.unlockForConfiguration()
+            
+            if captureDevice!.isFocusModeSupported(AVCaptureFocusMode.AutoFocus) {
+                
+                print("Auto focus supported")
+                captureDevice!.focusMode = AVCaptureFocusMode.AutoFocus
+                captureDevice!.focusPointOfInterest = focusPoint
+            }
+            
+            if captureDevice!.isExposureModeSupported(AVCaptureExposureMode.AutoExpose) {
+                
+                print("Auto exposure supported")
+                captureDevice!.exposureMode = AVCaptureExposureMode.AutoExpose
+                captureDevice!.exposurePointOfInterest = focusPoint
+            }
+            
+            if captureDevice!.isWhiteBalanceModeSupported(AVCaptureWhiteBalanceMode.AutoWhiteBalance) {
+                
+                print("Auto white balance supported")
+                captureDevice!.whiteBalanceMode = AVCaptureWhiteBalanceMode.AutoWhiteBalance
+            }
+            
+            captureDevice!.unlockForConfiguration()
             
         }
         catch let error as NSError { print("Error locking device for focus: \(error)") }

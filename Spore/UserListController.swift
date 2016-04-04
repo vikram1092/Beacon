@@ -19,7 +19,7 @@ import FBSDKLoginKit
 class UserListController: UITableViewController {
     
     var initialRowLoad = false
-    var viewLoad = false
+    var viewLoaded = false
     var userList = Array<PFObject>()
     var userName = ""
     var userEmail = ""
@@ -78,8 +78,8 @@ class UserListController: UITableViewController {
             }
             
             //Load user list if it hasn't loaded, or else update what's loaded
-            print("viewDidAppear: " + String(viewLoad))
-            if viewLoad {
+            print("viewDidAppear: " + String(viewLoaded))
+            if viewLoaded {
                 updateUserList(false)
             }
             else {
@@ -184,8 +184,8 @@ class UserListController: UITableViewController {
                 
                 //Save list of objects & reload table
                 self.userList = objects!
-                self.viewLoad = true
-                print("viewLoad: " + String(self.viewLoad))
+                self.viewLoaded = true
+                print("viewLoad: " + String(self.viewLoaded))
                 
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
@@ -325,6 +325,7 @@ class UserListController: UITableViewController {
         let subTitleView = cell.viewWithTag(2) as! UILabel
         let imageView = cell.viewWithTag(5) as! UIImageView
         let imageBackground = cell.viewWithTag(6) as! CountryBackground
+        let slideIndicator = cell.viewWithTag(3) as! UIImageView
         
         let userListLength = userList.count - 1
         let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
@@ -359,6 +360,10 @@ class UserListController: UITableViewController {
         subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
         subTitleView.text = String(timeString)
         
+        
+        //Configure slide indicator
+        slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        slideIndicator.tintColor = UIColor.lightGrayColor()
         
         return cell
     }
