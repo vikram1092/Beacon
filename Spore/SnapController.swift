@@ -156,10 +156,10 @@ class SnapController: UIViewController {
     
     override func childViewControllerForStatusBarHidden() -> UIViewController? {
         
-        print("Status bar hiding method")
+        print("Status bar hiding method - Snap Controller")
         if hideStatusBar {
         
-            print("Status bar is in the center")
+            print("Snap is in the center, rely on self for status bar hiding")
             return nil
         }
         
@@ -169,7 +169,7 @@ class SnapController: UIViewController {
     
     override func childViewControllerForStatusBarStyle() -> UIViewController? {
         
-        print("Status bar style method")
+        print("Status bar style method - Snap Controller")
         return childController
     }
     

@@ -35,6 +35,7 @@ class SettingsController: UIViewController {
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
+        print("Status bar style method - Settings Controller")
         return UIStatusBarStyle.LightContent
     }
     

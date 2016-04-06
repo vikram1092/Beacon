@@ -920,9 +920,9 @@
                         </userDefinedRuntimeAttributes>
                     </tabBar>
                     <connections>
+                        <segue destination="GJW-g9-4yK" kind="relationship" relationship="viewControllers" id="1g0-Xp-EMV"/>
                         <segue destination="Obd-UH-7yy" kind="relationship" relationship="viewControllers" id="dno-w5-yN5"/>
                         <segue destination="mKN-em-9dv" kind="relationship" relationship="viewControllers" id="6At-Un-ANr"/>
-                        <segue destination="GJW-g9-4yK" kind="relationship" relationship="viewControllers" id="1g0-Xp-EMV"/>
                         <segue destination="d16-QO-sve" kind="relationship" relationship="viewControllers" id="wzP-FF-9a3"/>
                     </connections>
                 </tabBarController>

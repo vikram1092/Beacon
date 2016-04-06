@@ -30,14 +30,15 @@ class MapController: UIViewController, MKMapViewDelegate {
         //Run view load as normal
         super.viewDidLoad()
         
-        //Load the user list onto the map
-        loadUserList()
     }
     
     
     override func viewDidAppear(animated: Bool) {
         
         super.viewDidAppear(true)
+        
+        //Load the user list onto the map
+        loadUserList()
     }
     
     
@@ -220,6 +221,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
+        print("Status bar style method - Map Controller")
         return UIStatusBarStyle.Default
     }
     

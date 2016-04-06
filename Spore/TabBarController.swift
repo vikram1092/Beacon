@@ -20,11 +20,13 @@ class TabBarController: UITabBarController {
     
     override func childViewControllerForStatusBarStyle() -> UIViewController? {
         
+        print("Status bar style method - Tab Bar Controller")
         return self.selectedViewController
     }
     
     override func childViewControllerForStatusBarHidden() -> UIViewController? {
         
+        print("Status bar hiding method - Tab Bar Controller")
         return self.selectedViewController
     }
 }

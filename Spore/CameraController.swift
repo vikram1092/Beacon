@@ -39,6 +39,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
     let videoPath = NSTemporaryDirectory() + "userVideo.mov"
+    let compressedVideoPath = NSTemporaryDirectory() + "userVideoCompressed.mov"
+    let compressionGroup = dispatch_group_create()
     
     var userLocation = PFGeoPoint()
     var userCountry = ""
@@ -209,13 +211,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Run camera, add layer and configure layout subviews
         print("start running")
         captureSession.startRunning()
+        print("end running")
         
         //Add preview layer and perform view fixes again
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             
             print("add camera image")
-            self.cameraImage.layer.addSublayer(self.previewLayer!)
             self.previewLayer!.hidden = false
+            self.cameraImage.layer.addSublayer(self.previewLayer!)
             self.viewDidLayoutSubviews()
             self.viewLoaded = false
         }
@@ -415,10 +418,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func takeVideo(sender: UILongPressGestureRecognizer) {
         
-        
-        if sender.state == UIGestureRecognizerState.Began {
+        switch sender.state {
             
-            AVAudioSession.sharedInstance()
+        case .Began:
             
             //Change elements on screen
             self.backButton.hidden = true
@@ -439,8 +441,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             //Start recording animation
             captureShape.startRecording()
             
-        }
-        else if sender.state == UIGestureRecognizerState.Ended {
+        case .Ended:
             
             //Stop everything
             print("Ending video recording")
@@ -461,6 +462,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             //Start movie player
             initializeMoviePlayer()
+            
+        default:
+            print("")
             
         }
     }
@@ -564,11 +568,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func clearVideoTempFile() {
         
-        if fileManager.fileExistsAtPath(videoPath) {
+        if fileManager.fileExistsAtPath(videoPath) || fileManager.fileExistsAtPath(compressedVideoPath){
             
             do {
                 
                 try fileManager.removeItemAtPath(videoPath)
+                try fileManager.removeItemAtPath(compressedVideoPath)
             }
             catch let error as NSError {
                 
@@ -579,7 +584,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     internal func updateUserPhotos() {
-        
+    
         let userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos") + 1
         print("userToReceiveStatus saving..." + String(userToReceivePhotos))
         userDefaults.setInteger(userToReceivePhotos, forKey: "userToReceivePhotos")
@@ -597,10 +602,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         if userCountry == "" {
             
             getUserLocation()
-            sendPhotoToDatabase()
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                
+                self.sendPhotoToDatabase()
+            })
         }
         else {
-            sendPhotoToDatabase()
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                
+                self.sendPhotoToDatabase()
+            })
         }
     }
     
@@ -628,24 +641,56 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         if fileManager.fileExistsAtPath(videoPath) {
             
-            //Set video just taken by user as PFFile
-            photoObject["photo"] = PFFile(data: NSData(contentsOfFile: videoPath)!)
-            photoObject["isVideo"] = true
-            clearVideoTempFile()
-            print("saved video to PFFile")
-            
-            
-            //Save video locally in background
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            //Compress video and send
+            do {
+                let attr : NSDictionary? = try NSFileManager.defaultManager().attributesOfItemAtPath(videoPath)
                 
-                PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                print((attr!.fileSize()/1024)/1024)
+            } catch {
+                print("Error: \(error)")
+            }
+            
+            
+            dispatch_group_enter(compressionGroup)
+            
+            //Compress video just taken by user as PFFile
+            self.compressVideoFile(NSURL(fileURLWithPath: self.videoPath), outputURL: NSURL(fileURLWithPath: self.compressedVideoPath), handler: { (session) -> Void in
+                
+                print("Reached completion of compression")
+                if session.status == AVAssetExportSessionStatus.Completed
+                {
+                    let compressedData = NSData(contentsOfFile: self.compressedVideoPath)
                     
-                    PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(NSURL(fileURLWithPath: self.videoPath))
+                    if compressedData != nil {
+                        print("File size after compression: \(Double(compressedData!.length / 1048576)) mb")
+                    }
+                }
+                else
+                {
+                    let alert = UIAlertView(title: "Uh oh", message: " There was a problem compressing the video, try again. Error: \(session.error!.localizedDescription)", delegate: nil, cancelButtonTitle: "Okay")
                     
-                    }, completionHandler: { success, error in
-                        if !success { NSLog("Failed to create video: %@", error!) }
-                })
+                    alert.show()
+                    
+                }
+                
+                dispatch_group_leave(self.compressionGroup)
             })
+            
+            
+            
+            dispatch_group_wait(compressionGroup, DISPATCH_TIME_FOREVER)
+            
+            
+            if fileManager.fileExistsAtPath(compressedVideoPath) {
+                
+                photoObject["photo"] = PFFile(data: NSData(contentsOfFile: compressedVideoPath)!)
+                photoObject["isVideo"] = true
+                clearVideoTempFile()
+                print("saved video to PFFile")
+            }
+            
+            //Save video to local library
+            saveVideoLocally()
         }
         else {
             
@@ -662,14 +707,17 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             (success: Bool, error: NSError?) -> Void in
             if (success) {
                 
-                // The photo has been saved, update user photos
-                print("New photo saved!")
-                self.updateUserPhotos()
-                
                 //Segue back to table
-                self.activityIndicator.stopAnimating()
-                self.closePhoto(self)
-                self.segueBackToTable()
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    // The photo has been saved, update user photos
+                    print("New photo saved!")
+                    self.updateUserPhotos()
+                    
+                    self.activityIndicator.stopAnimating()
+                    self.closePhoto(self)
+                    self.segueBackToTable()
+                })
             }
             else {
                 
@@ -677,6 +725,39 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 print("Error saving photo")
                 print(error!.description)
             }
+        }
+    }
+    
+    
+    internal func saveVideoLocally() {
+        
+        //Save video locally in background
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            
+            PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                
+                PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(NSURL(fileURLWithPath: self.videoPath))
+                
+                }, completionHandler: { success, error in
+                    if !success { NSLog("Failed to create video: %@", error!) }
+            })
+        })
+    }
+    
+    
+    internal func compressVideoFile(inputURL: NSURL, outputURL: NSURL, handler:(session: AVAssetExportSession)-> Void)
+    {
+        
+        let urlAsset = AVURLAsset(URL: inputURL, options: nil)
+        let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPresetMediumQuality)
+        
+        exportSession!.outputURL = outputURL
+        exportSession!.outputFileType = AVFileTypeQuickTimeMovie
+        exportSession!.shouldOptimizeForNetworkUse = true
+        
+        exportSession!.exportAsynchronouslyWithCompletionHandler { () -> Void in
+            
+            handler(session: exportSession!)
         }
     }
     
@@ -760,11 +841,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         if captureSession.running && alertView.alpha == 0 {
             
-            let focusPoint = sender.locationInView(sender.view)
+            //Configure variables
+            let touchPoint = sender.locationInView(sender.view)
+            let focusPointx = touchPoint.x/sender.view!.bounds.width
+            let focusPointy = touchPoint.y/sender.view!.bounds.height
+            let focusPoint = CGPoint(x: focusPointx, y: focusPointy)
             
             //Draw focus shape
             print("Focusing")
-            drawFocus(focusPoint)
+            drawFocus(touchPoint)
             
             //Focus camera
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
@@ -839,6 +924,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     override func prefersStatusBarHidden() -> Bool {
+        
+        print("Status bar hiding method - Camera Controller")
         return true
     }
     
@@ -846,7 +933,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func segueBackToTable() {
         
         //Move within tab controller
-        self.tabBarController?.selectedIndex = 0
+        self.tabBarController?.selectedIndex = 1
         self.tabBarController!.tabBar.hidden = false
     }
     

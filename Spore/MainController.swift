@@ -44,6 +44,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
+        print("Status bar style method - Main Controller")
         return UIStatusBarStyle.LightContent
     }
     

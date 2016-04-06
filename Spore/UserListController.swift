@@ -799,8 +799,8 @@ class UserListController: UITableViewController {
     internal func segueToMap(location: CLLocationCoordinate2D) {
         
         //Move to the map
-        self.tabBarController?.selectedIndex = 1
-        let map = tabBarController!.viewControllers![1] as! MapController
+        self.tabBarController?.selectedIndex = 2
+        let map = tabBarController!.viewControllers![2] as! MapController
         map.goToCountry(location)
     }
     

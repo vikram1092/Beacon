@@ -213,7 +213,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         }
         else {
             
-            //Go to user list table
+            //Go to camera
             self.tabBarController?.selectedIndex = 0
         }
     }
