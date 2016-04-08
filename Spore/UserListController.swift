@@ -588,25 +588,25 @@ class UserListController: UITableViewController {
                         
                         cell.center = CGPoint(x: cell.center.x-25, y: cell.center.y)
                         
-                        }, completion: { (BooleanLiteralType) -> Void in
+                        }, completion: { (Bool) -> Void in
                             
                             UIView.animateWithDuration(0.1, animations: { () -> Void in
                                 
                                 cell.center = CGPoint(x: cell.center.x+15, y: cell.center.y)
                                 
-                                }, completion: { (BooleanLiteralType) -> Void in
+                                }, completion: { (Bool) -> Void in
                                     
                                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                                         
                                         cell.center = CGPoint(x: cell.center.x-15, y: cell.center.y)
                                         
-                                        }, completion: { (BooleanLiteralType) -> Void in
+                                        }, completion: { (Bool) -> Void in
                                             
                                             UIView.animateWithDuration(0.1, animations: { () -> Void in
                                                 
                                                 cell.center = CGPoint(x: cell.center.x+7, y: cell.center.y)
                                                 
-                                                }, completion: { (BooleanLiteralType) -> Void in
+                                                }, completion: { (Bool) -> Void in
                                                     
                                                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                                                         

@@ -10,6 +10,8 @@ import UIKit
 import Parse
 import AVFoundation
 import Photos
+import FBSDKCoreKit
+import FBSDKLoginKit
 
 class CameraController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate, AVAudioSessionDelegate {
     
@@ -47,7 +49,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var userName = ""
     var userEmail = ""
     var flashToggle = false
-    var viewLoaded = true
+    var firstTime = true
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     //If we find a device we'll store it here for later use
@@ -57,57 +59,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     override func viewDidLoad() {
         
-        
         //Run view load as normal
         super.viewDidLoad()
-        
-        //Retreive user details
-        userName = userDefaults.objectForKey("userName") as! String
-        userEmail = userDefaults.objectForKey("userEmail") as! String
-        
-        //Clear video temp file
-        clearVideoTempFile()
-        
-        //Add subviews to views
-        cameraImage.addSubview(snapTimer)
-        captureButton.addSubview(captureShape)
-        
-        //Ask for location services permission
-        self.locManager.requestWhenInUseAuthorization()
-        
-        //Initialize location manager
-        locManager = CLLocationManager.init()
-        self.locManager.delegate = self
-        
-        // Set up camera session & microphone
-        captureSession.sessionPreset = AVCaptureSessionPresetMedium
-        microphone = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
-        let devices = AVCaptureDevice.devices()
-        
-        // Loop through all the capture devices on this phone
-        for device in devices {
-            // Make sure this particular device supports video
-            if (device.hasMediaType(AVMediaTypeVideo)) {
-                // Finally check the position and confirm we've got the back camera
-                if(device.position == AVCaptureDevicePosition.Back) {
-                    
-                    captureDevice = device as? AVCaptureDevice
-                }
-            }
-        }
-        
-        //If camera is found, begin session
-        if captureDevice != nil {
-            
-            dispatch_async(cameraQueue, { () -> Void in
-                
-                self.beginSession()
-            })
-        }
     }
     
     
     override func viewWillAppear(animated: Bool) {
+        
+        //Run as normal
+        super.viewWillAppear(true)
+        
         
         //Initialize buttons
         closeButton.hidden = true
@@ -123,27 +84,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Hide tab bar
         self.tabBarController!.tabBar.hidden = true
-        
-        //Configure capture session
-        print("Capture session running: " + String(captureSession.running))
-        if !captureSession.running && captureDevice != nil && !viewLoaded {
-            
-            dispatch_async(cameraQueue, { () -> Void in
-                
-                self.captureSession.startRunning()
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
-                    self.cameraImage.layer.addSublayer(self.previewLayer!)
-                })
-            })
-        }
-        else if captureDevice == nil {
-            
-            showAlert("Camera not available.\nPlease check your settings.")
-        }
-        
-        //Run as normal
-        super.viewWillAppear(true)
     }
     
     
@@ -165,35 +105,116 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     override func viewDidAppear(animated: Bool) {
         
-        
+        //Appear as normal
         super.viewDidAppear(true)
         
-        //Get user location every time view appears
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+        if userDefaults.objectForKey("userName") == nil {
             
-            self.getUserLocation()
+            //Go back to login screen
+            segueToLogin()
+        }
+        else if firstTime {
+            
+            //Set up camera and begin session
+            initialViewSetup()
+            initialSessionSetup()
+            
+            //Check if user is banned
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                
+                self.userIsBanned()
+            })
+        }
+        else if !firstTime && !captureSession.running && captureDevice != nil {
+            
+            //Start camera session that's already set up
+            dispatch_async(cameraQueue, { () -> Void in
+                
+                self.captureSession.startRunning()
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    self.cameraImage.layer.addSublayer(self.previewLayer!)
+                })
+            })
         }
     }
     
     
-    override func viewDidDisappear(animated: Bool) {
+    internal func initialViewSetup() {
         
-        //Stop session
-        if captureSession.running {
+        //Get user details
+        userName = userDefaults.objectForKey("userName") as! String
+        userEmail = userDefaults.objectForKey("userEmail") as! String
+        
+        
+        //Clear video temp files
+        clearVideoTempFiles()
+        
+        //Add subviews to views
+        cameraImage.addSubview(snapTimer)
+        captureButton.addSubview(captureShape)
+        
+        //Initialize location manager
+        locManager = CLLocationManager.init()
+        self.locManager.delegate = self
+    }
+    
+    
+    internal func initialSessionSetup() {
+    
+        
+        
+        //Check permissions
+        if checkAllPermissions() {
             
-            dispatch_async(cameraQueue, { () -> Void in
+            
+            //Get user location every time view appears
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 
-                self.captureSession.stopRunning()
-                self.previewLayer!.removeFromSuperlayer()
-            })
+                self.getUserLocation()
+            }
+            
+            // Set up camera session & microphone
+            captureSession.sessionPreset = AVCaptureSessionPresetMedium
+            microphone = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
+            let devices = AVCaptureDevice.devices()
+            
+            // Loop through all the capture devices on this phone
+            for device in devices {
+                // Make sure this particular device supports video
+                if (device.hasMediaType(AVMediaTypeVideo)) {
+                    // Finally check the position and confirm we've got the back camera
+                    if(device.position == AVCaptureDevicePosition.Back) {
+                        
+                        captureDevice = device as? AVCaptureDevice
+                    }
+                }
+            }
+            
+            //If camera is found, begin session
+            if captureDevice != nil {
+                
+                dispatch_async(cameraQueue, { () -> Void in
+                    
+                    self.beginSession()
+                })
+            }
+            
+        }
+        else {
+            
+            //Request permissions
+            requestPermissions()
         }
     }
     
     
     internal func beginSession() {
         
+    
         //Start camera session, outputs and inputs
         captureSession = AVCaptureSession()
+        captureSession.beginConfiguration()
         addCameraOutputs()
         addCameraInputs()
         
@@ -208,8 +229,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer!.hidden = true
         
-        //Run camera, add layer and configure layout subviews
+        //Commit configuration, run camera, add layer and configure layout subviews
         print("start running")
+        captureSession.commitConfiguration()
         captureSession.startRunning()
         print("end running")
         
@@ -218,9 +240,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             print("add camera image")
             self.previewLayer!.hidden = false
-            self.cameraImage.layer.addSublayer(self.previewLayer!)
-            self.viewDidLayoutSubviews()
-            self.viewLoaded = false
+            if self.firstTime {
+                
+                print("adding sublayer")
+                self.cameraImage.layer.addSublayer(self.previewLayer!)
+                self.viewDidLayoutSubviews()
+            }
+            self.firstTime = false
         }
     }
     
@@ -273,14 +299,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         do {
             
             print("add inputs")
-            if try captureSession.canAddInput(AVCaptureDeviceInput(device: captureDevice)) {
-                
-                try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
-            }
-            
             if try captureSession.canAddInput(AVCaptureDeviceInput(device: microphone)) {
                 
                 try captureSession.addInput(AVCaptureDeviceInput(device: microphone))
+            }
+            
+            if try captureSession.canAddInput(AVCaptureDeviceInput(device: captureDevice)) {
+                
+                try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
             }
         }
         catch {
@@ -331,7 +357,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBAction func backButtonPressed(sender: AnyObject) {
         
         //Segue back
-        segueBackToTable()
+        segueToTable()
     }
     
     
@@ -346,14 +372,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             let devices = AVCaptureDevice.devices()
             let position = self.captureDevice!.position
             
-            
-            self.captureSession = AVCaptureSession()
-            self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                
-                self.previewLayer!.removeFromSuperlayer()
-            })
+            //Remove camera input from session
+            let inputs = self.captureSession.inputs
+            print(inputs.count)
+            self.captureSession.beginConfiguration()
+            self.captureSession.removeInput(inputs[1] as! AVCaptureInput)
+        
             
             // Loop through all the capture devices on this phone
             for device in devices {
@@ -387,8 +411,24 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 }
             }
             
-            //Begin camera session again with the new camera
-            self.beginSession()
+            //Add input of new device to the camera
+            do {
+                
+                let newDevice = try AVCaptureDeviceInput(device: self.captureDevice)
+                
+                if self.captureSession.canAddInput(newDevice) {
+                    
+                    self.captureSession.addInput(newDevice)
+                }
+                
+            }
+            catch let error as NSError { print("Error removing input: \(error)") }
+            
+            
+            //Commit configuration of session and begin camera session again with the new camera
+            self.captureSession.commitConfiguration()
+            self.captureSession.startRunning()
+            
         })
     }
     
@@ -553,7 +593,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         moviePlayer.removeFromSuperlayer()
         snapTimer.alpha = 0
         captureSession.startRunning()
-        clearVideoTempFile()
+        clearVideoTempFiles()
         
         //Update screen elements
         self.closeButton.hidden = true
@@ -566,7 +606,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func clearVideoTempFile() {
+    internal func clearVideoTempFiles() {
         
         if fileManager.fileExistsAtPath(videoPath) || fileManager.fileExistsAtPath(compressedVideoPath){
             
@@ -685,7 +725,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 photoObject["photo"] = PFFile(data: NSData(contentsOfFile: compressedVideoPath)!)
                 photoObject["isVideo"] = true
-                clearVideoTempFile()
+                clearVideoTempFiles()
                 print("saved video to PFFile")
             }
             
@@ -716,7 +756,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     
                     self.activityIndicator.stopAnimating()
                     self.closePhoto(self)
-                    self.segueBackToTable()
+                    self.segueToTable()
                 })
             }
             else {
@@ -795,9 +835,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         alertButton.sizeToFit()
         
         alertView.alpha = 1
-        UIView.animateWithDuration(1) { () -> Void in
-            
-        }
     }
     
     
@@ -923,6 +960,77 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
+    internal func checkAllPermissions() -> Bool {
+        
+        
+        let cameraPermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        let locationPermission = CLLocationManager.authorizationStatus()
+        let microphonePermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio)
+        
+        if cameraPermission == AVAuthorizationStatus.Authorized && locationPermission == CLAuthorizationStatus.AuthorizedWhenInUse && microphonePermission == AVAuthorizationStatus.Authorized {
+            return true
+        }
+        
+        return false
+    }
+    
+    
+    internal func requestPermissions() {
+        
+        
+        let cameraPermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        let locationPermission = CLLocationManager.authorizationStatus()
+        let microphonePermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio)
+        
+        
+        //Check camera  permission
+        if cameraPermission == AVAuthorizationStatus.NotDetermined {
+            
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (Bool) -> Void in
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    if self.checkAllPermissions() {
+                        self.initialSessionSetup()
+                    }
+                    else { self.requestPermissions() }
+                })
+            })
+        }
+        else if cameraPermission == AVAuthorizationStatus.Denied || cameraPermission == AVAuthorizationStatus.Restricted {
+            
+            showAlert("Please enable camera from your settings, you'll need it to use this app.")
+        }
+        //Check location permission
+        else if locationPermission == CLAuthorizationStatus.NotDetermined {
+            
+            locManager.requestWhenInUseAuthorization()
+        }
+        else if locationPermission == CLAuthorizationStatus.Denied || locationPermission == CLAuthorizationStatus.Restricted {
+            
+            showAlert("Please enable locations from your settings, you'll need it to use this app.")
+        }
+        //Check microphone permission
+        else if microphonePermission == AVAuthorizationStatus.NotDetermined {
+            
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (Bool) -> Void in
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    if self.checkAllPermissions() {
+                        self.initialSessionSetup()
+                    }
+                    else { self.requestPermissions() }
+                })
+            })
+        }
+        else if microphonePermission == AVAuthorizationStatus.Denied || cameraPermission == AVAuthorizationStatus.Restricted {
+            
+            showAlert("Please enable microphone from your settings, you'll need it to use this app.")
+        }
+    }
+    
+    
     override func prefersStatusBarHidden() -> Bool {
         
         print("Status bar hiding method - Camera Controller")
@@ -930,11 +1038,88 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func segueBackToTable() {
+    internal func userIsBanned() {
+        
+        //Show alert if user is banned
+        let query = PFQuery(className: "users")
+        print("user email: " + userEmail)
+        query.whereKey("email", equalTo: userEmail)
+        query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
+            
+            if error != nil {
+                
+                print("Error getting user banned status: " + error!.description)
+            }
+            else {
+                
+                let bannedStatus = userObject!.objectForKey("banned") as! BooleanLiteralType
+                
+                if bannedStatus {
+                    
+                    //Alert user about ban & segue
+                    print("User is banned.")
+                    let alert = UIAlertController(title: "You've been banned", message: "Allow us to investigate this issue & check back soon.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
+                        
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
+                            self.logoutUser()
+                            self.segueToLogin()
+                        })
+                    }))
+                    
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+                else {
+                    
+                    print("User is not banned!")
+                }
+            }
+        }
+    }
+    
+    
+    internal func logoutUser() {
+        
+        //Logout user
+        let loginManager = FBSDKLoginManager()
+        loginManager.logOut()
+        
+        //Reset name and email local variables
+        userDefaults.setObject(nil, forKey: "userName")
+        userDefaults.setObject(nil, forKey: "userEmail")
+        userDefaults.setObject(nil, forKey: "userCountry")
+    }
+    
+    
+    internal func segueToTable() {
         
         //Move within tab controller
         self.tabBarController?.selectedIndex = 1
         self.tabBarController!.tabBar.hidden = false
+    }
+    
+    
+    internal func segueToLogin() {
+        
+        //Segue to login screen
+        print("Segue-ing")
+        performSegueWithIdentifier("CameraToLoginSegue", sender: self)
+        
+    }
+    
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        
+        if segue.identifier == "CameraToLoginSegue" && segue.destinationViewController.isViewLoaded() {
+            
+            let loginController = segue.destinationViewController as! LoginController
+            
+            //Set buttons on appearance
+            loginController.loginButton.alpha = 1
+            loginController.alertButton.alpha = 0
+        }
     }
     
     
