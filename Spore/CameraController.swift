@@ -36,6 +36,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var previewLayer = AVCaptureVideoPreviewLayer?()
     var moviePlayer = AVPlayerLayer()
     var focusShape = FocusShape()
+    var videoTimer = NSTimer()
     let cameraQueue = dispatch_queue_create("", DISPATCH_QUEUE_SERIAL)
     
     var locManager = CLLocationManager()
@@ -285,7 +286,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Configure outputs
         stillImageOutput = AVCaptureStillImageOutput()
         movieFileOutput = AVCaptureMovieFileOutput()
-        movieFileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale())
+        movieFileOutput.maxRecordedDuration = CMTimeMake(10, 1)
         
         //Add camera outputs
         if captureSession.canAddOutput(stillImageOutput) {
@@ -513,35 +514,47 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             movieFileOutput.stopRecording()
             movieFileOutput.startRecordingToOutputFileURL(url, recordingDelegate: VideoDelegate())
             
+            //Start timer
+            videoTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: Selector("stopTakingVideo"), userInfo: nil, repeats: false)
+            
             //Start recording animation
             captureShape.startRecording()
             
         case .Ended:
             
-            //Stop everything
-            print("Ending video recording")
-            movieFileOutput.stopRecording()
-            captureSession.stopRunning()
-            captureShape.stopRecording()
-            
-            //Turn off torch if it was turned on
-            toggleTorchMode()
-            
-            //Change elements on screen
-            self.backButton.hidden = true
-            self.captureButton.hidden = true
-            self.flashButton.hidden = true
-            self.cameraSwitchButton.hidden = true
-            self.closeButton.hidden = false
-            self.photoSendButton.hidden = false
-            
-            //Start movie player
-            initializeMoviePlayer()
+            print("Ended video recording")
+            if videoTimer.valid {
+                stopTakingVideo()
+            }
             
         default:
             print("")
-            
         }
+    }
+    
+    
+    internal func stopTakingVideo() {
+        
+        //Stop everything
+        print("Ending video recording")
+        videoTimer.invalidate()
+        movieFileOutput.stopRecording()
+        captureSession.stopRunning()
+        captureShape.stopRecording()
+        
+        //Turn off torch if it was turned on
+        toggleTorchMode()
+        
+        //Change elements on screen
+        self.backButton.hidden = true
+        self.captureButton.hidden = true
+        self.flashButton.hidden = true
+        self.cameraSwitchButton.hidden = true
+        self.closeButton.hidden = false
+        self.photoSendButton.hidden = false
+        
+        //Start movie player
+        initializeMoviePlayer()
     }
     
     
@@ -643,17 +656,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func clearVideoTempFiles() {
         
-        if fileManager.fileExistsAtPath(videoPath) || fileManager.fileExistsAtPath(compressedVideoPath){
+        do {
             
-            do {
-                
+            if fileManager.fileExistsAtPath(videoPath) {
                 try fileManager.removeItemAtPath(videoPath)
+            }
+            if fileManager.fileExistsAtPath(compressedVideoPath){
                 try fileManager.removeItemAtPath(compressedVideoPath)
             }
-            catch let error as NSError {
-                
-                print("Error deleting video: \(error)")
-            }
+        }
+        catch let error as NSError {
+            
+            print("Error deleting video: \(error)")
         }
     }
     
