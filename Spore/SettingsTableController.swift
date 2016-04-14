@@ -22,9 +22,14 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     @IBOutlet var logoutButton: UIView!
     @IBOutlet var countryPicture: UIImageView!
     @IBOutlet var usernameCell: UILabel!
+    @IBOutlet var countryBackground: CountryBackground!
+    @IBOutlet var saveSwitch: UISwitch!
     
     
     override func viewDidLoad() {
+        
+        
+        
         
         //Run view load as normal
         super.viewDidLoad()
@@ -41,11 +46,27 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
             userCountry = userDefaults.objectForKey("userCountry") as! String
         }
         
+        
         //Configure profile picture
+        countryBackground.changeBackgroundColor(UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor)
         countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        countryBackground.bringSubviewToFront(countryPicture)
         
         //Configure username adress label
         usernameCell.text = userDefaults.valueForKey("userName") as? String
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        super.viewDidAppear(animated)
+        
+        if userDefaults.objectForKey("saveMedia") != nil {
+            
+            //Set save switch to user preference
+            let saveMedia = userDefaults.boolForKey("saveMedia")
+            saveSwitch.setOn(saveMedia, animated: false)
+        }
     }
     
     
@@ -80,9 +101,25 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
             userDefaults.setObject(nil, forKey: "userEmail")
             
         }
+        
+        cell!.selected = false
     }
     
     
+    
+    @IBAction func saveSwitchFlipped(sender: AnyObject) {
+        
+        
+        //Set saving on or off depending on trigger
+        if saveSwitch.on {
+            
+            userDefaults.setBool(true, forKey: "saveMedia")
+        }
+        else {
+            
+            userDefaults.setBool(false, forKey: "saveMedia")
+        }
+    }
     
     
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {

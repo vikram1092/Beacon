@@ -15,7 +15,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
     
     @IBOutlet var alertButton: UIButton!
-    @IBOutlet var loginButton: FBSDKLoginButton!
+    @IBOutlet var fbLoginButton: FBSDKLoginButton!
     var userName = ""
     var userEmail = ""
     var bannedText = "You have been suspended due to some photos you've sent. Please allow us to investigate and reach a decision."
@@ -28,10 +28,10 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         alertButton.alpha = 0
 
         //Set permissions to get from Facebook
-        loginButton.readPermissions = ["public_profile", "email", "user_friends"]
+        fbLoginButton.readPermissions = ["public_profile", "email", "user_friends"]
         
-        // Configure login button
-        loginButton.delegate = self
+        // Configure Facebook login button
+        fbLoginButton.delegate = self
         
         //Load as normal
         super.viewDidLoad()
@@ -58,7 +58,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         else {
             //Call function to check with database
             print("User Logged In: checking with database")
-            checkWithDatabase()
+            getFacebookResults()
             
             //Hide button
             loginButton.alpha = 0
@@ -66,8 +66,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     
-    //Function to retrieve FB information, save it, and segue
-    internal func checkWithDatabase() {
+    internal func getFacebookResults() {
         
         //Create request to obtain user email and name
         let accessToken = FBSDKAccessToken.currentAccessToken()
@@ -77,71 +76,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             
             if(error == nil){
                 
-                let userResult = result as! NSDictionary
-                //Query to find email ID in database. If it doesn't exist, create it.
-                self.userName = userResult.objectForKey("name") as! String
-                self.userEmail = userResult.objectForKey("email") as! String
-                
-                //Save details
-                self.saveNameAndEmail(self.userName, email: self.userEmail)
-                
-                //Initialize query
-                let query = PFQuery(className:"users")
-                query.whereKey("email", equalTo: self.userEmail)
-                
-                query.findObjectsInBackgroundWithBlock({ (users, error) -> Void in
-                    
-                    if error == nil && users!.count >= 1 {
-                        
-                        //Check if user is banned in database
-                        print("Object 'users' count: " + String(users!.count))
-                        let userBanned = users![0]["banned"] as! BooleanLiteralType
-                        print(userBanned)
-                        
-                        //If user is banned, show message stating ban
-                        if userBanned == true {
-                            
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                
-                                self.displayAlertButton(self.bannedText)
-                            })
-                        }
-                        else {
-                            
-                            // The user is not banned, seque to next screen
-                            print("User logged in, segue-ing")
-                            self.segueToNextView("LoginToMain")
-                        }
-                    }
-                    else if error == nil && users!.count < 1 {
-                        
-                        //Create user in database when not found
-                        let user = PFObject(className:"users")
-                        user["email"] = self.userEmail
-                        user["banned"] = false
-                        
-                        user.saveInBackgroundWithBlock {
-                            (success: Bool, error: NSError?) -> Void in
-                            if (success) {
-                                
-                                // The user has been saved, seque to next screen
-                                print("New user saved")
-                                self.segueToNextView("LoginToMain")
-                            }
-                            else {
-                                
-                                // There was a problem, check error.description
-                                print("Error saving user")
-                                print(error!.description)
-                            }
-                        }
-                    }
-                    else {
-                        print("Error: " + String(error))
-                    }
-                })
-                
-                print("result \(userResult)")
+                //Send database
+                self.checkWithDatabase(result, source: "Facebook")
             }
             else{
                 
@@ -151,14 +87,87 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     
-    internal func displayAlertButton(text: String) {
+    
+    internal func checkWithDatabase(result: AnyObject, source: String) {
+        
+        
+        let userResult = result as! NSDictionary
+        //Query to find email ID in database. If it doesn't exist, create it.
+        self.userName = userResult.objectForKey("name") as! String
+        self.userEmail = userResult.objectForKey("email") as! String
+        
+        //Save details
+        self.saveNameAndEmail(self.userName, email: self.userEmail)
+        
+        //Initialize query
+        let query = PFQuery(className:"users")
+        query.whereKey("email", equalTo: self.userEmail)
+        
+        query.findObjectsInBackgroundWithBlock({ (users, error) -> Void in
+            
+            if error == nil && users!.count >= 1 {
+                
+                //Check if user is banned in database
+                print("Object 'users' count: " + String(users!.count))
+                let userBanned = users![0]["banned"] as! BooleanLiteralType
+                print(userBanned)
+                
+                //If user is banned, show message stating ban
+                if userBanned == true {
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.showAlert(self.bannedText)
+                    })
+                }
+                else {
+                    
+                    // The user is not banned, seque to next screen
+                    print("User logged in, segue-ing")
+                    self.segueToNextView("LoginToMain")
+                }
+            }
+            else if error == nil && users!.count < 1 {
+                
+                //Create user in database when not found
+                let user = PFObject(className:"users")
+                user["source"] = source
+                user["email"] = self.userEmail
+                user["banned"] = false
+                
+                user.saveInBackgroundWithBlock {
+                    (success: Bool, error: NSError?) -> Void in
+                    if (success) {
+                        
+                        // The user has been saved, seque to next screen
+                        print("New user saved")
+                        self.segueToNextView("LoginToMain")
+                    }
+                    else {
+                        
+                        // There was a problem, check error.description
+                        print("Error saving user")
+                        print(error!.description)
+                    }
+                }
+            }
+            else {
+                print("Error: " + String(error))
+            }
+        })
+        
+        print("result \(userResult)")
+    }
+    
+    
+    internal func showAlert(text: String) {
         
         self.alertButton.setTitle(text, forState: .Normal)
         self.alertButton.sizeToFit()
         
         UIView.animateWithDuration(0.4) { () -> Void in
             
-            self.loginButton.alpha = 0
+            self.fbLoginButton.alpha = 0
             self.alertButton.alpha = 1
         }
         
@@ -172,7 +181,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         UIView.animateWithDuration(0.4) { () -> Void in
             
-            self.loginButton.alpha = 1
+            self.fbLoginButton.alpha = 1
             self.alertButton.alpha = 0
         }
     }

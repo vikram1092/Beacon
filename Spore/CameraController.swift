@@ -35,9 +35,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var movieFileOutput = AVCaptureMovieFileOutput()
     var previewLayer = AVCaptureVideoPreviewLayer?()
     var moviePlayer = AVPlayerLayer()
+    var focusShape = FocusShape()
     let cameraQueue = dispatch_queue_create("", DISPATCH_QUEUE_SERIAL)
     
-    let focusShape = CAShapeLayer()
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
     let videoPath = NSTemporaryDirectory() + "userVideo.mov"
@@ -50,6 +50,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var userEmail = ""
     var flashToggle = false
     var firstTime = true
+    var saveMedia = true
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     //If we find a device we'll store it here for later use
@@ -68,7 +69,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Run as normal
         super.viewWillAppear(true)
-        
         
         //Initialize buttons
         closeButton.hidden = true
@@ -108,12 +108,23 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Appear as normal
         super.viewDidAppear(true)
         
+        //Get user defaults
+        getUserDefaults()
+        
+        //Call the handler for dealing with possible scenarios
+        initializingHandler()
+    }
+    
+    
+    internal func initializingHandler() {
+        
+        
         if userDefaults.objectForKey("userName") == nil {
             
-            //Go back to login screen
+            //Go back to login screen if no user is logged on
             segueToLogin()
         }
-        else if firstTime {
+        else if firstTime && captureDevice == nil {
             
             //Set up camera and begin session
             initialViewSetup()
@@ -133,7 +144,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 self.captureSession.startRunning()
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
-                    self.cameraImage.layer.addSublayer(self.previewLayer!)
+                    //self.cameraImage.layer.addSublayer(self.previewLayer!)
                 })
             })
         }
@@ -141,11 +152,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     internal func initialViewSetup() {
-        
-        //Get user details
-        userName = userDefaults.objectForKey("userName") as! String
-        userEmail = userDefaults.objectForKey("userEmail") as! String
-        
         
         //Clear video temp files
         clearVideoTempFiles()
@@ -162,7 +168,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func initialSessionSetup() {
     
-        
         
         //Check permissions
         if checkAllPermissions() {
@@ -233,7 +238,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         print("start running")
         captureSession.commitConfiguration()
         captureSession.startRunning()
-        print("end running")
         
         //Add preview layer and perform view fixes again
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
@@ -316,6 +320,29 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
+    internal func getUserDefaults() {
+        
+        //Get user details
+        if userDefaults.objectForKey("userName") != nil {
+            
+            userName = userDefaults.objectForKey("userName") as! String
+            print(userName)
+        }
+        
+        if userDefaults.objectForKey("userName") != nil {
+            
+            userEmail = userDefaults.objectForKey("userEmail") as! String
+            print(userEmail)
+        }
+        
+        if userDefaults.objectForKey("saveMedia") != nil {
+            
+            saveMedia = userDefaults.boolForKey("saveMedia")
+            print(saveMedia)
+        }
+    }
+    
+    
     @IBAction func flashButtonPressed(sender: AnyObject) {
         
         //Toggle the flash variable
@@ -378,6 +405,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             self.captureSession.beginConfiguration()
             self.captureSession.removeInput(inputs[1] as! AVCaptureInput)
         
+            for input in inputs {
+                
+                let deviceInput = input as! AVCaptureDeviceInput
+                if deviceInput.device.hasMediaType(AVMediaTypeVideo) {
+                    
+                    self.captureSession.removeInput(deviceInput)
+                }
+            }
             
             // Loop through all the capture devices on this phone
             for device in devices {
@@ -691,6 +726,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             }
             
             
+            //Save video to local library
+            if saveMedia {
+                saveVideoLocally()
+            }
+            
+            
             dispatch_group_enter(compressionGroup)
             
             //Compress video just taken by user as PFFile
@@ -729,8 +770,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 print("saved video to PFFile")
             }
             
-            //Save video to local library
-            saveVideoLocally()
         }
         else {
             
@@ -739,7 +778,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             photoObject["isVideo"] = false
             
             //Save image to local library
-            UIImageWriteToSavedPhotosAlbum(cameraImage.image!, self, nil, nil)
+            if saveMedia {
+                UIImageWriteToSavedPhotosAlbum(cameraImage.image!, self, nil, nil)
+            }
         }
         
         //Send the updated photo object to database
@@ -802,39 +843,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func getUserLocation() {
-        
-        //Gets the user's current location
-        locManager.desiredAccuracy = kCLLocationAccuracyKilometer
-        locManager.startUpdatingLocation()
-    }
-    
-    
-    internal func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        //Gets user location and adds it to the main location variable
-        if let locValue:CLLocationCoordinate2D = manager.location!.coordinate {
-            userLocation = PFGeoPoint(latitude: locValue.latitude, longitude: locValue.longitude)
-            print("locations = \(locValue.latitude) \(locValue.longitude)")
-            
-            //Stop updating location and get the country code for this location
-            locManager.stopUpdatingLocation()
-            getCountryCode(userLocation)
-        }
-        else {
-            
-            showAlert("Error getting user's location. \nPlease check your location services settings or permissions.")
-        }
-    }
-    
-    
     internal func showAlert(alertText: String) {
         
+        alertView.alpha = 1
         alertButton.setTitle(alertText, forState: .Normal)
         alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
-        alertButton.sizeToFit()
-        
-        alertView.alpha = 1
     }
     
     
@@ -879,6 +892,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         if captureSession.running && alertView.alpha == 0 {
             
             //Configure variables
+            print(sender.view)
             let touchPoint = sender.locationInView(sender.view)
             let focusPointx = touchPoint.x/sender.view!.bounds.width
             let focusPointy = touchPoint.y/sender.view!.bounds.height
@@ -933,24 +947,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func drawFocus(focusPoint: CGPoint) {
+    internal func drawFocus(touchPoint: CGPoint) {
         
-        //Define focus shape
-        let objectSize = CGSize(width: 60.0, height: 60.0)
-        let focusShapeOrigin = CGPoint(x: focusPoint.x - 30.0, y: focusPoint.y - 30.0)
-        
-        focusShape.path = UIBezierPath(ovalInRect: CGRect(origin: focusShapeOrigin, size: objectSize)).CGPath
-        focusShape.fillColor = UIColor.clearColor().CGColor
-        focusShape.strokeColor = UIColor.whiteColor().CGColor
-        focusShape.strokeStart = 0.0
-        focusShape.strokeEnd = 1.0
-        
-        self.view.layer.addSublayer(focusShape)
-        
-        delay(1.5) { () -> () in
-            
-            self.focusShape.removeFromSuperlayer()
-        }
+        focusShape.removeFromSuperview()
+        focusShape = FocusShape(drawPoint: touchPoint)
+        cameraImage.addSubview(focusShape)
     }
     
     
@@ -968,6 +969,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         let microphonePermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio)
         
         if cameraPermission == AVAuthorizationStatus.Authorized && locationPermission == CLAuthorizationStatus.AuthorizedWhenInUse && microphonePermission == AVAuthorizationStatus.Authorized {
+            
+            print("All permissions are good")
             return true
         }
         
@@ -981,7 +984,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         let cameraPermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         let locationPermission = CLLocationManager.authorizationStatus()
         let microphonePermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio)
-        
+        print("Reached requestPermission")
         
         //Check camera  permission
         if cameraPermission == AVAuthorizationStatus.NotDetermined {
@@ -991,7 +994,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
                     if self.checkAllPermissions() {
-                        self.initialSessionSetup()
+                        self.initializingHandler()
                     }
                     else { self.requestPermissions() }
                 })
@@ -1004,6 +1007,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Check location permission
         else if locationPermission == CLAuthorizationStatus.NotDetermined {
             
+            
+            //Request authorization only, refer to override method "didChangeAuthorizationStatus"
+            //for similar completion handling when authorization status changes
             locManager.requestWhenInUseAuthorization()
         }
         else if locationPermission == CLAuthorizationStatus.Denied || locationPermission == CLAuthorizationStatus.Restricted {
@@ -1013,12 +1019,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Check microphone permission
         else if microphonePermission == AVAuthorizationStatus.NotDetermined {
             
-            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (Bool) -> Void in
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio, completionHandler: { (Bool) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
                     if self.checkAllPermissions() {
-                        self.initialSessionSetup()
+                        self.initializingHandler()
                     }
                     else { self.requestPermissions() }
                 })
@@ -1028,6 +1034,46 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             showAlert("Please enable microphone from your settings, you'll need it to use this app.")
         }
+    }
+    
+    
+    internal func getUserLocation() {
+        
+        //Gets the user's current location
+        locManager.desiredAccuracy = kCLLocationAccuracyKilometer
+        locManager.startUpdatingLocation()
+    }
+    
+    
+    internal func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        //Gets user location and adds it to the main location variable
+        if let locValue:CLLocationCoordinate2D = manager.location?.coordinate {
+            userLocation = PFGeoPoint(latitude: locValue.latitude, longitude: locValue.longitude)
+            print("locations = \(locValue.latitude) \(locValue.longitude)")
+            
+            //Stop updating location and get the country code for this location
+            locManager.stopUpdatingLocation()
+            getCountryCode(userLocation)
+        }
+        else {
+            
+            showAlert("Error getting user's location. \nPlease check your location services settings or permissions.")
+        }
+    }
+    
+    
+    internal func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            
+            print("Location authorization changed.")
+            if self.checkAllPermissions() {
+                self.initializingHandler()
+            }
+            else { self.requestPermissions() }
+        })
     }
     
     
@@ -1117,7 +1163,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             let loginController = segue.destinationViewController as! LoginController
             
             //Set buttons on appearance
-            loginController.loginButton.alpha = 1
+            loginController.fbLoginButton.alpha = 1
             loginController.alertButton.alpha = 0
         }
     }

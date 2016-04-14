@@ -260,6 +260,7 @@ class UserListController: UITableViewController {
                         //Attach receipt details to object
                         photoObject["receivedAt"] = NSDate()
                         photoObject["receivedBy"] = self.userEmail
+                        photoObject["receivedCountry"] = self.userCountry
                         
                         //Add object to userList
                         tempList.append(photoObject)
@@ -822,7 +823,7 @@ class UserListController: UITableViewController {
             let loginController = segue.destinationViewController as! LoginController
             
             //Set buttons on appearance
-            loginController.loginButton.alpha = 1
+            loginController.fbLoginButton.alpha = 1
             loginController.alertButton.alpha = 0
         }
     }

@@ -60,6 +60,7 @@
 		D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C72B1C22608600D9AEE7 /* MainController.swift */; };
 		D1C083E51C42003000A9C281 /* settingsButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1C083E41C42003000A9C281 /* settingsButton@x3.png */; };
 		D1D8A5491C5D3AA100E95BCE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D1D8A5481C5D3AA100E95BCE /* Settings.bundle */; };
+		D1DA41341CBD9FD9002585FF /* FocusShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA41331CBD9FD9002585FF /* FocusShape.swift */; };
 		D1DC72031C9ED4CB00D8CCF1 /* LogoFront.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */; };
 		D1DC72041C9ED4CB00D8CCF1 /* LogoFront@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */; };
 		D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E08D1E1C5D430E0070DA9A /* MapKit.framework */; };
@@ -140,6 +141,7 @@
 		D1B9C72B1C22608600D9AEE7 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		D1C083E41C42003000A9C281 /* settingsButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "settingsButton@x3.png"; path = "../../Spore Images/settingsButton@x3.png"; sourceTree = "<group>"; };
 		D1D8A5481C5D3AA100E95BCE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		D1DA41331CBD9FD9002585FF /* FocusShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusShape.swift; sourceTree = "<group>"; };
 		D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LogoFront.png; path = "../../Spore Images/LogoFront.png"; sourceTree = "<group>"; };
 		D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LogoFront@x3.png"; path = "../../Spore Images/LogoFront@x3.png"; sourceTree = "<group>"; };
 		D1E08D1E1C5D430E0070DA9A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -278,6 +280,7 @@
 				D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */,
 				D144F1DE1C43F6E300E07700 /* MapController.swift */,
 				D139D4701CA77C7700909BF5 /* CaptureShape.swift */,
+				D1DA41331CBD9FD9002585FF /* FocusShape.swift */,
 				D1785A551C3F68280020AD99 /* CameraController.swift */,
 				D195159C1C7232F600053A22 /* VideoDelegate.swift */,
 				D188D7B41C283A5F0066E773 /* SettingsController.swift */,
@@ -522,6 +525,7 @@
 				D13B0D481CA385BA0035759D /* CountryBackground.swift in Sources */,
 				D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */,
 				D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */,
+				D1DA41341CBD9FD9002585FF /* FocusShape.swift in Sources */,
 				D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

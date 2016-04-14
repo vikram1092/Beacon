@@ -17,15 +17,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        // Override point for customization after application launch.
-        Parse.enableLocalDatastore()
-        Parse.setApplicationId("n2yOGaNe4AU0PHvX1yZ9ySGXh0jDN3SX2ii2gYCM", clientKey: "sMaWI9Q6yw292Ak7gD93e7iVYAHdOPapUqAlyNQ6")
-        PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
-        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-        GMSServices.provideAPIKey("AIzaSyB3_U_sLBe6WFrUZh_y_OtFSICd1sLArkU")
         
+        let parseConfiguration = ParseClientConfiguration(block: { (ParseMutableClientConfiguration) -> Void in
+            ParseMutableClientConfiguration.localDatastoreEnabled = true
+            ParseMutableClientConfiguration.applicationId = "4h5gk62hjg62g2h435igou"
+            ParseMutableClientConfiguration.clientKey = "463y6guy53g6piy265huvbu"
+            ParseMutableClientConfiguration.server = "https://spore1210.herokuapp.com/parse"
+        })
+        
+        Parse.initializeWithConfiguration(parseConfiguration)
         
         //Setup audio session
         do {
@@ -35,6 +38,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
         }
         catch let error as NSError { print("Error setting audio session category \(error)") }
+        
+        
+        PFUser.enableAutomaticUser()
+        
+        let defaultACL = PFACL();
+        
+        // If you would like all objects to be private by default, remove this line.
+        defaultACL.publicReadAccess = true
+        
+        PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser: true)
+        PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
+        
+        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        
         
         return true
     }
