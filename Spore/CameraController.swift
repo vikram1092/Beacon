@@ -173,7 +173,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Check permissions
         if checkAllPermissions() {
             
-            
             //Get user location every time view appears
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 
@@ -330,7 +329,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             print(userName)
         }
         
-        if userDefaults.objectForKey("userName") != nil {
+        if userDefaults.objectForKey("userEmail") != nil {
             
             userEmail = userDefaults.objectForKey("userEmail") as! String
             print(userEmail)
@@ -1063,12 +1062,28 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Gets user location and adds it to the main location variable
         if let locValue:CLLocationCoordinate2D = manager.location?.coordinate {
+            
             userLocation = PFGeoPoint(latitude: locValue.latitude, longitude: locValue.longitude)
             print("locations = \(locValue.latitude) \(locValue.longitude)")
             
             //Stop updating location and get the country code for this location
             locManager.stopUpdatingLocation()
             getCountryCode(userLocation)
+            
+            //Save user location locally
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                self.userDefaults.setObject(self.userLocation.latitude, forKey: "receivedLatitude")
+                self.userDefaults.setObject(self.userLocation.longitude, forKey: "receivedLongitude")
+                
+                print(self.userLocation.latitude)
+                print(self.userLocation.longitude)
+                print(self.userDefaults.objectForKey("receivedLatitude"))
+                /*
+                let userLocDictionary = NSDictionary(objects: [latitude, longitude], forKeys: ["latitude", "longitude"])
+                let userLocationData = NSKeyedArchiver.archivedDataWithRootObject(userLocDictionary)
+                self.userDefaults.setObject(userLocationData, forKey: "userLocation")*/
+            })
         }
         else {
             

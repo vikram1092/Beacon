@@ -19,7 +19,10 @@ class MapController: UIViewController, MKMapViewDelegate {
     var userDefaults = NSUserDefaults.standardUserDefaults()
     var userList = Array<PFObject>()
     var loadedCountries = Array<String>()
+    var loadedMarkers = Array<CLLocation>()
     var countryColor = UIColor()
+    var countriesAreLoaded = false
+    var markersAreLoaded = false
     
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
@@ -30,6 +33,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         //Run view load as normal
         super.viewDidLoad()
         
+        getUserDefaults()
     }
     
     
@@ -37,14 +41,35 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         super.viewDidAppear(true)
         
-        //Load the user list onto the map
-        loadUserList()
+        //Load the user list and annotations onto the map
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+            
+            self.loadUserList()
+        }
+    }
+    
+    
+    internal func getUserDefaults() {
+        
+        //Get user details
+        if userDefaults.objectForKey("userName") != nil {
+            
+            userName = userDefaults.objectForKey("userName") as! String
+            print(userName)
+        }
+        
+        if userDefaults.objectForKey("userEmail") != nil {
+            
+            userEmail = userDefaults.objectForKey("userEmail") as! String
+            print(userEmail)
+        }
     }
     
     
     internal func loadUserList() {
-        
+    
         //Retreive local user photo list
+        //self.countriesAreLoaded = false
         let query = PFQuery(className: "photo")
         query.fromLocalDatastore()
         
@@ -61,12 +86,12 @@ class MapController: UIViewController, MKMapViewDelegate {
                 //Save list of objects & reload table
                 self.userList = objects!
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                //Update user list with new photos
+                print("Running country annotations")
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                     
-                    //Update user list with new photos
-                    print("Running map annotations")
                     self.processUserList()
-                })
+                }
             }
         }
     }
@@ -105,11 +130,20 @@ class MapController: UIViewController, MKMapViewDelegate {
                 }
             }
             
-            //Stop activity indicator
-            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            //Stop activity indicator if the markers are already loaded
+            countriesAreLoaded = true
+            print("countriesAreLoaded: \(countriesAreLoaded)")
+            
+            /*if markersAreLoaded {
                 
-                self.activityIndicator.stopAnimating()
-            }
+                dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                    
+                    self.activityIndicator.stopAnimating()
+                }
+            }*/
+            
+            //Load markers after countries are loaded
+            loadMarkers()
         }
         catch let error as NSError { print("Error getting GeoJSON data:" + error.description) }
     }
@@ -207,6 +241,72 @@ class MapController: UIViewController, MKMapViewDelegate {
             print("Adding polygon!")
             self.mapView.addOverlay(country)
         })
+    }
+    
+    
+    internal func loadMarkers() {
+        
+        
+        //Load markers for where user's photos went
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+            
+            //Mark markers as not loaded and run query
+            print(self.userEmail)
+            self.markersAreLoaded = false
+            let query = PFQuery(className: "photo")
+            query.whereKey("sentBy", equalTo: self.userEmail)
+            query.whereKeyExists("receivedLatitude")
+            query.findObjectsInBackgroundWithBlock { (photoObjects, markerError) -> Void in
+                
+                if markerError != nil {
+                    
+                    print("Error finding marker: \(markerError)")
+                }
+                else if photoObjects!.count > 0 {
+                    
+                    //For each row received, get location and plot on map
+                    print("Query returned \(photoObjects!.count) rows")
+                    for photoObject in photoObjects! {
+                        
+                        let latitude = photoObject.objectForKey("receivedLatitude") as? Double
+                        let longitude = photoObject.objectForKey("receivedLongitude") as? Double
+                        
+                        if latitude != nil {
+                            
+                            let markerCoord2D = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
+                            let markerCoord = CLLocation(latitude: latitude!, longitude: longitude!)
+                            print(markerCoord2D)
+                            
+                            if self.loadedMarkers.indexOf(markerCoord) == nil {
+                                
+                                //Configure annotation
+                                print("Loading marker")
+                                self.loadedMarkers.append(markerCoord)
+                                let marker = MKPointAnnotation()
+                                marker.coordinate = markerCoord2D
+                                
+                                //Add annotation to map
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    
+                                    self.mapView.addAnnotation(marker)
+                                })
+                            }
+                            
+                        }
+                    }
+                }
+                
+                //Stop activity indicator if the countries are already loaded
+                self.markersAreLoaded = true
+                if self.countriesAreLoaded {
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.activityIndicator.stopAnimating()
+                    })
+               }
+            }
+        }
     }
     
     

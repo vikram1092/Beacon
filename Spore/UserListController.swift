@@ -24,6 +24,8 @@ class UserListController: UITableViewController {
     var userName = ""
     var userEmail = ""
     var userCountry = ""
+    var userLatitude = NSNumber()
+    var userLongitude = NSNumber()
     var userToReceivePhotos = 0
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
@@ -60,6 +62,11 @@ class UserListController: UITableViewController {
             userCountry = userDefaults.objectForKey("userCountry") as! String
         }
         
+        if userDefaults.objectForKey("receivedLatitude") != nil {
+            
+            userLatitude = userDefaults.objectForKey("receivedLatitude") as! Double
+            userLongitude = userDefaults.objectForKey("receivedLongitude") as! Double
+        }
         
         //Check user login status
         print("Checking user login status")
@@ -261,6 +268,12 @@ class UserListController: UITableViewController {
                         photoObject["receivedAt"] = NSDate()
                         photoObject["receivedBy"] = self.userEmail
                         photoObject["receivedCountry"] = self.userCountry
+                        
+                        if self.userDefaults.objectForKey("receivedLatitude") != nil   {
+                            
+                            photoObject["receivedLatitude"] = self.userLatitude
+                            photoObject["receivedLongitude"] = self.userLongitude
+                        }
                         
                         //Add object to userList
                         tempList.append(photoObject)
