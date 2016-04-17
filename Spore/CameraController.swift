@@ -13,7 +13,7 @@ import Photos
 import FBSDKCoreKit
 import FBSDKLoginKit
 
-class CameraController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate, AVAudioSessionDelegate {
+class CameraController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate {
     
     
     @IBOutlet var cameraImage: UIImageView!
@@ -38,6 +38,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var focusShape = FocusShape()
     var videoTimer = NSTimer()
     let cameraQueue = dispatch_queue_create("", DISPATCH_QUEUE_SERIAL)
+    var captureSessionInterrupted = false
     
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
@@ -63,6 +64,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Run view load as normal
         super.viewDidLoad()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("beginInterruption:"), name: AVCaptureSessionWasInterruptedNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("endInterruption:"), name: AVCaptureSessionInterruptionEndedNotification, object: nil)
+        
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleInterruptions:"), name: AVAudioSessionInterruptionNotification, object: nil)
     }
     
     
@@ -317,6 +324,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             showAlert("Camera not found. \nPlease check your settings.")
         }
+        
     }
     
     
@@ -1103,6 +1111,32 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             }
             else { self.requestPermissions() }
         })
+    }
+    
+    
+    internal func beginInterruption(notification: NSNotification) {
+        
+        print("Interruption began")
+        showAlert("Another app is using your recording features.")
+        if captureSession.running {
+            
+            captureSessionInterrupted = true
+            captureSession.stopRunning()
+        }
+    }
+    
+    
+    internal func endInterruption(notification: NSNotification) {
+        
+        print("Interruption ended")
+        //Hide alert layers
+        alertView.alpha = 0
+        alertView.userInteractionEnabled = false
+        
+        if captureSessionInterrupted {
+            
+            captureSession.startRunning()
+        }
     }
     
     
