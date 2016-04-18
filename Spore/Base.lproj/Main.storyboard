@@ -668,6 +668,7 @@
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="hEz-In-oDB" appends="YES" id="2HL-pe-KRX"/>
+                                    <outletCollection property="gestureRecognizers" destination="rtF-n5-6es" appends="YES" id="uxM-sU-ETs"/>
                                 </connections>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xaF-sl-7DU">
@@ -850,6 +851,7 @@
                         <outlet property="flashButton" destination="xaF-sl-7DU" id="ZTk-h1-nPf"/>
                         <outlet property="photoSendButton" destination="TR3-R2-xgu" id="EnY-tV-G9G"/>
                         <outlet property="snapTimer" destination="TXH-DP-OjX" id="DQA-Sm-XKX"/>
+                        <outlet property="zoomRecognizer" destination="rtF-n5-6es" id="u1K-ow-yT8"/>
                         <segue destination="BYZ-38-t0r" kind="presentation" identifier="CameraToLoginSegue" id="8ds-TT-rzm"/>
                     </connections>
                 </viewController>
@@ -869,6 +871,11 @@
                         <action selector="takeVideo:" destination="GJW-g9-4yK" id="y8U-Kg-wFp"/>
                     </connections>
                 </pongPressGestureRecognizer>
+                <pinchGestureRecognizer id="rtF-n5-6es">
+                    <connections>
+                        <action selector="cameraZoomed:" destination="GJW-g9-4yK" id="fPn-pE-Dyx"/>
+                    </connections>
+                </pinchGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1777" y="305"/>
         </scene>

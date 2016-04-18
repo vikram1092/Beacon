@@ -28,6 +28,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBOutlet var captureShape: CaptureShape!
     @IBOutlet var alertView: UIView!
     @IBOutlet var alertButton: UIButton!
+    @IBOutlet var zoomRecognizer: UIPinchGestureRecognizer!
     
     var captureSession = AVCaptureSession()
     var audioSession = AVAudioSession()
@@ -928,6 +929,25 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 self.focusCamera(focusPoint)
             })
+        }
+    }
+    
+    
+    @IBAction func cameraZoomed(recognizer: UIPinchGestureRecognizer) {
+        
+        
+        let velocityDivider = CGFloat(15.0)
+        
+        if captureSession.running {
+            
+            do {
+                
+                try captureDevice!.lockForConfiguration()
+                let zoomDistance = captureDevice!.videoZoomFactor + CGFloat(atan2f(Float(recognizer.velocity), Float(velocityDivider)))
+                captureDevice!.videoZoomFactor = max(1.0, min(zoomDistance, captureDevice!.activeFormat.videoMaxZoomFactor))
+                captureDevice!.unlockForConfiguration()
+            }
+            catch let error as NSError { print("Error locking device: \(error)") }
         }
     }
     
