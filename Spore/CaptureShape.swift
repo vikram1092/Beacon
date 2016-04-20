@@ -33,10 +33,11 @@ class CaptureShape: UIView {
         border.lineWidth = 5
         border.strokeStart = 0.0
         border.strokeEnd = 1.0
-        
+
         self.layer.addSublayer(background)
         self.layer.addSublayer(border)
     }
+    
     
     internal func startRecording() {
         

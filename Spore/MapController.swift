@@ -315,7 +315,24 @@ class MapController: UIViewController, MKMapViewDelegate {
         let polylineRenderer = MKPolylineRenderer(overlay: overlay)
         polylineRenderer.strokeColor = (polylineRenderer.overlay as! CountryPolyline).color
         polylineRenderer.lineWidth = 1
+        
         return polylineRenderer
+    }
+    
+    
+    internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        var view = MKAnnotationView()
+        
+        if annotation is MKPointAnnotation {
+            
+            view = Beacon(color: UIColor.redColor())
+        }
+        else {
+            view.annotation = annotation
+        }
+        
+        return view
     }
     
     

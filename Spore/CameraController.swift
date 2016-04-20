@@ -49,6 +49,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     var userLocation = PFGeoPoint()
     var userCountry = ""
+    var userCity = ""
     var userName = ""
     var userEmail = ""
     var flashToggle = false
@@ -88,8 +89,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         cameraSwitchButton.hidden = false
         
         //Hide alert layers
-        alertView.alpha = 0
-        alertView.userInteractionEnabled = false
+        closeAlert()
         
         //Hide tab bar
         self.tabBarController!.tabBar.hidden = true
@@ -463,6 +463,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 if self.captureSession.canAddInput(newDevice) {
                     
                     self.captureSession.addInput(newDevice)
+                    
                 }
                 
             }
@@ -734,6 +735,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Set user's country's code
         print(userCountry)
         photoObject["countryCode"] = userCountry
+        
+        print(userCity)
+        if userCity != "" {
+            
+            photoObject["sentCity"] = userCity
+        }
         photoObject["spam"] = false
         
         if fileManager.fileExistsAtPath(videoPath) {
@@ -865,14 +872,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func showAlert(alertText: String) {
-        
-        alertView.alpha = 1
-        alertButton.setTitle(alertText, forState: .Normal)
-        alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
-    }
-    
-    
     internal func getCountryCode(locGeoPoint: PFGeoPoint) {
         
         //Get country for current row
@@ -890,15 +889,26 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             }
             else if placemarks!.count > 0 {
                 
-                //Get and save user's country
+                //Get and save user's country & city
                 print("Geo location country code: " + String(placemarks![0].ISOcountryCode!))
                 self.userCountry = placemarks![0].ISOcountryCode!.lowercaseString
                 
-                //Save counry as user country
+                if placemarks![0].locality != nil {
+                    
+                    self.userCity = placemarks![0].locality!
+                }
+                //Save user country and city
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
-                    print("Saving user's country")
+                    print("Saving user's country & city")
                     self.userDefaults.setObject(self.userCountry, forKey: "userCountry")
+                    
+                    if self.userCity != "" {
+                        
+                        self.userDefaults.setObject(self.userCity, forKey: "userCity")
+                    }
+                    
+                    self.closeAlert()
                 })
                 
             }
@@ -1134,6 +1144,21 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
+    internal func showAlert(alertText: String) {
+        
+        alertView.alpha = 1
+        alertButton.setTitle(alertText, forState: .Normal)
+        alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
+    }
+    
+    
+    internal func closeAlert() {
+        
+        alertView.alpha = 0
+        alertView.userInteractionEnabled = false
+    }
+    
+    
     internal func beginInterruption(notification: NSNotification) {
         
         print("Interruption began")
@@ -1150,8 +1175,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         print("Interruption ended")
         //Hide alert layers
-        alertView.alpha = 0
-        alertView.userInteractionEnabled = false
+        closeAlert()
         
         if captureSessionInterrupted {
             

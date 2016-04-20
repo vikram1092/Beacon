@@ -18,6 +18,8 @@
 		D1372FDA1C959274009DCA29 /* flashEnabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */; };
 		D137E8771CA95BB9004F9B44 /* TermsOfUseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */; };
 		D137E8791CA95C46004F9B44 /* AboutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D137E8781CA95C45004F9B44 /* AboutController.swift */; };
+		D137EBDB1CC50F0600F2DCB3 /* CameraBackButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D137EBD91CC50F0600F2DCB3 /* CameraBackButton.png */; };
+		D137EBDC1CC50F0600F2DCB3 /* CameraBackButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D137EBDA1CC50F0600F2DCB3 /* CameraBackButton@x3.png */; };
 		D139D46D1CA5675F00909BF5 /* SnapTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D139D46C1CA5675F00909BF5 /* SnapTimer.swift */; };
 		D139D4711CA77C7700909BF5 /* CaptureShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = D139D4701CA77C7700909BF5 /* CaptureShape.swift */; };
 		D13B0D481CA385BA0035759D /* CountryBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13B0D471CA385BA0035759D /* CountryBackground.swift */; };
@@ -64,6 +66,7 @@
 		D1DC72031C9ED4CB00D8CCF1 /* LogoFront.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */; };
 		D1DC72041C9ED4CB00D8CCF1 /* LogoFront@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */; };
 		D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E08D1E1C5D430E0070DA9A /* MapKit.framework */; };
+		D1E15E1A1CC5A1A300C27CDF /* Beacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E15E191CC5A1A300C27CDF /* Beacon.swift */; };
 		D1EC295C1C2E1E850014DE7E /* Countries in Resources */ = {isa = PBXBuildFile; fileRef = D1EC295B1C2E1E850014DE7E /* Countries */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +94,8 @@
 		D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashEnabledButton@x3.png"; sourceTree = "<group>"; };
 		D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfUseController.swift; sourceTree = SOURCE_ROOT; };
 		D137E8781CA95C45004F9B44 /* AboutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutController.swift; sourceTree = SOURCE_ROOT; };
+		D137EBD91CC50F0600F2DCB3 /* CameraBackButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraBackButton.png; path = "../../Spore Images/CameraBackButton.png"; sourceTree = "<group>"; };
+		D137EBDA1CC50F0600F2DCB3 /* CameraBackButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CameraBackButton@x3.png"; path = "../../Spore Images/CameraBackButton@x3.png"; sourceTree = "<group>"; };
 		D139D46C1CA5675F00909BF5 /* SnapTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapTimer.swift; sourceTree = "<group>"; };
 		D139D4701CA77C7700909BF5 /* CaptureShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureShape.swift; sourceTree = "<group>"; };
 		D13B0D471CA385BA0035759D /* CountryBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryBackground.swift; sourceTree = "<group>"; };
@@ -145,6 +150,7 @@
 		D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LogoFront.png; path = "../../Spore Images/LogoFront.png"; sourceTree = "<group>"; };
 		D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LogoFront@x3.png"; path = "../../Spore Images/LogoFront@x3.png"; sourceTree = "<group>"; };
 		D1E08D1E1C5D430E0070DA9A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		D1E15E191CC5A1A300C27CDF /* Beacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacon.swift; sourceTree = "<group>"; };
 		D1EC295B1C2E1E850014DE7E /* Countries */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Countries; path = ../../Countries; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -185,6 +191,8 @@
 		D136589B1C55BC59005AEC61 /* CameraButtons */ = {
 			isa = PBXGroup;
 			children = (
+				D137EBD91CC50F0600F2DCB3 /* CameraBackButton.png */,
+				D137EBDA1CC50F0600F2DCB3 /* CameraBackButton@x3.png */,
 				D1372FD31C959273009DCA29 /* flashDisabledButton.png */,
 				D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */,
 				D1372FD51C959274009DCA29 /* flashEnabledButton.png */,
@@ -277,6 +285,7 @@
 				D1B9C72B1C22608600D9AEE7 /* MainController.swift */,
 				D13B0D471CA385BA0035759D /* CountryBackground.swift */,
 				D1B49D371C5868400085EF2B /* UserListController.swift */,
+				D1E15E191CC5A1A300C27CDF /* Beacon.swift */,
 				D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */,
 				D144F1DE1C43F6E300E07700 /* MapController.swift */,
 				D139D4701CA77C7700909BF5 /* CaptureShape.swift */,
@@ -425,6 +434,7 @@
 				D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */,
 				D144F1EC1C440F1700E07700 /* UserList@x3.png in Resources */,
 				D144F1E91C440F1700E07700 /* globe.png in Resources */,
+				D137EBDC1CC50F0600F2DCB3 /* CameraBackButton@x3.png in Resources */,
 				D1B9C7211C2258B800D9AEE7 /* Assets.xcassets in Resources */,
 				D174B6C61C9DC1050005F4C1 /* Logo@x3.png in Resources */,
 				D1DC72031C9ED4CB00D8CCF1 /* LogoFront.png in Resources */,
@@ -434,6 +444,7 @@
 				D1EC295C1C2E1E850014DE7E /* Countries in Resources */,
 				D136589E1C55BF5C005AEC61 /* cameraButton.png in Resources */,
 				D144F1EA1C440F1700E07700 /* globe@x3.png in Resources */,
+				D137EBDB1CC50F0600F2DCB3 /* CameraBackButton.png in Resources */,
 				D144F1F81C44178500E07700 /* SendPhoto@x3.png in Resources */,
 				D144F1F71C44178500E07700 /* SendPhoto.png in Resources */,
 				D154E7241C478B2400CF3A63 /* ProfilePicture.png in Resources */,
@@ -519,6 +530,7 @@
 				D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */,
 				D137E8791CA95C46004F9B44 /* AboutController.swift in Sources */,
 				D176D4731C852077004A812E /* Line.swift in Sources */,
+				D1E15E1A1CC5A1A300C27CDF /* Beacon.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
 				D139D46D1CA5675F00909BF5 /* SnapTimer.swift in Sources */,

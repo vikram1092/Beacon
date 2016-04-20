@@ -53,7 +53,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         countryBackground.bringSubviewToFront(countryPicture)
         
         //Configure username adress label
-        usernameCell.text = userDefaults.valueForKey("userName") as? String
+        usernameCell.text = userDefaults.valueForKey("userCity") as? String
     }
     
     
@@ -87,7 +87,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
             
             performSegueWithIdentifier("AboutSegue", sender: self)
         }
-        else if cell!.tag == 5 {
+        else if cell!.tag == 10 {
             
             //Segue back to the login screen
             performSegueWithIdentifier("Logout", sender: self)

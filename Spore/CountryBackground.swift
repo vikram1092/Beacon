@@ -25,6 +25,11 @@ class CountryBackground: UIView {
         
         let frame = super.frame
         
+        //Rotate view for progress bar, and rotate country image back
+        self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
+        let country = self.viewWithTag(5)
+        country?.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
+        
         background.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         background.fillColor = backgroundLayerColor
         

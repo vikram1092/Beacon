@@ -24,6 +24,7 @@ class UserListController: UITableViewController {
     var userName = ""
     var userEmail = ""
     var userCountry = ""
+    var userCity = ""
     var userLatitude = NSNumber()
     var userLongitude = NSNumber()
     var userToReceivePhotos = 0
@@ -66,6 +67,11 @@ class UserListController: UITableViewController {
             
             userLatitude = userDefaults.objectForKey("receivedLatitude") as! Double
             userLongitude = userDefaults.objectForKey("receivedLongitude") as! Double
+        }
+        
+        if userDefaults.objectForKey("userCity") != nil {
+            
+            userCity = userDefaults.objectForKey("userCity") as! String
         }
         
         //Check user login status
@@ -269,11 +275,22 @@ class UserListController: UITableViewController {
                         photoObject["receivedBy"] = self.userEmail
                         photoObject["receivedCountry"] = self.userCountry
                         
+                        if self.userCity != "" {
+                            
+                            photoObject["receivedCity"] = self.userCity
+                        }
+                        
                         if self.userDefaults.objectForKey("receivedLatitude") != nil   {
                             
                             photoObject["receivedLatitude"] = self.userLatitude
                             photoObject["receivedLongitude"] = self.userLongitude
                         }
+                        
+                        //Local variables for table color
+                        let colorArray = self.chooseRandomColor()
+                        photoObject["red"] = NSNumber(double: colorArray[0])
+                        photoObject["green"] =  NSNumber(double: colorArray[1])
+                        photoObject["blue"] =  NSNumber(double: colorArray[2])
                         
                         //Add object to userList
                         tempList.append(photoObject)
@@ -349,6 +366,13 @@ class UserListController: UITableViewController {
         
         //Configure image background
         imageBackground.layer.cornerRadius = imageBackground.frame.size.width/2
+        
+        let red = (userList[userListLength - indexPath.row]["red"] as! NSNumber).doubleValue
+        let green = (userList[userListLength - indexPath.row]["green"] as! NSNumber).doubleValue
+        let blue = (userList[userListLength - indexPath.row]["blue"] as! NSNumber).doubleValue
+        
+        imageBackground.changeBackgroundColor(UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: 1.0).CGColor)
+        
         //Configure image
         imageView.image = countryTable.getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         imageBackground.addSubview(imageView)
@@ -368,7 +392,15 @@ class UserListController: UITableViewController {
         
         
         //Configure text
-        titleView.text = countryTable.getCountryName(countryCode as! String)
+        let city = userList[userListLength - indexPath.row]["sentCity"] as? String
+        let country = countryTable.getCountryName(countryCode as! String)
+        
+        if city != nil {
+            titleView.text = city! + ", " + country
+        }
+        else {
+            titleView.text = country
+        }
         
         //Configure subtext
         subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
@@ -839,6 +871,43 @@ class UserListController: UITableViewController {
             loginController.fbLoginButton.alpha = 1
             loginController.alertButton.alpha = 0
         }
+    }
+    
+    
+    internal func chooseRandomColor() -> Array<Double> {
+        
+        
+        //Set colors
+        let number = arc4random_uniform(5)
+        
+        if number == 0 {
+            //Return PURPLE
+            return [166.0/255.0, 118.0/255.0,  255.0/255.0]
+        }
+        else if number == 1 {
+            
+            //Return RED
+            return [248.0/255.0, 95.0/255.0, 96.0/255.0]
+        }
+        else if number == 2 {
+            
+            //Return BLUE
+            return [48.0/255.0, 97.0/255.0, 173/255.0]
+        }
+        else if number == 3 {
+            
+            //Return ORANGE
+            return [255.0/255.0, 137.0/255.0, 65.0/255.0]
+        }
+        else if number == 4 {
+            
+            //Return GREEN
+            return [91.0/255.0, 238.0/255.0, 165.0/255.0]
+        }
+        
+        
+        return [0,0,0]
+        
     }
     
     
