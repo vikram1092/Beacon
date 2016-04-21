@@ -49,6 +49,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     var userLocation = PFGeoPoint()
     var userCountry = ""
+    var userState = ""
     var userCity = ""
     var userName = ""
     var userEmail = ""
@@ -737,6 +738,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         photoObject["countryCode"] = userCountry
         
         print(userCity)
+        if userState != "" {
+            
+            photoObject["sentState"] = userState
+        }
         if userCity != "" {
             
             photoObject["sentCity"] = userCity
@@ -868,53 +873,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         exportSession!.exportAsynchronouslyWithCompletionHandler { () -> Void in
             
             handler(session: exportSession!)
-        }
-    }
-    
-    
-    internal func getCountryCode(locGeoPoint: PFGeoPoint) {
-        
-        //Get country for current row
-        let location = CLLocation(latitude: locGeoPoint.latitude, longitude: locGeoPoint.longitude)
-        print(location)
-        
-        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, locationError) -> Void in
-            
-            if locationError != nil {
-                
-                print("Reverse geocoder error: " + locationError!.description)
-                
-                
-                self.showAlert("Error getting user's country. \nPlease check your internet connection or permissions.")
-            }
-            else if placemarks!.count > 0 {
-                
-                //Get and save user's country & city
-                print("Geo location country code: " + String(placemarks![0].ISOcountryCode!))
-                self.userCountry = placemarks![0].ISOcountryCode!.lowercaseString
-                
-                if placemarks![0].locality != nil {
-                    
-                    self.userCity = placemarks![0].locality!
-                }
-                //Save user country and city
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
-                    print("Saving user's country & city")
-                    self.userDefaults.setObject(self.userCountry, forKey: "userCountry")
-                    
-                    if self.userCity != "" {
-                        
-                        self.userDefaults.setObject(self.userCity, forKey: "userCity")
-                    }
-                    
-                    self.closeAlert()
-                })
-                
-            }
-            else {
-                print("Problem with the data received from geocoder")
-            }
         }
     }
     
@@ -1106,7 +1064,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             //Stop updating location and get the country code for this location
             locManager.stopUpdatingLocation()
-            getCountryCode(userLocation)
+            getPoliticalDetails(userLocation)
             
             //Save user location locally
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -1116,17 +1074,68 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 print(self.userLocation.latitude)
                 print(self.userLocation.longitude)
-                print(self.userDefaults.objectForKey("receivedLatitude"))
-                /*
-                let userLocDictionary = NSDictionary(objects: [latitude, longitude], forKeys: ["latitude", "longitude"])
-                let userLocationData = NSKeyedArchiver.archivedDataWithRootObject(userLocDictionary)
-                self.userDefaults.setObject(userLocationData, forKey: "userLocation")*/
             })
         }
         else {
             
             showAlert("Error getting user's location. \nPlease check your location services settings or permissions.")
         }
+    }
+    
+    
+    internal func getPoliticalDetails(locGeoPoint: PFGeoPoint) {
+        
+        //Get country for current row
+        let location = CLLocation(latitude: locGeoPoint.latitude, longitude: locGeoPoint.longitude)
+        print(location)
+        
+        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, locationError) -> Void in
+            
+            if locationError != nil {
+                
+                print("Reverse geocoder error: " + locationError!.description)
+                
+                
+                self.showAlert("Error getting user's country. \nPlease check your internet connection or permissions.")
+            }
+            else if placemarks!.count > 0 {
+                
+                //Get and save user's country, state & city
+                print("Geo location country code: \(placemarks![0].locality), \(placemarks![0].administrativeArea), \(placemarks![0].ISOcountryCode!)")
+                self.userCountry = placemarks![0].ISOcountryCode!.lowercaseString
+                
+                
+                if placemarks![0].administrativeArea != nil {
+                    
+                    self.userState = placemarks![0].administrativeArea!
+                }
+                
+                if placemarks![0].locality != nil {
+                    
+                    self.userCity = placemarks![0].locality!
+                }
+                
+                self.saveUserLocationDefaults()
+                
+                self.closeAlert()
+            }
+            else {
+                print("Problem with the data received from geocoder")
+            }
+        }
+    }
+    
+    
+    internal func saveUserLocationDefaults() {
+        
+        //Save user country and city
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            
+            print("Saving user's country & city")
+            self.userDefaults.setObject(self.userCountry, forKey: "userCountry")
+            self.userDefaults.setObject(self.userState, forKey: "userState")
+            self.userDefaults.setObject(self.userCity, forKey: "userCity")
+        })
     }
     
     

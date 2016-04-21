@@ -24,6 +24,7 @@ class UserListController: UITableViewController {
     var userName = ""
     var userEmail = ""
     var userCountry = ""
+    var userState = ""
     var userCity = ""
     var userLatitude = NSNumber()
     var userLongitude = NSNumber()
@@ -51,28 +52,8 @@ class UserListController: UITableViewController {
         //Run like usual
         super.viewDidAppear(true)
         
-        //Retreive user details
-        if userDefaults.objectForKey("userName") != nil {
-            
-            userName = userDefaults.objectForKey("userName") as! String
-            userEmail = userDefaults.objectForKey("userEmail") as! String
-        }
-        
-        if userDefaults.objectForKey("userCountry") != nil {
-            
-            userCountry = userDefaults.objectForKey("userCountry") as! String
-        }
-        
-        if userDefaults.objectForKey("receivedLatitude") != nil {
-            
-            userLatitude = userDefaults.objectForKey("receivedLatitude") as! Double
-            userLongitude = userDefaults.objectForKey("receivedLongitude") as! Double
-        }
-        
-        if userDefaults.objectForKey("userCity") != nil {
-            
-            userCity = userDefaults.objectForKey("userCity") as! String
-        }
+        //Retreive user defaults
+        getUserDefaults()
         
         //Check user login status
         print("Checking user login status")
@@ -157,6 +138,38 @@ class UserListController: UITableViewController {
             self.userDefaults.setObject(nil, forKey: "userName")
             self.userDefaults.setObject(nil, forKey: "userEmail")
             self.userDefaults.setObject(nil, forKey: "userCountry")
+        }
+    }
+    
+    
+    internal func getUserDefaults() {
+        
+        //Retreive user details
+        if userDefaults.objectForKey("userName") != nil {
+            
+            userName = userDefaults.objectForKey("userName") as! String
+            userEmail = userDefaults.objectForKey("userEmail") as! String
+        }
+        
+        if userDefaults.objectForKey("userCountry") != nil {
+            
+            userCountry = userDefaults.objectForKey("userCountry") as! String
+        }
+        
+        if userDefaults.objectForKey("receivedLatitude") != nil {
+            
+            userLatitude = userDefaults.objectForKey("receivedLatitude") as! Double
+            userLongitude = userDefaults.objectForKey("receivedLongitude") as! Double
+        }
+        
+        if userDefaults.objectForKey("userState") != nil {
+            
+            userState = userDefaults.objectForKey("userState") as! String
+        }
+        
+        if userDefaults.objectForKey("userCity") != nil {
+            
+            userCity = userDefaults.objectForKey("userCity") as! String
         }
     }
     
@@ -275,6 +288,11 @@ class UserListController: UITableViewController {
                         photoObject["receivedBy"] = self.userEmail
                         photoObject["receivedCountry"] = self.userCountry
                         
+                        if self.userState != "" {
+                            
+                            photoObject["receivedState"] = self.userState
+                        }
+                        
                         if self.userCity != "" {
                             
                             photoObject["receivedCity"] = self.userCity
@@ -287,10 +305,7 @@ class UserListController: UITableViewController {
                         }
                         
                         //Local variables for table color
-                        let colorArray = self.chooseRandomColor()
-                        photoObject["red"] = NSNumber(double: colorArray[0])
-                        photoObject["green"] =  NSNumber(double: colorArray[1])
-                        photoObject["blue"] =  NSNumber(double: colorArray[2])
+                        photoObject["tableColor"] = self.getTableColorName(self.userList.count + tempList.count + 1)
                         
                         //Add object to userList
                         tempList.append(photoObject)
@@ -326,8 +341,6 @@ class UserListController: UITableViewController {
                         self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
                     })
                 }
-                
-
             })
         }
         
@@ -361,25 +374,72 @@ class UserListController: UITableViewController {
         let userListLength = userList.count - 1
         let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
         let timeString = timeSinceDate(date, numericDates: true)
-        let countryCode = userList[userListLength - indexPath.row]["countryCode"]
+        let countryCode = userList[userListLength - indexPath.row]["countryCode"] as? String
+        
         
         
         //Configure image background
         imageBackground.layer.cornerRadius = imageBackground.frame.size.width/2
         
-        let red = (userList[userListLength - indexPath.row]["red"] as! NSNumber).doubleValue
-        let green = (userList[userListLength - indexPath.row]["green"] as! NSNumber).doubleValue
-        let blue = (userList[userListLength - indexPath.row]["blue"] as! NSNumber).doubleValue
+        let color = userList[userListLength - indexPath.row]["tableColor"] as! String
+        imageBackground.changeBackgroundColor(getTableColor(color))
         
-        imageBackground.changeBackgroundColor(UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: 1.0).CGColor)
         
-        //Configure image
-        imageView.image = countryTable.getCountryImage(countryCode as! String).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        imageBackground.addSubview(imageView)
+        
+        //Declare geographic data
+        let country = countryTable.getCountryName(countryCode!)
+        let state = userList[userListLength - indexPath.row]["sentState"] as? String
+        let city = userList[userListLength - indexPath.row]["sentCity"] as? String
+        
+        //Configure text & map image
+        //Account for states if country is USA
+        if state != nil && countryCode == "us" {
+            
+            //State variable is a state code
+            if state!.characters.count == 2 {
+                
+                titleView.text = countryTable.getStateName(state!.lowercaseString) + ", " + country
+                imageView.image = countryTable.getStateImage(state!.lowercaseString).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            }
+            //State variable is not a state code
+            else {
+                
+                let stateCode = countryTable.getStateCode(state!)
+                if stateCode == "Unknown" {
+                    
+                    titleView.text = country
+                }
+                else {
+                    
+                    titleView.text = state! + ", " + country
+                }
+                
+                imageView.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            }
+        }
+        //Check if city variable is present
+        else if city != nil {
+            
+            titleView.text = city! + ", " + country
+            imageView.image = countryTable.getCountryImage(countryCode!).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        }
+        //Configure for only country variable
+        else {
+            
+            titleView.text = country
+            imageView.image = countryTable.getCountryImage(countryCode!).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        }
+        
+        //Add the country image to its background
+        //imageBackground.addSubview(imageView)
+        imageBackground.bringSubviewToFront(imageView)
+        
+        
         
         //Configure image sliding and action
         let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
         imageBackground.addGestureRecognizer(pan)
+        
         
         
         //Configure time left for photo
@@ -391,25 +451,17 @@ class UserListController: UITableViewController {
         }
         
         
-        //Configure text
-        let city = userList[userListLength - indexPath.row]["sentCity"] as? String
-        let country = countryTable.getCountryName(countryCode as! String)
-        
-        if city != nil {
-            titleView.text = city! + ", " + country
-        }
-        else {
-            titleView.text = country
-        }
         
         //Configure subtext
         subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
         subTitleView.text = String(timeString)
         
         
+        
         //Configure slide indicator
         slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         slideIndicator.tintColor = UIColor.lightGrayColor()
+        
         
         return cell
     }
@@ -874,39 +926,69 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func chooseRandomColor() -> Array<Double> {
+    internal func getTableColorName(number: Int) -> String {
         
         
-        //Set colors
-        let number = arc4random_uniform(5)
-        
-        if number == 0 {
+        if number % 5 == 0 {
             //Return PURPLE
-            return [166.0/255.0, 118.0/255.0,  255.0/255.0]
+            return "purple"
         }
-        else if number == 1 {
+        else if number % 5 == 1 {
             
             //Return RED
-            return [248.0/255.0, 95.0/255.0, 96.0/255.0]
+            return "red"
         }
-        else if number == 2 {
+        else if number % 5 == 2 {
             
             //Return BLUE
-            return [48.0/255.0, 97.0/255.0, 173/255.0]
+            return "blue"
         }
-        else if number == 3 {
+        else if number % 5 == 3 {
             
             //Return ORANGE
-            return [255.0/255.0, 137.0/255.0, 65.0/255.0]
+            return "orange"
         }
-        else if number == 4 {
+        else if number % 5 == 4 {
             
             //Return GREEN
-            return [91.0/255.0, 238.0/255.0, 165.0/255.0]
+            return "green"
         }
         
         
-        return [0,0,0]
+        return "black"
+    }
+    
+    
+    internal func getTableColor(color: String) -> CGColor {
+        
+        if color == "purple" {
+            
+            //Return PURPLE
+            return UIColor(red: 166.0/255.0, green: 118.0/255.0, blue: 255.0/255.0, alpha: 1.0).CGColor
+        }
+        else if color == "red" {
+            
+            //Return RED
+            return UIColor(red: 248.0/255.0, green: 95.0/255.0, blue: 96.0/255.0, alpha: 1.0).CGColor
+        }
+        else if color == "blue" {
+            
+            //Return BLUE
+            return UIColor(red: 48.0/255.0, green: 97.0/255.0, blue: 173.0/255.0, alpha: 1.0).CGColor
+        }
+        else if color == "orange" {
+            
+            //Return ORANGE
+            return UIColor(red: 255.0/255.0, green: 137.0/255.0, blue: 65.0/255.0, alpha: 1.0).CGColor
+        }
+        else if color == "green" {
+            
+            //Return GREEN
+            return UIColor(red: 91.0/255.0, green: 238.0/255.0, blue: 165.0/255.0, alpha: 1.0).CGColor
+        }
+        
+        //Return BLACK
+        return UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5).CGColor
         
     }
     

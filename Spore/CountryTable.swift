@@ -32,7 +32,7 @@ class CountryTable {
         print("Country:" + countryCode)
         
         //Find country and obtain the 2 digit ISO code
-        for country in table {
+        for country in countryTable {
             
             if country[1] == countryCode {
                 countryName = country[0]
@@ -43,7 +43,120 @@ class CountryTable {
         return countryName
     }
     
-    var table = [["Afghanistan","af"],
+    
+    internal func getStateName(stateCode: String) -> String {
+        
+        
+        var stateName = "Unknown"
+        print("State:" + stateCode)
+        
+        //Find state and obtain name from the 2 digit code
+        for state in usaStateTable {
+            
+            if state[1] == stateCode {
+                stateName = state[0]
+                break
+            }
+        }
+        
+        return stateName
+    }
+    
+    
+    internal func getStateCode(stateName: String) -> String {
+        
+        
+        var stateCode = "Unknown"
+        print("State:" + stateCode)
+        
+        //Find state and obtain name from the 2 digit code
+        for state in usaStateTable {
+            
+            if state[0] == stateName {
+                stateCode = state[1]
+                break
+            }
+        }
+        
+        return stateCode
+    }
+    
+    
+    internal func getStateImage(stateCode: String) -> UIImage {
+        
+        let link  = "Countries/States of the United States/" + stateCode + "/128.png"
+        
+        if let image = UIImage(named: link) {
+            
+            return image
+        }
+        
+        return UIImage(named: "Countries/Unknown/128.png")!
+    }
+    
+    
+    var usaStateTable = [["Alabama", "al"],
+        ["Alaska", "ak"],
+        ["Arizona", "az"],
+        ["Arkansas", "ar"],
+        ["California", "ca"],
+        ["Colorado", "co"],
+        ["Connecticut", "ct"],
+        ["Delaware", "de"],
+        ["Florida", "fl"],
+        ["Georgia", "ga"],
+        ["Hawaii", "hi"],
+        ["Idaho", "id"],
+        ["Illinois", "il"],
+        ["Indiana", "in"],
+        ["Iowa", "ia"],
+        ["Kansas", "ks"],
+        ["Kentucky", "ky"],
+        ["Louisiana", "la"],
+        ["Maine", "me"],
+        ["Maryland", "md"],
+        ["Massachusetts", "ma"],
+        ["Michigan", "mi"],
+        ["Minnesota", "mn"],
+        ["Mississippi", "ms"],
+        ["Missouri", "mo"],
+        ["Montana", "mt"],
+        ["Nebraska", "ne"],
+        ["Nevada", "nv"],
+        ["New Hampshire", "nh"],
+        ["New Jersey", "nj"],
+        ["New Mexico", "nm"],
+        ["New York", "ny"],
+        ["North Carolina", "nc"],
+        ["North Dakota", "nd"],
+        ["Ohio", "oh"],
+        ["Oklahoma", "ok"],
+        ["Oregon", "or"],
+        ["Pennsylvania", "pa"],
+        ["Rhode Island", "ri"],
+        ["South Carolina", "sc"],
+        ["South Dakota", "sd"],
+        ["Tennessee", "tn"],
+        ["Texas", "tx"],
+        ["Utah", "ut"],
+        ["Vermont", "vt"],
+        ["Virginia", "va"],
+        ["Washington", "wa"], 
+        ["West Virginia", "wv"], 
+        ["Wisconsin", "wi"], 
+        ["Wyoming", "wy"], 
+        ["American Samoa", "as"], 
+        ["District of Columbia", "dc"], 
+        ["Federated States of Micronesia", "fm"], 
+        ["Guam", "gu"], 
+        ["Marshall Islands", "mh"], 
+        ["Northern Mariana Islands", "mp"], 
+        ["Palau", "pw"], 
+        ["Puerto Rico", "pr"], 
+        ["Virgin Islands", "vi"]]
+    
+    
+    var countryTable = [["Afghanistan","af"],
         ["Åland Islands","ax"],
         ["Albania","al"],
         ["Algeria","dz"],
