@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import ParseUI
 
 class CountryBackground: UIView {
     
@@ -15,8 +16,10 @@ class CountryBackground: UIView {
     let background = CAShapeLayer()
     let progressView = CAShapeLayer()
     
+    
     var backgroundLayerColor = UIColor(red: 248.0/255.0, green: 95.0/255.0, blue: 96.0/255.0, alpha: 1).CGColor
-    var progressLayerColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
+    //var progressLayerColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
+    var progressLayerColor = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1).CGColor
 
     
     required init?(coder aDecoder: NSCoder) {
@@ -28,12 +31,14 @@ class CountryBackground: UIView {
         //Rotate view for progress bar, and rotate country image back
         self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
         let country = self.viewWithTag(5)
+        let photo = self.viewWithTag(7)
         country?.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
+        photo?.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
+        self.bringSubviewToFront(country!)
         
         background.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        background.fillColor = backgroundLayerColor
-        
-        self.layer.addSublayer(background)
+        background.fillColor = self.backgroundColor?.CGColor
+        self.layer.mask = background
     }
     
     
@@ -43,7 +48,7 @@ class CountryBackground: UIView {
         progressView.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         progressView.fillColor = UIColor.clearColor().CGColor
         progressView.strokeColor = progressLayerColor
-        progressView.lineWidth = 4
+        progressView.lineWidth = 7
         progressView.strokeStart = 1.0 - CGFloat(progress)
         progressView.strokeEnd = 1.0
         
@@ -55,6 +60,7 @@ class CountryBackground: UIView {
         
         background.fillColor = color
     }
+    
     
     internal func noProgress() {
         

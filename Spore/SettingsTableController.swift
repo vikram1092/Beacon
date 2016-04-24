@@ -17,11 +17,13 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     var userName = ""
     var userEmail = ""
     var userCountry = ""
+    var userState = ""
+    var userCity = ""
     let countryTable = CountryTable()
     
     @IBOutlet var logoutButton: UIView!
     @IBOutlet var countryPicture: UIImageView!
-    @IBOutlet var usernameCell: UILabel!
+    @IBOutlet var userLocation: UILabel!
     @IBOutlet var countryBackground: CountryBackground!
     @IBOutlet var saveSwitch: UISwitch!
     
@@ -29,31 +31,19 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     override func viewDidLoad() {
         
         
-        
-        
         //Run view load as normal
         super.viewDidLoad()
         
-        //Retreive user details
-        if userDefaults.objectForKey("userName") != nil {
-            
-            userName = userDefaults.objectForKey("userName") as! String
-            userEmail = userDefaults.objectForKey("userEmail") as! String
-        }
-        
-        if userDefaults.objectForKey("userCountry") != nil {
-            
-            userCountry = userDefaults.objectForKey("userCountry") as! String
-        }
-        
+        //Get user defaults
+        getUserDefaults()
         
         //Configure profile picture
         countryBackground.changeBackgroundColor(UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor)
         countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         countryBackground.bringSubviewToFront(countryPicture)
         
-        //Configure username adress label
-        usernameCell.text = userDefaults.valueForKey("userCity") as? String
+        //Set user location
+        setUserLocation()
     }
     
     
@@ -106,7 +96,6 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     }
     
     
-    
     @IBAction func saveSwitchFlipped(sender: AnyObject) {
         
         
@@ -122,7 +111,72 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     }
     
     
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    internal func getUserDefaults() {
+        
+        
+        //Retreive user details
+        if userDefaults.objectForKey("userName") != nil {
+            
+            userName = userDefaults.objectForKey("userName") as! String
+            userEmail = userDefaults.objectForKey("userEmail") as! String
+        }
+        
+        if userDefaults.objectForKey("userCountry") != nil {
+            
+            userCountry = userDefaults.objectForKey("userCountry") as! String
+        }
+        
+        if userDefaults.objectForKey("userState") != nil {
+            
+            userState = userDefaults.objectForKey("userState") as! String
+        }
+        
+        if userDefaults.objectForKey("userCity") != nil {
+            
+            userCity = userDefaults.objectForKey("userCity") as! String
+        }
+    }
+    
+    
+    internal func setUserLocation() {
+        
+        var text = ""
+        
+        if userCountry == "us" {
+            
+            if userState != "" {
+                
+                if userState.characters.count == 2 {
+                    
+                    text = countryTable.getStateName(userState) + ", " + countryTable.getCountryName(userCountry)
+                }
+                else {
+                    
+                    text = userState + ", " + countryTable.getCountryName(userCountry)
+                }
+            }
+            else if userCity != "" {
+                
+                text = userCity + ", " + countryTable.getCountryName(userCountry)
+            }
+        }
+        else {
+            
+            if userCity != "" {
+                
+                text = userCity + ", " + countryTable.getCountryName(userCountry)
+            }
+            else {
+                
+                text = countryTable.getCountryName(userCountry)
+            }
+        }
+        
+        userLocation.text = text
+    }
+    
+    
+    internal func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         
         if(navigationController!.viewControllers.count > 1){
             return true

@@ -1257,8 +1257,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func segueToTable() {
         
         //Move within tab controller
-        self.tabBarController?.selectedIndex = 1
         self.tabBarController!.tabBar.hidden = false
+        self.tabBarController?.selectedIndex = 1
     }
     
     

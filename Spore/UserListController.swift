@@ -34,6 +34,8 @@ class UserListController: UITableViewController {
     var countryObject = UIView()
     let fileManager = NSFileManager.defaultManager()
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
+    let tableVideoPrefix = NSTemporaryDirectory() + "tableVideo_"
+    let tableVideoBounds = CGRect(x: 0, y: 0, width: 85, height: 85)
     let userDefaults = NSUserDefaults.standardUserDefaults()
     let calendar = NSCalendar.currentCalendar()
     
@@ -63,8 +65,8 @@ class UserListController: UITableViewController {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                 
                 self.userIsBanned()
-                })
-                
+            })
+            
             //Get userToReceivePhotos
             if userDefaults.integerForKey("userToReceivePhotos") > 0 {
                 userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
@@ -199,7 +201,7 @@ class UserListController: UITableViewController {
         query.whereKey("receivedBy", equalTo: userEmail)
         
         print("Querying localuserList")
-        query.addAscendingOrder("updatedAt")
+        query.addAscendingOrder("receivedAt")
         query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
             
             if retreivalError != nil {
@@ -320,7 +322,7 @@ class UserListController: UITableViewController {
                     
                     //Add objects to user list
                     print("Adding new objects to userList")
-
+                    
                     for object in tempList {
                         self.userList.append(object)
                     }
@@ -350,7 +352,7 @@ class UserListController: UITableViewController {
             self.refreshControl!.endRefreshing()
         })
     }
-
+    
     
     @IBAction func refreshControl(sender: AnyObject) {
         
@@ -369,7 +371,10 @@ class UserListController: UITableViewController {
         let subTitleView = cell.viewWithTag(2) as! UILabel
         let imageView = cell.viewWithTag(5) as! UIImageView
         let imageBackground = cell.viewWithTag(6) as! CountryBackground
+        let photoView = cell.viewWithTag(7) as! UIImageView
         let slideIndicator = cell.viewWithTag(3) as! UIImageView
+        
+        var moviePlayer = AVPlayerLayer()
         
         let userListLength = userList.count - 1
         let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
@@ -377,13 +382,71 @@ class UserListController: UITableViewController {
         let countryCode = userList[userListLength - indexPath.row]["countryCode"] as? String
         
         
+        //Configure image background layers
+        //let color = userList[userListLength - indexPath.row]["tableColor"] as! String
+        //imageBackground.changeBackgroundColor(getTableColor(color))
         
-        //Configure image background
+        
         imageBackground.layer.cornerRadius = imageBackground.frame.size.width/2
+        photoView.image = nil
         
-        let color = userList[userListLength - indexPath.row]["tableColor"] as! String
-        imageBackground.changeBackgroundColor(getTableColor(color))
-        
+        if let isVideo = userList[userListLength - indexPath.row]["isVideo"] {
+            
+            let mediaObject = userList[userListLength - indexPath.row]["photo"] as? PFFile
+            
+            mediaObject?.getDataInBackgroundWithBlock({ (mediaData, mediaError) -> Void in
+                
+                if mediaError != nil {
+                    print("Video Error: \(mediaError)")
+                }
+                else if !(isVideo as! Bool) && mediaData != nil {
+                    
+                    //Handle for a photo
+                    photoView.contentMode = UIViewContentMode.ScaleAspectFill
+                    photoView.image = UIImage(data: mediaData!)
+                }
+                else if (isVideo as! Bool) && mediaData != nil {
+                    
+                    //Handle for a video
+                    //Create path
+                    let cellVideoPath = self.tableVideoPrefix + self.userEmail.substringToIndex(self.userEmail.characters.indexOf(Character("@"))!) + "_" + String(userListLength - indexPath.row) + ".mov"
+                    
+                    print(cellVideoPath)
+                        
+                    //Check if path exists. If it does, no need to recreate
+                    print("Index path \(indexPath.row) file exists: \(self.fileManager.fileExistsAtPath(cellVideoPath))")
+                    if !self.fileManager.fileExistsAtPath(cellVideoPath) {
+                        
+                        mediaData!.writeToFile(cellVideoPath, atomically: true)
+                        print(self.fileManager.fileExistsAtPath(cellVideoPath))
+                    }
+                    
+                    //Initialize movie layer
+                    print("Initializing cell video player")
+                    let tableVideoPlayer = AVPlayer(URL: NSURL(fileURLWithPath: cellVideoPath))
+                    moviePlayer = AVPlayerLayer(player: tableVideoPlayer)
+                    
+                    
+                    //Set video gravity
+                    //moviePlayer.backgroundColor = UIColor.greenColor().CGColor
+                    moviePlayer.frame = photoView.bounds
+                    moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    moviePlayer.player!.muted = true
+                    
+                    //Set loop function
+                    NSNotificationCenter.defaultCenter().addObserver(self,
+                        selector: "loopTableVideo:",
+                        name: AVPlayerItemDidPlayToEndTimeNotification,
+                        object: moviePlayer.player!)
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        photoView.layer.addSublayer(moviePlayer)
+                        moviePlayer.player!.play()
+                    })
+                }
+            })
+        }
         
         
         //Declare geographic data
@@ -401,7 +464,7 @@ class UserListController: UITableViewController {
                 titleView.text = countryTable.getStateName(state!.lowercaseString) + ", " + country
                 imageView.image = countryTable.getStateImage(state!.lowercaseString).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
             }
-            //State variable is not a state code
+                //State variable is not a state code
             else {
                 
                 let stateCode = countryTable.getStateCode(state!)
@@ -417,13 +480,13 @@ class UserListController: UITableViewController {
                 imageView.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
             }
         }
-        //Check if city variable is present
+            //Check if city variable is present
         else if city != nil {
             
             titleView.text = city! + ", " + country
             imageView.image = countryTable.getCountryImage(countryCode!).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         }
-        //Configure for only country variable
+            //Configure for only country variable
         else {
             
             titleView.text = country
@@ -451,7 +514,6 @@ class UserListController: UITableViewController {
         }
         
         
-        
         //Configure subtext
         subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
         subTitleView.text = String(timeString)
@@ -466,7 +528,7 @@ class UserListController: UITableViewController {
         return cell
     }
     
-
+    
     internal override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if initialRowLoad {
@@ -509,7 +571,7 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
-    
+        
         //Declare spam button
         let spam = UITableViewRowAction(style: .Normal, title: "Spam") { (action, index) -> Void in
             
@@ -590,6 +652,7 @@ class UserListController: UITableViewController {
                         videoData?.writeToFile(self.videoPath, atomically: true)
                         
                         //Initialize movie layer
+                        print(self.videoPath)
                         print("Initilizing video player")
                         let player = AVPlayer(URL: NSURL(fileURLWithPath: self.videoPath))
                         grandparent.moviePlayer = AVPlayerLayer(player: player)
@@ -672,7 +735,7 @@ class UserListController: UITableViewController {
             }
             
         }
-        //If photo not within time, display cell bounce animation
+            //If photo not within time, display cell bounce animation
         else {
             
             
@@ -716,7 +779,7 @@ class UserListController: UITableViewController {
                             })
                     })
             })
-
+            
         }
         
     }
@@ -767,6 +830,16 @@ class UserListController: UITableViewController {
     }
     
     
+    internal func loopTableVideo(notification: NSNotification) {
+        
+        //Loop video
+        print("Looping table video")
+        let player = notification.object as! AVPlayer
+        player.currentItem?.seekToTime(kCMTimeZero)
+        player.play()
+    }
+    
+    
     internal func closeVideo() {
         
         let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
@@ -783,7 +856,7 @@ class UserListController: UITableViewController {
                 
                 grandparent.toggleStatusBar()
             }
-            })
+        })
         
         clearVideoTempFile()
     }
@@ -799,7 +872,7 @@ class UserListController: UITableViewController {
         }
     }
     
-
+    
     internal func detectPan(recognizer: UIPanGestureRecognizer) {
         
         
@@ -831,7 +904,7 @@ class UserListController: UITableViewController {
                         subview.alpha = 0
                     })
                 }
-                //Show map label
+                    //Show map label
                 else if subview.tag == 3 {
                     
                     UIView.animateWithDuration(0.1, animations: { () -> Void in
@@ -862,27 +935,27 @@ class UserListController: UITableViewController {
             print("Moving country back")
             UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
                 
-                    //Move object first
-                    self.countryObject.center.x = self.countryCenter.x
+                //Move object first
+                self.countryObject.center.x = self.countryCenter.x
+                
+                
+                //Since content view is the direct subview layer, we have to first go into that
+                for subview in cell.subviews[0].subviews {
                     
-                    
-                    //Since content view is the direct subview layer, we have to first go into that
-                    for subview in cell.subviews[0].subviews {
+                    //Ensure that the subview is not the image, its background or the map label
+                    if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
                         
-                        //Ensure that the subview is not the image, its background or the map label
-                        if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
-                            
-                            subview.alpha = 1
-                        }
-                        //Hide map label
-                        else if subview.tag == 3 {
-                            
-                            UIView.animateWithDuration(0.1, animations: { () -> Void in
-                                
-                                subview.alpha = 0
-                            })
-                        }
+                        subview.alpha = 1
                     }
+                        //Hide map label
+                    else if subview.tag == 3 {
+                        
+                        UIView.animateWithDuration(0.1, animations: { () -> Void in
+                            
+                            subview.alpha = 0
+                        })
+                    }
+                }
                 
                 }, completion: nil)
             
@@ -928,27 +1001,28 @@ class UserListController: UITableViewController {
     
     internal func getTableColorName(number: Int) -> String {
         
+        let divisor = 3
         
-        if number % 5 == 0 {
+        if number % divisor == 0 {
             //Return PURPLE
             return "purple"
         }
-        else if number % 5 == 1 {
+        else if number % divisor == 1 {
             
             //Return RED
             return "red"
         }
-        else if number % 5 == 2 {
+        else if number % divisor == 2 {
             
             //Return BLUE
             return "blue"
         }
-        else if number % 5 == 3 {
+        else if number % divisor == 3 {
             
             //Return ORANGE
             return "orange"
         }
-        else if number % 5 == 4 {
+        else if number % divisor == 4 {
             
             //Return GREEN
             return "green"
@@ -964,12 +1038,12 @@ class UserListController: UITableViewController {
         if color == "purple" {
             
             //Return PURPLE
-            return UIColor(red: 166.0/255.0, green: 118.0/255.0, blue: 255.0/255.0, alpha: 1.0).CGColor
+            return UIColor(red: 37.0/255.0, green: 40.0/255.0, blue: 57.0/255.0, alpha: 1.0).CGColor
         }
         else if color == "red" {
             
             //Return RED
-            return UIColor(red: 248.0/255.0, green: 95.0/255.0, blue: 96.0/255.0, alpha: 1.0).CGColor
+            return UIColor(red: 181.0/255.0, green: 181.0/255.0, blue: 183.0/255.0, alpha: 1.0).CGColor
         }
         else if color == "blue" {
             
@@ -979,12 +1053,12 @@ class UserListController: UITableViewController {
         else if color == "orange" {
             
             //Return ORANGE
-            return UIColor(red: 255.0/255.0, green: 137.0/255.0, blue: 65.0/255.0, alpha: 1.0).CGColor
+            return UIColor(red: 255.0/255.0, green: 143.0/255.0, blue: 220.0/255.0, alpha: 1.0).CGColor
         }
         else if color == "green" {
             
             //Return GREEN
-            return UIColor(red: 91.0/255.0, green: 238.0/255.0, blue: 165.0/255.0, alpha: 1.0).CGColor
+            return UIColor(red: 127.0/255.0, green: 226.0/255.0, blue: 170.0/255.0, alpha: 1.0).CGColor
         }
         
         //Return BLACK
