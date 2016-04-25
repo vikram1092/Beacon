@@ -53,7 +53,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var userCity = ""
     var userName = ""
     var userEmail = ""
-    var flashToggle = false
     var firstTime = true
     var saveMedia = true
     let userDefaults = NSUserDefaults.standardUserDefaults()
@@ -246,7 +245,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Commit configuration, run camera, add layer and configure layout subviews
         print("start running")
         captureSession.commitConfiguration()
-        captureSession.startRunning()
         
         //Add preview layer and perform view fixes again
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
@@ -258,6 +256,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 print("adding sublayer")
                 self.cameraImage.layer.addSublayer(self.previewLayer!)
                 self.viewDidLayoutSubviews()
+                
+                dispatch_async(self.cameraQueue, { () -> Void in
+                    
+                    self.captureSession.startRunning()
+                })
             }
             self.firstTime = false
         }
@@ -355,9 +358,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func flashButtonPressed(sender: AnyObject) {
         
-        //Toggle the flash variable
+        
         print("Toggling flash!")
-        flashToggle = !flashToggle
+        //Turn on torch if flash is on
+        toggleTorchMode()
         
         //Get configuration lock on device
         do {
@@ -366,7 +370,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         
         //Configure flash according to toggle
-        if flashToggle {
+        if !captureDevice!.torchActive {
             
             print("Flash is on")
             flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
@@ -513,9 +517,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             self.flashButton.hidden = true
             self.cameraSwitchButton.hidden = true
             
-            //Turn on torch if flash is on
-            toggleTorchMode()
-            
             //Set path for video
             let url = NSURL(fileURLWithPath: videoPath)
             
@@ -551,9 +552,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         movieFileOutput.stopRecording()
         captureSession.stopRunning()
         captureShape.stopRecording()
-        
-        //Turn off torch if it was turned on
-        toggleTorchMode()
         
         //Change elements on screen
         self.backButton.hidden = true
@@ -600,7 +598,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func toggleTorchMode() {
         
         //Toggle torch mode if user wants flash and if device has flash
-        if flashToggle && captureDevice!.hasFlash {
+        if captureDevice!.hasTorch {
             
             do {
                 try captureDevice!.lockForConfiguration()
@@ -929,24 +927,24 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             print("Locking for shifting focus")
             try captureDevice!.lockForConfiguration()
             
-            if captureDevice!.isFocusModeSupported(AVCaptureFocusMode.AutoFocus) {
+            if captureDevice!.isFocusModeSupported(AVCaptureFocusMode.ContinuousAutoFocus) {
                 
                 print("Auto focus supported")
-                captureDevice!.focusMode = AVCaptureFocusMode.AutoFocus
                 captureDevice!.focusPointOfInterest = focusPoint
+                captureDevice!.focusMode = AVCaptureFocusMode.ContinuousAutoFocus
             }
             
-            if captureDevice!.isExposureModeSupported(AVCaptureExposureMode.AutoExpose) {
+            if captureDevice!.isExposureModeSupported(AVCaptureExposureMode.ContinuousAutoExposure) {
                 
                 print("Auto exposure supported")
-                captureDevice!.exposureMode = AVCaptureExposureMode.AutoExpose
                 captureDevice!.exposurePointOfInterest = focusPoint
+                captureDevice!.exposureMode = AVCaptureExposureMode.ContinuousAutoExposure
             }
             
-            if captureDevice!.isWhiteBalanceModeSupported(AVCaptureWhiteBalanceMode.AutoWhiteBalance) {
+            if captureDevice!.isWhiteBalanceModeSupported(AVCaptureWhiteBalanceMode.ContinuousAutoWhiteBalance) {
                 
                 print("Auto white balance supported")
-                captureDevice!.whiteBalanceMode = AVCaptureWhiteBalanceMode.AutoWhiteBalance
+                captureDevice!.whiteBalanceMode = AVCaptureWhiteBalanceMode.ContinuousAutoWhiteBalance
             }
             
             captureDevice!.unlockForConfiguration()

@@ -42,9 +42,12 @@ class MapController: UIViewController, MKMapViewDelegate {
         super.viewDidAppear(true)
         
         //Load the user list and annotations onto the map
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+        if !activityIndicator.isAnimating() {
             
-            self.loadUserList()
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                
+                self.loadUserList()
+            }
         }
     }
     

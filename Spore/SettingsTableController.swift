@@ -144,7 +144,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         
         if userCountry == "us" {
             
-            if userState != "" {
+            if userState != "" &&  userState != "Unknown" {
                 
                 if userState.characters.count == 2 {
                     
@@ -155,14 +155,14 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
                     text = userState + ", " + countryTable.getCountryName(userCountry)
                 }
             }
-            else if userCity != "" {
+            else if userCity != "" && userCity != "Unknown" {
                 
                 text = userCity + ", " + countryTable.getCountryName(userCountry)
             }
         }
         else {
             
-            if userCity != "" {
+            if userCity != "" &&  userCity != "Unknown" {
                 
                 text = userCity + ", " + countryTable.getCountryName(userCountry)
             }

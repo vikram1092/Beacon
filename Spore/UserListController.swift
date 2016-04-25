@@ -49,10 +49,15 @@ class UserListController: UITableViewController {
     }
     
     
+    override func viewWillAppear(animated: Bool) {
+        
+    }
+    
     override func viewDidAppear(animated: Bool) {
         
         //Run like usual
         super.viewDidAppear(true)
+        
         
         //Retreive user defaults
         getUserDefaults()
@@ -386,7 +391,7 @@ class UserListController: UITableViewController {
         //let color = userList[userListLength - indexPath.row]["tableColor"] as! String
         //imageBackground.changeBackgroundColor(getTableColor(color))
         
-        
+        /*
         imageBackground.layer.cornerRadius = imageBackground.frame.size.width/2
         photoView.image = nil
         
@@ -447,7 +452,7 @@ class UserListController: UITableViewController {
                 }
             })
         }
-        
+*/
         
         //Declare geographic data
         let country = countryTable.getCountryName(countryCode!)
@@ -875,7 +880,7 @@ class UserListController: UITableViewController {
     
     internal func detectPan(recognizer: UIPanGestureRecognizer) {
         
-        
+        //Check if view is the Country Background class
         countryObject = recognizer.view!
         let translation = recognizer.translationInView(recognizer.view!.superview)
         let cell = recognizer.view!.superview!.superview as! UITableViewCell
@@ -937,6 +942,7 @@ class UserListController: UITableViewController {
                 
                 //Move object first
                 self.countryObject.center.x = self.countryCenter.x
+                //self.countryObject.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI / 2.0))
                 
                 
                 //Since content view is the direct subview layer, we have to first go into that
@@ -962,6 +968,7 @@ class UserListController: UITableViewController {
         default:
             print("default")
             countryObject.center.x = translation.x + countryCenter.x
+            //countryObject.transform = CGAffineTransformMakeRotation( (translation.x / (countryObject.bounds.height/2)) + CGFloat(-M_PI / 2.0))
             
         }
     }

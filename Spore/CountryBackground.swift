@@ -45,12 +45,21 @@ class CountryBackground: UIView {
     internal func setProgress(progress: Float) {
         
         
-        progressView.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        progressView.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
+        
+        /*
         progressView.fillColor = UIColor.clearColor().CGColor
         progressView.strokeColor = progressLayerColor
         progressView.lineWidth = 7
         progressView.strokeStart = 1.0 - CGFloat(progress)
+        progressView.strokeEnd = 1.0*/
+        
+        progressView.fillColor = UIColor.clearColor().CGColor
+        progressView.strokeColor = progressLayerColor
+        progressView.lineWidth = 2
+        progressView.strokeStart = 1.0 - CGFloat(progress)
         progressView.strokeEnd = 1.0
+        
         
         self.layer.addSublayer(progressView)
     }
