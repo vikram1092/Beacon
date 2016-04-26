@@ -53,6 +53,7 @@ class UserListController: UITableViewController {
         
     }
     
+    
     override func viewDidAppear(animated: Bool) {
         
         //Run like usual
@@ -311,9 +312,6 @@ class UserListController: UITableViewController {
                             photoObject["receivedLongitude"] = self.userLongitude
                         }
                         
-                        //Local variables for table color
-                        photoObject["tableColor"] = self.getTableColorName(self.userList.count + tempList.count + 1)
-                        
                         //Add object to userList
                         tempList.append(photoObject)
                         print("userList count: " + String(self.userList.count))
@@ -376,10 +374,7 @@ class UserListController: UITableViewController {
         let subTitleView = cell.viewWithTag(2) as! UILabel
         let imageView = cell.viewWithTag(5) as! UIImageView
         let imageBackground = cell.viewWithTag(6) as! CountryBackground
-        let photoView = cell.viewWithTag(7) as! UIImageView
         let slideIndicator = cell.viewWithTag(3) as! UIImageView
-        
-        var moviePlayer = AVPlayerLayer()
         
         let userListLength = userList.count - 1
         let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
@@ -1005,75 +1000,7 @@ class UserListController: UITableViewController {
         }
     }
     
-    
-    internal func getTableColorName(number: Int) -> String {
         
-        let divisor = 3
-        
-        if number % divisor == 0 {
-            //Return PURPLE
-            return "purple"
-        }
-        else if number % divisor == 1 {
-            
-            //Return RED
-            return "red"
-        }
-        else if number % divisor == 2 {
-            
-            //Return BLUE
-            return "blue"
-        }
-        else if number % divisor == 3 {
-            
-            //Return ORANGE
-            return "orange"
-        }
-        else if number % divisor == 4 {
-            
-            //Return GREEN
-            return "green"
-        }
-        
-        
-        return "black"
-    }
-    
-    
-    internal func getTableColor(color: String) -> CGColor {
-        
-        if color == "purple" {
-            
-            //Return PURPLE
-            return UIColor(red: 37.0/255.0, green: 40.0/255.0, blue: 57.0/255.0, alpha: 1.0).CGColor
-        }
-        else if color == "red" {
-            
-            //Return RED
-            return UIColor(red: 181.0/255.0, green: 181.0/255.0, blue: 183.0/255.0, alpha: 1.0).CGColor
-        }
-        else if color == "blue" {
-            
-            //Return BLUE
-            return UIColor(red: 48.0/255.0, green: 97.0/255.0, blue: 173.0/255.0, alpha: 1.0).CGColor
-        }
-        else if color == "orange" {
-            
-            //Return ORANGE
-            return UIColor(red: 255.0/255.0, green: 143.0/255.0, blue: 220.0/255.0, alpha: 1.0).CGColor
-        }
-        else if color == "green" {
-            
-            //Return GREEN
-            return UIColor(red: 127.0/255.0, green: 226.0/255.0, blue: 170.0/255.0, alpha: 1.0).CGColor
-        }
-        
-        //Return BLACK
-        return UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5).CGColor
-        
-    }
-    
-    
     internal func withinTime(date: NSDate) -> BooleanLiteralType {
         
         //Get calendar and current date, compare it to given date

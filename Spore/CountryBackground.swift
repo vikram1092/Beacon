@@ -20,7 +20,7 @@ class CountryBackground: UIView {
     var backgroundLayerColor = UIColor(red: 248.0/255.0, green: 95.0/255.0, blue: 96.0/255.0, alpha: 1).CGColor
     //var progressLayerColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
     var progressLayerColor = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1).CGColor
-
+    
     
     required init?(coder aDecoder: NSCoder) {
         
@@ -56,9 +56,10 @@ class CountryBackground: UIView {
         
         progressView.fillColor = UIColor.clearColor().CGColor
         progressView.strokeColor = progressLayerColor
-        progressView.lineWidth = 2
+        progressView.lineWidth = 2.5
         progressView.strokeStart = 1.0 - CGFloat(progress)
         progressView.strokeEnd = 1.0
+        progressView.lineCap = kCALineCapRound
         
         
         self.layer.addSublayer(progressView)

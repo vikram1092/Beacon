@@ -15,14 +15,14 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="j4R-Qe-UN6" customClass="Line" customModule="Spore" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="20" y="211" width="512" height="65"/>
+                                <rect key="frame" x="20" y="324" width="560" height="65"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="65" id="qaI-mS-GiI"/>
                                 </constraints>
@@ -41,7 +41,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="177" y="359" width="198" height="45"/>
+                                <rect key="frame" x="201" y="472" width="198" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="9Eb-Ax-Ey2"/>
                                     <constraint firstAttribute="width" constant="198" id="paV-Ez-v9A"/>
@@ -49,7 +49,7 @@
                                 <state key="normal" title="Button"/>
                             </button>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
-                                <rect key="frame" x="144" y="75" width="265" height="115"/>
+                                <rect key="frame" x="168" y="75" width="265" height="115"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="115" id="hwy-79-fj2"/>
                                     <constraint firstAttribute="width" constant="265" id="nms-e5-Qmk"/>
@@ -209,16 +209,6 @@
                                         <view tag="6" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZG5-GW-eje" customClass="CountryBackground" customModule="Spore" customModuleProvider="target">
                                             <rect key="frame" x="13" y="8" width="85" height="85"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" tag="7" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fFM-i6-52F">
-                                                    <rect key="frame" x="0.0" y="0.0" width="85" height="85"/>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ban-uA-QGc">
-                                                    <rect key="frame" x="0.0" y="0.0" width="85" height="85"/>
-                                                    <color key="backgroundColor" red="0.99607843139999996" green="0.79215686269999996" blue="0.086274509799999996" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <imageView tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
                                                     <rect key="frame" x="13" y="13" width="59" height="59"/>
                                                     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -231,12 +221,8 @@
                                             <color key="backgroundColor" red="0.97254901959999995" green="0.37254901959999998" blue="0.37647058820000001" alpha="1" colorSpace="calibratedRGB"/>
                                             <gestureRecognizers/>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="fFM-i6-52F" secondAttribute="trailing" id="9yi-J9-y7I"/>
                                                 <constraint firstItem="Cbp-co-DR1" firstAttribute="top" secondItem="ZG5-GW-eje" secondAttribute="top" constant="13" id="IHS-BR-Tox"/>
-                                                <constraint firstItem="fFM-i6-52F" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="leading" id="KWc-z8-qfr"/>
                                                 <constraint firstAttribute="height" constant="85" id="PR6-qv-qq2"/>
-                                                <constraint firstItem="fFM-i6-52F" firstAttribute="top" secondItem="ZG5-GW-eje" secondAttribute="top" id="avb-P9-amC"/>
-                                                <constraint firstAttribute="bottom" secondItem="fFM-i6-52F" secondAttribute="bottom" id="o1F-77-jgV"/>
                                                 <constraint firstAttribute="width" constant="85" id="zIv-jr-Gr0"/>
                                                 <constraint firstItem="Cbp-co-DR1" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="leading" constant="13" id="zdh-gw-ina"/>
                                             </constraints>
@@ -724,6 +710,7 @@
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="hEz-In-oDB" appends="YES" id="2HL-pe-KRX"/>
                                     <outletCollection property="gestureRecognizers" destination="rtF-n5-6es" appends="YES" id="uxM-sU-ETs"/>
+                                    <outletCollection property="gestureRecognizers" destination="lys-UW-y2P" appends="YES" id="uuJ-RV-00n"/>
                                 </connections>
                             </imageView>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6kZ-YB-AMf">
@@ -875,6 +862,11 @@
                         <action selector="cameraTapped:" destination="GJW-g9-4yK" id="oXO-7H-ESc"/>
                     </connections>
                 </tapGestureRecognizer>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="lys-UW-y2P" userLabel="Switch Camera Recognizer">
+                    <connections>
+                        <action selector="switchCamera:" destination="GJW-g9-4yK" id="4iU-IE-Sce"/>
+                    </connections>
+                </tapGestureRecognizer>
                 <tapGestureRecognizer id="B2V-Ko-uyR" userLabel="Photo Recognizer">
                     <connections>
                         <action selector="takePhoto:" destination="GJW-g9-4yK" id="Wik-bZ-mzi"/>
@@ -902,17 +894,17 @@
                         <viewControllerLayoutGuide type="bottom" id="ODD-Ld-2eC"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="v8w-03-VWT">
-                        <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="dnc-g5-sLL">
-                                <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <connections>
                                     <segue destination="Z7Z-K5-cIg" kind="embed" identifier="SnapToTabBarSegue" id="pL9-qY-Oyy"/>
                                 </connections>
                             </containerView>
                             <imageView alpha="0.0" tag="2" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5nW-Kt-8r7" customClass="PFImageView">
-                                <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="xwu-NH-Lgk" appends="YES" id="5cY-B6-NJz"/>
@@ -920,7 +912,7 @@
                                 </connections>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FGc-5A-dxM" customClass="SnapTimer" customModule="Spore" customModuleProvider="target">
-                                <rect key="frame" x="512" y="40" width="20" height="20"/>
+                                <rect key="frame" x="560" y="40" width="20" height="20"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="5zB-tz-PXq"/>
@@ -1083,6 +1075,6 @@
         <image name="cameraButton" width="44" height="44"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="nRp-o4-b8z"/>
+        <segue reference="8ds-TT-rzm"/>
     </inferredMetricsTieBreakers>
 </document>

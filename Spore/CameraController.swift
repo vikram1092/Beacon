@@ -147,13 +147,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         }
         else if !firstTime && !captureSession.running && captureDevice != nil {
             
-            //Start camera session that's already set up
+            //Start camera session that's already set up in serial queue
             dispatch_async(cameraQueue, { () -> Void in
                 
-                self.captureSession.startRunning()
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                //Dispatch to high priority queue and monitor from camera queue
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                     
-                    //self.cameraImage.layer.addSublayer(self.previewLayer!)
+                    self.captureSession.startRunning()
                 })
             })
         }
@@ -207,9 +207,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             //If camera is found, begin session
             if captureDevice != nil {
                 
+                //Dispatch to serial queue dedicated to camera
                 dispatch_async(cameraQueue, { () -> Void in
                     
-                    self.beginSession()
+                    //Dispatch to high priority queue and monitor from camera queue
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
+                        
+                        self.beginSession()
+                    })
                 })
             }
             
@@ -262,6 +267,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     self.captureSession.startRunning()
                 })
             }
+            
             self.firstTime = false
         }
     }
@@ -404,82 +410,89 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func switchCamera(sender: AnyObject) {
         
-        
-        dispatch_async(cameraQueue, { () -> Void in
+        if captureSession.running {
             
-            self.captureSession.stopRunning()
-            
-            //Reconfigure all parameters & stop current session
-            let devices = AVCaptureDevice.devices()
-            let position = self.captureDevice!.position
-            
-            //Remove camera input from session
-            let inputs = self.captureSession.inputs
-            print(inputs.count)
-            self.captureSession.beginConfiguration()
-            self.captureSession.removeInput(inputs[1] as! AVCaptureInput)
-        
-            for input in inputs {
+            //Dispatch to camera dedicated serial queue
+            dispatch_async(cameraQueue, { () -> Void in
                 
-                let deviceInput = input as! AVCaptureDeviceInput
-                if deviceInput.device.hasMediaType(AVMediaTypeVideo) {
+                //Dispatch to high priority queue and monitor from serial queue
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                     
-                    self.captureSession.removeInput(deviceInput)
-                }
-            }
-            
-            // Loop through all the capture devices on this phone
-            for device in devices {
-                // Make sure this particular device supports video
-                if (device.hasMediaType(AVMediaTypeVideo)) {
-                    // Finally check the position and confirm we've got the OTHER camera
-                    if(device.position == AVCaptureDevicePosition.Back && position == AVCaptureDevicePosition.Front) {
+                    self.captureSession.stopRunning()
+                    
+                    //Reconfigure all parameters & stop current session
+                    let devices = AVCaptureDevice.devices()
+                    let position = self.captureDevice!.position
+                    
+                    //Remove camera input from session
+                    let inputs = self.captureSession.inputs
+                    print(inputs.count)
+                    self.captureSession.beginConfiguration()
+                    self.captureSession.removeInput(inputs[1] as! AVCaptureInput)
+                    
+                    for input in inputs {
                         
-                        self.captureDevice = device as? AVCaptureDevice
-                        
-                        //Enable flash
-                        self.flashButton.enabled = true
-                        
-                        //Configure device modes
-                        self.initializeCaptureDevice()
-                        
-                        break
+                        let deviceInput = input as! AVCaptureDeviceInput
+                        if deviceInput.device.hasMediaType(AVMediaTypeVideo) {
+                            
+                            self.captureSession.removeInput(deviceInput)
+                        }
                     }
-                    else if(device.position == AVCaptureDevicePosition.Front && position == AVCaptureDevicePosition.Back) {
-                        
-                        self.captureDevice = device as? AVCaptureDevice
-                        
-                        //Disable flash
-                        self.flashButton.enabled = false
-                        
-                        //Configure device modes
-                        self.initializeCaptureDevice()
-                        
-                        break
+                    
+                    // Loop through all the capture devices on this phone
+                    for device in devices {
+                        // Make sure this particular device supports video
+                        if (device.hasMediaType(AVMediaTypeVideo)) {
+                            // Finally check the position and confirm we've got the OTHER camera
+                            if(device.position == AVCaptureDevicePosition.Back && position == AVCaptureDevicePosition.Front) {
+                                
+                                self.captureDevice = device as? AVCaptureDevice
+                                
+                                //Enable flash
+                                self.flashButton.enabled = true
+                                
+                                //Configure device modes
+                                self.initializeCaptureDevice()
+                                
+                                break
+                            }
+                            else if(device.position == AVCaptureDevicePosition.Front && position == AVCaptureDevicePosition.Back) {
+                                
+                                self.captureDevice = device as? AVCaptureDevice
+                                
+                                //Disable flash
+                                self.flashButton.enabled = false
+                                
+                                //Configure device modes
+                                self.initializeCaptureDevice()
+                                
+                                break
+                            }
+                        }
                     }
-                }
-            }
-            
-            //Add input of new device to the camera
-            do {
-                
-                let newDevice = try AVCaptureDeviceInput(device: self.captureDevice)
-                
-                if self.captureSession.canAddInput(newDevice) {
                     
-                    self.captureSession.addInput(newDevice)
+                    //Add input of new device to the camera
+                    do {
+                        
+                        let newDevice = try AVCaptureDeviceInput(device: self.captureDevice)
+                        
+                        if self.captureSession.canAddInput(newDevice) {
+                            
+                            self.captureSession.addInput(newDevice)
+                            
+                        }
+                        
+                    }
+                    catch let error as NSError { print("Error removing input: \(error)") }
                     
-                }
-                
-            }
-            catch let error as NSError { print("Error removing input: \(error)") }
-            
-            
-            //Commit configuration of session and begin camera session again with the new camera
-            self.captureSession.commitConfiguration()
-            self.captureSession.startRunning()
-            
-        })
+                    
+                    //Commit configuration of session and begin camera session again with the new camera
+                    self.captureSession.commitConfiguration()
+                    self.captureSession.startRunning()
+                    
+                })
+            })
+        }
     }
     
     
