@@ -6,7 +6,7 @@
 //  Copyright © 2016 Vikram Ramkumar. All rights reserved.
 //
 
-
+import Bolts
 import UIKit
 import Parse
 import ParseUI
@@ -19,7 +19,6 @@ import FBSDKLoginKit
 class UserListController: UITableViewController {
     
     var initialRowLoad = false
-    var viewLoaded = false
     var userList = Array<PFObject>()
     var userName = ""
     var userEmail = ""
@@ -32,7 +31,11 @@ class UserListController: UITableViewController {
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
     var countryObject = UIView()
+    
+    let defaultColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
+    let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
     let fileManager = NSFileManager.defaultManager()
+    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
     let tableVideoPrefix = NSTemporaryDirectory() + "tableVideo_"
     let tableVideoBounds = CGRect(x: 0, y: 0, width: 85, height: 85)
@@ -51,6 +54,8 @@ class UserListController: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         
+        //Retreive user defaults
+        getUserDefaults()
     }
     
     
@@ -58,10 +63,6 @@ class UserListController: UITableViewController {
         
         //Run like usual
         super.viewDidAppear(true)
-        
-        
-        //Retreive user defaults
-        getUserDefaults()
         
         //Check user login status
         print("Checking user login status")
@@ -79,20 +80,12 @@ class UserListController: UITableViewController {
                 print("usertoReceivePhotos: " + String(userToReceivePhotos))
             }
             
-            //Load user list if it hasn't loaded, or else update what's loaded
-            print("viewDidAppear: " + String(viewLoaded))
-            if viewLoaded {
-                updateUserList(false)
-            }
-            else {
-                
-                //Turn on table animations
-                print("Turning on animations")
-                initialRowLoad = true
+            //Load user list
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                 
                 //Load user list
-                loadUserList()
-            }
+                self.loadUserList()
+            })
         }
         else {
             segueToLogin()
@@ -129,6 +122,9 @@ class UserListController: UITableViewController {
                     
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
+                else {
+                    print("User is not banned!")
+                }
             }
         }
     }
@@ -146,6 +142,8 @@ class UserListController: UITableViewController {
             self.userDefaults.setObject(nil, forKey: "userName")
             self.userDefaults.setObject(nil, forKey: "userEmail")
             self.userDefaults.setObject(nil, forKey: "userCountry")
+            self.userDefaults.setObject(nil, forKey: "userState")
+            self.userDefaults.setObject(nil, forKey: "userCity")
         }
     }
     
@@ -159,15 +157,15 @@ class UserListController: UITableViewController {
             userEmail = userDefaults.objectForKey("userEmail") as! String
         }
         
+        if userDefaults.objectForKey("userLatitude") != nil {
+            
+            userLatitude = userDefaults.objectForKey("userLatitude") as! Double
+            userLongitude = userDefaults.objectForKey("userLongitude") as! Double
+        }
+        
         if userDefaults.objectForKey("userCountry") != nil {
             
             userCountry = userDefaults.objectForKey("userCountry") as! String
-        }
-        
-        if userDefaults.objectForKey("receivedLatitude") != nil {
-            
-            userLatitude = userDefaults.objectForKey("receivedLatitude") as! Double
-            userLongitude = userDefaults.objectForKey("receivedLongitude") as! Double
         }
         
         if userDefaults.objectForKey("userState") != nil {
@@ -187,9 +185,12 @@ class UserListController: UITableViewController {
         //Clean old photos to save local space
         for object in userList {
             
-            if(!withinTime(object.objectForKey("receivedAt") as! NSDate)) {
+            if object.objectForKey("receivedAt") != nil {
                 
-                object.removeObjectForKey("photo")
+                if(!withinTime(object.objectForKey("receivedAt") as! NSDate)) {
+                    
+                    object.removeObjectForKey("photo")
+                }
             }
         }
         
@@ -204,22 +205,20 @@ class UserListController: UITableViewController {
         //Retreive local user photo list
         let query = PFQuery(className: "photo")
         query.fromLocalDatastore()
-        query.whereKey("receivedBy", equalTo: userEmail)
+        query.whereKey("localTag", equalTo: userEmail)
         
         print("Querying localuserList")
-        query.addAscendingOrder("receivedAt")
+        query.addAscendingOrder("localCreationTag")
         query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
             
             if retreivalError != nil {
                 
                 print("Problem retreiving list: " + retreivalError!.description)
             }
-            else if objects!.count > 0 {
+            else if objects!.count > 0 && objects!.count != self.userList.count {
                 
-                //Save list of objects & reload table
+                //Changes have taken place in local datastore, reload table and send unsent photos
                 self.userList = objects!
-                self.viewLoaded = true
-                print("viewLoad: " + String(self.viewLoaded))
                 
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
@@ -227,7 +226,117 @@ class UserListController: UITableViewController {
                     print("Reloading table after local retreival")
                     self.table.reloadData()
                     print("Adding new photos")
-                    self.updateUserList(false)
+                    
+                    /*
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                        
+                        self.sendUnsentPhotos()
+                    })*/
+                })
+            }
+            else {
+                
+                /*
+                //Nothing has changed, send unsent photos
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                    
+                    //self.sendUnsentPhotos()
+                })*/
+            }
+        }
+    }
+    
+    
+    internal func sendUnsentPhotos() {
+        
+        for photoObj in self.userList {
+            
+            if photoObj["sentBy"] as! String == self.userEmail && photoObj["receivedBy"] == nil {
+                
+                //Send unsent photos and update user list
+                self.sendUnsentPhoto(photoObj, updateUserList: true)
+            }
+        }
+    }
+    
+    
+    internal func sendUnsentPhoto(photoObj: PFObject, updateUserList: Bool) {
+        
+        
+        //Declare necessary variables
+        let indexPath = NSIndexPath(forRow: userList.count - 1 - userList.indexOf(photoObj)!
+            , inSection: 0)
+        let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+        print("cell to send from: \(cell)")
+        print("photoObject to send: \(photoObj)")
+        let activityIndicator = cell?.viewWithTag(4) as? UIActivityIndicatorView
+        let subTitleView = cell?.viewWithTag(2) as? UILabel
+        
+        //Update cell to let user know photo is sending
+        if cell != nil {
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            
+                subTitleView!.text = "Sending..."
+                activityIndicator!.startAnimating()
+            })
+        }
+        
+        //Create media file for object before sending since local datastore does not persist PFFiles
+        let filePath = documentsDirectory + (photoObj.objectForKey("filePath") as! String)
+        photoObj["photo"] = PFFile(data: NSData(contentsOfFile: filePath)!)
+        
+        //Save photo object
+        photoObj.saveInBackgroundWithBlock { (saved, error) -> Void in
+            
+            if error != nil {
+                print("Error saving object: \(error)")
+                
+                //Let user know
+                if cell != nil {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        subTitleView!.text = "Sending failed"
+                        activityIndicator!.stopAnimating()
+                    })
+                }
+            }
+            else if saved {
+                
+                //If sent, remove locally and update with new photo
+                print("Removing sent object: ")
+                photoObj.unpinInBackground()
+                self.userList.removeAtIndex(self.userList.indexOf(photoObj)!)
+                self.clearLocalFile(filePath)
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    //Update user photo variables
+                    self.updateUserPhotos()
+                    
+                    if updateUserList {
+                        
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                            
+                            self.tableView.reloadData()
+                            self.updateUserList(false)
+                        })
+                    }
+                    else {
+                        self.tableView.reloadData()
+                    }
+                })
+            }
+            else if !saved {
+                
+                //If sending fails, let user know
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    if cell != nil {
+                        if subTitleView!.text == "Sending..." {
+                            subTitleView!.text = "Sending failed"
+                        }
+                        activityIndicator!.stopAnimating()
+                    }
                 })
             }
         }
@@ -235,6 +344,7 @@ class UserListController: UITableViewController {
     
     
     internal func updateUserList(sameCountry: Bool) {
+        
         
         //Initialize for subtracting from userToReceivePhotos list
         var userReceivedPhotos = 0
@@ -244,6 +354,7 @@ class UserListController: UITableViewController {
             
             //Get unsent photos in the database equal to how many the user gets
             let query = PFQuery(className:"photo")
+            query.whereKey("sentBy", notEqualTo: userEmail)
             query.whereKeyDoesNotExist("receivedBy")
             
             if !sameCountry {
@@ -251,7 +362,6 @@ class UserListController: UITableViewController {
                 print("Adding country restriction")
                 query.whereKey("countryCode", notEqualTo: userCountry)
             }
-            //query.whereKey("sentBy", notEqualTo: userEmail)
             query.limit = userToReceivePhotos
             
             //Query with above conditions
@@ -296,6 +406,11 @@ class UserListController: UITableViewController {
                         photoObject["receivedBy"] = self.userEmail
                         photoObject["receivedCountry"] = self.userCountry
                         
+                        //Add local parameters
+                        photoObject["localTag"] = self.userEmail
+                        photoObject["localCreationTag"] = NSDate()
+                        
+                        //Add geographic details
                         if self.userState != "" {
                             
                             photoObject["receivedState"] = self.userState
@@ -306,7 +421,7 @@ class UserListController: UITableViewController {
                             photoObject["receivedCity"] = self.userCity
                         }
                         
-                        if self.userDefaults.objectForKey("receivedLatitude") != nil   {
+                        if self.userDefaults.objectForKey("userLatitude") != nil   {
                             
                             photoObject["receivedLatitude"] = self.userLatitude
                             photoObject["receivedLongitude"] = self.userLongitude
@@ -314,12 +429,22 @@ class UserListController: UITableViewController {
                         
                         //Add object to userList
                         tempList.append(photoObject)
-                        print("userList count: " + String(self.userList.count))
+                        print("tempList count: " + String(tempList.count))
                         
                         //Save object to database
                         print("Saving object!")
-                        photoObject.saveInBackground()
-                        print("Saved object!")
+                        photoObject.saveInBackgroundWithBlock({ (saved, error) -> Void in
+                            
+                            if error != nil {
+                                print("Error saving object to DB: \(error)")
+                            }
+                            else if saved {
+                                print("Saved object!")
+                            }
+                            else if !saved {
+                                print("Photo not saved")
+                            }
+                        })
                         print("userList count: " + String(self.userList.count))
                     }
                     
@@ -346,21 +471,33 @@ class UserListController: UITableViewController {
                         self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
                     })
                 }
+                
+                
+                //Stop refreshing
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    self.refreshControl!.endRefreshing()
+                })
             })
         }
-        
-        //Stop refreshing
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        else {
             
-            self.refreshControl!.endRefreshing()
-        })
+            //Stop refreshing
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                self.refreshControl!.endRefreshing()
+            })
+        }
     }
     
     
     @IBAction func refreshControl(sender: AnyObject) {
         
         //Refresh data and reload table within that function
-        updateUserList(false)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+            
+            self.updateUserList(false)
+        }
     }
     
     
@@ -377,8 +514,7 @@ class UserListController: UITableViewController {
         let slideIndicator = cell.viewWithTag(3) as! UIImageView
         
         let userListLength = userList.count - 1
-        let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
-        let timeString = timeSinceDate(date, numericDates: true)
+        let date = userList[userListLength - indexPath.row]["receivedAt"] as? NSDate
         let countryCode = userList[userListLength - indexPath.row]["countryCode"] as? String
         
         
@@ -456,6 +592,9 @@ class UserListController: UITableViewController {
         
         //Configure text & map image
         //Account for states if country is USA
+        
+        imageView.image = countryTable.getCountryImage(countryCode!).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        
         if state != nil && countryCode == "us" {
             
             //State variable is a state code
@@ -464,66 +603,82 @@ class UserListController: UITableViewController {
                 titleView.text = countryTable.getStateName(state!.lowercaseString) + ", " + country
                 imageView.image = countryTable.getStateImage(state!.lowercaseString).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
             }
-                //State variable is not a state code
+            //State variable is not a state code
             else {
                 
                 let stateCode = countryTable.getStateCode(state!)
-                if stateCode == "Unknown" {
+                if stateCode != "Unknown" {
                     
-                    titleView.text = country
+                    titleView.text = state! + ", " + country
+                    imageView.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                }
+                else if city != nil {
+                    
+                    titleView.text = city! + ", " + country
                 }
                 else {
                     
-                    titleView.text = state! + ", " + country
+                    titleView.text = country
                 }
                 
-                imageView.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
             }
         }
-            //Check if city variable is present
-        else if city != nil {
+        //Check if city variable is present
+        else if city != nil && city != "Unknown" {
             
             titleView.text = city! + ", " + country
-            imageView.image = countryTable.getCountryImage(countryCode!).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         }
             //Configure for only country variable
         else {
             
             titleView.text = country
-            imageView.image = countryTable.getCountryImage(countryCode!).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         }
+        
         
         //Add the country image to its background
-        //imageBackground.addSubview(imageView)
-        imageBackground.bringSubviewToFront(imageView)
+        //imageBackground.bringSubviewToFront(imageView)
         
-        
-        
-        //Configure image sliding and action
-        let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
-        imageBackground.addGestureRecognizer(pan)
-        
-        
-        
-        //Configure time left for photo
-        if withinTime(date) {
-            imageBackground.setProgress(getTimeFraction(date))
+        if userList[userListLength - indexPath.row]["sentBy"] as! String == userEmail && userList[userListLength - indexPath.row]["receivedBy"] == nil {
+            
+            //Set background color
+            imageBackground.changeBackgroundColor(sendingColor)
+            imageBackground.setProgress(0.6)
+            
+            //Configure subtext
+            subTitleView.text = "Ready to send"
+            
         }
         else {
-            imageBackground.noProgress()
+            
+            //Set background color
+            imageBackground.changeBackgroundColor(defaultColor)
+            
+            //Get time string
+            let timeString = timeSinceDate(date!, numericDates: true)
+            
+            //Configure image sliding and action
+            let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
+            imageBackground.addGestureRecognizer(pan)
+            
+            
+            //Configure time left for photo
+            if withinTime(date!) {
+                imageBackground.setProgress(getTimeFraction(date!))
+            }
+            else {
+                imageBackground.noProgress()
+            }
+            
+            
+            //Configure subtext
+            subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
+            subTitleView.text = String(timeString)
+            
+            
+            //Configure slide indicator
+            slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            slideIndicator.tintColor = UIColor.lightGrayColor()
         }
-        
-        
-        //Configure subtext
-        subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
-        subTitleView.text = String(timeString)
-        
-        
-        
-        //Configure slide indicator
-        slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        slideIndicator.tintColor = UIColor.lightGrayColor()
-        
         
         return cell
     }
@@ -558,13 +713,19 @@ class UserListController: UITableViewController {
     internal override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
         let userListLength = self.userList.count - 1
-        let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
+        let toBeSent = userList[userListLength - indexPath.row]["sentBy"] as! String == userEmail && userList[userListLength - indexPath.row]["receivedBy"] == nil
         
-        if withinTime(date) {
+        
+        //If photo is not to be sent, check if expired
+        if !toBeSent {
             
-            return true
+            let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
+            
+            if withinTime(date) {
+                
+                return true
+            }
         }
-        
         return false
     }
     
@@ -614,11 +775,14 @@ class UserListController: UITableViewController {
         
         //Flip index to access correct array element & check time constraint of photos
         let cell = tableView.cellForRowAtIndexPath(indexPath)!
-        let index = userList.count - 1 - indexPath.row
-        let inTime = withinTime(userList[index].objectForKey("receivedAt") as! NSDate)
+        let userListIndex = userList.count - 1 - indexPath.row
         
-        //If photo within time, display photo or video
-        if inTime {
+        //If photo to be sent, send. Else if row is within time, display photo or video. Else, animate
+        if userList[userListIndex]["sentBy"] as! String == userEmail && userList[userListIndex]["receivedBy"] == nil {
+            
+            sendUnsentPhoto(userList[userListIndex], updateUserList: true)
+        }
+        else if withinTime(userList[userListIndex].objectForKey("receivedAt") as! NSDate) {
             
             //Initialize parent VC variables
             let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
@@ -626,13 +790,13 @@ class UserListController: UITableViewController {
             
             //Get video trigger from DB object
             var isVideo = false
-            if userList[index]["isVideo"] != nil {
+            if userList[userListIndex]["isVideo"] != nil {
                 
-                isVideo = userList[index]["isVideo"] as! BooleanLiteralType
+                isVideo = userList[userListIndex]["isVideo"] as! BooleanLiteralType
             }
             
             //Get PFFile
-            let objectToDisplay = userList[index]["photo"] as! PFFile
+            let objectToDisplay = userList[userListIndex]["photo"] as! PFFile
             
             //Start UI animation
             let activity = cell.viewWithTag(4) as! UIActivityIndicatorView
@@ -858,16 +1022,30 @@ class UserListController: UITableViewController {
             }
         })
         
-        clearVideoTempFile()
+        clearLocalFile(videoPath)
     }
     
     
-    internal func clearVideoTempFile() {
+    internal func updateUserPhotos() {
+    
+        self.userToReceivePhotos += 1
+        print("userToReceiveStatus saving..." + String(self.userToReceivePhotos))
+        self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
+        print("Saved userToReceivePhotos")
+    }
+    
+    
+    internal func clearLocalFile(filePath: String) {
         
         do {
-            try fileManager.removeItemAtPath(videoPath)
+            
+            if fileManager.fileExistsAtPath(filePath) {
+                
+                try fileManager.removeItemAtPath(filePath)
+            }
         }
         catch let error as NSError {
+            
             print("Error deleting video: \(error)")
         }
     }

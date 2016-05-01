@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ParseMutableClientConfiguration.localDatastoreEnabled = true
             ParseMutableClientConfiguration.applicationId = "4h5gk62hjg62g2h435igou"
             ParseMutableClientConfiguration.clientKey = "463y6guy53g6piy265huvbu"
-            ParseMutableClientConfiguration.server = "https://spore1210.herokuapp.com/parse"
+            ParseMutableClientConfiguration.server = "https://beacon12.herokuapp.com/parse"
         })
         
         Parse.initializeWithConfiguration(parseConfiguration)
@@ -39,17 +39,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         catch let error as NSError { print("Error setting audio session category \(error)") }
         
-        
-        PFUser.enableAutomaticUser()
-        
+        /*
+        //PFUser.enableAutomaticUser()
+
         let defaultACL = PFACL();
         
-        // If you would like all objects to be private by default, remove this line.
-        defaultACL.publicReadAccess = true
+        //If you would like all objects to be private by default, remove this line.
+        //defaultACL.publicReadAccess = true
         
         PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser: true)
+        */
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
-        
+
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
         

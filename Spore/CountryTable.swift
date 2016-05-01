@@ -15,7 +15,7 @@ class CountryTable {
     
     internal func getCountryImage(countryCode: String) -> UIImage {
         
-        let link  = "Countries/" + countryCode + "/128.png"
+        let link  = "Countries/" + countryCode.lowercaseString + "/128.png"
         
         if let image = UIImage(named: link) {
             
@@ -29,12 +29,12 @@ class CountryTable {
     internal func getCountryName(countryCode: String) -> String {
         
         var countryName = "Unknown"
-        print("Country:" + countryCode)
+        print("Country:" + countryCode.lowercaseString)
         
         //Find country and obtain the 2 digit ISO code
         for country in countryTable {
             
-            if country[1] == countryCode {
+            if country[1] == countryCode.lowercaseString {
                 countryName = country[0]
                 break
             }
@@ -48,12 +48,12 @@ class CountryTable {
         
         
         var stateName = "Unknown"
-        print("State:" + stateCode)
+        print("State:" + stateCode.lowercaseString)
         
         //Find state and obtain name from the 2 digit code
         for state in usaStateTable {
             
-            if state[1] == stateCode {
+            if state[1] == stateCode.lowercaseString {
                 stateName = state[0]
                 break
             }
@@ -67,12 +67,12 @@ class CountryTable {
         
         
         var stateCode = "Unknown"
-        print("State:" + stateCode)
+        print("State:" + stateCode.lowercaseString)
         
         //Find state and obtain name from the 2 digit code
         for state in usaStateTable {
             
-            if state[0] == stateName {
+            if state[0].lowercaseString == stateName.lowercaseString {
                 stateCode = state[1]
                 break
             }
@@ -84,7 +84,7 @@ class CountryTable {
     
     internal func getStateImage(stateCode: String) -> UIImage {
         
-        let link  = "Countries/States of the United States/" + stateCode + "/128.png"
+        let link  = "Countries/States of the United States/" + stateCode.lowercaseString + "/128.png"
         
         if let image = UIImage(named: link) {
             

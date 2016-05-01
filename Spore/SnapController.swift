@@ -140,7 +140,7 @@ class SnapController: UIViewController {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
-        print("Moving image around")
+        print("Touching")
         //snap.superview!.bringSubviewToFront(snap)
         lastLocation = snap.center
         

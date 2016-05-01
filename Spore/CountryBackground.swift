@@ -17,9 +17,8 @@ class CountryBackground: UIView {
     let progressView = CAShapeLayer()
     
     
-    var backgroundLayerColor = UIColor(red: 248.0/255.0, green: 95.0/255.0, blue: 96.0/255.0, alpha: 1).CGColor
-    //var progressLayerColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
-    var progressLayerColor = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1).CGColor
+    var backgroundLayerColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
+    //var progressLayerColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
     
     
     required init?(coder aDecoder: NSCoder) {
@@ -32,30 +31,24 @@ class CountryBackground: UIView {
         self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
         let country = self.viewWithTag(5)
         let photo = self.viewWithTag(7)
+        
+        background.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
+        background.fillColor = self.backgroundColor?.CGColor
+        self.layer.addSublayer(background)
+        
         country?.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
         photo?.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
         self.bringSubviewToFront(country!)
-        
-        background.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        background.fillColor = self.backgroundColor?.CGColor
-        self.layer.mask = background
     }
     
     
     internal func setProgress(progress: Float) {
         
         
-        progressView.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
-        
-        /*
-        progressView.fillColor = UIColor.clearColor().CGColor
-        progressView.strokeColor = progressLayerColor
-        progressView.lineWidth = 7
-        progressView.strokeStart = 1.0 - CGFloat(progress)
-        progressView.strokeEnd = 1.0*/
+        progressView.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         
         progressView.fillColor = UIColor.clearColor().CGColor
-        progressView.strokeColor = progressLayerColor
+        progressView.strokeColor = background.fillColor
         progressView.lineWidth = 2.5
         progressView.strokeStart = 1.0 - CGFloat(progress)
         progressView.strokeEnd = 1.0
@@ -69,6 +62,7 @@ class CountryBackground: UIView {
     internal func changeBackgroundColor(color: CGColor) {
         
         background.fillColor = color
+        progressView.fillColor = color
     }
     
     

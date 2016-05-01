@@ -26,7 +26,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         super.viewDidLoad()
         let image = UIImage(named: "Logo")
         navItem.topItem?.titleView = UIImageView(image: image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate))
-        navItem.topItem?.titleView!.tintColor = UIColor.whiteColor()
+        navItem.topItem?.titleView!.tintColor = UIColor.blackColor()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -45,7 +45,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
         print("Status bar style method - Main Controller")
-        return UIStatusBarStyle.LightContent
+        return UIStatusBarStyle.Default
     }
     
 }

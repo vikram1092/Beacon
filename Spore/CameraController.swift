@@ -43,8 +43,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
+    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
     let videoPath = NSTemporaryDirectory() + "userVideo.mov"
-    let compressedVideoPath = NSTemporaryDirectory() + "userVideoCompressed.mov"
+    let videoFileExtension = ".mov"
+    let imageFileExtension = ".jpg"
     let compressionGroup = dispatch_group_create()
     
     var userLocation = PFGeoPoint()
@@ -682,9 +684,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             if fileManager.fileExistsAtPath(videoPath) {
                 try fileManager.removeItemAtPath(videoPath)
             }
-            if fileManager.fileExistsAtPath(compressedVideoPath){
-                try fileManager.removeItemAtPath(compressedVideoPath)
-            }
         }
         catch let error as NSError {
             
@@ -713,22 +712,22 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             getUserLocation()
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            dispatch_async(cameraQueue, { () -> Void in
                 
-                self.sendPhotoToDatabase()
+                self.savePhotoToList()
             })
         }
         else {
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            dispatch_async(cameraQueue, { () -> Void in
                 
-                self.sendPhotoToDatabase()
+                self.savePhotoToList()
             })
         }
     }
     
     
-    internal func sendPhotoToDatabase() {
+    internal func savePhotoToList() {
         
         
         let photoObject = PFObject(className:"photo")
@@ -740,24 +739,30 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         print(userEmail)
         photoObject["sentBy"] = userEmail
         
+        //Set local parameters
+        photoObject["localTag"] = userEmail
+        photoObject["localCreationTag"] = date
+        
         //Set user's geolocation
         print(String(userLocation.latitude) + ", " + String(userLocation.longitude))
         photoObject["sentFrom"] = self.userLocation
         
-        //Set user's country's code
+        //Set user's geography details
         print(userCountry)
         photoObject["countryCode"] = userCountry
         
-        print(userCity)
+        print(userState)
         if userState != "" {
             
             photoObject["sentState"] = userState
         }
+        print(userCity)
         if userCity != "" {
             
             photoObject["sentCity"] = userCity
         }
         photoObject["spam"] = false
+        
         
         if fileManager.fileExistsAtPath(videoPath) {
             
@@ -776,16 +781,26 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 saveVideoLocally()
             }
             
+            //Declare compressed video path and save it
+            var compressedVideoPathSuffix = "/compressedVideo_" + String(arc4random_uniform(100000)) + videoFileExtension
+            
+            while fileManager.fileExistsAtPath(documentsDirectory + compressedVideoPathSuffix) {
+                compressedVideoPathSuffix = "/compressedVideo_" + String(arc4random_uniform(100000)) + videoFileExtension
+            }
+            
+            photoObject["filePath"] = compressedVideoPathSuffix
+            let compressedVideoPath = documentsDirectory + compressedVideoPathSuffix
+            
             
             dispatch_group_enter(compressionGroup)
             
             //Compress video just taken by user as PFFile
-            self.compressVideoFile(NSURL(fileURLWithPath: self.videoPath), outputURL: NSURL(fileURLWithPath: self.compressedVideoPath), handler: { (session) -> Void in
+            self.compressVideoFile(NSURL(fileURLWithPath: self.videoPath), outputURL: NSURL(fileURLWithPath: compressedVideoPath), handler: { (session) -> Void in
                 
                 print("Reached completion of compression")
                 if session.status == AVAssetExportSessionStatus.Completed
                 {
-                    let compressedData = NSData(contentsOfFile: self.compressedVideoPath)
+                    let compressedData = NSData(contentsOfFile: compressedVideoPath)
                     
                     if compressedData != nil {
                         print("File size after compression: \(Double(compressedData!.length / 1048576)) mb")
@@ -803,23 +818,34 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             })
             
             
-            
             dispatch_group_wait(compressionGroup, DISPATCH_TIME_FOREVER)
             
             
+            print("File exists: \(fileManager.fileExistsAtPath(compressedVideoPath))")
             if fileManager.fileExistsAtPath(compressedVideoPath) {
                 
-                photoObject["photo"] = PFFile(data: NSData(contentsOfFile: compressedVideoPath)!)
                 photoObject["isVideo"] = true
                 clearVideoTempFiles()
-                print("saved video to PFFile")
+                print("saved video to file")
             }
             
         }
         else {
             
-            //Set photo just taken by user as PFFile
-            photoObject["photo"] = PFFile(data: UIImageJPEGRepresentation(self.cameraImage.image!, CGFloat(0.6))!)
+            //Save image to local file
+            var imagePathSuffix = "/image_" + String(arc4random_uniform(100000)) + imageFileExtension
+            
+            while fileManager.fileExistsAtPath(documentsDirectory + imagePathSuffix) {
+                imagePathSuffix = "/image_" + String(arc4random_uniform(100000)) + imageFileExtension
+            }
+            
+            photoObject["filePath"] = imagePathSuffix
+            let imagePath = documentsDirectory + imagePathSuffix
+            let imageData = UIImageJPEGRepresentation(self.cameraImage.image!, CGFloat(0.6))
+            imageData!.writeToFile(imagePath, atomically: true)
+            
+            print("File exists: \(fileManager.fileExistsAtPath(imagePath))")
+            
             photoObject["isVideo"] = false
             
             //Save image to local library
@@ -828,28 +854,26 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             }
         }
         
-        //Send the updated photo object to database
-        photoObject.saveInBackgroundWithBlock {
-            (success: Bool, error: NSError?) -> Void in
-            if (success) {
+        //Save photo object locally
+        photoObject.pinInBackgroundWithBlock { (pinned, error) -> Void in
+            
+            if error != nil {
+                
+                print("Error pinning object: \(error)")
+            }
+            else {
                 
                 //Segue back to table
+                print("Pinned: \(pinned)")
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
                     // The photo has been saved, update user photos
                     print("New photo saved!")
-                    self.updateUserPhotos()
                     
                     self.activityIndicator.stopAnimating()
                     self.closePhoto(self)
                     self.segueToTable()
                 })
-            }
-            else {
-                
-                // There was a problem, check error.description
-                print("Error saving photo")
-                print(error!.description)
             }
         }
     }
@@ -1080,8 +1104,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             //Save user location locally
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
-                self.userDefaults.setObject(self.userLocation.latitude, forKey: "receivedLatitude")
-                self.userDefaults.setObject(self.userLocation.longitude, forKey: "receivedLongitude")
+                self.userDefaults.setObject(self.userLocation.latitude, forKey: "userLatitude")
+                self.userDefaults.setObject(self.userLocation.longitude, forKey: "userLongitude")
                 
                 print(self.userLocation.latitude)
                 print(self.userLocation.longitude)

@@ -38,7 +38,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         getUserDefaults()
         
         //Configure profile picture
-        countryBackground.changeBackgroundColor(UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor)
+        countryBackground.changeBackgroundColor(UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor)
         countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         countryBackground.bringSubviewToFront(countryPicture)
         
@@ -143,37 +143,51 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     
     internal func setUserLocation() {
         
+        
         var text = ""
         
-        if userCountry == "us" {
+        print(userCity + ", " + userState + ", " + userCountry)
+        if userCountry == "us" && userState != "" {
             
-            if userState != "" &&  userState != "Unknown" {
+            if userState.characters.count == 2 {
                 
-                if userState.characters.count == 2 {
+                print(1)
+                text = countryTable.getStateName(userState) + ", " + countryTable.getCountryName(userCountry)
+                countryPicture.image = countryTable.getStateImage(userState).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            }
+            else {
+                
+                print(2)
+                let stateCode = countryTable.getStateCode(userState)
+                if stateCode == "Unknown" {
                     
-                    text = countryTable.getStateName(userState) + ", " + countryTable.getCountryName(userCountry)
+                    text = countryTable.getCountryName(userCountry)
+                    countryPicture.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
                 }
                 else {
                     
                     text = userState + ", " + countryTable.getCountryName(userCountry)
+                    countryPicture.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
                 }
             }
-            else if userCity != "" && userCity != "Unknown" {
-                
-                text = userCity + ", " + countryTable.getCountryName(userCountry)
-            }
+        }
+        else if userCity != "" {
+            
+            text = userCity + ", " + countryTable.getCountryName(userCountry)
+            countryPicture.image = countryTable.getStateImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        }
+        else if userCountry != "" {
+            
+            text = countryTable.getCountryName(userCountry)
+            countryPicture.image = countryTable.getStateImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         }
         else {
             
-            if userCity != "" &&  userCity != "Unknown" {
-                
-                text = userCity + ", " + countryTable.getCountryName(userCountry)
-            }
-            else {
-                
-                text = countryTable.getCountryName(userCountry)
-            }
+            //Below function will return an unknown image
+            text = "Unknown"
+            countryPicture.image = countryTable.getStateImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         }
+        
         
         userLocation.text = text
     }
