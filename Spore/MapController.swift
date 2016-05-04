@@ -25,7 +25,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     var markersAreLoaded = false
     
     @IBOutlet var mapView: MKMapView!
-    @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet var activityIndicator: BeaconingIndicator!
     
     
     override func viewDidLoad() {
@@ -42,12 +42,16 @@ class MapController: UIViewController, MKMapViewDelegate {
         super.viewDidAppear(true)
         
         //Load the user list and annotations onto the map
-        if !activityIndicator.isAnimating() {
+        if !activityIndicator.isAnimating {
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 
                 self.loadUserList()
             }
+        }
+        else {
+            
+            activityIndicator.resumeAnimating()
         }
     }
     

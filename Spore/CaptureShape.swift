@@ -23,16 +23,18 @@ class CaptureShape: UIView {
         self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
         
         //Set background
-        background.path = UIBezierPath(ovalInRect: CGRect(x: 8.0, y: 8.0, width: frame.width - 16, height: frame.height - 16)).CGPath
-        background.fillColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.6).CGColor
+        background.path = UIBezierPath(ovalInRect: CGRect(x: 5.0, y: 5.0, width: frame.width - 10, height: frame.height - 10)).CGPath
+        background.fillColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.7).CGColor
         
         //Set border
         border.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         border.fillColor = UIColor.clearColor().CGColor
-        border.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.8).CGColor
-        border.lineWidth = 5
-        border.strokeStart = 0.0
-        border.strokeEnd = 1.0
+        border.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1).CGColor
+        border.lineWidth = 3
+        border.strokeStart = 0.4
+        border.strokeEnd = 1
+        border.borderColor = UIColor.blackColor().CGColor
+        border.lineCap = kCALineCapRound
 
         self.layer.addSublayer(background)
         self.layer.addSublayer(border)
@@ -45,7 +47,7 @@ class CaptureShape: UIView {
         record.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         record.fillColor = UIColor.clearColor().CGColor
         record.strokeColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.9).CGColor
-        record.lineWidth = 5
+        record.lineWidth = 3
         record.strokeStart = 0.0
         record.strokeEnd = 0.0
         record.lineCap = kCALineCapRound
@@ -64,10 +66,9 @@ class CaptureShape: UIView {
         progress.fillMode = kCAFillModeForwards
         
         //Configure expansion
-        //Configure animation
         expansion.duration = 1
         expansion.fromValue = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        expansion.toValue = UIBezierPath(ovalInRect: CGRect(x: -10.0, y: -10.0, width: frame.width + 20, height: frame.height + 20)).CGPath
+        expansion.toValue = UIBezierPath(ovalInRect: CGRect(x: -8.0, y: -8.0, width: frame.width + 16, height: frame.height + 16)).CGPath
         expansion.removedOnCompletion = false
         expansion.fillMode = kCAFillModeForwards
         

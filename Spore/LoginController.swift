@@ -24,19 +24,23 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     override func viewDidLoad() {
         
+        //Load as normal
+        super.viewDidLoad()
+    }
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        
         //Initialize UI objects
         alertButton.alpha = 0
-
+        
         //Set permissions to get from Facebook
         fbLoginButton.readPermissions = ["public_profile", "email", "user_friends"]
         
         // Configure Facebook login button
         fbLoginButton.delegate = self
         
-        //Load as normal
-        super.viewDidLoad()
     }
-    
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
@@ -216,7 +220,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
-                self.dismissViewControllerAnimated(true, completion: nil)
+                //self.dismissViewControllerAnimated(true, completion: nil)
                 self.performSegueWithIdentifier(identifier, sender: self)
             })
         }
@@ -235,7 +239,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             let destinationController = segue.destinationViewController as! SnapController
             let destinationChildController = destinationController.childController 
             
-            destinationChildController.selectedIndex = 0
+            //destinationChildController.selectedIndex = 0
             
         }
     }

@@ -41,6 +41,7 @@
 		D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */; };
 		D154E7241C478B2400CF3A63 /* ProfilePicture.png in Resources */ = {isa = PBXBuildFile; fileRef = D154E7231C478B2400CF3A63 /* ProfilePicture.png */; };
 		D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BBFD11C7358AF00C0CC6E /* SnapController.swift */; };
+		D16D5CEB1CD99EB4005F401F /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D16D5CEA1CD99EB4005F401F /* Launch Screen.storyboard */; };
 		D174B6C51C9DC1050005F4C1 /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = D174B6C31C9DC1050005F4C1 /* Logo.png */; };
 		D174B6C61C9DC1050005F4C1 /* Logo@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D174B6C41C9DC1050005F4C1 /* Logo@x3.png */; };
 		D176D4731C852077004A812E /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = D176D4721C852077004A812E /* Line.swift */; };
@@ -63,6 +64,7 @@
 		D1C083E51C42003000A9C281 /* settingsButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1C083E41C42003000A9C281 /* settingsButton@x3.png */; };
 		D1D8A5491C5D3AA100E95BCE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D1D8A5481C5D3AA100E95BCE /* Settings.bundle */; };
 		D1DA41341CBD9FD9002585FF /* FocusShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA41331CBD9FD9002585FF /* FocusShape.swift */; };
+		D1DB75311CD6FA9E009690BE /* BeaconingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DB75301CD6FA9E009690BE /* BeaconingIndicator.swift */; };
 		D1DC72031C9ED4CB00D8CCF1 /* LogoFront.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */; };
 		D1DC72041C9ED4CB00D8CCF1 /* LogoFront@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */; };
 		D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E08D1E1C5D430E0070DA9A /* MapKit.framework */; };
@@ -117,6 +119,7 @@
 		D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableController.swift; sourceTree = "<group>"; };
 		D154E7231C478B2400CF3A63 /* ProfilePicture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProfilePicture.png; sourceTree = "<group>"; };
 		D15BBFD11C7358AF00C0CC6E /* SnapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapController.swift; sourceTree = "<group>"; };
+		D16D5CEA1CD99EB4005F401F /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D172F6671CA9FB9F00752CEF /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "Pods/../build/Debug-iphoneos/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		D172F6681CA9FB9F00752CEF /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "Pods/../build/Debug-iphoneos/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		D172F6691CA9FB9F00752CEF /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = "Pods/../build/Debug-iphoneos/Parse.framework"; sourceTree = "<group>"; };
@@ -147,6 +150,7 @@
 		D1C083E41C42003000A9C281 /* settingsButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "settingsButton@x3.png"; path = "../../Spore Images/settingsButton@x3.png"; sourceTree = "<group>"; };
 		D1D8A5481C5D3AA100E95BCE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D1DA41331CBD9FD9002585FF /* FocusShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusShape.swift; sourceTree = "<group>"; };
+		D1DB75301CD6FA9E009690BE /* BeaconingIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconingIndicator.swift; sourceTree = "<group>"; };
 		D1DC72011C9ED4CB00D8CCF1 /* LogoFront.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LogoFront.png; path = "../../Spore Images/LogoFront.png"; sourceTree = "<group>"; };
 		D1DC72021C9ED4CB00D8CCF1 /* LogoFront@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LogoFront@x3.png"; path = "../../Spore Images/LogoFront@x3.png"; sourceTree = "<group>"; };
 		D1E08D1E1C5D430E0070DA9A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -280,6 +284,7 @@
 				D176D4721C852077004A812E /* Line.swift */,
 				D17B2CD51C977BA100CD6782 /* CountryTable.swift */,
 				D139D46C1CA5675F00909BF5 /* SnapTimer.swift */,
+				D1DB75301CD6FA9E009690BE /* BeaconingIndicator.swift */,
 				D15BBFD11C7358AF00C0CC6E /* SnapController.swift */,
 				D1A3E8A01C78F70A00E115FC /* TabBarController.swift */,
 				D1B9C72B1C22608600D9AEE7 /* MainController.swift */,
@@ -298,6 +303,7 @@
 				D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */,
 				D137E8781CA95C45004F9B44 /* AboutController.swift */,
 				D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */,
+				D16D5CEA1CD99EB4005F401F /* Launch Screen.storyboard */,
 				D18AE6861C2DC24F00B74ED0 /* Images */,
 				D1B9C7171C2258B800D9AEE7 /* Products */,
 				D1B9C7201C2258B800D9AEE7 /* Assets.xcassets */,
@@ -423,6 +429,7 @@
 				D1C083E51C42003000A9C281 /* settingsButton@x3.png in Resources */,
 				D144F1EB1C440F1700E07700 /* UserList.png in Resources */,
 				D13658991C55BC4A005AEC61 /* backButton.png in Resources */,
+				D16D5CEB1CD99EB4005F401F /* Launch Screen.storyboard in Resources */,
 				D136589A1C55BC4A005AEC61 /* backButton@x3.png in Resources */,
 				D144F1FC1C44242600E07700 /* Zion Valley copy 2.png in Resources */,
 				D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */,
@@ -533,6 +540,7 @@
 				D1E15E1A1CC5A1A300C27CDF /* Beacon.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
+				D1DB75311CD6FA9E009690BE /* BeaconingIndicator.swift in Sources */,
 				D139D46D1CA5675F00909BF5 /* SnapTimer.swift in Sources */,
 				D13B0D481CA385BA0035759D /* CountryBackground.swift in Sources */,
 				D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */,

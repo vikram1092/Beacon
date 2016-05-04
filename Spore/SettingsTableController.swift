@@ -51,11 +51,18 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         
         super.viewDidAppear(animated)
         
+        //Turn switch to user saved state
         if userDefaults.objectForKey("saveMedia") != nil {
             
             //Set save switch to user preference
             let saveMedia = userDefaults.boolForKey("saveMedia")
             saveSwitch.setOn(saveMedia, animated: false)
+        }
+        
+        //Animate progress bar loading
+        UIView.animateWithDuration(1) { () -> Void in
+            
+            self.countryBackground.setProgress(0.6)
         }
     }
     

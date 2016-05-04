@@ -17,7 +17,7 @@ class CountryBackground: UIView {
     let progressView = CAShapeLayer()
     
     
-    var backgroundLayerColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
+    var backgroundLayerColor = UIColor(red: 164.0/255.0, green: 137.0/255.0, blue: 201.0/255.0, alpha: 1).CGColor
     //var progressLayerColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
     
     

@@ -23,7 +23,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBOutlet var closeButton: UIButton!
     @IBOutlet var photoSendButton: UIButton!
     @IBOutlet var cameraSwitchButton: UIButton!
-    @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet var activityIndicator: BeaconingIndicator!
     @IBOutlet var snapTimer: SnapTimer!
     @IBOutlet var captureShape: CaptureShape!
     @IBOutlet var alertView: UIView!
@@ -69,11 +69,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Run view load as normal
         super.viewDidLoad()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("beginInterruption:"), name: AVCaptureSessionWasInterruptedNotification, object: nil)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+            
+            //Register for interruption notifications
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleCaptureSessionInterruption:"), name: AVCaptureSessionWasInterruptedNotification, object: nil)
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleAudioSessionInterruption:"), name: AVAudioSessionInterruptionNotification, object: nil)
+            
+            
+            //Set color for activity indicator
+            self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
+        }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("endInterruption:"), name: AVCaptureSessionInterruptionEndedNotification, object: nil)
-        
-        //NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleInterruptions:"), name: AVAudioSessionInterruptionNotification, object: nil)
     }
     
     
@@ -105,8 +112,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
-                let bounds = self.cameraImage.bounds
+                let bounds = UIScreen.mainScreen().bounds
                 self.previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
+                self.cameraImage.bounds = bounds
                 self.previewLayer!.bounds = bounds
                 self.previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
             })
@@ -129,17 +137,27 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func initializingHandler() {
         
-        
+        /*
         if userDefaults.objectForKey("userName") == nil {
             
             //Go back to login screen if no user is logged on
             segueToLogin()
         }
-        else if firstTime && captureDevice == nil {
+        else 
+*/
+        if firstTime && captureDevice == nil {
             
-            //Set up camera and begin session
-            initialViewSetup()
-            initialSessionSetup()
+            //Start camera session that's already set up in serial queue
+            dispatch_async(cameraQueue, { () -> Void in
+                
+                //Dispatch to high priority queue and monitor from camera queue
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
+                    
+                    //Set up camera and begin session
+                    self.initialViewSetup()
+                    self.initialSessionSetup()
+                })
+            })
             
             //Check if user is banned
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
@@ -168,8 +186,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         clearVideoTempFiles()
         
         //Add subviews to views
-        cameraImage.addSubview(snapTimer)
-        captureButton.addSubview(captureShape)
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            self.cameraImage.addSubview(self.snapTimer)
+            self.captureButton.addSubview(self.captureShape)
+        }
         
         //Initialize location manager
         locManager = CLLocationManager.init()
@@ -209,22 +230,17 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             //If camera is found, begin session
             if captureDevice != nil {
                 
-                //Dispatch to serial queue dedicated to camera
-                dispatch_async(cameraQueue, { () -> Void in
-                    
-                    //Dispatch to high priority queue and monitor from camera queue
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
-                        
-                        self.beginSession()
-                    })
-                })
+                 beginSession()
             }
             
         }
         else {
             
             //Request permissions
-            requestPermissions()
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                self.requestPermissions()
+            })
         }
     }
     
@@ -262,7 +278,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 print("adding sublayer")
                 self.cameraImage.layer.addSublayer(self.previewLayer!)
-                self.viewDidLayoutSubviews()
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    self.viewDidLayoutSubviews()
+                })
                 
                 dispatch_async(self.cameraQueue, { () -> Void in
                     
@@ -313,11 +333,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             captureSession.addOutput(stillImageOutput)
             captureSession.addOutput(movieFileOutput)
         }
+        
+        captureSession.commitConfiguration()
     }
     
     
     internal func addCameraInputs() {
         
+        
+        captureSession.beginConfiguration()
         
         //Add camera inputs
         do {
@@ -1203,14 +1227,81 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func beginInterruption(notification: NSNotification) {
+    internal func handleCaptureSessionInterruption(notification: NSNotification) {
         
-        print("Interruption began")
-        showAlert("Another app is using your recording features.")
-        if captureSession.running {
+        let userInfo = (notification.userInfo! as NSDictionary)
+        print(userInfo)
+        let reason = userInfo.objectForKey(AVCaptureSessionInterruptionReasonKey) as! NSNumber
+        
+        
+        if reason == AVCaptureSessionInterruptionReason.VideoDeviceNotAvailableWithMultipleForegroundApps.rawValue {
             
+            print("Interruption began")
+            showAlert("Another app is using your recording features.")
             captureSessionInterrupted = true
-            captureSession.stopRunning()
+            dispatch_async(cameraQueue, { () -> Void in
+                
+                self.captureSession.stopRunning()
+            })
+        }
+        else if reason == AVCaptureSessionInterruptionReason.VideoDeviceNotAvailableWithMultipleForegroundApps.rawValue {
+            
+            print("Interruption ended")
+            closeAlert()
+            dispatch_async(cameraQueue, { () -> Void in
+                
+                self.addCameraInputs()
+                self.addCameraOutputs()
+                self.captureSession.startRunning()
+            })
+            
+        }
+    }
+    
+    
+    internal func handleAudioSessionInterruption(notification: NSNotification) {
+        
+        
+        let userInfo = (notification.userInfo! as NSDictionary)
+        print(userInfo)
+        let reason = userInfo.objectForKey(AVAudioSessionInterruptionTypeKey) as! NSNumber
+        
+        if reason == AVAudioSessionInterruptionType.Began.rawValue {
+            
+            if captureSession.running {
+                
+                //Stop capture session if it was running
+                print("Interruption began")
+                showAlert("Another app is using your recording features.")
+                captureSessionInterrupted = true
+                dispatch_async(cameraQueue, { () -> Void in
+                    
+                    self.captureSession.stopRunning()
+                })
+            }
+            else if moviePlayer.player?.currentItem != nil {
+                
+                //Pause movie player if it was playing
+                moviePlayer.player?.pause()
+            }
+        }
+        else if reason == AVAudioSessionInterruptionType.Ended.rawValue {
+            
+            
+            if moviePlayer.player?.currentItem != nil {
+                
+                moviePlayer.player?.play()
+            }
+            else if captureSessionInterrupted {
+                    
+                    print("Interruption began")
+                    closeAlert()
+                    captureSessionInterrupted = false
+                    dispatch_async(cameraQueue, { () -> Void in
+                        
+                        self.captureSession.startRunning()
+                    })
+            }
         }
     }
     
