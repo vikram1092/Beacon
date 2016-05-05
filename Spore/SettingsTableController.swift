@@ -38,7 +38,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         getUserDefaults()
         
         //Configure profile picture
-        countryBackground.changeBackgroundColor(UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor)
+        //countryBackground.changeBackgroundColor(UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor)
         countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         countryBackground.bringSubviewToFront(countryPicture)
         

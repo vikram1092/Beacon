@@ -18,8 +18,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="20" y="267" width="560" height="65"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                                <rect key="frame" x="20" y="210" width="560" height="65"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="65" id="5ad-e3-KjW"/>
                                 </constraints>
@@ -972,7 +972,7 @@
                         <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
-                                <color key="value" red="0.3294117647" green="0.18823529410000001" blue="0.4941176471" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="value" red="0.74117647060000003" green="0.1058823529" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </tabBar>

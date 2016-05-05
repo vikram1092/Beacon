@@ -14,7 +14,6 @@ class TabBarController: UITabBarController {
     
     override func viewDidAppear(animated: Bool) {
         
-        self.setNeedsStatusBarAppearanceUpdate()
         super.viewDidAppear(true)
     }
     

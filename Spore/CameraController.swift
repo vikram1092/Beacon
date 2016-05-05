@@ -81,11 +81,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         }
         
+        //Add subviews accordingly
+        self.cameraImage.addSubview(self.snapTimer)
+        self.captureButton.addSubview(self.captureShape)
+        
     }
     
     
     override func viewWillAppear(animated: Bool) {
         
+        print("viewWillAppear")
         //Run as normal
         super.viewWillAppear(true)
         
@@ -107,45 +112,45 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     override func viewDidLayoutSubviews() {
         
+        print("viewDidLayoutSubviews")
         //Adjusts camera to the screen after loading view
         if previewLayer != nil {
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                
-                let bounds = UIScreen.mainScreen().bounds
-                self.previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
-                self.cameraImage.bounds = bounds
-                self.previewLayer!.bounds = bounds
-                self.previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
-            })
+        
+            let bounds = UIScreen.mainScreen().bounds
+            self.previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
+            self.cameraImage.bounds = bounds
+            self.previewLayer!.bounds = bounds
+            self.previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
         }
     }
     
     
     override func viewDidAppear(animated: Bool) {
         
+        print("viewDidAppear")
         //Appear as normal
         super.viewDidAppear(true)
         
-        //Get user defaults
-        getUserDefaults()
         
         //Call the handler for dealing with possible scenarios
         initializingHandler()
+        
+        
+        //Get user defaults
+        getUserDefaults()
     }
     
     
     internal func initializingHandler() {
         
-        /*
-        if userDefaults.objectForKey("userName") == nil {
+        
+        print("initializingHandler")
+        if userDefaults.objectForKey("userEmail") == nil{
             
             //Go back to login screen if no user is logged on
             segueToLogin()
         }
-        else 
-*/
-        if firstTime && captureDevice == nil {
+        else if firstTime && captureDevice == nil {
             
             //Start camera session that's already set up in serial queue
             dispatch_async(cameraQueue, { () -> Void in
@@ -154,8 +159,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                     
                     //Set up camera and begin session
-                    self.initialViewSetup()
                     self.initialSessionSetup()
+                    self.initialViewSetup()
                 })
             })
             
@@ -174,6 +179,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                     
                     self.captureSession.startRunning()
+                    self.initializeLocationManager()
                 })
             })
         }
@@ -182,33 +188,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func initialViewSetup() {
         
+        print("initialViewSetup")
         //Clear video temp files
         clearVideoTempFiles()
-        
-        //Add subviews to views
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            
-            self.cameraImage.addSubview(self.snapTimer)
-            self.captureButton.addSubview(self.captureShape)
-        }
-        
-        //Initialize location manager
-        locManager = CLLocationManager.init()
-        self.locManager.delegate = self
     }
     
     
     internal func initialSessionSetup() {
     
         
+        print("initialSessionSetup")
         //Check permissions
         if checkAllPermissions() {
-            
-            //Get user location every time view appears
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
-                
-                self.getUserLocation()
-            }
             
             // Set up camera session & microphone
             captureSession.sessionPreset = AVCaptureSessionPresetMedium
@@ -230,7 +221,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             //If camera is found, begin session
             if captureDevice != nil {
                 
-                 beginSession()
+                beginSession()
             }
             
         }
@@ -247,7 +238,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func beginSession() {
         
-    
+        
+        print("beginSession")
         //Start camera session, outputs and inputs
         captureSession = AVCaptureSession()
         captureSession.beginConfiguration()
@@ -287,11 +279,33 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 dispatch_async(self.cameraQueue, { () -> Void in
                     
                     self.captureSession.startRunning()
+                    self.initializeLocationManager()
                 })
+                
+                
             }
             
             self.firstTime = false
         }
+    }
+    
+    
+    internal func initializeLocationManager() {
+        
+        print("initializeLocationManager")
+        //Initialize location manager
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            self.locManager = CLLocationManager.init()
+            self.locManager.delegate = self
+            
+            //Get user location every time view appears
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                
+                self.getUserLocation()
+            }
+        }
+        
     }
     
     
@@ -525,23 +539,29 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBAction func takePhoto(sender: UITapGestureRecognizer) {
         
         //Capture image
-        stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
+        if !stillImageOutput.capturingStillImage && captureSession.running {
             
-            let image = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
-            let data_image = UIImage(data: image)
-            self.cameraImage.image = data_image
-            self.captureSession.stopRunning()
+            stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
+                
+                let image = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
+                let data_image = UIImage(data: image)
+                self.cameraImage.image = data_image
+                self.captureSession.stopRunning()
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    //Change elements on screen
+                    self.backButton.hidden = true
+                    self.captureButton.hidden = true
+                    self.flashButton.hidden = true
+                    self.cameraSwitchButton.hidden = true
+                    self.closeButton.hidden = false
+                    self.photoSendButton.hidden = false
+                })
+            }
         }
         
         print("Pressed!")
-        
-        //Change elements on screen
-        self.backButton.hidden = true
-        self.captureButton.hidden = true
-        self.flashButton.hidden = true
-        self.cameraSwitchButton.hidden = true
-        self.closeButton.hidden = false
-        self.photoSendButton.hidden = false
     }
     
     
@@ -1200,15 +1220,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         
-        
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            
-            print("Location authorization changed.")
-            if self.checkAllPermissions() {
-                self.initializingHandler()
-            }
-            else { self.requestPermissions() }
-        })
+        if !captureSession.running {
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                print("Location authorization changed.")
+                if self.checkAllPermissions() {
+                    self.initializingHandler()
+                }
+                else { self.requestPermissions() }
+            })
+        }
     }
     
     

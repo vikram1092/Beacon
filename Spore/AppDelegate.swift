@@ -9,7 +9,6 @@
 import UIKit
 import Parse
 import FBSDKCoreKit
-import GoogleMaps
 import AVFoundation
 
 @UIApplicationMain

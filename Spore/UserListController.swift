@@ -28,11 +28,12 @@ class UserListController: UITableViewController {
     var userLatitude = NSNumber()
     var userLongitude = NSNumber()
     var userToReceivePhotos = 0
+    var seguedToMap = false
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
     var countryObject = UIView()
     
-    let defaultColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
+    let defaultColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
@@ -56,6 +57,13 @@ class UserListController: UITableViewController {
         
         //Retreive user defaults
         getUserDefaults()
+        
+        seguedToMap = false
+        
+        if tableView != nil {
+            
+            tableView.reloadRowsAtIndexPaths(tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
+        }
     }
     
     
@@ -315,9 +323,11 @@ class UserListController: UITableViewController {
                     
                     if updateUserList {
                         
+                        //Reload table to show that object has been sent
+                        self.tableView.reloadData()
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                             
-                            self.tableView.reloadData()
+                            //Update user list and table
                             self.updateUserList(false)
                         })
                     }
@@ -695,6 +705,24 @@ class UserListController: UITableViewController {
             }
         }
         
+        //Since content view is the direct subview layer, we have to first go into that
+        for subview in cell.subviews[0].subviews {
+            
+            //Ensure that the subview is not the image, its background or the map label
+            if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
+                
+                subview.alpha = 1
+            }
+                //Hide map label
+            else if subview.tag == 3 {
+                
+                UIView.animateWithDuration(0.1, animations: { () -> Void in
+                    
+                    subview.alpha = 0
+                })
+            }
+        }
+        
         //Turn off animations when we reach the last cell
         print("Numberofrowsinsection: " + String(tableView.numberOfRowsInSection(0) - 1))
         if initialRowLoad && indexPath.row == tableView.indexPathsForVisibleRows!.last!.row {
@@ -1053,6 +1081,7 @@ class UserListController: UITableViewController {
     
     internal func detectPan(recognizer: UIPanGestureRecognizer) {
         
+        
         //Check if view is the Country Background class
         countryObject = recognizer.view!
         let translation = recognizer.translationInView(recognizer.view!.superview)
@@ -1061,7 +1090,6 @@ class UserListController: UITableViewController {
         switch recognizer.state {
             
         case .Began:
-            
             
             //Save original center
             print("Got country's original point")
@@ -1106,6 +1134,9 @@ class UserListController: UITableViewController {
                 let userListIndex = userList.count - index - 1
                 let geoPoint = userList[userListIndex].valueForKey("sentFrom") as! PFGeoPoint
                 let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                
+                
+                //resetOtherCells(cell, location: location)
                 segueToMap(location)
             }
             
@@ -1143,6 +1174,50 @@ class UserListController: UITableViewController {
             countryObject.center.x = translation.x + countryCenter.x
             //countryObject.transform = CGAffineTransformMakeRotation( (translation.x / (countryObject.bounds.height/2)) + CGFloat(-M_PI / 2.0))
             
+        }
+    }
+    
+    
+    internal func resetOtherCells(cell: UITableViewCell, location: CLLocationCoordinate2D) {
+    
+        //Enable user interaction for all other cells
+        for otherCell in tableView.visibleCells {
+            
+            print(tableView.indexPathForCell(otherCell))
+
+            let countryBackground = otherCell.viewWithTag(6) as! CountryBackground
+            
+            //Only enable user's received photos
+            if CGColorEqualToColor(countryBackground.background.fillColor!, defaultColor)
+            {
+                
+                //Move object first
+                self.countryObject.center.x = self.countryCenter.x
+                
+                //Since content view is the direct subview layer, we have to first go into that
+                for subview in cell.subviews[0].subviews {
+                    
+                    //Ensure that the subview is not the image, its background or the map label
+                    if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
+                        
+                        subview.alpha = 1
+                    }
+                        //Hide map label
+                    else if subview.tag == 3 {
+                        
+                        UIView.animateWithDuration(0.1, animations: { () -> Void in
+                            
+                            subview.alpha = 0
+                        })
+                    }
+                }
+            }
+        }
+        
+        if !seguedToMap {
+            
+            seguedToMap = true
+            segueToMap(location)
         }
     }
     

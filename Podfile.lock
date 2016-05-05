@@ -11,7 +11,6 @@ PODS:
     - FBSDKCoreKit
   - FBSDKShareKit (4.9.1):
     - FBSDKCoreKit
-  - GoogleMaps (1.11.1)
   - Parse (1.12.0):
     - Bolts/Tasks (~> 1.5)
   - ParseFacebookUtilsV4 (1.11.0):
@@ -29,7 +28,6 @@ DEPENDENCIES:
   - FBSDKCoreKit
   - FBSDKLoginKit
   - FBSDKShareKit
-  - GoogleMaps
   - Parse
   - ParseFacebookUtilsV4
   - ParseUI
@@ -39,7 +37,6 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: aee20b6d9855f15b618d4fddd1a5ad45f5a4a59d
   FBSDKLoginKit: ec22dc49bd372b064e93d6773df4ffefb3a552a2
   FBSDKShareKit: b8c8ef0ed173f9fc1b3c8df384a0202ce53008d4
-  GoogleMaps: c947160008f414c66707a5ea60f35e92055c7670
   Parse: de2c52a9a1421b91ae7594ab8ce191afd184f19b
   ParseFacebookUtilsV4: 216e03bd560404eed09a4875c75f0c1cdf758070
   ParseUI: af2eba584799da4a9fbdac0e178662d7438b502e
