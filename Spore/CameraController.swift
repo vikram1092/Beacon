@@ -76,10 +76,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleAudioSessionInterruption:"), name: AVAudioSessionInterruptionNotification, object: nil)
             
-            
-            //Set color for activity indicator
-            self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         }
+        
+        //Set color for activity indicator
+        self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         
         //Add subviews accordingly
         self.cameraImage.addSubview(self.snapTimer)
@@ -113,12 +113,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     override func viewDidLayoutSubviews() {
         
         print("viewDidLayoutSubviews")
-        //Adjusts camera to the screen after loading view
+        //Adjusts camera to the screen after updating view
         if previewLayer != nil {
         
-            let bounds = UIScreen.mainScreen().bounds
+            let bounds = cameraImage.bounds
             self.previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
-            self.cameraImage.bounds = bounds
             self.previewLayer!.bounds = bounds
             self.previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
         }
@@ -199,7 +198,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         print("initialSessionSetup")
         //Check permissions
-        if checkAllPermissions() {
+        //if checkAllPermissions() {
             
             // Set up camera session & microphone
             captureSession.sessionPreset = AVCaptureSessionPresetMedium
@@ -224,7 +223,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 beginSession()
             }
             
-        }
+      /*  }
         else {
             
             //Request permissions
@@ -232,7 +231,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 self.requestPermissions()
             })
-        }
+        }*/
     }
     
     
@@ -412,7 +411,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Get configuration lock on device
         do {
             try captureDevice?.lockForConfiguration()
-        } catch _ {print("Error getting loc for device")}
+        } catch let error as NSError {print("Error getting lock for device \(error)")}
         
         
         //Configure flash according to toggle
@@ -449,6 +448,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     @IBAction func switchCamera(sender: AnyObject) {
+        
         
         if captureSession.running {
             
@@ -489,7 +489,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                                 self.captureDevice = device as? AVCaptureDevice
                                 
                                 //Enable flash
-                                self.flashButton.enabled = true
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    
+                                    self.flashButton.enabled = true
+                                })
                                 
                                 //Configure device modes
                                 self.initializeCaptureDevice()
@@ -501,7 +504,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                                 self.captureDevice = device as? AVCaptureDevice
                                 
                                 //Disable flash
-                                self.flashButton.enabled = false
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    
+                                    self.flashButton.enabled = false
+                                })
                                 
                                 //Configure device modes
                                 self.initializeCaptureDevice()
@@ -661,7 +667,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             do {
                 try captureDevice!.lockForConfiguration()
-            } catch _ {print("Error getting loc for device")}
+            } catch let error as NSError {print("Error getting lock for device \(error)")}
             
             if captureDevice!.torchMode == AVCaptureTorchMode.Off {
                 
@@ -958,7 +964,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func cameraTapped(sender: UITapGestureRecognizer) {
         
-        if captureSession.running && alertView.alpha == 0 {
+        if captureSession.running && alertView.hidden {
             
             //Configure variables
             print(sender.view)
@@ -1155,10 +1161,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 print(self.userLocation.longitude)
             })
         }
-        else {
-            
-            showAlert("Error getting user's location. \nPlease check your location services settings or permissions.")
-        }
     }
     
     
@@ -1173,9 +1175,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             if locationError != nil {
                 
                 print("Reverse geocoder error: " + locationError!.description)
-                
-                
-                self.showAlert("Error getting user's country. \nPlease check your internet connection or permissions.")
             }
             else if placemarks!.count > 0 {
                 
@@ -1235,7 +1234,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func showAlert(alertText: String) {
         
-        alertView.alpha = 1
+        alertView.hidden = false
         alertButton.setTitle(alertText, forState: .Normal)
         alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
     }
@@ -1243,7 +1242,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func closeAlert() {
         
-        alertView.alpha = 0
+        alertView.hidden = true
         alertView.userInteractionEnabled = false
     }
     

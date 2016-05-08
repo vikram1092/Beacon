@@ -17,7 +17,7 @@ class CountryBackground: UIView {
     let progressView = CAShapeLayer()
     
     
-    var backgroundLayerColor = UIColor(red: 164.0/255.0, green: 137.0/255.0, blue: 201.0/255.0, alpha: 1).CGColor
+    var backgroundLayerColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     //var progressLayerColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
     
     
@@ -33,7 +33,7 @@ class CountryBackground: UIView {
         let photo = self.viewWithTag(7)
         
         background.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
-        background.fillColor = self.backgroundColor?.CGColor
+        background.fillColor = self.backgroundLayerColor
         self.layer.addSublayer(background)
         
         country?.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)

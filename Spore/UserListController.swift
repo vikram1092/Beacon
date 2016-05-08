@@ -18,7 +18,6 @@ import FBSDKLoginKit
 
 class UserListController: UITableViewController {
     
-    var initialRowLoad = false
     var userList = Array<PFObject>()
     var userName = ""
     var userEmail = ""
@@ -28,7 +27,7 @@ class UserListController: UITableViewController {
     var userLatitude = NSNumber()
     var userLongitude = NSNumber()
     var userToReceivePhotos = 0
-    var seguedToMap = false
+    var firstTime = true
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
     var countryObject = UIView()
@@ -57,13 +56,6 @@ class UserListController: UITableViewController {
         
         //Retreive user defaults
         getUserDefaults()
-        
-        seguedToMap = false
-        
-        if tableView != nil {
-            
-            tableView.reloadRowsAtIndexPaths(tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
-        }
     }
     
     
@@ -100,6 +92,12 @@ class UserListController: UITableViewController {
         }
     }
     
+    
+    override func viewDidDisappear(animated: Bool) {
+        
+        //Reload visible rows
+        reloadVisibleRows()
+    }
     
     internal func userIsBanned() {
         
@@ -235,21 +233,21 @@ class UserListController: UITableViewController {
                     self.table.reloadData()
                     print("Adding new photos")
                     
-                    /*
+                    
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                         
                         self.sendUnsentPhotos()
-                    })*/
+                        self.updateUserList(false)
+                    })
                 })
             }
             else {
                 
-                /*
                 //Nothing has changed, send unsent photos
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                     
-                    //self.sendUnsentPhotos()
-                })*/
+                    self.updateUserList(false)
+                })
             }
         }
     }
@@ -274,18 +272,20 @@ class UserListController: UITableViewController {
         //Declare necessary variables
         let indexPath = NSIndexPath(forRow: userList.count - 1 - userList.indexOf(photoObj)!
             , inSection: 0)
-        let cell = self.tableView.cellForRowAtIndexPath(indexPath)
-        print("cell to send from: \(cell)")
+        let firstCell = self.tableView.cellForRowAtIndexPath(indexPath)
+        print("cell to send from: \(firstCell)")
         print("photoObject to send: \(photoObj)")
-        let activityIndicator = cell?.viewWithTag(4) as? UIActivityIndicatorView
-        let subTitleView = cell?.viewWithTag(2) as? UILabel
+        let firstActivityIndicator = firstCell?.viewWithTag(4) as? BeaconingIndicator
+        let firstSubTitleView = firstCell?.viewWithTag(2) as? UILabel
         
         //Update cell to let user know photo is sending
-        if cell != nil {
+        photoObj.removeObjectForKey("sendingStatus")
+        
+        if firstCell != nil {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
             
-                subTitleView!.text = "Sending..."
-                activityIndicator!.startAnimating()
+                firstSubTitleView!.text = "Sending..."
+                firstActivityIndicator!.startAnimating()
             })
         }
         
@@ -300,10 +300,18 @@ class UserListController: UITableViewController {
                 print("Error saving object: \(error)")
                 
                 //Let user know
+                photoObj.setObject("Ready", forKey: "sendingStatus")
+                
+                let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+                print("cell to send from: \(cell)")
+                print("photoObject to send: \(photoObj)")
+                let activityIndicator = cell?.viewWithTag(4) as? BeaconingIndicator
+                let subTitleView = cell?.viewWithTag(2) as? UILabel
+                
                 if cell != nil {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        subTitleView!.text = "Sending failed"
+                        subTitleView!.text = "Ready To Send"
                         activityIndicator!.stopAnimating()
                     })
                 }
@@ -339,6 +347,14 @@ class UserListController: UITableViewController {
             else if !saved {
                 
                 //If sending fails, let user know
+                photoObj.setObject("Ready", forKey: "sendingStatus")
+                
+                let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+                print("cell to send from: \(cell)")
+                print("photoObject to send: \(photoObj)")
+                let activityIndicator = cell?.viewWithTag(4) as? BeaconingIndicator
+                let subTitleView = cell?.viewWithTag(2) as? UILabel
+                
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
                     if cell != nil {
@@ -523,86 +539,75 @@ class UserListController: UITableViewController {
         let imageBackground = cell.viewWithTag(6) as! CountryBackground
         let slideIndicator = cell.viewWithTag(3) as! UIImageView
         
-        let userListLength = userList.count - 1
-        let date = userList[userListLength - indexPath.row]["receivedAt"] as? NSDate
-        let countryCode = userList[userListLength - indexPath.row]["countryCode"] as? String
+        let userListIndex = userList.count - 1 - indexPath.row
+        let date = userList[userListIndex]["receivedAt"] as? NSDate
+        let countryCode = userList[userListIndex]["countryCode"] as? String
         
-        
-        //Configure image background layers
-        //let color = userList[userListLength - indexPath.row]["tableColor"] as! String
-        //imageBackground.changeBackgroundColor(getTableColor(color))
-        
-        /*
-        imageBackground.layer.cornerRadius = imageBackground.frame.size.width/2
-        photoView.image = nil
-        
-        if let isVideo = userList[userListLength - indexPath.row]["isVideo"] {
-            
-            let mediaObject = userList[userListLength - indexPath.row]["photo"] as? PFFile
-            
-            mediaObject?.getDataInBackgroundWithBlock({ (mediaData, mediaError) -> Void in
-                
-                if mediaError != nil {
-                    print("Video Error: \(mediaError)")
-                }
-                else if !(isVideo as! Bool) && mediaData != nil {
-                    
-                    //Handle for a photo
-                    photoView.contentMode = UIViewContentMode.ScaleAspectFill
-                    photoView.image = UIImage(data: mediaData!)
-                }
-                else if (isVideo as! Bool) && mediaData != nil {
-                    
-                    //Handle for a video
-                    //Create path
-                    let cellVideoPath = self.tableVideoPrefix + self.userEmail.substringToIndex(self.userEmail.characters.indexOf(Character("@"))!) + "_" + String(userListLength - indexPath.row) + ".mov"
-                    
-                    print(cellVideoPath)
-                        
-                    //Check if path exists. If it does, no need to recreate
-                    print("Index path \(indexPath.row) file exists: \(self.fileManager.fileExistsAtPath(cellVideoPath))")
-                    if !self.fileManager.fileExistsAtPath(cellVideoPath) {
-                        
-                        mediaData!.writeToFile(cellVideoPath, atomically: true)
-                        print(self.fileManager.fileExistsAtPath(cellVideoPath))
-                    }
-                    
-                    //Initialize movie layer
-                    print("Initializing cell video player")
-                    let tableVideoPlayer = AVPlayer(URL: NSURL(fileURLWithPath: cellVideoPath))
-                    moviePlayer = AVPlayerLayer(player: tableVideoPlayer)
-                    
-                    
-                    //Set video gravity
-                    //moviePlayer.backgroundColor = UIColor.greenColor().CGColor
-                    moviePlayer.frame = photoView.bounds
-                    moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                    moviePlayer.player!.muted = true
-                    
-                    //Set loop function
-                    NSNotificationCenter.defaultCenter().addObserver(self,
-                        selector: "loopTableVideo:",
-                        name: AVPlayerItemDidPlayToEndTimeNotification,
-                        object: moviePlayer.player!)
-                    
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        
-                        photoView.layer.addSublayer(moviePlayer)
-                        moviePlayer.player!.play()
-                    })
-                }
-            })
-        }
-*/
         
         //Declare geographic data
         let country = countryTable.getCountryName(countryCode!)
-        let state = userList[userListLength - indexPath.row]["sentState"] as? String
-        let city = userList[userListLength - indexPath.row]["sentCity"] as? String
+        let state = userList[userListIndex]["sentState"] as? String
+        let city = userList[userListIndex]["sentCity"] as? String
+        
+        
+        //Add the country image to its background
+        if userList[userListIndex]["sentBy"] as! String == userEmail && userList[userListIndex]["receivedBy"] == nil {
+            
+            //Set background color
+            imageBackground.changeBackgroundColor(sendingColor)
+            imageBackground.setProgress(0.6)
+            
+            //Configure subtext
+            let sendingStatus = userList[userListIndex]["sendingStatus"] as? String
+            
+            if sendingStatus == nil {
+                
+                subTitleView.text = "Sending..."
+            }
+            else {
+                
+                subTitleView.text = "Ready To Send"
+            }
+            
+            let activityIndicator = cell.viewWithTag(4) as! BeaconingIndicator
+            activityIndicator.startAnimating()
+            
+        }
+        else {
+            
+            //Set background color
+            imageBackground.changeBackgroundColor(defaultColor)
+            
+            //Get time string
+            let timeString = timeSinceDate(date!, numericDates: true)
+            
+            //Configure image sliding and action
+            let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
+            imageBackground.addGestureRecognizer(pan)
+            
+            
+            //Configure time left for photo
+            if withinTime(date!) {
+                imageBackground.setProgress(getTimeFraction(date!))
+            }
+            else {
+                imageBackground.noProgress()
+            }
+            
+            
+            //Configure subtext
+            subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
+            subTitleView.text = String(timeString)
+            
+            
+            //Configure slide indicator
+            slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            slideIndicator.tintColor = UIColor.lightGrayColor()
+        }
+        
         
         //Configure text & map image
         //Account for states if country is USA
-        
         imageView.image = countryTable.getCountryImage(countryCode!).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         
         if state != nil && countryCode == "us" {
@@ -638,56 +643,10 @@ class UserListController: UITableViewController {
             
             titleView.text = city! + ", " + country
         }
-            //Configure for only country variable
+        //Configure for only country variable
         else {
             
             titleView.text = country
-        }
-        
-        
-        //Add the country image to its background
-        //imageBackground.bringSubviewToFront(imageView)
-        
-        if userList[userListLength - indexPath.row]["sentBy"] as! String == userEmail && userList[userListLength - indexPath.row]["receivedBy"] == nil {
-            
-            //Set background color
-            imageBackground.changeBackgroundColor(sendingColor)
-            imageBackground.setProgress(0.6)
-            
-            //Configure subtext
-            subTitleView.text = "Ready to send"
-            
-        }
-        else {
-            
-            //Set background color
-            imageBackground.changeBackgroundColor(defaultColor)
-            
-            //Get time string
-            let timeString = timeSinceDate(date!, numericDates: true)
-            
-            //Configure image sliding and action
-            let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
-            imageBackground.addGestureRecognizer(pan)
-            
-            
-            //Configure time left for photo
-            if withinTime(date!) {
-                imageBackground.setProgress(getTimeFraction(date!))
-            }
-            else {
-                imageBackground.noProgress()
-            }
-            
-            
-            //Configure subtext
-            subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
-            subTitleView.text = String(timeString)
-            
-            
-            //Configure slide indicator
-            slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-            slideIndicator.tintColor = UIColor.lightGrayColor()
         }
         
         return cell
@@ -696,39 +655,6 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        if initialRowLoad {
-            
-            cell.center = CGPointMake(cell.center.x+100, cell.center.y)
-            UIView.animateWithDuration(0.2 + Double(indexPath.row)/40) { () -> Void in
-                
-                cell.center = CGPointMake(cell.center.x-100, cell.center.y)
-            }
-        }
-        
-        //Since content view is the direct subview layer, we have to first go into that
-        for subview in cell.subviews[0].subviews {
-            
-            //Ensure that the subview is not the image, its background or the map label
-            if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
-                
-                subview.alpha = 1
-            }
-                //Hide map label
-            else if subview.tag == 3 {
-                
-                UIView.animateWithDuration(0.1, animations: { () -> Void in
-                    
-                    subview.alpha = 0
-                })
-            }
-        }
-        
-        //Turn off animations when we reach the last cell
-        print("Numberofrowsinsection: " + String(tableView.numberOfRowsInSection(0) - 1))
-        if initialRowLoad && indexPath.row == tableView.indexPathsForVisibleRows!.last!.row {
-            print("Turning off animations")
-            initialRowLoad = false
-        }
     }
     
     
@@ -827,7 +753,7 @@ class UserListController: UITableViewController {
             let objectToDisplay = userList[userListIndex]["photo"] as! PFFile
             
             //Start UI animation
-            let activity = cell.viewWithTag(4) as! UIActivityIndicatorView
+            let activity = cell.viewWithTag(4) as! BeaconingIndicator
             activity.startAnimating()
             
             //Handle for videos and pictures uniqeuly
@@ -974,6 +900,15 @@ class UserListController: UITableViewController {
             
         }
         
+    }
+    
+    
+    internal func reloadVisibleRows() {
+    
+        if self.tableView != nil {
+            
+            self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
+        }
     }
     
     
@@ -1133,11 +1068,20 @@ class UserListController: UITableViewController {
                 let index = tableView.indexPathForCell(cell)!.row
                 let userListIndex = userList.count - index - 1
                 let geoPoint = userList[userListIndex].valueForKey("sentFrom") as! PFGeoPoint
-                let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
                 
+                if !(geoPoint.latitude == 0.0 && geoPoint.longitude == 0.0) {
+                    
+                    //Since location exists, go to the location
+                    let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                    segueToMap(location)
+                }
+                else {
+                    
+                    //Or else, just go to the map
+                    self.tabBarController?.selectedIndex = 2
+                }
                 
-                //resetOtherCells(cell, location: location)
-                segueToMap(location)
+                resetVisibleCells()
             }
             
             //Move country back and bring back elements
@@ -1146,7 +1090,6 @@ class UserListController: UITableViewController {
                 
                 //Move object first
                 self.countryObject.center.x = self.countryCenter.x
-                //self.countryObject.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI / 2.0))
                 
                 
                 //Since content view is the direct subview layer, we have to first go into that
@@ -1178,49 +1121,34 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func resetOtherCells(cell: UITableViewCell, location: CLLocationCoordinate2D) {
-    
-        //Enable user interaction for all other cells
-        for otherCell in tableView.visibleCells {
+    internal func resetVisibleCells() {
+        
+        
+        for cell in tableView.visibleCells {
             
-            print(tableView.indexPathForCell(otherCell))
-
-            let countryBackground = otherCell.viewWithTag(6) as! CountryBackground
-            
-            //Only enable user's received photos
-            if CGColorEqualToColor(countryBackground.background.fillColor!, defaultColor)
-            {
+            //Since content view is the direct subview layer, we have to first go into that
+            for subview in cell.subviews[0].subviews {
                 
-                //Move object first
-                self.countryObject.center.x = self.countryCenter.x
-                
-                //Since content view is the direct subview layer, we have to first go into that
-                for subview in cell.subviews[0].subviews {
+                //Ensure that the subview is not the image, its background or the map label
+                if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
                     
-                    //Ensure that the subview is not the image, its background or the map label
-                    if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
-                        
-                        subview.alpha = 1
-                    }
-                        //Hide map label
-                    else if subview.tag == 3 {
-                        
-                        UIView.animateWithDuration(0.1, animations: { () -> Void in
-                            
-                            subview.alpha = 0
-                        })
-                    }
+                    subview.alpha = 1
+                }
+                //Move the country object back
+                else if subview.tag == 6 {
+                    
+                    subview.center.x = self.countryCenter.x
+                }
+                //Hide map label
+                else if subview.tag == 3 {
+                    
+                    subview.alpha = 0
                 }
             }
         }
-        
-        if !seguedToMap {
-            
-            seguedToMap = true
-            segueToMap(location)
-        }
-    }
     
+    }
+
     
     internal func segueToMap(location: CLLocationCoordinate2D) {
         
@@ -1259,8 +1187,8 @@ class UserListController: UITableViewController {
         //Get calendar and current date, compare it to given date
         let difference = calendar.components([.Day, .WeekOfYear, .Month, .Year], fromDate: date, toDate: NSDate(), options: [])
         
-        //Compare all components of the difference to see if it's greater than 2 days
-        if difference.year > 0 || difference.month > 0 || difference.weekOfYear > 0 || difference.day >= 2
+        //Compare all components of the difference to see if it's greater than 1 day
+        if difference.year > 0 || difference.month > 0 || difference.weekOfYear > 0 || difference.day >= 1
         {
             return false
         }
