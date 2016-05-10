@@ -14,8 +14,10 @@ class CountryBackground: UIView {
     
     
     let background = CAShapeLayer()
-    let progressView = CAShapeLayer()
-    
+    let progressLayer = CAShapeLayer()
+    var progressView = UIView()
+    let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
+    var isAnimating = false
     
     var backgroundLayerColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     //var progressLayerColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
@@ -27,47 +29,84 @@ class CountryBackground: UIView {
         
         let frame = super.frame
         
-        //Rotate view for progress bar, and rotate country image back
-        self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
-        let country = self.viewWithTag(5)
-        let photo = self.viewWithTag(7)
+        //Create view
+        progressView.frame = self.bounds
+        progressView.backgroundColor = UIColor.clearColor()
+        progressView.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI)/2)
+        self.addSubview(progressView)
         
+        //Create background layer
         background.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
         background.fillColor = self.backgroundLayerColor
         self.layer.addSublayer(background)
         
-        country?.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
-        photo?.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
+        //Rotate view for progress bar, and rotate country image back
+        let country = self.viewWithTag(5)
         self.bringSubviewToFront(country!)
+        
+        
+        //Register for interruption notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("resumeAnimating"), name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
     
     
     internal func setProgress(progress: Float) {
         
         
-        progressView.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        progressLayer.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         
-        progressView.fillColor = UIColor.clearColor().CGColor
-        progressView.strokeColor = background.fillColor
-        progressView.lineWidth = 2.5
-        progressView.strokeStart = 1.0 - CGFloat(progress)
-        progressView.strokeEnd = 1.0
-        progressView.lineCap = kCALineCapRound
+        progressLayer.fillColor = UIColor.clearColor().CGColor
+        progressLayer.strokeColor = background.fillColor
+        progressLayer.lineWidth = 2.5
+        progressLayer.strokeStart = 1.0 - CGFloat(progress)
+        progressLayer.strokeEnd = 1.0
+        progressLayer.lineCap = kCALineCapRound
         
-        
-        self.layer.addSublayer(progressView)
+        progressView.layer.addSublayer(progressLayer)
     }
     
     
     internal func changeBackgroundColor(color: CGColor) {
         
         background.fillColor = color
-        progressView.fillColor = color
+        progressLayer.fillColor = color
     }
     
     
     internal func noProgress() {
         
-        progressView.removeFromSuperlayer()
+        progressLayer.removeFromSuperlayer()
     }
+    
+    
+    internal func startAnimating() {
+        
+        isAnimating = true
+        progressView.layer.removeAllAnimations()
+        
+        rotateAnimation.fromValue = CGFloat(-M_PI/2)
+        rotateAnimation.toValue = CGFloat(3 * M_PI / 2)
+        rotateAnimation.duration = 1.5
+        rotateAnimation.repeatCount = HUGE
+        
+        progressView.layer.addAnimation(rotateAnimation, forKey: nil)
+    }
+    
+    
+    internal func resumeAnimating() {
+        
+        if isAnimating {
+            
+            progressView.layer.addAnimation(rotateAnimation, forKey: nil)
+        }
+    }
+    
+    
+    internal func stopAnimating() {
+        
+        //Remove animations and hide
+        isAnimating = false
+        progressView.layer.removeAllAnimations()
+    }
+    
 }

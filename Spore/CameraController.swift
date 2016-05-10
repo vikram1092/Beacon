@@ -130,6 +130,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Appear as normal
         super.viewDidAppear(true)
         
+        //Resume animation if it was on
+        activityIndicator.resumeAnimating()
         
         //Call the handler for dealing with possible scenarios
         initializingHandler()
@@ -198,7 +200,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         print("initialSessionSetup")
         //Check permissions
-        //if checkAllPermissions() {
+        if checkAllPermissions() {
             
             // Set up camera session & microphone
             captureSession.sessionPreset = AVCaptureSessionPresetMedium
@@ -223,7 +225,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 beginSession()
             }
             
-      /*  }
+        }
         else {
             
             //Request permissions
@@ -231,7 +233,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 self.requestPermissions()
             })
-        }*/
+        }
     }
     
     

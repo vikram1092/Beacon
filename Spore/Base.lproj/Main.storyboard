@@ -18,13 +18,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
-                                <rect key="frame" x="144" y="75" width="265" height="115"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="115" id="hwy-79-fj2"/>
-                                    <constraint firstAttribute="width" constant="265" id="nms-e5-Qmk"/>
-                                </constraints>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
                                 <rect key="frame" x="0.0" y="432" width="552" height="55"/>
                                 <constraints>
@@ -32,8 +25,8 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="20" y="210" width="512" height="65"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                                <rect key="frame" x="20" y="211" width="512" height="65"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="65" id="5ad-e3-KjW"/>
                                 </constraints>
@@ -51,6 +44,13 @@
                                     <action selector="alertButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WGk-0c-n9r"/>
                                 </connections>
                             </button>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
+                                <rect key="frame" x="144" y="75" width="265" height="115"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="115" id="hwy-79-fj2"/>
+                                    <constraint firstAttribute="width" constant="265" id="nms-e5-Qmk"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.056222612207041736" green="0.081076891706175949" blue="0.17235673592493295" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -209,22 +209,12 @@
                                                         <constraint firstAttribute="width" constant="59" id="mKF-pA-kPj"/>
                                                     </constraints>
                                                 </imageView>
-                                                <view hidden="YES" tag="4" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GD5-O1-pfh" customClass="BeaconingIndicator" customModule="Spore" customModuleProvider="target">
-                                                    <rect key="frame" x="32" y="33" width="20" height="20"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="N6b-8z-FVq"/>
-                                                        <constraint firstAttribute="width" constant="20" id="Sul-7E-mf2"/>
-                                                    </constraints>
-                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <gestureRecognizers/>
                                             <constraints>
                                                 <constraint firstItem="Cbp-co-DR1" firstAttribute="top" secondItem="ZG5-GW-eje" secondAttribute="top" constant="13" id="IHS-BR-Tox"/>
                                                 <constraint firstAttribute="height" constant="85" id="PR6-qv-qq2"/>
-                                                <constraint firstItem="GD5-O1-pfh" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="leading" constant="32" id="jll-cY-L1S"/>
-                                                <constraint firstAttribute="bottom" secondItem="GD5-O1-pfh" secondAttribute="bottom" constant="32" id="wLh-jG-ftz"/>
                                                 <constraint firstAttribute="width" constant="85" id="zIv-jr-Gr0"/>
                                                 <constraint firstItem="Cbp-co-DR1" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="leading" constant="13" id="zdh-gw-ina"/>
                                             </constraints>
@@ -277,7 +267,6 @@
                         </connections>
                     </refreshControl>
                     <connections>
-                        <outlet property="table" destination="xjG-fJ-7nf" id="fUB-AZ-CrP"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="UserListToLoginSegue" id="nRp-o4-b8z"/>
                     </connections>
                 </tableViewController>

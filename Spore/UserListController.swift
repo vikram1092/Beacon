@@ -27,10 +27,10 @@ class UserListController: UITableViewController {
     var userLatitude = NSNumber()
     var userLongitude = NSNumber()
     var userToReceivePhotos = 0
-    var firstTime = true
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
     var countryObject = UIView()
+    var alertShowed = false
     
     let defaultColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
@@ -42,7 +42,6 @@ class UserListController: UITableViewController {
     let userDefaults = NSUserDefaults.standardUserDefaults()
     let calendar = NSCalendar.currentCalendar()
     
-    @IBOutlet var table: UITableView!
     
     
     override func viewDidLoad() {
@@ -54,6 +53,7 @@ class UserListController: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         
+        print("viewWillAppear")
         //Retreive user defaults
         getUserDefaults()
     }
@@ -62,7 +62,11 @@ class UserListController: UITableViewController {
     override func viewDidAppear(animated: Bool) {
         
         //Run like usual
+        print("viewDidAppear")
         super.viewDidAppear(true)
+        
+        //Resume any ongoing animations
+        resumeCellAnimations()
         
         //Check user login status
         print("Checking user login status")
@@ -96,8 +100,10 @@ class UserListController: UITableViewController {
     override func viewDidDisappear(animated: Bool) {
         
         //Reload visible rows
+        print("viewDidDisappear")
         reloadVisibleRows()
     }
+    
     
     internal func userIsBanned() {
         
@@ -209,6 +215,7 @@ class UserListController: UITableViewController {
         
         
         //Retreive local user photo list
+        print("loadUserList")
         let query = PFQuery(className: "photo")
         query.fromLocalDatastore()
         query.whereKey("localTag", equalTo: userEmail)
@@ -223,23 +230,23 @@ class UserListController: UITableViewController {
             }
             else if objects!.count > 0 && objects!.count != self.userList.count {
                 
+                print(objects!.count)
+                print(self.userList.count)
                 //Changes have taken place in local datastore, reload table and send unsent photos
                 self.userList = objects!
+                print("Reloading table after local retreival")
                 
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
-                    //Update user list with new photos
-                    print("Reloading table after local retreival")
-                    self.table.reloadData()
-                    print("Adding new photos")
+                    //Update table
+                    self.tableView.reloadData()
                     
-                    
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                        
-                        self.sendUnsentPhotos()
-                        self.updateUserList(false)
-                    })
                 })
+                
+                //Send any unsent photos and update the table with new photos
+                print("Adding new photos")
+                self.sendUnsentPhotos()
+                self.updateUserList(false)
             }
             else {
                 
@@ -270,102 +277,139 @@ class UserListController: UITableViewController {
         
         
         //Declare necessary variables
-        let indexPath = NSIndexPath(forRow: userList.count - 1 - userList.indexOf(photoObj)!
-            , inSection: 0)
-        let firstCell = self.tableView.cellForRowAtIndexPath(indexPath)
-        print("cell to send from: \(firstCell)")
-        print("photoObject to send: \(photoObj)")
-        let firstActivityIndicator = firstCell?.viewWithTag(4) as? BeaconingIndicator
+        print("sendUnsentPhoto")
+        let firstCell = getCellForObject(photoObj)
+        let firstCountryBackground = firstCell?.viewWithTag(6) as? CountryBackground
+        print(firstCountryBackground)
         let firstSubTitleView = firstCell?.viewWithTag(2) as? UILabel
         
         //Update cell to let user know photo is sending
         photoObj.removeObjectForKey("sendingStatus")
         
+        photoObj.setObject(true, forKey: "isAnimating")
+        
         if firstCell != nil {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
             
                 firstSubTitleView!.text = "Sending..."
-                firstActivityIndicator!.startAnimating()
+                firstCountryBackground!.startAnimating()
             })
         }
         
         //Create media file for object before sending since local datastore does not persist PFFiles
         let filePath = documentsDirectory + (photoObj.objectForKey("filePath") as! String)
-        photoObj["photo"] = PFFile(data: NSData(contentsOfFile: filePath)!)
         
-        //Save photo object
-        photoObj.saveInBackgroundWithBlock { (saved, error) -> Void in
+        //If photo exists, send the object. If not, delete it
+        if fileManager.fileExistsAtPath(filePath) {
             
-            if error != nil {
-                print("Error saving object: \(error)")
+            photoObj["photo"] = PFFile(data: NSData(contentsOfFile: filePath)!)
+            //Save photo object
+            photoObj.saveInBackgroundWithBlock { (saved, error) -> Void in
                 
-                //Let user know
-                photoObj.setObject("Ready", forKey: "sendingStatus")
-                
-                let cell = self.tableView.cellForRowAtIndexPath(indexPath)
-                print("cell to send from: \(cell)")
-                print("photoObject to send: \(photoObj)")
-                let activityIndicator = cell?.viewWithTag(4) as? BeaconingIndicator
-                let subTitleView = cell?.viewWithTag(2) as? UILabel
-                
-                if cell != nil {
+                if error != nil {
+                    print("Error saving object: \(error)")
+                    
+                    //Let user know
+                    photoObj.setObject("Ready", forKey: "sendingStatus")
+                    
+                    photoObj.removeObjectForKey("isAnimating")
+                    
+                    let cell = self.getCellForObject(photoObj)
+                    let countryBackground = cell?.viewWithTag(6) as? CountryBackground
+                    let subTitleView = cell?.viewWithTag(2) as? UILabel
+                    
+                    if cell != nil {
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
+                            subTitleView!.text = "Ready To Send"
+                            countryBackground!.stopAnimating()
+                        })
+                    }
+                }
+                else if saved {
+                    
+                    //If sent, remove locally
+                    print("Removing sent object: ")
+                    photoObj.unpinInBackground()
+                    
+                    if self.userList.contains(photoObj) {
+                        
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
+                            //Remove from user list and table and clear local path
+                            self.userList.removeAtIndex(self.userList.indexOf(photoObj)!)
+                            self.tableView.reloadData()
+                            
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                                
+                                self.clearLocalFile(filePath)
+                            })
+                            
+                            //Update user photo variables
+                            self.updateUserPhotos()
+                            
+                            if updateUserList {
+                                
+                                //Reload table to show that object has been sent
+                                
+                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                                    
+                                    //Update user list and table
+                                    self.updateUserList(false)
+                                })
+                            }
+                        })
+                    }
+                }
+                else if !saved {
+                    
+                    //If sending fails, let user know
+                    photoObj.setObject("Ready", forKey: "sendingStatus")
+                    
+                    let cell = self.getCellForObject(photoObj)
+                    let countryBackground = cell?.viewWithTag(6) as? CountryBackground
+                    let subTitleView = cell?.viewWithTag(2) as? UILabel
+                    
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        subTitleView!.text = "Ready To Send"
-                        activityIndicator!.stopAnimating()
+                        if cell != nil {
+                            if subTitleView!.text == "Sending..." {
+                                subTitleView!.text = "Sending failed"
+                            }
+                            countryBackground!.stopAnimating()
+                        }
                     })
                 }
             }
-            else if saved {
-                
-                //If sent, remove locally and update with new photo
-                print("Removing sent object: ")
-                photoObj.unpinInBackground()
-                self.userList.removeAtIndex(self.userList.indexOf(photoObj)!)
-                self.clearLocalFile(filePath)
-                
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
-                    //Update user photo variables
-                    self.updateUserPhotos()
-                    
-                    if updateUserList {
-                        
-                        //Reload table to show that object has been sent
-                        self.tableView.reloadData()
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                            
-                            //Update user list and table
-                            self.updateUserList(false)
-                        })
-                    }
-                    else {
-                        self.tableView.reloadData()
-                    }
-                })
-            }
-            else if !saved {
-                
-                //If sending fails, let user know
-                photoObj.setObject("Ready", forKey: "sendingStatus")
-                
-                let cell = self.tableView.cellForRowAtIndexPath(indexPath)
-                print("cell to send from: \(cell)")
-                print("photoObject to send: \(photoObj)")
-                let activityIndicator = cell?.viewWithTag(4) as? BeaconingIndicator
-                let subTitleView = cell?.viewWithTag(2) as? UILabel
-                
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
-                    if cell != nil {
-                        if subTitleView!.text == "Sending..." {
-                            subTitleView!.text = "Sending failed"
-                        }
-                        activityIndicator!.stopAnimating()
-                    }
-                })
-            }
         }
+        else {
+            
+            //Remove from local datastore
+            photoObj.unpinInBackground()
+            
+            //If table contains photo, delete it from everywhere
+            if userList.contains(photoObj) {
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    //Remove from user list and table
+                    self.userList.removeAtIndex(self.userList.indexOf(photoObj)!)
+                    self.tableView.reloadData()
+                })
+            }
+            
+        }
+        
+    }
+    
+    
+    internal func getCellForObject(photoObject: PFObject) -> UITableViewCell? {
+        
+        
+        let indexPath = NSIndexPath(forRow: userList.count - 1 - userList.indexOf(photoObject)!
+            , inSection: 0)
+        
+        return tableView.cellForRowAtIndexPath(indexPath)
     }
     
     
@@ -373,6 +417,7 @@ class UserListController: UITableViewController {
         
         
         //Initialize for subtracting from userToReceivePhotos list
+        print("updateUserList")
         var userReceivedPhotos = 0
         
         //If user is to receive photos, execute the following
@@ -380,6 +425,7 @@ class UserListController: UITableViewController {
             
             //Get unsent photos in the database equal to how many the user gets
             let query = PFQuery(className:"photo")
+            query.whereKeyExists("photo")
             query.whereKey("sentBy", notEqualTo: userEmail)
             query.whereKeyDoesNotExist("receivedBy")
             
@@ -400,15 +446,20 @@ class UserListController: UITableViewController {
                     
                     //Either recurse the same method with different parameters or end search
                     if self.userToReceivePhotos > 0 {
-                        if sameCountry {
+                        
+                        if sameCountry && (!self.alertShowed || self.refreshControl!.refreshing) {
                             
                             //Let the user know that the database is empty
+                            self.alertShowed = true
+                            
                             print("Database empty.")
-                            let alert = UIAlertController(title: "Photos To Come!", message: "People will be sharing their pics very soon, check back to see what you get!", preferredStyle: UIAlertControllerStyle.Alert)
-                            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
-                            self.presentViewController(alert, animated: true, completion: nil)
+                            if self.tabBarController?.selectedIndex == 1 {
+                                let alert = UIAlertController(title: "Photos To Come!", message: "People will be sharing their pics very soon, check back to see what you get!", preferredStyle: UIAlertControllerStyle.Alert)
+                                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
+                                self.presentViewController(alert, animated: true, completion: nil)
+                            }
                         }
-                        else {
+                        else if !sameCountry {
                             
                             //Query for pictures from the same country
                             self.updateUserList(true)
@@ -485,7 +536,7 @@ class UserListController: UITableViewController {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
                         //Reload table
-                        self.table.reloadData()
+                        self.tableView.reloadData()
                         
                         //Save user list
                         print("Saving user list")
@@ -529,6 +580,7 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
+        print("cellForRowAtIndexPath")
         //Initialize variables:
         //Array is printed backwards so userListLength is initialized
         print("Reached cell" + String(indexPath.row))
@@ -550,6 +602,11 @@ class UserListController: UITableViewController {
         let city = userList[userListIndex]["sentCity"] as? String
         
         
+        //Configure image sliding and action
+        let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
+        imageBackground.addGestureRecognizer(pan)
+        
+        
         //Add the country image to its background
         if userList[userListIndex]["sentBy"] as! String == userEmail && userList[userListIndex]["receivedBy"] == nil {
             
@@ -563,27 +620,24 @@ class UserListController: UITableViewController {
             if sendingStatus == nil {
                 
                 subTitleView.text = "Sending..."
+                userList[userListIndex]["isAnimating"] = true
+                imageBackground.startAnimating()
             }
             else {
                 
                 subTitleView.text = "Ready To Send"
+                imageBackground.stopAnimating()
             }
-            
-            let activityIndicator = cell.viewWithTag(4) as! BeaconingIndicator
-            activityIndicator.startAnimating()
-            
         }
         else {
             
-            //Set background color
+            //Set background color & kill any animations
             imageBackground.changeBackgroundColor(defaultColor)
+            imageBackground.stopAnimating()
             
             //Get time string
             let timeString = timeSinceDate(date!, numericDates: true)
             
-            //Configure image sliding and action
-            let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
-            imageBackground.addGestureRecognizer(pan)
             
             
             //Configure time left for photo
@@ -635,7 +689,6 @@ class UserListController: UITableViewController {
                     
                     titleView.text = country
                 }
-                
             }
         }
         //Check if city variable is present
@@ -655,6 +708,18 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
+        print("willDisplayCell")
+        /*
+        let userListIndex = userList.count - 1 - indexPath.row
+        if let animating = userList[userListIndex].objectForKey("isAnimating") as? Bool {
+            
+            if animating {
+                
+                let countryBackground = cell.viewWithTag(6) as! CountryBackground
+                countryBackground.startAnimating()
+            }
+        }
+*/
     }
     
     
@@ -718,7 +783,7 @@ class UserListController: UITableViewController {
         
         
         saveUserList()
-        table.reloadData()
+        tableView.reloadData()
     }
     
     
@@ -734,9 +799,12 @@ class UserListController: UITableViewController {
         //If photo to be sent, send. Else if row is within time, display photo or video. Else, animate
         if userList[userListIndex]["sentBy"] as! String == userEmail && userList[userListIndex]["receivedBy"] == nil {
             
+            print("Send photo")
             sendUnsentPhoto(userList[userListIndex], updateUserList: true)
         }
         else if withinTime(userList[userListIndex].objectForKey("receivedAt") as! NSDate) {
+            
+            print("Show photo")
             
             //Initialize parent VC variables
             let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
@@ -753,8 +821,8 @@ class UserListController: UITableViewController {
             let objectToDisplay = userList[userListIndex]["photo"] as! PFFile
             
             //Start UI animation
-            let activity = cell.viewWithTag(4) as! BeaconingIndicator
-            activity.startAnimating()
+            let countryBackground = cell.viewWithTag(6) as! CountryBackground
+            countryBackground.startAnimating()
             
             //Handle for videos and pictures uniqeuly
             if isVideo {
@@ -790,7 +858,7 @@ class UserListController: UITableViewController {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             print("Adding video player")
-                            activity.stopAnimating()
+                            countryBackground.stopAnimating()
                             
                             if !grandparent.hideStatusBar {
                                 
@@ -824,7 +892,7 @@ class UserListController: UITableViewController {
                     //Stop animation
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        activity.stopAnimating()
+                        countryBackground.stopAnimating()
                     })
                     
                     if photoConvError != nil {
@@ -853,9 +921,10 @@ class UserListController: UITableViewController {
             }
             
         }
-            //If photo not within time, display cell bounce animation
+        //If photo not within time, display cell bounce animation
         else {
             
+            print("Snap expired")
             
             UIView.animateWithDuration(0.1, animations: { () -> Void in
                 
@@ -903,8 +972,35 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func reloadVisibleRows() {
+    internal func resumeCellAnimations() {
+        
+        
+        print("resumeCellAnimations")
+        if tableView != nil {
+            
+            for indexPath in tableView.indexPathsForVisibleRows! {
+                
+                //Animate cell if it is supposed to be animating
+                let userListIndex = userList.count - 1 - indexPath.row
+                
+                if let animating = userList[userListIndex].objectForKey("isAnimating") as? Bool {
+                    
+                    if animating {
+                        
+                        print("resuming cell")
+                        let cell = tableView.cellForRowAtIndexPath(indexPath)
+                        let countryBackground = cell!.viewWithTag(6) as! CountryBackground
+                        countryBackground.startAnimating()
+                    }
+                }
+            }
+        }
+    }
     
+    
+    internal func reloadVisibleRows() {
+        
+        print("reloadVisibleRows")
         if self.tableView != nil {
             
             self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
@@ -1115,7 +1211,6 @@ class UserListController: UITableViewController {
         default:
             print("default")
             countryObject.center.x = translation.x + countryCenter.x
-            //countryObject.transform = CGAffineTransformMakeRotation( (translation.x / (countryObject.bounds.height/2)) + CGFloat(-M_PI / 2.0))
             
         }
     }
@@ -1203,8 +1298,8 @@ class UserListController: UITableViewController {
         let difference = calendar.components([.Day, .Hour, .Minute], fromDate: date, toDate: NSDate(), options: [])
         let timeElapsed = (difference.day * 24 * 60) + (difference.hour * 60) + (difference.minute)
         
-        //Return fraction of elapsed time over two days
-        return 1.0 - Float(timeElapsed)/2880
+        //Return fraction of elapsed time over one day
+        return (1.0 - Float(timeElapsed)/1440) * 0.98
         
     }
     

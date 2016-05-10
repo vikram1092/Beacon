@@ -19,6 +19,7 @@ class BeaconingIndicator: UIView {
     let color = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     var isAnimating = false
     
+    
     internal required init?(coder aDecoder: NSCoder) {
         
         super.init(coder: aDecoder)
@@ -27,7 +28,8 @@ class BeaconingIndicator: UIView {
         //self.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
         
         //Set beacon dot
-        dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width/2 - 16, y: self.bounds.height/2 - 16, width: 32, height: 32)).CGPath
+        let dotBounds = self.bounds.height * 0.80
+        dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width * 0.10, y: self.bounds.height * 0.10, width: dotBounds, height: dotBounds)).CGPath
         dot.fillColor = color
         
         //Set swirl
@@ -51,17 +53,12 @@ class BeaconingIndicator: UIView {
         self.hidden = false
         isAnimating = true
         
-        
         rotateAnimation.fromValue = 0.0
         rotateAnimation.toValue = CGFloat(2.0 * M_PI)
         rotateAnimation.duration = 1
         rotateAnimation.repeatCount = HUGE
-        
-        //swirl.position = CGPoint(x: 0, y: 0)
-        //swirl.anchorPoint = CGPoint(x: 0, y: 0)
 
         self.layer.addAnimation(rotateAnimation, forKey: nil)
-        
     }
     
     
