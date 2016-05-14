@@ -20,12 +20,12 @@ class BeaconingIndicator: UIView {
     var isAnimating = false
     
     
-    internal required init?(coder aDecoder: NSCoder) {
+    override init(frame: CGRect) {
         
-        super.init(coder: aDecoder)
+        super.init(frame: frame)
         
         //Rotate view
-        //self.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
+        self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
         
         //Set beacon dot
         let dotBounds = self.bounds.height * 0.80
@@ -36,8 +36,35 @@ class BeaconingIndicator: UIView {
         swirl.path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)).CGPath
         swirl.fillColor = UIColor.clearColor().CGColor
         swirl.strokeColor = color
-        swirl.strokeStart = 0
-        swirl.strokeEnd = 0.6
+        swirl.strokeStart = 0.4
+        swirl.strokeEnd = 1
+        swirl.lineWidth = 2
+        swirl.lineCap = kCALineCapRound
+        
+        
+        self.layer.addSublayer(swirl)
+        self.layer.addSublayer(dot)
+    }
+    
+    
+    internal required init?(coder aDecoder: NSCoder) {
+        
+        super.init(coder: aDecoder)
+        
+        //Rotate view
+        self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
+        
+        //Set beacon dot
+        let dotBounds = self.bounds.height * 0.80
+        dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width * 0.10, y: self.bounds.height * 0.10, width: dotBounds, height: dotBounds)).CGPath
+        dot.fillColor = color
+        
+        //Set swirl
+        swirl.path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)).CGPath
+        swirl.fillColor = UIColor.clearColor().CGColor
+        swirl.strokeColor = color
+        swirl.strokeStart = 0.4
+        swirl.strokeEnd = 1.0
         swirl.lineWidth = 2
         swirl.lineCap = kCALineCapRound
         
@@ -45,6 +72,15 @@ class BeaconingIndicator: UIView {
         self.layer.addSublayer(swirl)
         self.layer.addSublayer(dot)
         
+    }
+    
+    
+    internal func updateLayers() {
+        
+        
+        let dotBounds = self.bounds.height * 0.80
+        swirl.path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)).CGPath
+        dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width * 0.10, y: self.bounds.height * 0.10, width: dotBounds, height: dotBounds)).CGPath
     }
     
     

@@ -355,10 +355,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func addCameraInputs() {
         
-        
+        //Add camera inputs
         captureSession.beginConfiguration()
         
-        //Add camera inputs
         do {
             
             print("add inputs")
@@ -1208,9 +1207,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func saveUserLocationDefaults() {
         
-        //Save user country and city
+        //Save user country and city if nothing exists or if all three aren't null
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            
+    
             print("Saving user's country & city")
             self.userDefaults.setObject(self.userCountry, forKey: "userCountry")
             self.userDefaults.setObject(self.userState, forKey: "userState")

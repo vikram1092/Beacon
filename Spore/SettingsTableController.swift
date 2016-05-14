@@ -33,12 +33,18 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         
         //Run view load as normal
         super.viewDidLoad()
+    }
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        //Run as normal
+        super.viewWillAppear(animated)
         
         //Get user defaults
         getUserDefaults()
         
         //Configure profile picture
-        //countryBackground.changeBackgroundColor(UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor)
         countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         countryBackground.bringSubviewToFront(countryPicture)
         
@@ -46,9 +52,9 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         setUserLocation()
     }
     
-    
     override func viewDidAppear(animated: Bool) {
         
+        //Run as normal
         super.viewDidAppear(animated)
         
         //Turn switch to user saved state

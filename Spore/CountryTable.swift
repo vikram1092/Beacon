@@ -338,7 +338,7 @@ class CountryTable {
         ["Qatar","qa"],
         ["Réunion","re"],
         ["Romania","ro"],
-        ["Russian Federation","ru"],
+        ["Russia","ru"],
         ["Rwanda","rw"],
         ["Saint Barthélemy","bl"],
         ["Saint Helena, Ascension and Tristan da Cunha","sh"],

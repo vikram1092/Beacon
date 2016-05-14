@@ -30,8 +30,11 @@ class UserListController: UITableViewController {
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
     var countryObject = UIView()
+    var updatingUserList = false
     var alertShowed = false
     
+    var locManager = CLLocationManager()
+    var beaconRefresh = BeaconingIndicator()
     let defaultColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
     let fileManager = NSFileManager.defaultManager()
@@ -48,6 +51,8 @@ class UserListController: UITableViewController {
         
         //Load view as usual
         super.viewDidLoad()
+        
+        initializeRefreshControl()
     }
     
     
@@ -250,10 +255,12 @@ class UserListController: UITableViewController {
             }
             else {
                 
-                //Nothing has changed, send unsent photos
+                //Nothing has changed, update user list if it's not already updating
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                     
-                    self.updateUserList(false)
+                    if !self.updatingUserList {
+                        self.updateUserList(false)
+                    }
                 })
             }
         }
@@ -273,11 +280,34 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func sendUnsentPhoto(photoObj: PFObject, updateUserList: Bool) {
+    internal func sendUnsentPhoto(photoObject: PFObject, updateUserList: Bool) {
         
-        
-        //Declare necessary variables
+        //Check if geopoint exists and political data doesnt.
+        //If so, call the method for it and revert back here through it.
+        //If not, simply send the object
         print("sendUnsentPhoto")
+        
+        let geoPoint = photoObject["sentFrom"] as! PFGeoPoint
+        let sentCountry = photoObject["countryCode"] as? String
+        let sentState = photoObject["sentState"] as? String
+        let sentCity = photoObject["sentCity"] as? String
+        
+        
+        if (geoPoint.latitude != 0.0 || geoPoint.longitude != 0.0) && (sentCountry == "" && (sentState == nil || sentState == "") && (sentCity == nil || sentCity == "")) {
+            
+            getPoliticalDetails(geoPoint, photoObject: photoObject)
+        }
+        else {
+            
+            sendPhotoToDatabase(photoObject, updateUserList: true)
+        }
+    }
+    
+    
+    internal func sendPhotoToDatabase(photoObj: PFObject, updateUserList: Bool) {
+        
+        print("sendPhotoToDatabase")
+        //Declare necessary variables
         let firstCell = getCellForObject(photoObj)
         let firstCountryBackground = firstCell?.viewWithTag(6) as? CountryBackground
         print(firstCountryBackground)
@@ -418,6 +448,7 @@ class UserListController: UITableViewController {
         
         //Initialize for subtracting from userToReceivePhotos list
         print("updateUserList")
+        updatingUserList = true
         var userReceivedPhotos = 0
         
         //If user is to receive photos, execute the following
@@ -447,12 +478,14 @@ class UserListController: UITableViewController {
                     //Either recurse the same method with different parameters or end search
                     if self.userToReceivePhotos > 0 {
                         
+                        //End search, don't repeat alert if you've showed it once, unless the user refreshes
                         if sameCountry && (!self.alertShowed || self.refreshControl!.refreshing) {
                             
-                            //Let the user know that the database is empty
                             self.alertShowed = true
+                            self.updatingUserList = false
                             
                             print("Database empty.")
+                            //Let the user know that the database if user hasn't switched out already
                             if self.tabBarController?.selectedIndex == 1 {
                                 let alert = UIAlertController(title: "Photos To Come!", message: "People will be sharing their pics very soon, check back to see what you get!", preferredStyle: UIAlertControllerStyle.Alert)
                                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
@@ -463,6 +496,11 @@ class UserListController: UITableViewController {
                             
                             //Query for pictures from the same country
                             self.updateUserList(true)
+                        }
+                        else if sameCountry {
+                            
+                            //Set updating flag to false
+                            self.updatingUserList = false
                         }
                     }
                 }
@@ -782,8 +820,8 @@ class UserListController: UITableViewController {
     internal override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         
-        saveUserList()
         tableView.reloadData()
+        saveUserList()
     }
     
     
@@ -994,16 +1032,6 @@ class UserListController: UITableViewController {
                     }
                 }
             }
-        }
-    }
-    
-    
-    internal func reloadVisibleRows() {
-        
-        print("reloadVisibleRows")
-        if self.tableView != nil {
-            
-            self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
         }
     }
     
@@ -1243,7 +1271,110 @@ class UserListController: UITableViewController {
         }
     
     }
-
+    
+    
+    internal func reloadVisibleRows() {
+        
+        print("reloadVisibleRows")
+        if self.tableView != nil {
+            
+            self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
+        }
+    }
+    
+    
+    internal func initializeRefreshControl() {
+        
+        for subview in refreshControl!.subviews {
+            
+            subview.removeFromSuperview()
+        }
+        
+        refreshControl!.addSubview(beaconRefresh)
+    }
+    
+    
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        
+        let pullDistance = -scrollView.contentOffset.y
+        let pullMax = min(max(pullDistance, 0.0), 60.0)
+        let pullRatio = pullMax/100.0
+        
+        let midX = scrollView.bounds.width / 2.0
+        
+        beaconRefresh.frame = CGRect(x: midX - max(pullMax - 20, 0) / 2.0, y: 10 + pullRatio, width: max(pullMax - 20, 0), height: max(pullMax - 20, 0))
+        beaconRefresh.updateLayers()
+        
+        //beaconRefresh.layer.anchorPoint = beaconRefresh.center
+        //beaconRefresh.transform = CGAffineTransformMakeRotation(pullRatio * CGFloat(M_PI))
+        
+    }
+    
+    
+    internal func getPoliticalDetails(locGeoPoint: PFGeoPoint, photoObject: PFObject) {
+        
+        //Initialize coordinate details
+        let location = CLLocation(latitude: locGeoPoint.latitude, longitude: locGeoPoint.longitude)
+        print(location)
+        
+        //Get political information, update the object and send it to the database
+        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, locationError) -> Void in
+            
+            if locationError != nil {
+                
+                print("Reverse geocoder error: " + locationError!.description)
+            }
+            else if placemarks!.count > 0 {
+                
+                //Get and save object's country, state & city
+                print("Geo location country code: \(placemarks![0].locality), \(placemarks![0].administrativeArea), \(placemarks![0].ISOcountryCode!)")
+                photoObject["countryCode"] = placemarks![0].ISOcountryCode!.lowercaseString
+                
+                
+                if placemarks![0].administrativeArea != nil {
+                    
+                    photoObject["sentState"]  = placemarks![0].administrativeArea!
+                }
+                
+                if placemarks![0].locality != nil {
+                    
+                     photoObject["sentCity"]  = placemarks![0].locality!
+                }
+                
+                
+                //If object exists in user list, refresh its cell in the table
+                if self.userList.contains(photoObject) {
+                    
+                    let cell = self.getCellForObject(photoObject)!
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.tableView.reloadRowsAtIndexPaths([self.tableView.indexPathForCell(cell)!], withRowAnimation: UITableViewRowAnimation.Automatic)
+                    })
+                }
+                
+                //Save object locally, then send to database
+                photoObject.pinInBackgroundWithBlock({ (saved, error) -> Void in
+                    
+                    if error != nil {
+                        
+                        print("Error saving location updated object: \(error)")
+                    }
+                    else if saved {
+                        
+                        //Try sending photo to database with the updated location
+                        //self.sendUnsentPhoto(photoObject, updateUserList: true)
+                    }
+                })
+            }
+            else {
+                
+                print("Problem with the data received from geocoder")
+                //Try sending photo to database without location
+                //self.sendUnsentPhoto(photoObject, updateUserList: true)
+            }
+        }
+    }
+    
     
     internal func segueToMap(location: CLLocationCoordinate2D) {
         
