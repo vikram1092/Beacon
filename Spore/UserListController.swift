@@ -19,6 +19,7 @@ import FBSDKLoginKit
 class UserListController: UITableViewController {
     
     var userList = Array<PFObject>()
+    var sendingList = Array<PFObject>()
     var userName = ""
     var userEmail = ""
     var userCountry = ""
@@ -287,45 +288,54 @@ class UserListController: UITableViewController {
         //If not, simply send the object
         print("sendUnsentPhoto")
         
-        let geoPoint = photoObject["sentFrom"] as! PFGeoPoint
-        let sentCountry = photoObject["countryCode"] as? String
-        let sentState = photoObject["sentState"] as? String
-        let sentCity = photoObject["sentCity"] as? String
-        
-        
-        if (geoPoint.latitude != 0.0 || geoPoint.longitude != 0.0) && (sentCountry == "" && (sentState == nil || sentState == "") && (sentCity == nil || sentCity == "")) {
+        //Run unless object is already sending
+        if !sendingList.contains(photoObject) {
             
-            getPoliticalDetails(geoPoint, photoObject: photoObject)
-        }
-        else {
+            //Add to list
+            sendingList.append(photoObject)
             
-            sendPhotoToDatabase(photoObject, updateUserList: true)
+            //Initialize variables
+            let geoPoint = photoObject["sentFrom"] as! PFGeoPoint
+            let sentCountry = photoObject["countryCode"] as? String
+            let sentState = photoObject["sentState"] as? String
+            let sentCity = photoObject["sentCity"] as? String
+            
+            //Declare necessary variables
+            let cell = getCellForObject(photoObject)
+            let countryBackground = cell?.viewWithTag(6) as? CountryBackground
+            print(countryBackground)
+            let subTitleView = cell?.viewWithTag(2) as? UILabel
+            
+            //Update cell to let user know photo is processing
+            photoObject.removeObjectForKey("sendingStatus")
+            photoObject.setObject(true, forKey: "isAnimating")
+            
+            if cell != nil {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    subTitleView!.text = "Sending..."
+                    countryBackground!.startAnimating()
+                })
+            }
+            
+            
+            if (geoPoint.latitude != 0.0 || geoPoint.longitude != 0.0) && (sentCountry == "" && (sentState == nil || sentState == "") && (sentCity == nil || sentCity == "")) {
+                
+                getPoliticalDetails(geoPoint, photoObject: photoObject)
+            }
+            else {
+                
+                sendPhotoToDatabase(photoObject, updateUserList: true)
+            }
         }
     }
     
     
     internal func sendPhotoToDatabase(photoObj: PFObject, updateUserList: Bool) {
         
+        
         print("sendPhotoToDatabase")
-        //Declare necessary variables
-        let firstCell = getCellForObject(photoObj)
-        let firstCountryBackground = firstCell?.viewWithTag(6) as? CountryBackground
-        print(firstCountryBackground)
-        let firstSubTitleView = firstCell?.viewWithTag(2) as? UILabel
-        
-        //Update cell to let user know photo is sending
-        photoObj.removeObjectForKey("sendingStatus")
-        
-        photoObj.setObject(true, forKey: "isAnimating")
-        
-        if firstCell != nil {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            
-                firstSubTitleView!.text = "Sending..."
-                firstCountryBackground!.startAnimating()
-            })
-        }
-        
+
         //Create media file for object before sending since local datastore does not persist PFFiles
         let filePath = documentsDirectory + (photoObj.objectForKey("filePath") as! String)
         
@@ -341,8 +351,8 @@ class UserListController: UITableViewController {
                     
                     //Let user know
                     photoObj.setObject("Ready", forKey: "sendingStatus")
-                    
                     photoObj.removeObjectForKey("isAnimating")
+                    self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
                     
                     let cell = self.getCellForObject(photoObj)
                     let countryBackground = cell?.viewWithTag(6) as? CountryBackground
@@ -350,6 +360,7 @@ class UserListController: UITableViewController {
                     
                     if cell != nil {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
                             
                             subTitleView!.text = "Ready To Send"
                             countryBackground!.stopAnimating()
@@ -360,6 +371,7 @@ class UserListController: UITableViewController {
                     
                     //If sent, remove locally
                     print("Removing sent object: ")
+                    self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
                     photoObj.unpinInBackground()
                     
                     if self.userList.contains(photoObj) {
@@ -395,6 +407,7 @@ class UserListController: UITableViewController {
                     
                     //If sending fails, let user know
                     photoObj.setObject("Ready", forKey: "sendingStatus")
+                    self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
                     
                     let cell = self.getCellForObject(photoObj)
                     let countryBackground = cell?.viewWithTag(6) as? CountryBackground
@@ -415,6 +428,7 @@ class UserListController: UITableViewController {
         else {
             
             //Remove from local datastore
+            self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
             photoObj.unpinInBackground()
             
             //If table contains photo, delete it from everywhere
@@ -1322,7 +1336,23 @@ class UserListController: UITableViewController {
             
             if locationError != nil {
                 
+                //Update cell to let user know sending failed
                 print("Reverse geocoder error: " + locationError!.description)
+                self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObject)!)
+                let cell = self.getCellForObject(photoObject)
+                let countryBackground = cell?.viewWithTag(6) as? CountryBackground
+                print(countryBackground)
+                let subTitleView = cell?.viewWithTag(2) as? UILabel
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    if cell != nil {
+                        if subTitleView!.text == "Sending..." {
+                            subTitleView!.text = "Sending failed"
+                        }
+                        countryBackground!.stopAnimating()
+                    }
+                })
             }
             else if placemarks!.count > 0 {
                 
@@ -1345,10 +1375,10 @@ class UserListController: UITableViewController {
                 //If object exists in user list, refresh its cell in the table
                 if self.userList.contains(photoObject) {
                     
-                    let cell = self.getCellForObject(photoObject)!
+                    let cell = self.getCellForObject(photoObject)
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        self.tableView.reloadRowsAtIndexPaths([self.tableView.indexPathForCell(cell)!], withRowAnimation: UITableViewRowAnimation.Automatic)
+                        self.tableView.reloadRowsAtIndexPaths([self.tableView.indexPathForCell(cell!)!], withRowAnimation: UITableViewRowAnimation.Automatic)
                     })
                 }
                 
@@ -1357,12 +1387,28 @@ class UserListController: UITableViewController {
                     
                     if error != nil {
                         
+                        //Let user know the sending process failed
                         print("Error saving location updated object: \(error)")
+                        self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObject)!)
+                        let cell = self.getCellForObject(photoObject)
+                        let countryBackground = cell?.viewWithTag(6) as? CountryBackground
+                        print(countryBackground)
+                        let subTitleView = cell?.viewWithTag(2) as? UILabel
+                        
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
+                            if cell != nil {
+                                if subTitleView!.text == "Sending..." {
+                                    subTitleView!.text = "Sending failed"
+                                }
+                                countryBackground!.stopAnimating()
+                            }
+                        })
                     }
                     else if saved {
                         
                         //Try sending photo to database with the updated location
-                        //self.sendUnsentPhoto(photoObject, updateUserList: true)
+                        self.sendUnsentPhoto(photoObject, updateUserList: true)
                     }
                 })
             }
@@ -1370,7 +1416,7 @@ class UserListController: UITableViewController {
                 
                 print("Problem with the data received from geocoder")
                 //Try sending photo to database without location
-                //self.sendUnsentPhoto(photoObject, updateUserList: true)
+                self.sendUnsentPhoto(photoObject, updateUserList: true)
             }
         }
     }

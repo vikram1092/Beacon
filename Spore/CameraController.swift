@@ -13,7 +13,7 @@ import Photos
 import FBSDKCoreKit
 import FBSDKLoginKit
 
-class CameraController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate {
+class CameraController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate, AVAudioRecorderDelegate {
     
     
     @IBOutlet var cameraImage: UIImageView!
@@ -32,6 +32,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     var captureSession = AVCaptureSession()
     var audioSession = AVAudioSession()
+    var audioRecorder: AVAudioRecorder!
     var stillImageOutput = AVCaptureStillImageOutput()
     var movieFileOutput = AVCaptureMovieFileOutput()
     var previewLayer = AVCaptureVideoPreviewLayer?()
@@ -40,11 +41,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var videoTimer = NSTimer()
     let cameraQueue = dispatch_queue_create("", DISPATCH_QUEUE_SERIAL)
     var captureSessionInterrupted = false
+    let recorderSettings = [AVSampleRateKey : NSNumber(float: Float(44100.0)),
+        AVFormatIDKey : NSNumber(int: Int32(kAudioFormatAppleLossless)),
+        AVNumberOfChannelsKey : NSNumber(int: 1),
+        AVEncoderAudioQualityKey : NSNumber(int: Int32(AVAudioQuality.Medium.rawValue)),
+        AVEncoderBitRateKey : NSNumber(int: Int32(320000))]
     
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
     let videoPath = NSTemporaryDirectory() + "userVideo.mov"
+    let initialVideoPath = NSTemporaryDirectory() + "initialVideo.mov"
+    let initialAudioPath = NSTemporaryDirectory() + "initialAudio.m4a"
     let videoFileExtension = ".mov"
     let imageFileExtension = ".jpg"
     let compressionGroup = dispatch_group_create()
@@ -135,7 +143,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Call the handler for dealing with possible scenarios
         initializingHandler()
-        
         
         //Get user defaults
         getUserDefaults()
@@ -361,10 +368,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         do {
             
             print("add inputs")
-            if try captureSession.canAddInput(AVCaptureDeviceInput(device: microphone)) {
+            /*if try captureSession.canAddInput(AVCaptureDeviceInput(device: microphone)) {
                 
                 try captureSession.addInput(AVCaptureDeviceInput(device: microphone))
-            }
+            }*/
             
             if try captureSession.canAddInput(AVCaptureDeviceInput(device: captureDevice)) {
                 
@@ -574,6 +581,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func takeVideo(sender: UILongPressGestureRecognizer) {
         
+        
         switch sender.state {
             
         case .Began:
@@ -584,12 +592,22 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             self.cameraSwitchButton.hidden = true
             
             //Set path for video
-            let url = NSURL(fileURLWithPath: videoPath)
+            let videoUrl = NSURL(fileURLWithPath: initialVideoPath)
+            let audioUrl = NSURL(fileURLWithPath: initialAudioPath)
             
-            //Start recording
+            //Set up audio recorder
+            do {
+                audioRecorder = try AVAudioRecorder(URL: audioUrl, settings: recorderSettings)
+                audioRecorder.delegate = self
+            }
+            catch let error as NSError { print("Error recoding audio: \(error)")}
+            
+            //Start recording video and audio
             print("Beginning video recording")
             movieFileOutput.stopRecording()
-            movieFileOutput.startRecordingToOutputFileURL(url, recordingDelegate: VideoDelegate())
+            audioRecorder.stop()
+            movieFileOutput.startRecordingToOutputFileURL(videoUrl, recordingDelegate: VideoDelegate())
+            audioRecorder.record()
             
             //Start timer
             videoTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: Selector("stopTakingVideo"), userInfo: nil, repeats: false)
@@ -599,6 +617,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
         case .Ended:
             
+            //Stop video if user stops and timer hasn't fired already
             print("Ended video recording")
             if videoTimer.valid {
                 stopTakingVideo()
@@ -616,6 +635,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         print("Ending video recording")
         videoTimer.invalidate()
         movieFileOutput.stopRecording()
+        audioRecorder.stop()
         captureSession.stopRunning()
         captureShape.stopRecording()
         
@@ -627,8 +647,81 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.closeButton.hidden = false
         self.photoSendButton.hidden = false
         
-        //Start movie player
-        initializeMoviePlayer()
+        //Merge audio and video files into one file, then play for user
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+            
+            self.mergeAudio(NSURL(fileURLWithPath: self.initialAudioPath), moviePathUrl: NSURL(fileURLWithPath: self.initialVideoPath), savePathUrl: NSURL(fileURLWithPath: self.videoPath))
+        }
+        
+    }
+    
+    
+    internal func mergeAudio(audioURL: NSURL, moviePathUrl: NSURL, savePathUrl: NSURL) {
+        
+        
+        let composition = AVMutableComposition()
+        let trackVideo:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
+        let trackAudio:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
+        let option = NSDictionary(object: true, forKey: "AVURLAssetPreferPreciseDurationAndTimingKey")
+        let sourceAsset = AVURLAsset(URL: moviePathUrl, options: option as? [String : AnyObject])
+        let audioAsset = AVURLAsset(URL: audioURL, options: option as? [String : AnyObject])
+        
+        //Default composition turns the video into landscape orientation. This returns the video into portrait orientation
+        trackVideo.preferredTransform = CGAffineTransformMakeRotation(90.0 * CGFloat(M_PI) / 180.0)
+        
+        print(sourceAsset)
+        print("playable: \(sourceAsset.playable)")
+        print("exportable: \(sourceAsset.exportable)")
+        print("readable: \(sourceAsset.readable)")
+        
+        let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
+        let audios = audioAsset.tracksWithMediaType(AVMediaTypeAudio)
+        
+        if tracks.count > 0 && audios.count > 0 {
+            
+            //If audio exists, combine audio and video
+            print("Audio & video")
+            let assetTrack:AVAssetTrack = tracks[0] as AVAssetTrack
+            let assetTrackAudio:AVAssetTrack = audios[0] as AVAssetTrack
+            let audioDuration:CMTime = assetTrackAudio.timeRange.duration
+            
+            do {
+                
+                try trackVideo.insertTimeRange(CMTimeRangeMake(kCMTimeZero,audioDuration), ofTrack: assetTrack, atTime: kCMTimeZero)
+                try trackAudio.insertTimeRange(CMTimeRangeMake(kCMTimeZero,audioDuration), ofTrack: assetTrackAudio, atTime: kCMTimeZero)
+                
+                let assetExport: AVAssetExportSession = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetPassthrough)!
+                assetExport.outputFileType = AVFileTypeQuickTimeMovie
+                assetExport.outputURL = savePathUrl
+                assetExport.shouldOptimizeForNetworkUse = true
+                
+                //Export to file and play it for the user
+                assetExport.exportAsynchronouslyWithCompletionHandler({
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        //Start movie player
+                        self.initializeMoviePlayer()
+                    })
+                })
+            }
+            catch let error as NSError { print("Error inserting time range: \(error)") }
+        }
+        else if fileManager.fileExistsAtPath(initialVideoPath) {
+            
+            //If video exists but audio doesn't, copy file to final location
+            do {
+                
+                try fileManager.copyItemAtPath(initialVideoPath, toPath: videoPath)
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    //Start movie player
+                    self.initializeMoviePlayer()
+                })
+            }
+            catch let error as NSError { print("Error copying file: \(error)") }
+        }
     }
     
     
@@ -636,6 +729,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         
         //Initialize movie layer
+        print("initializeMoviePlayer")
         let player = AVPlayer(URL: NSURL(fileURLWithPath: videoPath))
         moviePlayer = AVPlayerLayer(player: player)
         
@@ -734,6 +828,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             if fileManager.fileExistsAtPath(videoPath) {
                 try fileManager.removeItemAtPath(videoPath)
+            }
+            
+            if fileManager.fileExistsAtPath(initialVideoPath) {
+                try fileManager.removeItemAtPath(initialVideoPath)
+            }
+            
+            if fileManager.fileExistsAtPath(initialAudioPath) {
+                try fileManager.removeItemAtPath(initialAudioPath)
             }
         }
         catch let error as NSError {
@@ -1429,6 +1531,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             loginController.fbLoginButton.alpha = 1
             loginController.alertButton.alpha = 0
         }
+    }
+    
+    
+    internal func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
+        
+        print("Finished recording")
     }
     
     
