@@ -9,60 +9,71 @@
 import Foundation
 import UIKit
 
-class BeaconRefresh: UIRefreshControl {
+class BeaconRefresh: UIView {
     
     
-    let dot = CAShapeLayer()
-    let swirl = CAShapeLayer()
-    let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
     let color = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
-    var isAnimating = false
-    
+    let initialDepth = CGFloat(10.0)
+    let number = 13
     
     required init?(coder aDecoder: NSCoder) {
         
         super.init(coder: aDecoder)
         
-        //Rotate view
-        self.transform = CGAffineTransformMakeRotation( 90.0 * CGFloat(M_PI) / 180.0)
+        let width = self.bounds.width - initialDepth
+        let ratio = width/CGFloat(number + 1)
         
-        //Set beacon dot
-        let dotBounds = self.bounds.height * 0.80
-        dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width * 0.10, y: self.bounds.height * 0.10, width: dotBounds, height: dotBounds)).CGPath
-        dot.fillColor = color
-        
-        //Set swirl
-        swirl.path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)).CGPath
-        swirl.fillColor = UIColor.clearColor().CGColor
-        swirl.strokeColor = color
-        swirl.strokeStart = 0
-        swirl.strokeEnd = 0.6
-        swirl.lineWidth = 2
-        swirl.lineCap = kCALineCapRound
-        
-        
-        self.layer.addSublayer(swirl)
-        self.layer.addSublayer(dot)
+        for i in 1...number {
+            
+            let beacon = BeaconRefreshView()
+            self.addSubview(beacon)
+            beacon.center = CGPoint(x: -beacon.bounds.width/2 + (ratio * CGFloat(i)), y: initialDepth)
+        }
     }
     
-    override func beginRefreshing() {
+    
+    override init(frame: CGRect) {
         
-        isAnimating = true
+        super.init(frame: frame)
         
-        rotateAnimation.fromValue = 0.0
-        rotateAnimation.toValue = CGFloat(2.0 * M_PI)
-        rotateAnimation.duration = 1
-        rotateAnimation.repeatCount = HUGE
+        let width = self.bounds.width - initialDepth
+        let ratio = width/CGFloat(number + 1)
         
-        self.layer.addAnimation(rotateAnimation, forKey: nil)
-        
+        for i in 1...number {
+            
+            let beacon = BeaconRefreshView()
+            self.addSubview(beacon)
+            beacon.center = CGPoint(x: ratio * CGFloat(i), y: initialDepth)
+        }
     }
     
-    override func endRefreshing() {
+    
+    internal func updateViews(evenRatio: CGFloat, oddRatio: CGFloat) {
         
-        //Remove animations and hide
-        self.layer.removeAllAnimations()
-        self.hidden = true
-        isAnimating = false
+        //Move views according to ratio
+        for i in 0..<self.subviews.count {
+            
+            let subview = self.subviews[i]
+            let subviewCenterX = subview.center.x
+            let centerX = self.bounds.width/2
+            let distanceRatio = CGFloat(1.0) //max(log10(1 - abs(subviewCenterX - centerX)/centerX) * 10, 0.0)
+            
+            print(distanceRatio)
+            
+            //Evens are odds and odds are even in this array
+            if i % 2 == 0 {
+                
+                subview.center = CGPoint(x: subview.center.x, y:  initialDepth + oddRatio + distanceRatio)
+            }/*
+            else if i % 3 == 2 {
+                
+                subview.center = CGPoint(x: subview.center.x, y:  initialDepth + evenRatio + distanceRatio)
+            }*/
+            else {
+                
+                subview.center = CGPoint(x: subview.center.x, y:  initialDepth + evenRatio + distanceRatio)
+            }
+        }
+        
     }
 }

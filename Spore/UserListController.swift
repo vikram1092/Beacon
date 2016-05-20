@@ -18,6 +18,7 @@ import FBSDKLoginKit
 
 class UserListController: UITableViewController {
     
+    
     var userList = Array<PFObject>()
     var sendingList = Array<PFObject>()
     var userName = ""
@@ -35,7 +36,7 @@ class UserListController: UITableViewController {
     var alertShowed = false
     
     var locManager = CLLocationManager()
-    var beaconRefresh = BeaconingIndicator()
+    var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
     let defaultColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
     let fileManager = NSFileManager.defaultManager()
@@ -335,7 +336,6 @@ class UserListController: UITableViewController {
         
         
         print("sendPhotoToDatabase")
-
         //Create media file for object before sending since local datastore does not persist PFFiles
         let filePath = documentsDirectory + (photoObj.objectForKey("filePath") as! String)
         
@@ -362,7 +362,7 @@ class UserListController: UITableViewController {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             
-                            subTitleView!.text = "Ready To Send"
+                            subTitleView!.text = "Sending failed"
                             countryBackground!.stopAnimating()
                         })
                     }
@@ -371,7 +371,6 @@ class UserListController: UITableViewController {
                     
                     //If sent, remove locally
                     print("Removing sent object: ")
-                    self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
                     photoObj.unpinInBackground()
                     
                     if self.userList.contains(photoObj) {
@@ -379,6 +378,7 @@ class UserListController: UITableViewController {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
                             //Remove from user list and table and clear local path
+                            self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
                             self.userList.removeAtIndex(self.userList.indexOf(photoObj)!)
                             self.tableView.reloadData()
                             
@@ -392,8 +392,7 @@ class UserListController: UITableViewController {
                             
                             if updateUserList {
                                 
-                                //Reload table to show that object has been sent
-                                
+                                //Update table twith new photo
                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                                     
                                     //Update user list and table
@@ -407,6 +406,7 @@ class UserListController: UITableViewController {
                     
                     //If sending fails, let user know
                     photoObj.setObject("Ready", forKey: "sendingStatus")
+                    photoObj.removeObjectForKey("isAnimating")
                     self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
                     
                     let cell = self.getCellForObject(photoObj)
@@ -685,6 +685,7 @@ class UserListController: UITableViewController {
             
             //Set background color & kill any animations
             imageBackground.changeBackgroundColor(defaultColor)
+            userList[userListIndex].removeObjectForKey("isAnimating")
             imageBackground.stopAnimating()
             
             //Get time string
@@ -1299,28 +1300,33 @@ class UserListController: UITableViewController {
     
     internal func initializeRefreshControl() {
         
+        //Remove existing views
         for subview in refreshControl!.subviews {
             
             subview.removeFromSuperview()
         }
         
+        //Add custom views
+        beaconRefresh = BeaconRefresh(frame: (refreshControl?.bounds)!)
         refreshControl!.addSubview(beaconRefresh)
+        
     }
     
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         
+        //Get ratio of distance pulled and update the refresh control accordingly
         let pullDistance = -scrollView.contentOffset.y
-        let pullMax = min(max(pullDistance, 0.0), 60.0)
-        let pullRatio = pullMax/100.0
+        let pullMax = min(max(pullDistance, 0.0), refreshControl!.bounds.height)
+        let pullRatio = pullMax/5.0
         
-        let midX = scrollView.bounds.width / 2.0
+        beaconRefresh.updateViews(pullRatio * 2, oddRatio: pullRatio)
         
-        beaconRefresh.frame = CGRect(x: midX - max(pullMax - 20, 0) / 2.0, y: 10 + pullRatio, width: max(pullMax - 20, 0), height: max(pullMax - 20, 0))
-        beaconRefresh.updateLayers()
+        //print(pullRatio)
         
-        //beaconRefresh.layer.anchorPoint = beaconRefresh.center
-        //beaconRefresh.transform = CGAffineTransformMakeRotation(pullRatio * CGFloat(M_PI))
+        //beaconRefresh.frame = CGRect(x: midX - max(pullMax - 20, 0) / 2.0, y: 20 + pullRatio, width: max(pullMax - 220, 0), height: max(pullMax - 20, 0))
+        //beaconRefresh.frame = CGRect(x: midX - 12.5 / 2.0, y: pullRatio, width: 25, height: 25)
+        //beaconRefresh.updateLayers()
         
     }
     
@@ -1328,6 +1334,7 @@ class UserListController: UITableViewController {
     internal func getPoliticalDetails(locGeoPoint: PFGeoPoint, photoObject: PFObject) {
         
         //Initialize coordinate details
+        print("getPoliticalDetails")
         let location = CLLocation(latitude: locGeoPoint.latitude, longitude: locGeoPoint.longitude)
         print(location)
         
@@ -1338,6 +1345,8 @@ class UserListController: UITableViewController {
                 
                 //Update cell to let user know sending failed
                 print("Reverse geocoder error: " + locationError!.description)
+                photoObject.setObject("Ready", forKey: "sendingStatus")
+                photoObject.removeObjectForKey("isAnimating")
                 self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObject)!)
                 let cell = self.getCellForObject(photoObject)
                 let countryBackground = cell?.viewWithTag(6) as? CountryBackground
@@ -1389,6 +1398,8 @@ class UserListController: UITableViewController {
                         
                         //Let user know the sending process failed
                         print("Error saving location updated object: \(error)")
+                        photoObject.setObject("Ready", forKey: "sendingStatus")
+                        photoObject.removeObjectForKey("isAnimating")
                         self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObject)!)
                         let cell = self.getCellForObject(photoObject)
                         let countryBackground = cell?.viewWithTag(6) as? CountryBackground
@@ -1408,7 +1419,7 @@ class UserListController: UITableViewController {
                     else if saved {
                         
                         //Try sending photo to database with the updated location
-                        self.sendUnsentPhoto(photoObject, updateUserList: true)
+                        self.sendPhotoToDatabase(photoObject, updateUserList: true)
                     }
                 })
             }
@@ -1416,7 +1427,7 @@ class UserListController: UITableViewController {
                 
                 print("Problem with the data received from geocoder")
                 //Try sending photo to database without location
-                self.sendUnsentPhoto(photoObject, updateUserList: true)
+                self.sendPhotoToDatabase(photoObject, updateUserList: true)
             }
         }
     }

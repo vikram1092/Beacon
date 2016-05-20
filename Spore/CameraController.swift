@@ -89,7 +89,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Set color for activity indicator
         self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         
-        //Add subviews accordingly
+        //Adjust views
+        self.backButton.imageEdgeInsets = UIEdgeInsets(top: 26, left: 20, bottom: 20, right: 36)
+        self.cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 26, left: 36, bottom: 20, right: 20)
+        self.flashButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 26, right: 36)
+        self.closeButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 26, right: 36)
         self.cameraImage.addSubview(self.snapTimer)
         self.captureButton.addSubview(self.captureShape)
         
@@ -411,40 +415,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func flashButtonPressed(sender: AnyObject) {
         
-        
         print("Toggling flash!")
         //Turn on torch if flash is on
         toggleTorchMode()
-        
-        //Get configuration lock on device
-        do {
-            try captureDevice?.lockForConfiguration()
-        } catch let error as NSError {print("Error getting lock for device \(error)")}
-        
-        
-        //Configure flash according to toggle
-        if !captureDevice!.torchActive {
-            
-            print("Flash is on")
-            flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
-            flashButton.reloadInputViews()
-            
-            captureDevice!.flashMode = AVCaptureFlashMode.On
-            captureDevice!.unlockForConfiguration()
-        }
-        else {
-            
-            print("Flash is off")
-            flashButton.setImage(UIImage(named: "FlashButtonOff"), forState: UIControlState.Normal)
-            flashButton.reloadInputViews()
-            
-            if captureDevice!.torchMode == AVCaptureTorchMode.On {
-                captureDevice!.torchMode = AVCaptureTorchMode.Off
-            }
-            
-            captureDevice!.flashMode = AVCaptureFlashMode.On
-            captureDevice!.unlockForConfiguration()
-        }
     }
     
     
@@ -476,7 +449,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     let inputs = self.captureSession.inputs
                     print(inputs.count)
                     self.captureSession.beginConfiguration()
-                    self.captureSession.removeInput(inputs[1] as! AVCaptureInput)
+                    self.captureSession.removeInput(inputs[0] as! AVCaptureInput)
                     
                     for input in inputs {
                         
@@ -658,7 +631,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func mergeAudio(audioURL: NSURL, moviePathUrl: NSURL, savePathUrl: NSURL) {
         
-        
+        //Merge available audio and video files into one final video file
         let composition = AVMutableComposition()
         let trackVideo:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
         let trackAudio:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
@@ -737,6 +710,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         moviePlayer.frame = self.view.bounds
         moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         
+        
         //Set loop function
         NSNotificationCenter.defaultCenter().addObserver(self,
             selector: "restartVideoFromBeginning",
@@ -766,11 +740,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             if captureDevice!.torchMode == AVCaptureTorchMode.Off {
                 
+                //Turn on torch mode
+                flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
                 captureDevice!.torchMode = AVCaptureTorchMode.On
                 captureDevice!.unlockForConfiguration()
             }
             else {
                 
+                //Turn off torch mode
+                flashButton.setImage(UIImage(named: "FlashButtonOff"), forState: UIControlState.Normal)
                 captureDevice!.torchMode = AVCaptureTorchMode.Off
                 captureDevice!.unlockForConfiguration()
             }
@@ -1425,19 +1403,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                         self.captureSession.startRunning()
                     })
             }
-        }
-    }
-    
-    
-    internal func endInterruption(notification: NSNotification) {
-        
-        print("Interruption ended")
-        //Hide alert layers
-        closeAlert()
-        
-        if captureSessionInterrupted {
-            
-            captureSession.startRunning()
         }
     }
     

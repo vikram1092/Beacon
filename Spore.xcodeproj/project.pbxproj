@@ -62,6 +62,7 @@
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
 		D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D192652E1C60E4AC00517A8E /* Countries.geojson */; };
 		D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D195159C1C7232F600053A22 /* VideoDelegate.swift */; };
+		D19A71031CEBFB08003B3E74 /* BeaconRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */; };
 		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
 		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
@@ -152,6 +153,7 @@
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		D192652E1C60E4AC00517A8E /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
 		D195159C1C7232F600053A22 /* VideoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDelegate.swift; sourceTree = "<group>"; };
+		D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconRefreshView.swift; sourceTree = "<group>"; };
 		D19E95DF1C753473000106DE /* SporeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SporeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D19E95E11C753473000106DE /* SporeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SporeTests.swift; sourceTree = "<group>"; };
 		D19E95E31C753473000106DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 				D1A3E8A01C78F70A00E115FC /* TabBarController.swift */,
 				D1B9C72B1C22608600D9AEE7 /* MainController.swift */,
 				D13B0D471CA385BA0035759D /* CountryBackground.swift */,
+				D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */,
 				D15A6C061CE2899000AB8611 /* BeaconRefresh.swift */,
 				D1B49D371C5868400085EF2B /* UserListController.swift */,
 				D1E15E191CC5A1A300C27CDF /* Beacon.swift */,
@@ -556,6 +559,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */,
+				D19A71031CEBFB08003B3E74 /* BeaconRefreshView.swift in Sources */,
 				D139D4711CA77C7700909BF5 /* CaptureShape.swift in Sources */,
 				D1494C121C6F6B9C00A386DE /* CountryPolyline.swift in Sources */,
 				D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */,

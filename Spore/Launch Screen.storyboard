@@ -25,16 +25,8 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bgn-aK-2uE">
-                                <rect key="frame" x="546" y="543" width="29" height="29"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="29" id="X1m-PZ-0wj"/>
-                                    <constraint firstAttribute="height" constant="29" id="vxO-vm-qzk"/>
-                                </constraints>
-                                <state key="normal" image="CameraSwitch"/>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JKA-sq-VaC">
-                                <rect key="frame" x="25" y="543" width="29" height="29"/>
+                                <rect key="frame" x="20" y="551" width="29" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="29" id="1Ca-9j-bda"/>
                                     <constraint firstAttribute="width" constant="29" id="B9A-kX-hKx"/>
@@ -56,6 +48,14 @@
                                     <constraint firstAttribute="height" constant="78" id="yDW-gq-Fkb"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bgn-aK-2uE">
+                                <rect key="frame" x="551" y="551" width="29" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="29" id="X1m-PZ-0wj"/>
+                                    <constraint firstAttribute="height" constant="29" id="vxO-vm-qzk"/>
+                                </constraints>
+                                <state key="normal" image="CameraSwitch"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -63,14 +63,14 @@
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="R9L-SP-0rd" secondAttribute="bottom" constant="20" id="9vN-Yr-iqP"/>
                             <constraint firstAttribute="trailingMargin" secondItem="tbl-kh-cNN" secondAttribute="trailing" constant="-20" id="M6s-1k-XK0"/>
                             <constraint firstItem="tbl-kh-cNN" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" id="UwR-JW-pgT"/>
-                            <constraint firstItem="JKA-sq-VaC" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="5" id="VqJ-2b-ff8"/>
+                            <constraint firstItem="JKA-sq-VaC" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="VqJ-2b-ff8"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="tbl-kh-cNN" secondAttribute="bottom" id="YMt-BE-Lfr"/>
                             <constraint firstItem="zKW-Mv-aDs" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="5" id="aI9-Hm-TjX"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Bgn-aK-2uE" secondAttribute="trailing" constant="5" id="dsj-gM-71x"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Bgn-aK-2uE" secondAttribute="trailing" id="dsj-gM-71x"/>
                             <constraint firstItem="tbl-kh-cNN" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="ekx-zm-IfH"/>
                             <constraint firstItem="R9L-SP-0rd" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="lnf-mf-Xug"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="JKA-sq-VaC" secondAttribute="bottom" constant="28" id="mMu-T2-PBN"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="Bgn-aK-2uE" secondAttribute="bottom" constant="28" id="xQU-o1-zZk"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="JKA-sq-VaC" secondAttribute="bottom" constant="20" id="mMu-T2-PBN"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="Bgn-aK-2uE" secondAttribute="bottom" constant="20" id="xQU-o1-zZk"/>
                         </constraints>
                     </view>
                 </viewController>
