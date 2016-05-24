@@ -51,6 +51,7 @@
 		D14907911C455F7500F2C635 /* Tangela.JPG in Resources */ = {isa = PBXBuildFile; fileRef = D14907901C455F7500F2C635 /* Tangela.JPG */; };
 		D1494C121C6F6B9C00A386DE /* CountryPolyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */; };
 		D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */; };
+		D155EEE21CF21B2600E4A454 /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D155EEE11CF21B2600E4A454 /* Countries.geojson */; };
 		D15A6C071CE2899000AB8611 /* BeaconRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15A6C061CE2899000AB8611 /* BeaconRefresh.swift */; };
 		D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BBFD11C7358AF00C0CC6E /* SnapController.swift */; };
 		D16D5CEB1CD99EB4005F401F /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D16D5CEA1CD99EB4005F401F /* Launch Screen.storyboard */; };
@@ -60,7 +61,6 @@
 		D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17B2CD51C977BA100CD6782 /* CountryTable.swift */; };
 		D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */; };
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
-		D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D192652E1C60E4AC00517A8E /* Countries.geojson */; };
 		D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D195159C1C7232F600053A22 /* VideoDelegate.swift */; };
 		D19A71031CEBFB08003B3E74 /* BeaconRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */; };
 		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
@@ -138,6 +138,7 @@
 		D14907901C455F7500F2C635 /* Tangela.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tangela.JPG; path = "../../Spore Images/Tangela.JPG"; sourceTree = "<group>"; };
 		D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryPolyline.swift; sourceTree = "<group>"; };
 		D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableController.swift; sourceTree = "<group>"; };
+		D155EEE11CF21B2600E4A454 /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
 		D15A6C061CE2899000AB8611 /* BeaconRefresh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconRefresh.swift; sourceTree = "<group>"; };
 		D15BBFD11C7358AF00C0CC6E /* SnapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapController.swift; sourceTree = "<group>"; };
 		D16D5CEA1CD99EB4005F401F /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -151,7 +152,6 @@
 		D17B2CD51C977BA100CD6782 /* CountryTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryTable.swift; sourceTree = "<group>"; };
 		D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrivacyPolicyController.swift; path = ../PrivacyPolicyController.swift; sourceTree = "<group>"; };
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
-		D192652E1C60E4AC00517A8E /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
 		D195159C1C7232F600053A22 /* VideoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDelegate.swift; sourceTree = "<group>"; };
 		D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconRefreshView.swift; sourceTree = "<group>"; };
 		D19E95DF1C753473000106DE /* SporeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SporeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -333,9 +333,9 @@
 				D16D5CEA1CD99EB4005F401F /* Launch Screen.storyboard */,
 				D18AE6861C2DC24F00B74ED0 /* Images */,
 				D1B9C7171C2258B800D9AEE7 /* Products */,
+				D155EEE11CF21B2600E4A454 /* Countries.geojson */,
 				D1B9C7201C2258B800D9AEE7 /* Assets.xcassets */,
 				D1B9C7251C2258B800D9AEE7 /* Info.plist */,
-				D192652E1C60E4AC00517A8E /* Countries.geojson */,
 			);
 			path = Spore;
 			sourceTree = "<group>";
@@ -455,12 +455,12 @@
 				D13382961CDAB23200347302 /* Logo@x87.png in Resources */,
 				D1372FD81C959274009DCA29 /* flashDisabledButton@x3.png in Resources */,
 				D1372FDA1C959274009DCA29 /* flashEnabledButton@x3.png in Resources */,
-				D192652F1C60E4AC00517A8E /* Countries.geojson in Resources */,
 				D144F1F21C4412D500E07700 /* CancelPhoto@x3.png in Resources */,
 				D13382A11CDABA2500347302 /* Logo@x114.png in Resources */,
 				D133829B1CDAB79500347302 /* Logo@x29.png in Resources */,
 				D1C083E51C42003000A9C281 /* settingsButton@x3.png in Resources */,
 				D144F1EB1C440F1700E07700 /* UserList.png in Resources */,
+				D155EEE21CF21B2600E4A454 /* Countries.geojson in Resources */,
 				D13658991C55BC4A005AEC61 /* backButton.png in Resources */,
 				D16D5CEB1CD99EB4005F401F /* Launch Screen.storyboard in Resources */,
 				D13382921CDAB23200347302 /* Logo@x58.png in Resources */,

@@ -13,7 +13,7 @@ class BeaconRefresh: UIView {
     
     
     let color = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
-    let initialDepth = CGFloat(10.0)
+    let initialDepth = CGFloat(5.0)
     let number = 13
     
     required init?(coder aDecoder: NSCoder) {

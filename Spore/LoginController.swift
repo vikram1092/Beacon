@@ -232,19 +232,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if segue.identifier == "LoginToMain" {
-            
-            let destinationController = segue.destinationViewController as! SnapController
-            let destinationChildController = destinationController.childController 
-            
-            //destinationChildController.selectedIndex = 0
-            
-        }
-    }
-    
-    
     internal func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
         print("User Logged Out")
     }

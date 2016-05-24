@@ -14,7 +14,7 @@ class BeaconRefreshView: UIView {
     
     
     let dot = CAShapeLayer()
-    let color = UIColor.lightGrayColor().CGColor
+    let color = UIColor.whiteColor().CGColor
     let bound = 10
     
     

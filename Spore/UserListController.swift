@@ -1309,6 +1309,7 @@ class UserListController: UITableViewController {
         //Add custom views
         beaconRefresh = BeaconRefresh(frame: (refreshControl?.bounds)!)
         refreshControl!.addSubview(beaconRefresh)
+        refreshControl!.backgroundColor = UIColor.lightGrayColor()
         
     }
     

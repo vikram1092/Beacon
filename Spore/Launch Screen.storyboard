@@ -33,14 +33,6 @@
                                 </constraints>
                                 <state key="normal" image="backButton"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zKW-Mv-aDs">
-                                <rect key="frame" x="25" y="43" width="29" height="29"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="29" id="HHg-eV-uIe"/>
-                                    <constraint firstAttribute="height" constant="29" id="jZO-Yn-MZO"/>
-                                </constraints>
-                                <state key="normal" image="FlashButtonOff"/>
-                            </button>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchCaptureButton" translatesAutoresizingMaskIntoConstraints="NO" id="R9L-SP-0rd">
                                 <rect key="frame" x="261" y="502" width="78" height="78"/>
                                 <constraints>
@@ -56,16 +48,24 @@
                                 </constraints>
                                 <state key="normal" image="CameraSwitch"/>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zKW-Mv-aDs">
+                                <rect key="frame" x="20" y="40" width="29" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="29" id="HHg-eV-uIe"/>
+                                    <constraint firstAttribute="height" constant="29" id="jZO-Yn-MZO"/>
+                                </constraints>
+                                <state key="normal" image="FlashButtonOff"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="zKW-Mv-aDs" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="23" id="9oh-qC-uW4"/>
+                            <constraint firstItem="zKW-Mv-aDs" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="20" id="9oh-qC-uW4"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="R9L-SP-0rd" secondAttribute="bottom" constant="20" id="9vN-Yr-iqP"/>
                             <constraint firstAttribute="trailingMargin" secondItem="tbl-kh-cNN" secondAttribute="trailing" constant="-20" id="M6s-1k-XK0"/>
                             <constraint firstItem="tbl-kh-cNN" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" id="UwR-JW-pgT"/>
                             <constraint firstItem="JKA-sq-VaC" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="VqJ-2b-ff8"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="tbl-kh-cNN" secondAttribute="bottom" id="YMt-BE-Lfr"/>
-                            <constraint firstItem="zKW-Mv-aDs" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="5" id="aI9-Hm-TjX"/>
+                            <constraint firstItem="zKW-Mv-aDs" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="aI9-Hm-TjX"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Bgn-aK-2uE" secondAttribute="trailing" id="dsj-gM-71x"/>
                             <constraint firstItem="tbl-kh-cNN" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="ekx-zm-IfH"/>
                             <constraint firstItem="R9L-SP-0rd" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="lnf-mf-Xug"/>

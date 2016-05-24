@@ -9,6 +9,7 @@
 import UIKit
 import Parse
 import AVFoundation
+import CoreTelephony
 import Photos
 import FBSDKCoreKit
 import FBSDKLoginKit
@@ -84,16 +85,21 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleAudioSessionInterruption:"), name: AVAudioSessionInterruptionNotification, object: nil)
             
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("continueVideo"), name: UIApplicationWillEnterForegroundNotification, object: nil)
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("doBackgroundTasks"), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+            
+            
         }
         
         //Set color for activity indicator
         self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         
         //Adjust views
-        self.backButton.imageEdgeInsets = UIEdgeInsets(top: 26, left: 20, bottom: 20, right: 36)
-        self.cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 26, left: 36, bottom: 20, right: 20)
-        self.flashButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 26, right: 36)
-        self.closeButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 26, right: 36)
+        self.backButton.imageEdgeInsets = UIEdgeInsets(top: 26, left: 20, bottom: 20, right: 26)
+        self.cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 26, left: 26, bottom: 20, right: 20)
+        self.flashButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 26, right: 26)
+        self.closeButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 26, right: 26)
         self.cameraImage.addSubview(self.snapTimer)
         self.captureButton.addSubview(self.captureShape)
         
@@ -153,17 +159,24 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
+    override func viewDidDisappear(animated: Bool) {
+        
+        //Turn off flash
+        turnTorchOff()
+    }
+    
     internal func initializingHandler() {
         
         
         print("initializingHandler")
-        if userDefaults.objectForKey("userEmail") == nil{
+        if userDefaults.objectForKey("userEmail") == nil {
             
             //Go back to login screen if no user is logged on
             segueToLogin()
         }
         else if firstTime && captureDevice == nil {
             
+            print("Restart camera")
             //Start camera session that's already set up in serial queue
             dispatch_async(cameraQueue, { () -> Void in
                 
@@ -184,6 +197,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         }
         else if !firstTime && !captureSession.running && captureDevice != nil {
             
+            print("Rerun camera")
             //Start camera session that's already set up in serial queue
             dispatch_async(cameraQueue, { () -> Void in
                 
@@ -293,8 +307,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     self.captureSession.startRunning()
                     self.initializeLocationManager()
                 })
-                
-                
             }
             
             self.firstTime = false
@@ -607,10 +619,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Stop everything
         print("Ending video recording")
         videoTimer.invalidate()
+        captureShape.stopRecording()
         movieFileOutput.stopRecording()
         audioRecorder.stop()
         captureSession.stopRunning()
-        captureShape.stopRecording()
         
         //Change elements on screen
         self.backButton.hidden = true
@@ -710,19 +722,25 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         moviePlayer.frame = self.view.bounds
         moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         
+        //Change audio session if user is in a call
+        if CTCallCenter().currentCalls != nil {
+            
+            changeAudioSession(AVAudioSessionCategoryAmbient)
+        }
         
         //Set loop function
         NSNotificationCenter.defaultCenter().addObserver(self,
             selector: "restartVideoFromBeginning",
             name: AVPlayerItemDidPlayToEndTimeNotification,
             object: moviePlayer.player!.currentItem)
-        cameraImage.layer.addSublayer(moviePlayer)
         
-        //Bring timer to front
+        //Add layer to view and bring timer to front
+        cameraImage.layer.addSublayer(moviePlayer)
         cameraImage.bringSubviewToFront(snapTimer)
         
         //Play video
         moviePlayer.player!.play()
+        print(moviePlayer.player!.mediaSelectionCriteriaForMediaCharacteristic(AVMediaCharacteristicAudible))
         
         //Start timer
         snapTimer.startTimer(player.currentItem!.asset.duration)
@@ -756,6 +774,27 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
+    internal func turnTorchOff() {
+        
+        //Turn off flash if its on
+        flashButton.setImage(UIImage(named: "FlashButtonOff"), forState: UIControlState.Normal)
+        if captureDevice!.hasTorch {
+            
+            //Lock device for configuration
+            do {
+                try captureDevice!.lockForConfiguration()
+            } catch let error as NSError {print("Error getting lock for device \(error)")}
+            
+            if captureDevice!.torchMode == AVCaptureTorchMode.On {
+                
+                //Turn off torch mode and unlock device
+                captureDevice!.torchMode = AVCaptureTorchMode.Off
+                captureDevice!.unlockForConfiguration()
+            }
+        }
+    }
+    
+    
     internal func restartVideoFromBeginning()  {
         
         
@@ -765,7 +804,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         let seekTime : CMTime = CMTimeMake(seconds, preferredTimeScale)
         
         //Seek video to beginning
+        print(moviePlayer)
         if moviePlayer.player != nil {
+            
+            print("restarting")
             moviePlayer.player!.seekToTime(seekTime)
             
             //Bring timer to front
@@ -782,6 +824,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func closePhoto(sender: AnyObject) {
         
+        
+        //Change audio session if user is in a call
+        changeAudioSession(AVAudioSessionCategoryPlayAndRecord)
+        
         //Begin camera session again, stop video, & toggle buttons
         moviePlayer.player = nil
         moviePlayer.removeFromSuperlayer()
@@ -797,6 +843,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
         self.cameraImage.image = nil
+        
     }
     
     
@@ -1330,10 +1377,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func handleCaptureSessionInterruption(notification: NSNotification) {
         
+        
         let userInfo = (notification.userInfo! as NSDictionary)
         print(userInfo)
         let reason = userInfo.objectForKey(AVCaptureSessionInterruptionReasonKey) as! NSNumber
-        
         
         if reason == AVCaptureSessionInterruptionReason.VideoDeviceNotAvailableWithMultipleForegroundApps.rawValue {
             
@@ -1380,29 +1427,65 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     self.captureSession.stopRunning()
                 })
             }
-            else if moviePlayer.player?.currentItem != nil {
-                
-                //Pause movie player if it was playing
-                moviePlayer.player?.pause()
-            }
         }
         else if reason == AVAudioSessionInterruptionType.Ended.rawValue {
             
-            
-            if moviePlayer.player?.currentItem != nil {
+            if captureSessionInterrupted {
                 
-                moviePlayer.player?.play()
-            }
-            else if captureSessionInterrupted {
+                print("Interruption began")
+                closeAlert()
+                captureSessionInterrupted = false
+                dispatch_async(cameraQueue, { () -> Void in
                     
-                    print("Interruption began")
-                    closeAlert()
-                    captureSessionInterrupted = false
-                    dispatch_async(cameraQueue, { () -> Void in
-                        
-                        self.captureSession.startRunning()
-                    })
+                    self.captureSession.startRunning()
+                })
             }
+        }
+    }
+    
+    
+    internal func continueVideo() {
+        
+        //If movie player was playing, resume
+        if moviePlayer.player != nil && tabBarController?.selectedIndex == 0 {
+            
+            print("Continuing video")
+            if CTCallCenter().currentCalls == nil {
+                
+                changeAudioSession(AVAudioSessionCategoryPlayAndRecord)
+            }
+            moviePlayer.player!.play()
+        }
+    }
+    
+    
+    internal func doBackgroundTasks() {
+        
+        //If movie player is playing, pause
+        if moviePlayer.player != nil && tabBarController?.selectedIndex == 0  {
+            
+            print("Pause video")
+            moviePlayer.player!.pause()
+        }
+        
+        //Turn torch off
+        turnTorchOff()
+    }
+    
+    
+    internal func changeAudioSession(category: String) {
+        
+        //If audio session isn't already the new category, change it
+        if AVAudioSession.sharedInstance().category != category {
+            
+            do {
+                
+                print("Changing session")
+                try AVAudioSession.sharedInstance().setCategory(category, withOptions: [AVAudioSessionCategoryOptions.MixWithOthers, AVAudioSessionCategoryOptions.DefaultToSpeaker])
+                AVAudioSession.sharedInstance()
+                try AVAudioSession.sharedInstance().setActive(true)
+            }
+            catch let error as NSError { print("Error setting audio session category \(error)") }
         }
     }
     
