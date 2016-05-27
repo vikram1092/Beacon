@@ -60,12 +60,24 @@
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
 		D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17B2CD51C977BA100CD6782 /* CountryTable.swift */; };
 		D17EFBF81C6D679C0063F8D4 /* PrivacyPolicyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */; };
+		D183BFA31CF76C1F00A9E08A /* SentBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BFA21CF76C1F00A9E08A /* SentBeacon.swift */; };
 		D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D188D7B41C283A5F0066E773 /* SettingsController.swift */; };
 		D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D195159C1C7232F600053A22 /* VideoDelegate.swift */; };
 		D19A71031CEBFB08003B3E74 /* BeaconRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */; };
 		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
 		D1A459791C3ABBFF00B35452 /* SettingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1A459781C3ABBFF00B35452 /* SettingsButton.png */; };
+		D1AD47001CF7BF210028942F /* SentAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46F91CF7BF210028942F /* SentAnnotation.swift */; };
+		D1AD47011CF7BF210028942F /* SentAnnotationCluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46FA1CF7BF210028942F /* SentAnnotationCluster.swift */; };
+		D1AD47021CF7BF210028942F /* SentAnnotationClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46FB1CF7BF210028942F /* SentAnnotationClusterView.swift */; };
+		D1AD47031CF7BF210028942F /* FBBoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46FC1CF7BF210028942F /* FBBoundingBox.swift */; };
+		D1AD47041CF7BF210028942F /* SentClusteringManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46FD1CF7BF210028942F /* SentClusteringManager.swift */; };
+		D1AD47051CF7BF210028942F /* FBQuadTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46FE1CF7BF210028942F /* FBQuadTree.swift */; };
+		D1AD47061CF7BF210028942F /* FBQuadTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46FF1CF7BF210028942F /* FBQuadTreeNode.swift */; };
+		D1AD47091CF7C0FE0028942F /* ReceivedAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD47081CF7C0FE0028942F /* ReceivedAnnotation.swift */; };
+		D1AD470B1CF7C18E0028942F /* ReceivedAnnotationClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD470A1CF7C18E0028942F /* ReceivedAnnotationClusterView.swift */; };
+		D1AD470D1CF7C6040028942F /* ReceivedClusteringManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD470C1CF7C6040028942F /* ReceivedClusteringManager.swift */; };
+		D1AD470F1CF7C70E0028942F /* ReceivedAnnotationCluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD470E1CF7C70E0028942F /* ReceivedAnnotationCluster.swift */; };
 		D1B49D381C5868400085EF2B /* UserListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B49D371C5868400085EF2B /* UserListController.swift */; };
 		D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */; };
 		D1B9C71C1C2258B800D9AEE7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */; };
@@ -77,7 +89,7 @@
 		D1DA41341CBD9FD9002585FF /* FocusShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA41331CBD9FD9002585FF /* FocusShape.swift */; };
 		D1DB75311CD6FA9E009690BE /* BeaconingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DB75301CD6FA9E009690BE /* BeaconingIndicator.swift */; };
 		D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E08D1E1C5D430E0070DA9A /* MapKit.framework */; };
-		D1E15E1A1CC5A1A300C27CDF /* Beacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E15E191CC5A1A300C27CDF /* Beacon.swift */; };
+		D1E15E1A1CC5A1A300C27CDF /* ReceivedBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E15E191CC5A1A300C27CDF /* ReceivedBeacon.swift */; };
 		D1EC295C1C2E1E850014DE7E /* Countries in Resources */ = {isa = PBXBuildFile; fileRef = D1EC295B1C2E1E850014DE7E /* Countries */; };
 /* End PBXBuildFile section */
 
@@ -151,6 +163,7 @@
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
 		D17B2CD51C977BA100CD6782 /* CountryTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryTable.swift; sourceTree = "<group>"; };
 		D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrivacyPolicyController.swift; path = ../PrivacyPolicyController.swift; sourceTree = "<group>"; };
+		D183BFA21CF76C1F00A9E08A /* SentBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SentBeacon.swift; sourceTree = "<group>"; };
 		D188D7B41C283A5F0066E773 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		D195159C1C7232F600053A22 /* VideoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDelegate.swift; sourceTree = "<group>"; };
 		D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconRefreshView.swift; sourceTree = "<group>"; };
@@ -159,6 +172,17 @@
 		D19E95E31C753473000106DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1A3E8A01C78F70A00E115FC /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D1A459781C3ABBFF00B35452 /* SettingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SettingsButton.png; path = "../../Spore Images/SettingsButton.png"; sourceTree = "<group>"; };
+		D1AD46F91CF7BF210028942F /* SentAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SentAnnotation.swift; sourceTree = "<group>"; };
+		D1AD46FA1CF7BF210028942F /* SentAnnotationCluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SentAnnotationCluster.swift; sourceTree = "<group>"; };
+		D1AD46FB1CF7BF210028942F /* SentAnnotationClusterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SentAnnotationClusterView.swift; sourceTree = "<group>"; };
+		D1AD46FC1CF7BF210028942F /* FBBoundingBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBBoundingBox.swift; sourceTree = "<group>"; };
+		D1AD46FD1CF7BF210028942F /* SentClusteringManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SentClusteringManager.swift; sourceTree = "<group>"; };
+		D1AD46FE1CF7BF210028942F /* FBQuadTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBQuadTree.swift; sourceTree = "<group>"; };
+		D1AD46FF1CF7BF210028942F /* FBQuadTreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBQuadTreeNode.swift; sourceTree = "<group>"; };
+		D1AD47081CF7C0FE0028942F /* ReceivedAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceivedAnnotation.swift; sourceTree = "<group>"; };
+		D1AD470A1CF7C18E0028942F /* ReceivedAnnotationClusterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceivedAnnotationClusterView.swift; sourceTree = "<group>"; };
+		D1AD470C1CF7C6040028942F /* ReceivedClusteringManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceivedClusteringManager.swift; sourceTree = "<group>"; };
+		D1AD470E1CF7C70E0028942F /* ReceivedAnnotationCluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceivedAnnotationCluster.swift; sourceTree = "<group>"; };
 		D1B49D371C5868400085EF2B /* UserListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListController.swift; sourceTree = "<group>"; };
 		D1B9C7161C2258B800D9AEE7 /* Spore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -172,7 +196,7 @@
 		D1DA41331CBD9FD9002585FF /* FocusShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusShape.swift; sourceTree = "<group>"; };
 		D1DB75301CD6FA9E009690BE /* BeaconingIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconingIndicator.swift; sourceTree = "<group>"; };
 		D1E08D1E1C5D430E0070DA9A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		D1E15E191CC5A1A300C27CDF /* Beacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacon.swift; sourceTree = "<group>"; };
+		D1E15E191CC5A1A300C27CDF /* ReceivedBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceivedBeacon.swift; sourceTree = "<group>"; };
 		D1EC295B1C2E1E850014DE7E /* Countries */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Countries; path = ../../Countries; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -281,6 +305,24 @@
 			path = SporeTests;
 			sourceTree = "<group>";
 		};
+		D1AD47071CF7C0760028942F /* MapAnnotations */ = {
+			isa = PBXGroup;
+			children = (
+				D1AD46F91CF7BF210028942F /* SentAnnotation.swift */,
+				D1AD47081CF7C0FE0028942F /* ReceivedAnnotation.swift */,
+				D1AD46FA1CF7BF210028942F /* SentAnnotationCluster.swift */,
+				D1AD470E1CF7C70E0028942F /* ReceivedAnnotationCluster.swift */,
+				D1AD46FB1CF7BF210028942F /* SentAnnotationClusterView.swift */,
+				D1AD470A1CF7C18E0028942F /* ReceivedAnnotationClusterView.swift */,
+				D1AD46FC1CF7BF210028942F /* FBBoundingBox.swift */,
+				D1AD46FD1CF7BF210028942F /* SentClusteringManager.swift */,
+				D1AD470C1CF7C6040028942F /* ReceivedClusteringManager.swift */,
+				D1AD46FE1CF7BF210028942F /* FBQuadTree.swift */,
+				D1AD46FF1CF7BF210028942F /* FBQuadTreeNode.swift */,
+			);
+			name = MapAnnotations;
+			sourceTree = "<group>";
+		};
 		D1B9C70D1C2258B800D9AEE7 = {
 			isa = PBXGroup;
 			children = (
@@ -317,9 +359,11 @@
 				D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */,
 				D15A6C061CE2899000AB8611 /* BeaconRefresh.swift */,
 				D1B49D371C5868400085EF2B /* UserListController.swift */,
-				D1E15E191CC5A1A300C27CDF /* Beacon.swift */,
+				D1E15E191CC5A1A300C27CDF /* ReceivedBeacon.swift */,
+				D183BFA21CF76C1F00A9E08A /* SentBeacon.swift */,
 				D1494C111C6F6B9C00A386DE /* CountryPolyline.swift */,
 				D144F1DE1C43F6E300E07700 /* MapController.swift */,
+				D1AD47071CF7C0760028942F /* MapAnnotations */,
 				D139D4701CA77C7700909BF5 /* CaptureShape.swift */,
 				D1DA41331CBD9FD9002585FF /* FocusShape.swift */,
 				D1785A551C3F68280020AD99 /* CameraController.swift */,
@@ -558,6 +602,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1AD47001CF7BF210028942F /* SentAnnotation.swift in Sources */,
 				D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */,
 				D19A71031CEBFB08003B3E74 /* BeaconRefreshView.swift in Sources */,
 				D139D4711CA77C7700909BF5 /* CaptureShape.swift in Sources */,
@@ -567,22 +612,33 @@
 				D137E8771CA95BB9004F9B44 /* TermsOfUseController.swift in Sources */,
 				D1B49D381C5868400085EF2B /* UserListController.swift in Sources */,
 				D144F1DF1C43F6E300E07700 /* MapController.swift in Sources */,
+				D1AD47021CF7BF210028942F /* SentAnnotationClusterView.swift in Sources */,
 				D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */,
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
 				D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */,
 				D137E8791CA95C46004F9B44 /* AboutController.swift in Sources */,
 				D176D4731C852077004A812E /* Line.swift in Sources */,
 				D15A6C071CE2899000AB8611 /* BeaconRefresh.swift in Sources */,
-				D1E15E1A1CC5A1A300C27CDF /* Beacon.swift in Sources */,
+				D1E15E1A1CC5A1A300C27CDF /* ReceivedBeacon.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
+				D183BFA31CF76C1F00A9E08A /* SentBeacon.swift in Sources */,
 				D1DB75311CD6FA9E009690BE /* BeaconingIndicator.swift in Sources */,
+				D1AD47031CF7BF210028942F /* FBBoundingBox.swift in Sources */,
+				D1AD47041CF7BF210028942F /* SentClusteringManager.swift in Sources */,
 				D139D46D1CA5675F00909BF5 /* SnapTimer.swift in Sources */,
 				D13B0D481CA385BA0035759D /* CountryBackground.swift in Sources */,
+				D1AD47061CF7BF210028942F /* FBQuadTreeNode.swift in Sources */,
+				D1AD470F1CF7C70E0028942F /* ReceivedAnnotationCluster.swift in Sources */,
+				D1AD47011CF7BF210028942F /* SentAnnotationCluster.swift in Sources */,
+				D1AD470D1CF7C6040028942F /* ReceivedClusteringManager.swift in Sources */,
+				D1AD470B1CF7C18E0028942F /* ReceivedAnnotationClusterView.swift in Sources */,
 				D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */,
 				D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */,
 				D1DA41341CBD9FD9002585FF /* FocusShape.swift in Sources */,
 				D1B9C71A1C2258B800D9AEE7 /* AppDelegate.swift in Sources */,
+				D1AD47051CF7BF210028942F /* FBQuadTree.swift in Sources */,
+				D1AD47091CF7C0FE0028942F /* ReceivedAnnotation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

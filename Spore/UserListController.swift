@@ -227,7 +227,6 @@ class UserListController: UITableViewController {
         query.fromLocalDatastore()
         query.whereKey("localTag", equalTo: userEmail)
         
-        print("Querying localuserList")
         query.addAscendingOrder("localCreationTag")
         query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
             

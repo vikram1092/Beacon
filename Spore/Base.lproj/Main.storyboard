@@ -296,10 +296,27 @@
                                     <constraint firstAttribute="height" constant="40" id="m5Y-bv-1Gc"/>
                                 </constraints>
                             </view>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cfu-aR-nPw">
+                                <rect key="frame" x="200" y="30" width="200" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="JIu-Bi-TsF"/>
+                                    <constraint firstAttribute="height" constant="28" id="fJW-iC-xql"/>
+                                </constraints>
+                                <segments>
+                                    <segment title="All"/>
+                                    <segment title="Received"/>
+                                    <segment title="Sent"/>
+                                </segments>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <action selector="beaconControlChanged:" destination="mKN-em-9dv" eventType="valueChanged" id="zgq-CZ-5ea"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="9zD-hA-Q8J" firstAttribute="trailing" secondItem="RFN-qL-fP1" secondAttribute="trailingMargin" id="2hV-cA-gz7"/>
+                            <constraint firstItem="cfu-aR-nPw" firstAttribute="centerX" secondItem="RFN-qL-fP1" secondAttribute="centerX" id="4kZ-xp-MJV"/>
                             <constraint firstItem="9zD-hA-Q8J" firstAttribute="centerX" secondItem="RFN-qL-fP1" secondAttribute="centerX" id="BJg-vL-Uu7"/>
                             <constraint firstItem="9zD-hA-Q8J" firstAttribute="leading" secondItem="RFN-qL-fP1" secondAttribute="leadingMargin" id="Bg5-dQ-Sk0"/>
                             <constraint firstItem="9zD-hA-Q8J" firstAttribute="top" secondItem="RFN-qL-fP1" secondAttribute="topMargin" id="EgU-f2-eQJ"/>
@@ -307,12 +324,14 @@
                             <constraint firstItem="frc-ec-ku7" firstAttribute="top" secondItem="nNv-uA-SEt" secondAttribute="bottom" constant="20" id="Gvm-za-rea"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nNv-uA-SEt" secondAttribute="trailing" constant="20" id="Kti-sx-4uA"/>
                             <constraint firstItem="9zD-hA-Q8J" firstAttribute="bottom" secondItem="RFN-qL-fP1" secondAttribute="bottomMargin" id="ayk-3X-nxO"/>
+                            <constraint firstItem="cfu-aR-nPw" firstAttribute="top" secondItem="x2Z-zG-Pqh" secondAttribute="bottom" constant="30" id="tgt-V9-b9c"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="World" image="Globe" id="NCb-7x-d4X"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="activityIndicator" destination="nNv-uA-SEt" id="aaX-is-ep9"/>
+                        <outlet property="beaconControl" destination="cfu-aR-nPw" id="Pdf-W2-5ma"/>
                         <outlet property="mapView" destination="9zD-hA-Q8J" id="vWC-L1-tOH"/>
                     </connections>
                 </viewController>
