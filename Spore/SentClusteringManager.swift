@@ -39,6 +39,18 @@ public class SentClusteringManager : NSObject {
         addAnnotations(annotations)
     }
     
+    
+    public func addAnnotation(annotation: MKAnnotation) {
+        if tree == nil {
+            tree = FBQuadTree()
+        }
+        
+        lock.lock()
+        tree!.insertAnnotation(annotation)
+        lock.unlock()
+    }
+    
+    
     public func addAnnotations(annotations:[MKAnnotation]){
         if tree == nil {
             tree = FBQuadTree()

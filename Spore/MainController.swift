@@ -24,9 +24,9 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         
         //Load view
         super.viewDidLoad()
-        let image = UIImage(named: "Logo")
-        navItem.topItem?.titleView = UIImageView(image: image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate))
-        navItem.topItem?.titleView!.tintColor = UIColor.blackColor()
+        //let image = UIImage(named: "Logo")
+        //navItem.topItem?.titleView = UIImageView(image: image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate))
+        //navItem.topItem?.titleView!.tintColor = UIColor.blackColor()
     }
     
     override func viewDidAppear(animated: Bool) {

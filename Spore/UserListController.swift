@@ -1206,12 +1206,13 @@ class UserListController: UITableViewController {
                 let index = tableView.indexPathForCell(cell)!.row
                 let userListIndex = userList.count - index - 1
                 let geoPoint = userList[userListIndex].valueForKey("sentFrom") as! PFGeoPoint
+                let sentCountry = userList[userListIndex].valueForKey("countryCode") as? String
                 
                 if !(geoPoint.latitude == 0.0 && geoPoint.longitude == 0.0) {
                     
                     //Since location exists, go to the location
                     let location = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
-                    segueToMap(location)
+                    segueToMap(location, country: sentCountry)
                 }
                 else {
                     
@@ -1433,12 +1434,29 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func segueToMap(location: CLLocationCoordinate2D) {
+    internal func segueToMap(location: CLLocationCoordinate2D, country: String?) {
         
         //Move to the map
         self.tabBarController?.selectedIndex = 2
         let map = tabBarController!.viewControllers![2] as! MapController
+        
+        //Switch control if current segment isn't "received"
+        if map.beaconControl.selectedSegmentIndex != 0 {
+            
+            map.beaconControl.selectedSegmentIndex = 0
+        }
+        
+        //Pan to selected location
         map.goToCountry(location)
+        
+        //If the country exists, outline the country
+        if country != nil {
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                
+                map.getDetailsToDrawCountry(country!)
+            }
+        }
     }
     
     

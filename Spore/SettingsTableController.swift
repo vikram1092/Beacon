@@ -95,17 +95,20 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         }
         else if cell!.tag == 10 {
             
-            //Segue back to the login screen
-            performSegueWithIdentifier("Logout", sender: self)
+            //Show alert controller to ensure logout action
+            let alert = UIAlertController(title: "", message: "Are you sure you want to log out?", preferredStyle: UIAlertControllerStyle.ActionSheet)
             
-            //Logout user
-            let loginManager = FBSDKLoginManager()
-            loginManager.logOut()
+            //Add confirmation button
+            alert.addAction(UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
+                
+                self.logoutUser()
+            }))
             
-            //Reset name and email local variables
-            userDefaults.setObject(nil, forKey: "userName")
-            userDefaults.setObject(nil, forKey: "userEmail")
+            //Add cancel button
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
             
+            //Present alert controller
+            self.presentViewController(alert, animated: true, completion: nil)
         }
         
         cell!.selected = false
@@ -205,6 +208,20 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         userLocation.text = text
     }
     
+    
+    internal func logoutUser() {
+        
+        //Segue back to the login screen
+        performSegueWithIdentifier("Logout", sender: self)
+        
+        //Logout user
+        let loginManager = FBSDKLoginManager()
+        loginManager.logOut()
+        
+        //Reset name and email local variables
+        userDefaults.setObject(nil, forKey: "userName")
+        userDefaults.setObject(nil, forKey: "userEmail")
+    }
     
     internal func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         

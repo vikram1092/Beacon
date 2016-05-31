@@ -18,7 +18,7 @@ public class ReceivedAnnotationClusterView : MKAnnotationView {
     var imageName = "receivedClusterSmall"
     var loadExternalImage : Bool = false
     
-    var borderWidth:CGFloat = 3
+    var borderWidth:CGFloat = 2
     
     var countLabel:UILabel? = nil
     
@@ -32,7 +32,7 @@ public class ReceivedAnnotationClusterView : MKAnnotationView {
         
         // change the size of the cluster image based on number of stories
         switch count {
-        case 0...5:
+        case 0...9:
             fontSize = 12
             if (options != nil) {
                 loadExternalImage=true;
@@ -41,9 +41,9 @@ public class ReceivedAnnotationClusterView : MKAnnotationView {
             else {
                 imageName = "receivedClusterSmall"
             }
-            borderWidth = 3
+            borderWidth = 2
             
-        case 6...15:
+        case 10...99:
             fontSize = 13
             if (options != nil) {
                 loadExternalImage=true;
@@ -52,7 +52,7 @@ public class ReceivedAnnotationClusterView : MKAnnotationView {
             else {
                 imageName = "receivedClusterMedium"
             }
-            borderWidth = 4
+            borderWidth = 2
             
         default:
             fontSize = 14
@@ -63,7 +63,7 @@ public class ReceivedAnnotationClusterView : MKAnnotationView {
             else {
                 imageName = "receivedClusterLarge"
             }
-            borderWidth = 4
+            borderWidth = 2
             
         }
         

@@ -44,7 +44,7 @@ class ReceivedBeacon: MKAnnotationView {
         beaconStroke.path = UIBezierPath(ovalInRect: CGRect(x: startPoint, y: startPoint, width: size, height: size)).CGPath
         beaconStroke.fillColor = UIColor.clearColor().CGColor
         beaconStroke.strokeColor = UIColor.whiteColor().CGColor
-        beaconStroke.lineWidth = 3
+        beaconStroke.lineWidth = 2
         beaconStroke.strokeStart = 0
         beaconStroke.strokeEnd = 1
         beaconStroke.lineCap = kCALineCapRound

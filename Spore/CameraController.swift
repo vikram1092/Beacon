@@ -58,7 +58,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     let imageFileExtension = ".jpg"
     let compressionGroup = dispatch_group_create()
     
-    var userLocation = PFGeoPoint()
+    var userLocation = PFGeoPoint(latitude: 0, longitude: 0)
     var userCountry = ""
     var userState = ""
     var userCity = ""
@@ -164,6 +164,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Turn off flash
         turnTorchOff()
     }
+    
     
     internal func initializingHandler() {
         

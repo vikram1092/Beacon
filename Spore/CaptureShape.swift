@@ -48,20 +48,20 @@ class CaptureShape: UIView {
         record.fillColor = UIColor.clearColor().CGColor
         record.strokeColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.9).CGColor
         record.lineWidth = 3
-        record.strokeStart = 0.0
-        record.strokeEnd = 0.0
+        record.strokeStart = 1.0
+        record.strokeEnd = 1.0
         record.lineCap = kCALineCapRound
         
         self.layer.addSublayer(record)
         
         //Animate the timer
-        let progress = CABasicAnimation(keyPath: "strokeEnd")
+        let progress = CABasicAnimation(keyPath: "strokeStart")
         let expansion = CABasicAnimation(keyPath: "path")
         
         //Configure animation
         progress.duration = 10
-        progress.fromValue = 0.0
-        progress.toValue = 1.0
+        progress.fromValue = 1.0
+        progress.toValue = 0.4
         progress.removedOnCompletion = false
         progress.fillMode = kCAFillModeForwards
         

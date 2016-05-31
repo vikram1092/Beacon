@@ -18,7 +18,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     var userEmail = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
     var userList = Array<PFObject>()
-    var loadedCountries = Array<String>()
+    //var loadedCountries = Array<String>()
     var countryColor = UIColor()
     var countriesAreLoaded = false
     
@@ -32,9 +32,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     var receivedMarkersAreLoaded = false
     let receivedClusteringManager = ReceivedClusteringManager()
     
-    
-    let sentColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1)
-    let receivedColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1)
+    let receivedColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1)
+    let sentColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1)
     
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var beaconControl: UISegmentedControl!
@@ -48,9 +47,11 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         getUserDefaults()
         
-        //Load markers after countries are loaded
-        loadSentMarkers()
-        loadReceivedMarkers()
+        //Initialize corner radius for beacon control
+        beaconControl.layer.cornerRadius = 15.0
+        beaconControl.layer.borderColor = UIColor.darkGrayColor().CGColor
+        beaconControl.layer.borderWidth = 1.0
+        beaconControl.layer.masksToBounds = true
     }
     
     
@@ -64,13 +65,20 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 
-                self.loadUserList()
+                self.loadSentMarkers()
+                self.loadReceivedMarkers()
             }
         }
-        else {
+        else if activityIndicator.isAnimating {
             
             activityIndicator.resumeAnimating()
         }
+    }
+    
+    
+    override func viewDidDisappear(animated: Bool) {
+        
+        mapView.removeOverlays(mapView.overlays)
     }
     
     
@@ -90,91 +98,9 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    
-    internal func loadUserList() {
-    
-        //Retreive local user photo list
-        print("loadUserList")
-        let query = PFQuery(className: "photo")
-        query.whereKey("localTag", equalTo: userEmail)
-        query.fromLocalDatastore()
-        
-        query.addAscendingOrder("localCreationTag")
-        query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
-            
-            if retreivalError != nil {
-                
-                print("Problem retreiving list: " + retreivalError!.description)
-            }
-            else if objects!.count > 0 {
-                
-                //Save list of objects & reload table
-                self.userList = objects!
-                
-                //Update user list with new photos
-                print("Running country annotations")
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
-                    
-                    self.processUserList()
-                }
-            }
-        }
-    }
-    
-    
-    internal func processUserList() {
-        
-        
-        //Start activity indicator
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            
-            self.activityIndicator.startAnimating()
-        }
-        
-        //Get GeoJSON data
-        print("Starting to display userList")
-        let filePath = NSBundle.mainBundle().pathForResource("Countries", ofType: "geojson")
-        let data = NSData(contentsOfFile: filePath!)!
-        
-        do {
-            /*
-            //Instantiate country GeoJSON data
-            let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
-            
-            //Get array of countries from JSON
-            countries = json.objectForKey("features") as! NSArray
-            
-            //Loop through all userlist elements
-            for element in userList {
-                
-                //Check if country already loaded. If not, proceed & add the country to loaded list
-                if loadedCountries.indexOf(element.objectForKey("countryCode") as! String) == nil {
-                    
-                    getDetailsToDrawCountry(element.objectForKey("countryCode") as! String)
-                    loadedCountries.append(element.objectForKey("countryCode") as! String)
-                }
-            }
-            */
-            
-            //Stop activity indicator if the markers are already loaded
-            countriesAreLoaded = true
-            
-            
-            //Stop activity indicator if the countries are already loaded
-            if self.sentMarkersAreLoaded && self.receivedMarkersAreLoaded {
-                
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
-                    self.activityIndicator.stopAnimating()
-                })
-            }
-        }
-        catch let error as NSError { print("Error getting GeoJSON data:" + error.description) }
-    }
-    
-    
+
     internal func goToCountry(location: CLLocationCoordinate2D) {
-        
+
         print("User picture coordinates:" + String(location))
         let span = MKCoordinateSpan(latitudeDelta: 4, longitudeDelta: 4)
         let region = MKCoordinateRegion(center: location, span: span)
@@ -186,9 +112,16 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func getDetailsToDrawCountry(countryCode: String) {
         
+        countriesAreLoaded = false
         
         //Initialize dummy index
         var index = -1
+        
+        //Initialize country array if not already loaded
+        if countries.count == 0 {
+            
+            loadCountryArray()
+        }
         
         //Get index of country
         for countryElement in countries {
@@ -208,7 +141,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         if (index != -1) {
             
             //Set color for country
-            let color = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 1)
+            let color = receivedColor //UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 1)
 
             
             //Check if country is one polygon or multiple.
@@ -230,15 +163,41 @@ class MapController: UIViewController, MKMapViewDelegate {
                 }
             }
         }
+        
+        //Stop activity indicator if the countries are already loaded
+        if self.sentMarkersAreLoaded && self.receivedMarkersAreLoaded {
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                self.activityIndicator.stopAnimating()
+            })
+        }
     }
     
+    
+    internal func loadCountryArray() {
+        
+        //Load array of country JSON objects
+        let filePath = NSBundle.mainBundle().pathForResource("Countries", ofType: "geojson")
+        let data = NSData(contentsOfFile: filePath!)!
+        
+        do {
+            
+            //Instantiate country GeoJSON data
+            let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+            
+            //Get array of countries from JSON
+            countries = json.objectForKey("features") as! NSArray
+        }
+        catch let error as NSError { print("Error getting GeoJSON data:" + error.description) }
+    }
+
     
     internal func drawCountry(polygon: NSMutableArray, color: UIColor) {
         
         //Configure path
         var location = CLLocationCoordinate2D()
         var path = Array<CLLocationCoordinate2D>()
-        //let path = GMSMutablePath()
         
         //Iterate through all coordinates in polygon & add to path
         for element in polygon {
@@ -258,12 +217,15 @@ class MapController: UIViewController, MKMapViewDelegate {
         //Assign color
         country.color = color
         
-        //Add polygon to map in main thread
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        //Add polygon to map in main thread if map is the selected index
+        if self.tabBarController?.selectedIndex == 2 {
             
-            print("Adding polygon!")
-            self.mapView.addOverlay(country)
-        })
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                print("Adding polygon!")
+                self.mapView.addOverlay(country)
+            })
+        }
     }
     
     
@@ -299,38 +261,40 @@ class MapController: UIViewController, MKMapViewDelegate {
                             let markerCoord2D = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
 
                             //Add annotation to map
-                            if !self.loadedInArray(markerCoord2D, array: self.loadedSentCoordinates) && !(latitude == 0.0 && longitude == 0.0) {
+                            if !self.loadedInArray(markerCoord2D, array: self.loadedSentMarkers) && !(latitude == 0.0 && longitude == 0.0) {
                                 
                                 //Configure annotation
                                 print("Loading sent marker")
                                 let marker = SentAnnotation()
                                 marker.coordinate = markerCoord2D
                                 
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    
-                                    self.mapView.addAnnotation(marker)
-                                })
-                                
                                 self.loadedSentMarkers.append(marker)
-                                self.loadedSentCoordinates.append(markerCoord2D)
+                                self.sentClusteringManager.addAnnotation(marker)
                             }
-                            
                         }
                     }
                     
-                    self.sentClusteringManager.addAnnotations(self.loadedSentMarkers)
                 }
                 
-                self.sentMarkersAreLoaded = true
+                //Perform clustering after load
+                if self.beaconControl.selectedSegmentIndex == 1 {
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.performClustering()
+                    })
+                }
                 
                 //Stop activity indicator if the countries are already loaded
+                self.sentMarkersAreLoaded = true
+                
                 if self.countriesAreLoaded && self.receivedMarkersAreLoaded {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
                         self.activityIndicator.stopAnimating()
                     })
-               }
+                }
             }
         }
     }
@@ -360,37 +324,42 @@ class MapController: UIViewController, MKMapViewDelegate {
                     print("Query returned \(photoObjects!.count) rows")
                     for photoObject in photoObjects! {
                         
-                        let coordinates = photoObject.objectForKey("sentFrom") as! PFGeoPoint
-                        let latitude = coordinates.latitude
-                        let longitude = coordinates.longitude
-                        let markerCoord2D = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                        
+                        if photoObject.objectForKey("sentFrom") != nil {
                             
-                        //Add annotation to map
-                        if !self.loadedInArray(markerCoord2D, array: self.loadedReceivedCoordinates) && !(latitude == 0.0 && longitude == 0.0){
+                            let coordinates = photoObject.objectForKey("sentFrom") as! PFGeoPoint
+                            let latitude = coordinates.latitude
+                            let longitude = coordinates.longitude
+                            let markerCoord2D = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
                             
-                            //Configure annotation
-                            print("Loading received marker")
-                            let marker = ReceivedAnnotation()
-                            marker.coordinate = markerCoord2D
-                            
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                 
-                                self.mapView.addAnnotation(marker)
-                            })
-                            
-                            self.loadedReceivedMarkers.append(marker)
-                            self.loadedReceivedCoordinates.append(markerCoord2D)
-                            
+                            //Add annotation to map
+                            if !self.loadedInArray(markerCoord2D, array: self.loadedReceivedMarkers) && !(latitude == 0.0 && longitude == 0.0){
+                                
+                                //Configure annotation
+                                print("Loading received marker")
+                                let marker = ReceivedAnnotation()
+                                marker.coordinate = markerCoord2D
+                                
+                                self.loadedReceivedMarkers.append(marker)
+                                self.receivedClusteringManager.addAnnotation(marker)
+                            }
                         }
                     }
                     
-                    self.receivedClusteringManager.addAnnotations(self.loadedReceivedMarkers)
                 }
                 
-                self.receivedMarkersAreLoaded = true
+                //Perform clustering after load
+                if self.beaconControl.selectedSegmentIndex == 0 {
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.performClustering()
+                    })
+                }
                 
                 //Stop activity indicator if the countries are already loaded
+                self.receivedMarkersAreLoaded = true
+                
                 if self.countriesAreLoaded && self.receivedMarkersAreLoaded {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -413,19 +382,6 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    /*
-    internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        
-        var view = MKAnnotationView()
-        
-        if annotation is MKPointAnnotation {
-            
-        }
-        
-        return view
-    }*/
-    
-    
     internal func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         
         performClustering()
@@ -443,17 +399,10 @@ class MapController: UIViewController, MKMapViewDelegate {
             //Conditionally refresh things based on beacon control selection
             if self.beaconControl.selectedSegmentIndex == 0 {
                 
-                let sentAnnotationArray = self.sentClusteringManager.clusteredAnnotationsWithinMapRect(self.mapView.visibleMapRect, withZoomScale:scale)
-                self.sentClusteringManager.displayAnnotations(sentAnnotationArray, onMapView:self.mapView)
                 let receivedAnnotationArray = self.receivedClusteringManager.clusteredAnnotationsWithinMapRect(self.mapView.visibleMapRect, withZoomScale:scale)
                 self.receivedClusteringManager.displayAnnotations(receivedAnnotationArray, onMapView:self.mapView)
             }
             else if self.beaconControl.selectedSegmentIndex == 1 {
-                
-                let receivedAnnotationArray = self.receivedClusteringManager.clusteredAnnotationsWithinMapRect(self.mapView.visibleMapRect, withZoomScale:scale)
-                self.receivedClusteringManager.displayAnnotations(receivedAnnotationArray, onMapView:self.mapView)
-            }
-            else if self.beaconControl.selectedSegmentIndex == 2 {
                 
                 let sentAnnotationArray = self.sentClusteringManager.clusteredAnnotationsWithinMapRect(self.mapView.visibleMapRect, withZoomScale:scale)
                 self.sentClusteringManager.displayAnnotations(sentAnnotationArray, onMapView:self.mapView)
@@ -500,16 +449,10 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         if beaconControl.selectedSegmentIndex == 0 {
             
-            //Load all markers
-            mapView.addAnnotations(loadedReceivedMarkers)
-            mapView.addAnnotations(loadedSentMarkers)
-        }
-        else if beaconControl.selectedSegmentIndex == 1 {
-            
             //Load received markers
             mapView.addAnnotations(loadedReceivedMarkers)
         }
-        else if beaconControl.selectedSegmentIndex == 2 {
+        else if beaconControl.selectedSegmentIndex == 1 {
             
             //Load sent markers
             mapView.addAnnotations(loadedSentMarkers)
@@ -520,16 +463,19 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    internal func loadedInArray(location: CLLocationCoordinate2D, array: Array<CLLocationCoordinate2D>) -> Bool {
+    internal func loadedInArray(location: CLLocationCoordinate2D, array: Array<MKAnnotation>) -> Bool {
         
-        for coordinate in array {
+        for marker in array {
             
+            let coordinate = marker.coordinate
             if location.latitude == coordinate.latitude && location.longitude == coordinate.longitude {
                 
+                print("coordinate found")
                 return true
             }
         }
         
+        print("coordinate not found")
         return false
     }
     
@@ -538,12 +484,6 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         print("Status bar style method - Map Controller")
         return UIStatusBarStyle.Default
-    }
-    
-    
-    internal func delay(delay: Double, closure:()->()) {
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
     }
     
     
