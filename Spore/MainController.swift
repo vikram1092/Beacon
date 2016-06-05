@@ -17,6 +17,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
+    @IBOutlet var navBar: UINavigationBar!
     @IBOutlet var table: UIView!
     @IBOutlet var navItem: UINavigationBar!
     
@@ -24,9 +25,9 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
         
         //Load view
         super.viewDidLoad()
-        //let image = UIImage(named: "Logo")
-        //navItem.topItem?.titleView = UIImageView(image: image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate))
-        //navItem.topItem?.titleView!.tintColor = UIColor.blackColor()
+        
+        //Get rid of an annoying black line under navigation bar
+        navBar.clipsToBounds = true
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -45,7 +46,7 @@ class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDe
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
         print("Status bar style method - Main Controller")
-        return UIStatusBarStyle.Default
+        return UIStatusBarStyle.LightContent
     }
     
 }

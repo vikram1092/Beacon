@@ -19,8 +19,7 @@ class CountryBackground: UIView {
     let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
     var isAnimating = false
     
-    var backgroundLayerColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
-    //var progressLayerColor = UIColor(red: 84.0/255.0, green: 48.0/255.0, blue: 126.0/255.0, alpha: 1).CGColor
+    var color = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,7 +36,7 @@ class CountryBackground: UIView {
         
         //Create background layer
         background.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
-        background.fillColor = self.backgroundLayerColor
+        background.fillColor = self.color
         self.layer.addSublayer(background)
         
         //Rotate view for progress bar, and rotate country image back
@@ -88,6 +87,7 @@ class CountryBackground: UIView {
         rotateAnimation.toValue = CGFloat(3 * M_PI / 2)
         rotateAnimation.duration = 1.5
         rotateAnimation.repeatCount = HUGE
+        
         
         progressView.layer.addAnimation(rotateAnimation, forKey: nil)
     }

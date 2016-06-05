@@ -148,9 +148,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Appear as normal
         super.viewDidAppear(true)
         
-        //Resume animation if it was on
-        activityIndicator.resumeAnimating()
-        
         //Call the handler for dealing with possible scenarios
         initializingHandler()
         

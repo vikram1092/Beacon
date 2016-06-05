@@ -32,13 +32,15 @@ class UserListController: UITableViewController {
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
     var countryObject = UIView()
+    var shouldRefresh = false
     var updatingUserList = false
     var alertShowed = false
     
     var locManager = CLLocationManager()
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-    let defaultColor = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
+    let defaultColor = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1).CGColor
     let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
+    let refreshBackgroundColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue:203.0/255.0, alpha: 1)
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
@@ -55,6 +57,8 @@ class UserListController: UITableViewController {
         super.viewDidLoad()
         
         initializeRefreshControl()
+        
+        tableView.decelerationRate = UIScrollViewDecelerationRateFast
     }
     
     
@@ -73,7 +77,7 @@ class UserListController: UITableViewController {
         super.viewDidAppear(true)
         
         //Resume any ongoing animations
-        resumeCellAnimations()
+        resumeAnimations()
         
         //Check user login status
         print("Checking user login status")
@@ -109,6 +113,8 @@ class UserListController: UITableViewController {
         //Reload visible rows
         print("viewDidDisappear")
         reloadVisibleRows()
+        refreshControl!.endRefreshing()
+        beaconRefresh.stopAnimating()
     }
     
     
@@ -492,7 +498,7 @@ class UserListController: UITableViewController {
                     if self.userToReceivePhotos > 0 {
                         
                         //End search, don't repeat alert if you've showed it once, unless the user refreshes
-                        if sameCountry && (!self.alertShowed || self.refreshControl!.refreshing) {
+                        if sameCountry {
                             
                             self.alertShowed = true
                             self.updatingUserList = false
@@ -604,6 +610,7 @@ class UserListController: UITableViewController {
                 //Stop refreshing
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
+                    self.beaconRefresh.stopAnimating()
                     self.refreshControl!.endRefreshing()
                 })
             })
@@ -613,6 +620,8 @@ class UserListController: UITableViewController {
             //Stop refreshing
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
+                print("Ending")
+                self.beaconRefresh.stopAnimating()
                 self.refreshControl!.endRefreshing()
             })
         }
@@ -626,6 +635,63 @@ class UserListController: UITableViewController {
             
             self.updateUserList(false)
         }
+    }
+    
+    
+    internal func initializeRefreshControl() {
+        
+        
+        //Remove existing views
+        for subview in refreshControl!.subviews {
+
+            subview.removeFromSuperview()
+        }
+        
+        //Add custom views
+        beaconRefresh = BeaconRefresh(frame: (refreshControl?.bounds)!)
+        refreshControl!.addSubview(beaconRefresh)
+
+        //Set background color
+        refreshControl!.backgroundColor = refreshBackgroundColor
+        
+        //Add target
+        self.refreshControl!.addTarget(self, action: "refreshNeeded", forControlEvents: UIControlEvents.ValueChanged)
+
+    }
+    
+    
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        
+        
+        //Get ratio of distance pulled and update the refresh control accordingly
+        let pullDistance = max(0.0, -scrollView.contentOffset.y)
+        
+        
+        if pullDistance <= 100.0 && !refreshControl!.refreshing && !beaconRefresh.isAnimating {
+            
+            //Set update flag to off and update views
+            let pullMax = min(max(pullDistance, 0.0), refreshControl!.bounds.height)
+            let pullRatio = pullMax/5.0
+            
+            beaconRefresh.updateViews(pullRatio)
+        }
+    }
+    
+    
+    override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        
+        if beaconRefresh.isAnimating {
+            
+            updateUserList(false)
+        }
+    }
+    
+    
+    internal func refreshNeeded() {
+        
+        //Begin animation and set flag to refresh
+        print("starting animation")
+        beaconRefresh.startAnimating()
     }
     
     
@@ -755,23 +821,6 @@ class UserListController: UITableViewController {
         }
         
         return cell
-    }
-    
-    
-    internal override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-        print("willDisplayCell")
-        /*
-        let userListIndex = userList.count - 1 - indexPath.row
-        if let animating = userList[userListIndex].objectForKey("isAnimating") as? Bool {
-            
-            if animating {
-                
-                let countryBackground = cell.viewWithTag(6) as! CountryBackground
-                countryBackground.startAnimating()
-            }
-        }
-*/
     }
     
     
@@ -1024,8 +1073,7 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func resumeCellAnimations() {
-        
+    internal func resumeAnimations() {
         
         print("resumeCellAnimations")
         if tableView != nil {
@@ -1295,40 +1343,6 @@ class UserListController: UITableViewController {
             
             self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
         }
-    }
-    
-    
-    internal func initializeRefreshControl() {
-        
-        //Remove existing views
-        for subview in refreshControl!.subviews {
-            
-            subview.removeFromSuperview()
-        }
-        
-        //Add custom views
-        beaconRefresh = BeaconRefresh(frame: (refreshControl?.bounds)!)
-        refreshControl!.addSubview(beaconRefresh)
-        refreshControl!.backgroundColor = UIColor.lightGrayColor()
-        
-    }
-    
-    
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
-        
-        //Get ratio of distance pulled and update the refresh control accordingly
-        let pullDistance = -scrollView.contentOffset.y
-        let pullMax = min(max(pullDistance, 0.0), refreshControl!.bounds.height)
-        let pullRatio = pullMax/5.0
-        
-        beaconRefresh.updateViews(pullRatio * 2, oddRatio: pullRatio)
-        
-        //print(pullRatio)
-        
-        //beaconRefresh.frame = CGRect(x: midX - max(pullMax - 20, 0) / 2.0, y: 20 + pullRatio, width: max(pullMax - 220, 0), height: max(pullMax - 20, 0))
-        //beaconRefresh.frame = CGRect(x: midX - 12.5 / 2.0, y: pullRatio, width: 25, height: 25)
-        //beaconRefresh.updateLayers()
-        
     }
     
     

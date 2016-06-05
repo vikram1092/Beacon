@@ -20,7 +20,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     var userList = Array<PFObject>()
     //var loadedCountries = Array<String>()
     var countryColor = UIColor()
-    var countriesAreLoaded = false
+    var countriesAreLoaded = true
     
     var loadedSentMarkers = Array<SentAnnotation>()
     var loadedSentCoordinates = Array<CLLocationCoordinate2D>()
@@ -63,15 +63,15 @@ class MapController: UIViewController, MKMapViewDelegate {
         //Else, resume animation
         if !activityIndicator.isAnimating {
             
+            //Start activity indicator
+            self.activityIndicator.startAnimating()
+            
+            //Dispatch processes on another thread
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 
                 self.loadSentMarkers()
                 self.loadReceivedMarkers()
             }
-        }
-        else if activityIndicator.isAnimating {
-            
-            activityIndicator.resumeAnimating()
         }
     }
     
@@ -164,12 +164,16 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
         }
         
+        self.countriesAreLoaded = true
+        
+        print("Countries finished \(self.countriesAreLoaded) + \(self.receivedMarkersAreLoaded)")
+        
         //Stop activity indicator if the countries are already loaded
         if self.sentMarkersAreLoaded && self.receivedMarkersAreLoaded {
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
-                self.activityIndicator.stopAnimating()
+                //self.activityIndicator.stopAnimating()
             })
         }
     }
@@ -288,11 +292,12 @@ class MapController: UIViewController, MKMapViewDelegate {
                 //Stop activity indicator if the countries are already loaded
                 self.sentMarkersAreLoaded = true
                 
+                print("Sent Markers finished \(self.countriesAreLoaded) + \(self.receivedMarkersAreLoaded)")
                 if self.countriesAreLoaded && self.receivedMarkersAreLoaded {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        self.activityIndicator.stopAnimating()
+                        //self.activityIndicator.stopAnimating()
                     })
                 }
             }
@@ -360,11 +365,12 @@ class MapController: UIViewController, MKMapViewDelegate {
                 //Stop activity indicator if the countries are already loaded
                 self.receivedMarkersAreLoaded = true
                 
-                if self.countriesAreLoaded && self.receivedMarkersAreLoaded {
+                print("Received Markers finished \(self.countriesAreLoaded) + \(self.sentMarkersAreLoaded)")
+                if self.countriesAreLoaded && self.sentMarkersAreLoaded {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        self.activityIndicator.stopAnimating()
+                        //self.activityIndicator.stopAnimating()
                     })
                 }
             }
