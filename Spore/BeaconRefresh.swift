@@ -13,7 +13,8 @@ class BeaconRefresh: UIView {
     
     
     let color = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
-    let initialDepth = CGFloat(10.0)
+    let initialDepth = CGFloat(5.0)
+    let finalDepth = CGFloat(120.0)
     var number = 13
     var isAnimating = false
     var readyToUpdateViews = true
@@ -52,9 +53,11 @@ class BeaconRefresh: UIView {
         
         if !beaconIndicator.isAnimating {
             
-            let depth = min(initialDepth + ratio * 2, 35)
-            beaconIndicator.center = CGPoint(x: beaconIndicator.center.x, y:  depth)
-            beaconIndicator.transform = CGAffineTransformMakeRotation( -90.0 * (depth/2.0) / 180.0)
+            let depth = min(max(50,initialDepth + ratio * 2), finalDepth)
+            let rotation = (depth - initialDepth) * 2 * CGFloat(M_PI)/(finalDepth - initialDepth)
+            let offset = (-CGFloat(M_PI)/2)
+            //beaconIndicator.center = CGPoint(x: beaconIndicator.center.x, y:  depth)
+            beaconIndicator.transform = CGAffineTransformMakeRotation(rotation + offset)
         }
     }
     

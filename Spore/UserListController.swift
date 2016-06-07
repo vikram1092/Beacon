@@ -621,7 +621,7 @@ class UserListController: UITableViewController {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
                 print("Ending")
-                self.beaconRefresh.stopAnimating()
+                //self.beaconRefresh.stopAnimating()
                 self.refreshControl!.endRefreshing()
             })
         }
@@ -662,26 +662,27 @@ class UserListController: UITableViewController {
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         
-        
         //Get ratio of distance pulled and update the refresh control accordingly
         let pullDistance = max(0.0, -scrollView.contentOffset.y)
-        
-        
+        if scrollView.contentOffset.y == 0.0 && !refreshControl!.refreshing && beaconRefresh.isAnimating {
+            
+            //Stop animating if done refreshing and the beacon is still animating
+            beaconRefresh.stopAnimating()
+        }
         if pullDistance <= 100.0 && !refreshControl!.refreshing && !beaconRefresh.isAnimating {
             
-            //Set update flag to off and update views
+            //Update views
             let pullMax = min(max(pullDistance, 0.0), refreshControl!.bounds.height)
-            let pullRatio = pullMax/5.0
-            
-            beaconRefresh.updateViews(pullRatio)
+            beaconRefresh.updateViews(pullMax)
         }
     }
     
     
     override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         
-        if beaconRefresh.isAnimating {
+        if refreshControl!.refreshing {
             
+            print(scrollView.contentOffset.y)
             updateUserList(false)
         }
     }
@@ -691,6 +692,7 @@ class UserListController: UITableViewController {
         
         //Begin animation and set flag to refresh
         print("starting animation")
+        print(tableView.contentOffset.y)
         beaconRefresh.startAnimating()
     }
     

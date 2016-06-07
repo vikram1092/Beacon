@@ -18,7 +18,6 @@ class MapController: UIViewController, MKMapViewDelegate {
     var userEmail = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
     var userList = Array<PFObject>()
-    //var loadedCountries = Array<String>()
     var countryColor = UIColor()
     var countriesAreLoaded = true
     
@@ -68,6 +67,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             //Dispatch processes on another thread
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                
                 
                 self.loadSentMarkers()
                 self.loadReceivedMarkers()
@@ -173,7 +173,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
-                //self.activityIndicator.stopAnimating()
+                self.activityIndicator.stopAnimating()
             })
         }
     }
@@ -297,7 +297,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        //self.activityIndicator.stopAnimating()
+                        self.activityIndicator.stopAnimating()
                     })
                 }
             }
@@ -370,7 +370,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        //self.activityIndicator.stopAnimating()
+                        self.activityIndicator.stopAnimating()
                     })
                 }
             }

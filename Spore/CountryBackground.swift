@@ -19,7 +19,7 @@ class CountryBackground: UIView {
     let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
     var isAnimating = false
     
-    var color = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
+    var color = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1).CGColor
     
     
     required init?(coder aDecoder: NSCoder) {

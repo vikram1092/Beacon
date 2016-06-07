@@ -84,10 +84,8 @@ class BeaconingIndicator: UIView {
         self.hidden = false
         isAnimating = true
         
-        let currentRotation = CGFloat(atan2f(Float(self.transform.b), Float(self.transform.a)))
-        print("currentRotation: \(currentRotation)")
-        rotateAnimation.fromValue = currentRotation
-        rotateAnimation.toValue = currentRotation + CGFloat(2.0 * M_PI)
+        rotateAnimation.fromValue = -90.0 * CGFloat(M_PI)/180.0
+        rotateAnimation.toValue = 3 * CGFloat(M_PI)/2
         rotateAnimation.duration = 1
         rotateAnimation.repeatCount = HUGE
         rotateAnimation.fillMode = kCAFillModeForwards

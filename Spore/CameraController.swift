@@ -29,7 +29,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBOutlet var captureShape: CaptureShape!
     @IBOutlet var alertView: UIView!
     @IBOutlet var alertButton: UIButton!
-    @IBOutlet var zoomRecognizer: UIPinchGestureRecognizer!
     
     var captureSession = AVCaptureSession()
     var audioSession = AVAudioSession()
@@ -1090,7 +1089,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func cameraTapped(sender: UITapGestureRecognizer) {
         
-        if captureSession.running && alertView.hidden {
+        if captureSession.running && alertView.alpha == 0 {
             
             //Configure variables
             print(sender.view)
@@ -1360,7 +1359,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func showAlert(alertText: String) {
         
-        alertView.hidden = false
+        alertView.alpha = 1
         alertButton.setTitle(alertText, forState: .Normal)
         alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
     }
@@ -1368,7 +1367,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func closeAlert() {
         
-        alertView.hidden = true
+        alertView.alpha = 0
         alertView.userInteractionEnabled = false
     }
     

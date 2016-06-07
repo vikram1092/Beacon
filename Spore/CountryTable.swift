@@ -146,7 +146,7 @@ class CountryTable {
         ["Wisconsin", "wi"], 
         ["Wyoming", "wy"], 
         ["American Samoa", "as"], 
-        ["District of Columbia", "dc"], 
+        ["Washington, D.C.", "dc"],
         ["Federated States of Micronesia", "fm"], 
         ["Guam", "gu"], 
         ["Marshall Islands", "mh"], 

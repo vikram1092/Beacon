@@ -33,6 +33,8 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         
         //Run view load as normal
         super.viewDidLoad()
+        
+        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
     }
     
     
