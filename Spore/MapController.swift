@@ -68,7 +68,6 @@ class MapController: UIViewController, MKMapViewDelegate {
             //Dispatch processes on another thread
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 
-                
                 self.loadSentMarkers()
                 self.loadReceivedMarkers()
             }
@@ -205,13 +204,25 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         //Iterate through all coordinates in polygon & add to path
         for element in polygon {
+    
             for currentCoord in (element as! NSMutableArray) {
                 
                 let coordinate = currentCoord as! NSMutableArray
                 location.longitude = coordinate[0] as! CLLocationDegrees
                 location.latitude = coordinate[1] as! CLLocationDegrees
+        
+                if path.count == 0 {
+            
+                    path.append(location)
+                }
+                else if path.count > 0 {
                 
-                path.append(location)
+                    let last = path.last!
+                    if !(location.longitude < 180.0 && last.longitude > 180.0) && !(location.longitude > 180.0 && last.longitude < 180.0) {
+                        
+                        path.append(location)
+                    }
+                }
             }
         }
         
