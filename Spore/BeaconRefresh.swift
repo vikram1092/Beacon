@@ -54,8 +54,8 @@ class BeaconRefresh: UIView {
         if !beaconIndicator.isAnimating {
             
             let depth = min(max(50,initialDepth + ratio * 2), finalDepth)
-            let rotation = (depth - initialDepth) * 2 * CGFloat(M_PI)/(finalDepth - initialDepth)
-            let offset = (-CGFloat(M_PI)/2)
+            let rotation = (depth - initialDepth) * CGFloat(M_PI)/(finalDepth - initialDepth)
+            let offset = (-3 * CGFloat(M_PI)/2)
             //beaconIndicator.center = CGPoint(x: beaconIndicator.center.x, y:  depth)
             beaconIndicator.transform = CGAffineTransformMakeRotation(rotation + offset)
         }

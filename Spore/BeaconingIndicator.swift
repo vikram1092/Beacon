@@ -111,6 +111,7 @@ class BeaconingIndicator: UIView {
         isAnimating = false
     }
     
+    
     internal func changeColor(color: CGColor) {
         
         dot.fillColor = color

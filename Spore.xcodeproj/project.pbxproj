@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		052155DA757B0752482E71BD /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009B0B61EF1DEC35F92C2FAC /* Pods.framework */; };
-		D1293A7C1CFC880600279EDA /* BeaconLogin@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1293A7A1CFC880500279EDA /* BeaconLogin@x3.png */; };
-		D1293A7E1CFC883300279EDA /* BeaconLogin.png in Resources */ = {isa = PBXBuildFile; fileRef = D1293A7D1CFC883300279EDA /* BeaconLogin.png */; };
 		D1293A981CFD2B2600279EDA /* circle_01b36a_100.png in Resources */ = {isa = PBXBuildFile; fileRef = D1293A811CFD2B2600279EDA /* circle_01b36a_100.png */; };
 		D1293A991CFD2B2600279EDA /* circle_01b36a_150.png in Resources */ = {isa = PBXBuildFile; fileRef = D1293A821CFD2B2600279EDA /* circle_01b36a_150.png */; };
 		D1293A9A1CFD2B2600279EDA /* circle_01b36a_50.png in Resources */ = {isa = PBXBuildFile; fileRef = D1293A831CFD2B2600279EDA /* circle_01b36a_50.png */; };
@@ -83,6 +81,9 @@
 		D18F3EEB1CFBA7A0000681DE /* BeaconTable@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D18F3EEA1CFBA7A0000681DE /* BeaconTable@x2.png */; };
 		D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D195159C1C7232F600053A22 /* VideoDelegate.swift */; };
 		D19A71031CEBFB08003B3E74 /* BeaconRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */; };
+		D19E741F1D0A51D90051CD40 /* BeaconLogin.png in Resources */ = {isa = PBXBuildFile; fileRef = D19E741C1D0A51D90051CD40 /* BeaconLogin.png */; };
+		D19E74201D0A51D90051CD40 /* BeaconLogin@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D19E741D1D0A51D90051CD40 /* BeaconLogin@x2.png */; };
+		D19E74211D0A51D90051CD40 /* BeaconLogin@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D19E741E1D0A51D90051CD40 /* BeaconLogin@x3.png */; };
 		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
 		D1AD47001CF7BF210028942F /* SentAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46F91CF7BF210028942F /* SentAnnotation.swift */; };
@@ -126,8 +127,6 @@
 		009B0B61EF1DEC35F92C2FAC /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AD4534980CEC18A6FB9004C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		A24AE4AF9B2901968170A7F5 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		D1293A7A1CFC880500279EDA /* BeaconLogin@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BeaconLogin@x3.png"; sourceTree = "<group>"; };
-		D1293A7D1CFC883300279EDA /* BeaconLogin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BeaconLogin.png; sourceTree = "<group>"; };
 		D1293A811CFD2B2600279EDA /* circle_01b36a_100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle_01b36a_100.png; sourceTree = "<group>"; };
 		D1293A821CFD2B2600279EDA /* circle_01b36a_150.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle_01b36a_150.png; sourceTree = "<group>"; };
 		D1293A831CFD2B2600279EDA /* circle_01b36a_50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle_01b36a_50.png; sourceTree = "<group>"; };
@@ -205,6 +204,9 @@
 		D18F3EEA1CFBA7A0000681DE /* BeaconTable@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BeaconTable@x2.png"; sourceTree = "<group>"; };
 		D195159C1C7232F600053A22 /* VideoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDelegate.swift; sourceTree = "<group>"; };
 		D19A71021CEBFB08003B3E74 /* BeaconRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconRefreshView.swift; sourceTree = "<group>"; };
+		D19E741C1D0A51D90051CD40 /* BeaconLogin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BeaconLogin.png; sourceTree = "<group>"; };
+		D19E741D1D0A51D90051CD40 /* BeaconLogin@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BeaconLogin@x2.png"; sourceTree = "<group>"; };
+		D19E741E1D0A51D90051CD40 /* BeaconLogin@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BeaconLogin@x3.png"; sourceTree = "<group>"; };
 		D19E95DF1C753473000106DE /* SporeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SporeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D19E95E11C753473000106DE /* SporeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SporeTests.swift; sourceTree = "<group>"; };
 		D19E95E31C753473000106DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -383,9 +385,10 @@
 			isa = PBXGroup;
 			children = (
 				D1293A7F1CFD2B2600279EDA /* Clusters */,
-				D1293A7D1CFC883300279EDA /* BeaconLogin.png */,
-				D1293A7A1CFC880500279EDA /* BeaconLogin@x3.png */,
 				D18F3EE21CFBA2A8000681DE /* BeaconTable.png */,
+				D19E741C1D0A51D90051CD40 /* BeaconLogin.png */,
+				D19E741D1D0A51D90051CD40 /* BeaconLogin@x2.png */,
+				D19E741E1D0A51D90051CD40 /* BeaconLogin@x3.png */,
 				D18F3EEA1CFBA7A0000681DE /* BeaconTable@x2.png */,
 				D1DF78631D0668FD003FD319 /* BeaconTable@x3.png */,
 				D13F42BD1CDAD6110011F12C /* LaunchImageCaptureButton.png */,
@@ -610,6 +613,7 @@
 				D1293AA01CFD2B2600279EDA /* circle_01b36a_90.png in Resources */,
 				D1372FD71C959274009DCA29 /* flashDisabledButton.png in Resources */,
 				D1293AA41CFD2B2600279EDA /* circle_01b36a_120.png in Resources */,
+				D19E741F1D0A51D90051CD40 /* BeaconLogin.png in Resources */,
 				D13382971CDAB23200347302 /* Logo@x120.png in Resources */,
 				D13F42C01CDAD6110011F12C /* LaunchImageCaptureButton@x3.png in Resources */,
 				D13382961CDAB23200347302 /* Logo@x87.png in Resources */,
@@ -623,7 +627,6 @@
 				D133829B1CDAB79500347302 /* Logo@x29.png in Resources */,
 				D144F1EB1C440F1700E07700 /* UserList.png in Resources */,
 				D16D5CEB1CD99EB4005F401F /* Launch Screen.storyboard in Resources */,
-				D1293A7E1CFC883300279EDA /* BeaconLogin.png in Resources */,
 				D1DF78641D0668FD003FD319 /* BeaconTable@x3.png in Resources */,
 				D13382921CDAB23200347302 /* Logo@x58.png in Resources */,
 				D18F3EEB1CFBA7A0000681DE /* BeaconTable@x2.png in Resources */,
@@ -632,7 +635,6 @@
 				D13F42BF1CDAD6110011F12C /* LaunchImageCaptureButton.png in Resources */,
 				D144F1ED1C440F1700E07700 /* userSettings.png in Resources */,
 				D1293AA51CFD2B2600279EDA /* circle_01b36a_40.png in Resources */,
-				D1293A7C1CFC880600279EDA /* BeaconLogin@x3.png in Resources */,
 				D144F1F11C4412D500E07700 /* CancelPhoto.png in Resources */,
 				D13382991CDAB5E800347302 /* Logo@x180.png in Resources */,
 				D1372FD91C959274009DCA29 /* flashEnabledButton.png in Resources */,
@@ -655,6 +657,7 @@
 				D144F1F41C4414A300E07700 /* CameraSwitch@x3.png in Resources */,
 				D14907911C455F7500F2C635 /* Tangela.JPG in Resources */,
 				D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */,
+				D19E74211D0A51D90051CD40 /* BeaconLogin@x3.png in Resources */,
 				D1EC295C1C2E1E850014DE7E /* Countries in Resources */,
 				D1293AA71CFD2B2600279EDA /* circle_01b36a_30.png in Resources */,
 				D136589E1C55BF5C005AEC61 /* cameraButton.png in Resources */,
@@ -667,6 +670,7 @@
 				D1293AA81CFD2B2600279EDA /* circle_01b36a_60.png in Resources */,
 				D136589F1C55BF5C005AEC61 /* cameraButton@x3.png in Resources */,
 				D1D8A5491C5D3AA100E95BCE /* Settings.bundle in Resources */,
+				D19E74201D0A51D90051CD40 /* BeaconLogin@x2.png in Resources */,
 				D144F1EE1C440F1700E07700 /* userSettings@x3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

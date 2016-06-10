@@ -82,7 +82,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             //Register for interruption notifications
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleCaptureSessionInterruption:"), name: AVCaptureSessionWasInterruptedNotification, object: nil)
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleAudioSessionInterruption:"), name: AVAudioSessionInterruptionNotification, object: nil)
+            //NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleAudioSessionInterruption:"), name: AVAudioSessionInterruptionNotification, object: nil)
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("continueVideo"), name: UIApplicationWillEnterForegroundNotification, object: nil)
             
@@ -1382,13 +1382,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         if reason == AVCaptureSessionInterruptionReason.VideoDeviceNotAvailableWithMultipleForegroundApps.rawValue {
             
             print("Interruption began")
-            showAlert("Another app is using your recording features.")
-            captureSessionInterrupted = true
+            showAlert("Another app is using your camera features.")
             dispatch_async(cameraQueue, { () -> Void in
                 
                 self.captureSession.stopRunning()
             })
         }
+            /*
         else if reason == AVCaptureSessionInterruptionReason.VideoDeviceNotAvailableWithMultipleForegroundApps.rawValue {
             
             print("Interruption ended")
@@ -1400,7 +1400,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 self.captureSession.startRunning()
             })
             
-        }
+        }*/
     }
     
     
@@ -1417,25 +1417,25 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 //Stop capture session if it was running
                 print("Interruption began")
-                showAlert("Another app is using your recording features.")
                 captureSessionInterrupted = true
+                /*showAlert("Another app is using your recording features.")
                 dispatch_async(cameraQueue, { () -> Void in
                     
                     self.captureSession.stopRunning()
-                })
+                })*/
             }
         }
         else if reason == AVAudioSessionInterruptionType.Ended.rawValue {
             
             if captureSessionInterrupted {
                 
-                print("Interruption began")
-                closeAlert()
+                print("Interruption ended")
                 captureSessionInterrupted = false
+                /*closeAlert()
                 dispatch_async(cameraQueue, { () -> Void in
                     
                     self.captureSession.startRunning()
-                })
+                })*/
             }
         }
     }

@@ -45,7 +45,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
-        return UIStatusBarStyle.Default
+        return UIStatusBarStyle.LightContent
     }
     
     

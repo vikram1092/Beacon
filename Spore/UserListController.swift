@@ -32,7 +32,6 @@ class UserListController: UITableViewController {
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
     var countryObject = UIView()
-    var shouldRefresh = false
     var updatingUserList = false
     var alertShowed = false
     
@@ -505,8 +504,8 @@ class UserListController: UITableViewController {
                             
                             print("Database empty.")
                             //Let the user know that the database if user hasn't switched out already
-                            if self.tabBarController?.selectedIndex == 1 {
-                                let alert = UIAlertController(title: "Photos To Come!", message: "People will be sharing their pics very soon, check back to see what you get!", preferredStyle: UIAlertControllerStyle.Alert)
+                            if self.tabBarController?.selectedIndex == 1 && self.refreshControl!.refreshing {
+                                let alert = UIAlertController(title: "Beacons To Come!", message: "All the beacons have been captured! Check back to detect stray beacons!", preferredStyle: UIAlertControllerStyle.Alert)
                                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
                                 self.presentViewController(alert, animated: true, completion: nil)
                             }
@@ -515,11 +514,6 @@ class UserListController: UITableViewController {
                             
                             //Query for pictures from the same country
                             self.updateUserList(true)
-                        }
-                        else if sameCountry {
-                            
-                            //Set updating flag to false
-                            self.updatingUserList = false
                         }
                     }
                 }
@@ -608,11 +602,14 @@ class UserListController: UITableViewController {
                 
                 
                 //Stop refreshing
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if !self.updatingUserList {
                     
-                    self.beaconRefresh.stopAnimating()
-                    self.refreshControl!.endRefreshing()
-                })
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.updatingUserList = false
+                        self.refreshControl!.endRefreshing()
+                    })
+                }
             })
         }
         else {
@@ -621,7 +618,7 @@ class UserListController: UITableViewController {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
                 print("Ending")
-                //self.beaconRefresh.stopAnimating()
+                self.updatingUserList = false
                 self.refreshControl!.endRefreshing()
             })
         }
