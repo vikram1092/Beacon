@@ -1457,6 +1457,7 @@ class UserListController: UITableViewController {
         if map.beaconControl.selectedSegmentIndex != 0 {
             
             map.beaconControl.selectedSegmentIndex = 0
+            map.beaconControlChanged(map.beaconControl)
         }
         
         //Pan to selected location

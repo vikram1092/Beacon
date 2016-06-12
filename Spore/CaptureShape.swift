@@ -57,6 +57,7 @@ class CaptureShape: UIView {
         //Animate the timer
         let progress = CABasicAnimation(keyPath: "strokeStart")
         let expansion = CABasicAnimation(keyPath: "path")
+        let width = CABasicAnimation(keyPath: "lineWidth")
         
         //Configure animation
         progress.duration = 10
@@ -72,15 +73,28 @@ class CaptureShape: UIView {
         expansion.removedOnCompletion = false
         expansion.fillMode = kCAFillModeForwards
         
+        
+        //Configure width change
+        width.duration = 2
+        width.fromValue = 3
+        width.toValue = 5
+        width.removedOnCompletion = false
+        width.fillMode = kCAFillModeForwards
+            
+            
         record.addAnimation(progress, forKey: nil)
-        border.addAnimation(expansion, forKey: nil)
         record.addAnimation(expansion, forKey: nil)
+        record.addAnimation(width, forKey: nil)
+        
+        border.addAnimation(expansion, forKey: nil)
+        border.addAnimation(width, forKey: nil)
     }
     
     internal func stopRecording() {
         
         border.removeAllAnimations()
         border.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        border.lineWidth = 3
         record.removeFromSuperlayer()
     }
     

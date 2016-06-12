@@ -17,6 +17,7 @@ import FBSDKLoginKit
 class CameraController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate, AVAudioRecorderDelegate {
     
     
+    //UI elements
     @IBOutlet var cameraImage: UIImageView!
     @IBOutlet var flashButton: UIButton!
     @IBOutlet var captureButton: UIButton!
@@ -30,6 +31,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBOutlet var alertView: UIView!
     @IBOutlet var alertButton: UIButton!
     
+    //Camera and media elements
     var captureSession = AVCaptureSession()
     var audioSession = AVAudioSession()
     var audioRecorder: AVAudioRecorder!
@@ -47,6 +49,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         AVEncoderAudioQualityKey : NSNumber(int: Int32(AVAudioQuality.Medium.rawValue)),
         AVEncoderBitRateKey : NSNumber(int: Int32(320000))]
     
+    //File saving variables
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
@@ -57,6 +60,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     let imageFileExtension = ".jpg"
     let compressionGroup = dispatch_group_create()
     
+    //User variables
     var userLocation = PFGeoPoint(latitude: 0, longitude: 0)
     var userCountry = ""
     var userState = ""
@@ -496,7 +500,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                                 //Disable flash
                                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                     
+                                    self.turnTorchOff()
                                     self.flashButton.enabled = false
+                                    
                                 })
                                 
                                 //Configure device modes
@@ -1388,19 +1394,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 self.captureSession.stopRunning()
             })
         }
-            /*
-        else if reason == AVCaptureSessionInterruptionReason.VideoDeviceNotAvailableWithMultipleForegroundApps.rawValue {
-            
-            print("Interruption ended")
-            closeAlert()
-            dispatch_async(cameraQueue, { () -> Void in
-                
-                self.addCameraInputs()
-                self.addCameraOutputs()
-                self.captureSession.startRunning()
-            })
-            
-        }*/
     }
     
     
