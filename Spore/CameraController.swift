@@ -61,6 +61,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     let compressionGroup = dispatch_group_create()
     
     //User variables
+    let bannedTitle = "userIsBanned"
     var userLocation = PFGeoPoint(latitude: 0, longitude: 0)
     var userCountry = ""
     var userState = ""
@@ -84,13 +85,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
             
             //Register for interruption notifications
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleCaptureSessionInterruption:"), name: AVCaptureSessionWasInterruptedNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CameraController.handleCaptureSessionInterruption(_:)), name: AVCaptureSessionWasInterruptedNotification, object: nil)
             
             //NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleAudioSessionInterruption:"), name: AVAudioSessionInterruptionNotification, object: nil)
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("continueVideo"), name: UIApplicationWillEnterForegroundNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CameraController.continueVideo), name: UIApplicationWillEnterForegroundNotification, object: nil)
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("doBackgroundTasks"), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CameraController.doBackgroundTasks), name: UIApplicationDidEnterBackgroundNotification, object: nil)
             
             
         }
@@ -598,7 +599,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             audioRecorder.record()
             
             //Start timer
-            videoTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: Selector("stopTakingVideo"), userInfo: nil, repeats: false)
+            videoTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(CameraController.stopTakingVideo), userInfo: nil, repeats: false)
             
             //Start recording animation
             captureShape.startRecording()
@@ -733,7 +734,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Set loop function
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "restartVideoFromBeginning",
+            selector: #selector(CameraController.restartVideoFromBeginning),
             name: AVPlayerItemDidPlayToEndTimeNotification,
             object: moviePlayer.player!.currentItem)
         
@@ -781,18 +782,21 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Turn off flash if its on
         flashButton.setImage(UIImage(named: "FlashButtonOff"), forState: UIControlState.Normal)
-        if captureDevice!.hasTorch {
+        if captureDevice != nil {
             
-            //Lock device for configuration
-            do {
-                try captureDevice!.lockForConfiguration()
-            } catch let error as NSError {print("Error getting lock for device \(error)")}
-            
-            if captureDevice!.torchMode == AVCaptureTorchMode.On {
+            if captureDevice!.hasTorch {
                 
-                //Turn off torch mode and unlock device
-                captureDevice!.torchMode = AVCaptureTorchMode.Off
-                captureDevice!.unlockForConfiguration()
+                //Lock device for configuration
+                do {
+                    try captureDevice!.lockForConfiguration()
+                } catch let error as NSError {print("Error getting lock for device \(error)")}
+                
+                if captureDevice!.torchMode == AVCaptureTorchMode.On {
+                    
+                    //Turn off torch mode and unlock device
+                    captureDevice!.torchMode = AVCaptureTorchMode.Off
+                    captureDevice!.unlockForConfiguration()
+                }
             }
         }
     }

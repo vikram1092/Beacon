@@ -527,7 +527,10 @@ class UserListController: UITableViewController {
                     for photoObject in photos!{
                         
                         //Increment how much user receives
-                        userReceivedPhotos++
+                        userReceivedPhotos += 1
+                        
+                        //Mark unread
+                        photoObject["unread"] = true
                         
                         //Attach receipt details to object
                         photoObject["receivedAt"] = NSDate()
@@ -652,7 +655,7 @@ class UserListController: UITableViewController {
         refreshControl!.backgroundColor = refreshBackgroundColor
         
         //Add target
-        self.refreshControl!.addTarget(self, action: "refreshNeeded", forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(UserListController.refreshNeeded), forControlEvents: UIControlEvents.ValueChanged)
 
     }
     
@@ -719,7 +722,7 @@ class UserListController: UITableViewController {
         
         
         //Configure image sliding and action
-        let pan = UIPanGestureRecognizer(target: self, action: Selector("detectPan:"))
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(UserListController.detectPan(_:)))
         imageBackground.addGestureRecognizer(pan)
         
         
@@ -819,6 +822,17 @@ class UserListController: UITableViewController {
             titleView.text = country
         }
         
+        
+        //Configure unread or read. Bold for unread and medium for read.
+        if userList[userListIndex]["unread"] != nil && withinTime(date!) {
+            
+            titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightBold)
+        }
+        else {
+            
+            titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+        }
+        
         return cell
     }
     
@@ -906,6 +920,7 @@ class UserListController: UITableViewController {
             
             print("Show photo")
             
+            
             //Initialize parent VC variables
             let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
             grandparent.snap.image = nil
@@ -948,7 +963,7 @@ class UserListController: UITableViewController {
                         
                         //Set close function
                         NSNotificationCenter.defaultCenter().addObserver(self,
-                            selector: "closeVideo",
+                            selector: #selector(UserListController.closeVideo),
                             name: AVPlayerItemDidPlayToEndTimeNotification,
                             object: grandparent.moviePlayer.player!.currentItem)
                         
@@ -978,6 +993,18 @@ class UserListController: UITableViewController {
                             
                             //Start timer
                             grandparent.snapTimer.startTimer(player.currentItem!.asset.duration)
+                            
+                            
+                            
+                            //Reset cell to read if currently unread
+                            if self.userList[userListIndex]["unread"] != nil {
+                                
+                                let titleView = cell.viewWithTag(1) as! UILabel
+                                self.userList[userListIndex].removeObjectForKey("unread")
+                                self.userList[userListIndex].pinInBackground()
+                                
+                                titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+                            }
                             
                         })
                     }
@@ -1015,6 +1042,17 @@ class UserListController: UITableViewController {
                             //Hide timer
                             grandparent.snapTimer.alpha = 0
                             grandparent.snap.alpha = 1
+                            
+                            
+                            //Reset cell to read if currently unread
+                            if self.userList[userListIndex]["unread"] != nil {
+                                
+                                let titleView = cell.viewWithTag(1) as! UILabel
+                                self.userList[userListIndex].removeObjectForKey("unread")
+                                self.userList[userListIndex].pinInBackground()
+                                
+                                titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+                            }
                         })
                     }
                 }

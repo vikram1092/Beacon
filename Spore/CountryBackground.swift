@@ -45,7 +45,7 @@ class CountryBackground: UIView {
         
         
         //Register for interruption notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("resumeAnimating"), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CountryBackground.resumeAnimating), name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
     
     

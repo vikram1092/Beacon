@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1713" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="UdC-tP-fdI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="UdC-tP-fdI">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -18,15 +18,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="0.0" y="432" width="552" height="55"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Spore" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
+                                <rect key="frame" x="0.0" y="545" width="600" height="55"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="55" id="gwF-Ew-9i7"/>
+                                    <constraint firstAttribute="height" constant="55" id="9Ba-78-DLG"/>
                                 </constraints>
                                 <state key="normal" title="Button"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="20" y="211" width="512" height="65"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                                <rect key="frame" x="20" y="267" width="560" height="65"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="65" id="5ad-e3-KjW"/>
                                 </constraints>
@@ -44,36 +47,43 @@
                                     <action selector="alertButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WGk-0c-n9r"/>
                                 </connections>
                             </button>
-                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
-                                <rect key="frame" x="184" y="75" width="185" height="80"/>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
+                                <rect key="frame" x="208" y="95" width="185" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="hwy-79-fj2"/>
                                     <constraint firstAttribute="width" constant="185" id="nms-e5-Qmk"/>
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="0.60886184649999997" green="0.17053013440000001" blue="0.2283597091" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.31769081690000001" green="0.44732541529999997" blue="0.78039215689999997" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="0E2-bh-ZgZ"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="6of-JT-td1"/>
+                            <constraint firstItem="FJd-ej-OVL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="C6v-HE-Fp6"/>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="75" id="EU3-gi-YfB"/>
+                            <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="K6x-kU-47a"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="FJd-ej-OVL" secondAttribute="trailing" constant="-20" id="Kq9-PF-8gT"/>
+                            <constraint firstItem="FJd-ej-OVL" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottomMargin" id="LY5-8x-A0p"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="MZ3-Ga-dzE"/>
-                            <constraint firstItem="gQw-9e-GDG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="a8g-za-AFX"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="PFH-cV-MJ6"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="RuU-zb-YbY"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="f2E-N9-ebj"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="gQ0-iL-OCd"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="yxX-Oz-bij"/>
+                            <constraint firstItem="gQw-9e-GDG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="vai-CJ-lGd"/>
                         </constraints>
                     </view>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="alertButton" destination="Hoa-RA-aL6" id="E5B-62-oqr"/>
+                        <outlet property="dotView" destination="FJd-ej-OVL" id="eMm-RA-WxF"/>
                         <outlet property="fbLoginButton" destination="gQw-9e-GDG" id="6at-YT-Qh3"/>
                         <segue destination="UdC-tP-fdI" kind="presentation" identifier="LoginToMain" id="BF7-rl-4Xr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-512" y="303.5"/>
+            <point key="canvasLocation" x="-512" y="303"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="9x9-5Y-FFL">

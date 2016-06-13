@@ -19,7 +19,7 @@ class Line: UIView {
         let ybounds = self.bounds.height
         path.moveToPoint(CGPoint(x: 1, y: ybounds-1))
         
-        for var i = 0; i < 50; i += 1 {
+        for i in 0 ..< 50 {
             
             path.addLineToPoint(CGPoint(x: CGFloat(arc4random_uniform(20)) + CGFloat(i*10), y: ybounds-1-CGFloat(i*18)))
         }

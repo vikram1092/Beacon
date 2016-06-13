@@ -14,6 +14,7 @@ import Parse
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
     
+    @IBOutlet var dotView: DotView!
     @IBOutlet var alertButton: UIButton!
     @IBOutlet var fbLoginButton: FBSDKLoginButton!
     var userName = ""
@@ -26,6 +27,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         //Load as normal
         super.viewDidLoad()
+        
+        self.view.sendSubviewToBack(dotView)
     }
     
     
@@ -52,9 +55,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     //Configure Facebook login button
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult loginResult: FBSDKLoginManagerLoginResult!, error: NSError!) {
         
-        if (error != nil){
+        if (error != nil) {
             //Process error
-            print("Facebook Login Error: " + error.description)
+            print("Facebook Login Error: \(error.description)")
         }
         else if loginResult.isCancelled {
             //Handle cancellations
@@ -113,7 +116,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             if error == nil && users!.count >= 1 {
                 
                 //Check if user is banned in database
-                print("Object 'users' count: " + String(users!.count))
+                print("Object 'users' count: \(users!.count)")
                 let userBanned = users![0]["banned"] as! BooleanLiteralType
                 print(userBanned)
                 
@@ -150,14 +153,13 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                     }
                     else {
                         
-                        // There was a problem, check error.description
-                        print("Error saving user")
-                        print(error!.description)
+                        // There was a problem, check error
+                        print("Error saving user: \(error)")
                     }
                 }
             }
             else {
-                print("Error: " + String(error))
+                print("Error: \(error)")
             }
         })
         
@@ -168,7 +170,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     internal func showAlert(text: String) {
         
         self.alertButton.setTitle(text, forState: .Normal)
-        self.alertButton.sizeToFit()
+        self.alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
         
         UIView.animateWithDuration(0.4) { () -> Void in
             

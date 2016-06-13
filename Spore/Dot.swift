@@ -10,19 +10,19 @@ import Foundation
 import UIKit
 
 
-class BeaconRefreshView: UIView {
+class Dot: UIView {
     
     
     let dot = CAShapeLayer()
-    let color = UIColor.whiteColor().CGColor
-    let bound = 10
+    let color = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.3).CGColor
+    let bound = 3
     
     
     required init?(coder aDecoder: NSCoder) {
         
         super.init(coder: aDecoder)
         
-        //Set beacon dot
+        //Set dot
         let dotBounds = self.bounds.height
         dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width, y: self.bounds.height, width: dotBounds, height: dotBounds)).CGPath
         dot.fillColor = color
@@ -34,7 +34,7 @@ class BeaconRefreshView: UIView {
         
         super.init(frame: CGRect(x: 0, y: 0, width: bound, height: bound))
         
-        //Set beacon dot
+        //Set dot
         dot.path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: bound, height: bound)).CGPath
         dot.fillColor = color
         
