@@ -9,26 +9,26 @@
         <!--Login-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="LoginController" title="Login" id="BYZ-38-t0r" customClass="LoginController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginController" title="Login" id="BYZ-38-t0r" customClass="LoginController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Spore" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
                                 <rect key="frame" x="0.0" y="545" width="600" height="55"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="9Ba-78-DLG"/>
                                 </constraints>
                                 <state key="normal" title="Button"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
                                 <rect key="frame" x="20" y="267" width="560" height="65"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="65" id="5ad-e3-KjW"/>
@@ -47,7 +47,7 @@
                                     <action selector="alertButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WGk-0c-n9r"/>
                                 </connections>
                             </button>
-                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
                                 <rect key="frame" x="208" y="95" width="185" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="hwy-79-fj2"/>
@@ -59,15 +59,15 @@
                         <constraints>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="0E2-bh-ZgZ"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="6of-JT-td1"/>
-                            <constraint firstItem="FJd-ej-OVL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="C6v-HE-Fp6"/>
+                            <constraint firstItem="FJd-ej-OVL" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottomMargin" id="CvU-3S-EXM"/>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="75" id="EU3-gi-YfB"/>
-                            <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="K6x-kU-47a"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="FJd-ej-OVL" secondAttribute="trailing" constant="-20" id="Kq9-PF-8gT"/>
-                            <constraint firstItem="FJd-ej-OVL" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottomMargin" id="LY5-8x-A0p"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="MZ3-Ga-dzE"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="PFH-cV-MJ6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="RuU-zb-YbY"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="f2E-N9-ebj"/>
+                            <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="rqS-OZ-r9g"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="FJd-ej-OVL" secondAttribute="trailing" constant="-20" id="sI0-L7-Ra1"/>
+                            <constraint firstItem="FJd-ej-OVL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="tIi-Nn-x30"/>
                             <constraint firstItem="gQw-9e-GDG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="vai-CJ-lGd"/>
                         </constraints>
                     </view>
@@ -83,14 +83,15 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-512" y="303"/>
+            <point key="canvasLocation" x="-512" y="302.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="9x9-5Y-FFL">
             <objects>
-                <navigationController id="2kg-ag-T9r" sceneMemberID="viewController">
+                <navigationController modalPresentationStyle="currentContext" id="2kg-ag-T9r" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" opaque="NO" contentMode="scaleToFill" translucent="NO" id="vxj-Uc-aUJ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -112,7 +113,7 @@
         <!--Main-->
         <scene sceneID="pei-fE-jWm">
             <objects>
-                <viewController storyboardIdentifier="MainController" title="Main" extendedLayoutIncludesOpaqueBars="YES" id="Obd-UH-7yy" customClass="MainController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainController" title="Main" extendedLayoutIncludesOpaqueBars="YES" id="Obd-UH-7yy" customClass="MainController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="JB1-sV-LGU"/>
                         <viewControllerLayoutGuide type="bottom" id="69W-9e-QTv"/>
@@ -156,7 +157,7 @@
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <tabBarItem key="tabBarItem" title="Photos" image="UserList" id="ydQ-on-oUq">
+                    <tabBarItem key="tabBarItem" title="Beacons" image="BeaconsButton" id="ydQ-on-oUq">
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="0.0"/>
                     </tabBarItem>
                     <navigationItem key="navigationItem" id="cK4-7q-eyL"/>
@@ -174,7 +175,7 @@
         <!--User List Controller-->
         <scene sceneID="JQP-Dr-PXd">
             <objects>
-                <tableViewController id="WEH-9b-AKs" customClass="UserListController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="WEH-9b-AKs" customClass="UserListController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="95" sectionHeaderHeight="28" sectionFooterHeight="28" id="xjG-fJ-7nf">
                         <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -194,7 +195,7 @@
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view tag="6" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZG5-GW-eje" customClass="CountryBackground" customModule="Spore" customModuleProvider="target">
+                                        <view tag="6" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZG5-GW-eje" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
                                             <rect key="frame" x="13" y="8" width="80" height="80"/>
                                             <subviews>
                                                 <imageView tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
@@ -268,7 +269,7 @@
         <!--Map-->
         <scene sceneID="JdA-pl-hey">
             <objects>
-                <viewController title="Map" extendedLayoutIncludesOpaqueBars="YES" id="mKN-em-9dv" userLabel="Map" customClass="MapController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Map" extendedLayoutIncludesOpaqueBars="YES" id="mKN-em-9dv" userLabel="Map" customClass="MapController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="x2Z-zG-Pqh"/>
                         <viewControllerLayoutGuide type="bottom" id="frc-ec-ku7"/>
@@ -298,7 +299,7 @@
                                     <action selector="beaconControlChanged:" destination="mKN-em-9dv" eventType="valueChanged" id="zgq-CZ-5ea"/>
                                 </connections>
                             </segmentedControl>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nNv-uA-SEt" customClass="BeaconingIndicator" customModule="Spore" customModuleProvider="target">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nNv-uA-SEt" customClass="BeaconingIndicator" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="520" y="491" width="40" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -336,17 +337,17 @@
         <!--p r i v a c y   p o l i c y-->
         <scene sceneID="BtV-6N-FDs">
             <objects>
-                <viewController title="p r i v a c y   p o l i c y" id="W9D-9n-th5" customClass="PrivacyPolicyController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="p r i v a c y   p o l i c y" id="W9D-9n-th5" customClass="PrivacyPolicyController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="EBQ-sh-A9H"/>
                         <viewControllerLayoutGuide type="bottom" id="J0f-90-a8d"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="7XT-kT-AKZ">
-                        <rect key="frame" x="0.0" y="44" width="552" height="487"/>
+                        <rect key="frame" x="0.0" y="44" width="552" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mqL-5j-2JW">
-                                <rect key="frame" x="30" y="8" width="492" height="471"/>
+                                <rect key="frame" x="30" y="8" width="492" height="521"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -373,9 +374,9 @@
         <!--Settings Table-->
         <scene sceneID="yag-I6-doL">
             <objects>
-                <tableViewController title="Settings Table" automaticallyAdjustsScrollViewInsets="NO" id="5sm-ep-AXT" customClass="SettingsTableController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Settings Table" automaticallyAdjustsScrollViewInsets="NO" id="5sm-ep-AXT" customClass="SettingsTableController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" pagingEnabled="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="AAP-IP-RLk">
-                        <rect key="frame" x="0.0" y="44" width="552" height="487"/>
+                        <rect key="frame" x="0.0" y="44" width="552" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.97443657841823061" green="0.97443657841823061" blue="0.97443657841823061" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" red="0.97443657839999998" green="0.97443657839999998" blue="0.97443657839999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -389,7 +390,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="552" height="113.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d8u-fS-2jg" customClass="CountryBackground" customModule="Spore" customModuleProvider="target">
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d8u-fS-2jg" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
                                                     <rect key="frame" x="236" y="8" width="80" height="80"/>
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o2y-MI-kPe">
@@ -450,6 +451,7 @@
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O8O-pY-68y">
                                                     <rect key="frame" x="485" y="6" width="51" height="31"/>
+                                                    <color key="onTintColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                                     <connections>
                                                         <action selector="saveSwitchFlipped:" destination="5sm-ep-AXT" eventType="valueChanged" id="jNT-ef-1p9"/>
                                                     </connections>
@@ -573,6 +575,7 @@
                             <outlet property="delegate" destination="5sm-ep-AXT" id="8Sv-nS-kvA"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="s e t t i n g s" id="Iyg-wa-zED">
                         <barButtonItem key="backBarButtonItem" title=" " id="NRX-2r-QHk"/>
                     </navigationItem>
@@ -596,7 +599,7 @@
         <!--Settings-->
         <scene sceneID="Esq-U9-eSz">
             <objects>
-                <viewController storyboardIdentifier="SettingsController" title="Settings" automaticallyAdjustsScrollViewInsets="NO" id="d16-QO-sve" customClass="SettingsController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsController" title="Settings" automaticallyAdjustsScrollViewInsets="NO" id="d16-QO-sve" customClass="SettingsController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="G7p-g5-E2m"/>
                         <viewControllerLayoutGuide type="bottom" id="HSU-i7-9f1"/>
@@ -606,7 +609,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="h61-ZD-rF4">
-                                <rect key="frame" x="24" y="20" width="552" height="531"/>
+                                <rect key="frame" x="24" y="20" width="552" height="581"/>
                                 <connections>
                                     <segue destination="2kg-ag-T9r" kind="embed" id="IKX-Cg-pWD"/>
                                 </connections>
@@ -627,14 +630,14 @@
                             <constraint firstItem="tnX-2Q-oBi" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leadingMargin" constant="-20" id="Fv9-Uo-YD6"/>
                             <constraint firstItem="tnX-2Q-oBi" firstAttribute="top" secondItem="TgT-el-teM" secondAttribute="topMargin" constant="-1" id="alt-ey-geQ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="tnX-2Q-oBi" secondAttribute="trailing" constant="-20" id="ezM-RR-La7"/>
+                            <constraint firstItem="h61-ZD-rF4" firstAttribute="bottom" secondItem="TgT-el-teM" secondAttribute="bottomMargin" constant="50" id="gFp-LH-EXC"/>
                             <constraint firstItem="h61-ZD-rF4" firstAttribute="centerX" secondItem="TgT-el-teM" secondAttribute="centerX" id="m20-6K-tNB"/>
                             <constraint firstItem="h61-ZD-rF4" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leadingMargin" constant="4" id="oIN-Bh-Ynr"/>
-                            <constraint firstItem="HSU-i7-9f1" firstAttribute="top" secondItem="h61-ZD-rF4" secondAttribute="bottom" id="qOC-9J-qUm"/>
                             <constraint firstAttribute="trailingMargin" secondItem="h61-ZD-rF4" secondAttribute="trailing" constant="4" id="sCk-uO-YlR"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Settings" image="UserSettings" id="wSs-1d-LYf">
+                    <tabBarItem key="tabBarItem" title="Me" image="UserSettings" id="wSs-1d-LYf">
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="0.0"/>
                     </tabBarItem>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
@@ -646,7 +649,7 @@
         <!--Camera-->
         <scene sceneID="8Ob-9H-e72">
             <objects>
-                <viewController storyboardIdentifier="CameraController" title="Camera" extendedLayoutIncludesOpaqueBars="YES" id="GJW-g9-4yK" customClass="CameraController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CameraController" title="Camera" extendedLayoutIncludesOpaqueBars="YES" id="GJW-g9-4yK" customClass="CameraController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1kU-Lg-LSU"/>
                         <viewControllerLayoutGuide type="bottom" id="RHl-1r-erk"/>
@@ -693,7 +696,7 @@
                                     <action selector="sendPhoto:" destination="GJW-g9-4yK" eventType="touchUpInside" id="7wF-pV-At3"/>
                                 </connections>
                             </button>
-                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TXH-DP-OjX" customClass="SnapTimer" customModule="Spore" customModuleProvider="target">
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TXH-DP-OjX" customClass="SnapTimer" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="529" y="28" width="20" height="20"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -701,7 +704,7 @@
                                     <constraint firstAttribute="width" constant="20" id="pCa-Iu-CdP"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iP7-5k-Seg" customClass="CaptureShape" customModule="Spore" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iP7-5k-Seg" customClass="CaptureShape" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="261" y="453" width="78" height="78"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -721,7 +724,7 @@
                                     <outletCollection property="gestureRecognizers" destination="PGU-5u-ZO6" appends="YES" id="u4h-Z2-nv9"/>
                                 </connections>
                             </button>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4QP-Z7-Dah" customClass="BeaconingIndicator" customModule="Spore" customModuleProvider="target">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4QP-Z7-Dah" customClass="BeaconingIndicator" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="280" y="280" width="40" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -888,7 +891,7 @@
         <!--SnapController-->
         <scene sceneID="bYK-YJ-dFG">
             <objects>
-                <viewController storyboardIdentifier="SnapController" title="SnapController" extendedLayoutIncludesOpaqueBars="YES" id="UdC-tP-fdI" customClass="SnapController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SnapController" title="SnapController" extendedLayoutIncludesOpaqueBars="YES" id="UdC-tP-fdI" customClass="SnapController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vF0-Rz-t1f"/>
                         <viewControllerLayoutGuide type="bottom" id="ODD-Ld-2eC"/>
@@ -911,7 +914,7 @@
                                     <outletCollection property="gestureRecognizers" destination="xCL-cu-aLA" appends="YES" id="aeV-ia-ia1"/>
                                 </connections>
                             </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FGc-5A-dxM" customClass="SnapTimer" customModule="Spore" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FGc-5A-dxM" customClass="SnapTimer" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="560" y="40" width="20" height="20"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -961,10 +964,10 @@
         <!--TabBarController-->
         <scene sceneID="UkW-XZ-uV0">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarController" title="TabBarController" extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" definesPresentationContext="YES" hidesBottomBarWhenPushed="YES" id="Z7Z-K5-cIg" customClass="TabBarController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" title="TabBarController" extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" definesPresentationContext="YES" hidesBottomBarWhenPushed="YES" id="Z7Z-K5-cIg" customClass="TabBarController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" placeholderIntrinsicWidth="0.0" placeholderIntrinsicHeight="49" id="aJK-XO-EX3">
+                    <tabBar key="tabBar" contentMode="scaleToFill" placeholderIntrinsicWidth="0.0" placeholderIntrinsicHeight="49" translucent="NO" id="aJK-XO-EX3">
                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
@@ -989,17 +992,17 @@
         <!--t e r m s   o f   u s e-->
         <scene sceneID="zI9-tE-hdL">
             <objects>
-                <viewController title="t e r m s   o f   u s e" id="asR-1j-sne" customClass="TermsOfUseController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="t e r m s   o f   u s e" id="asR-1j-sne" customClass="TermsOfUseController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1Sh-h3-wl7"/>
                         <viewControllerLayoutGuide type="bottom" id="XMF-pB-bA9"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="pBX-BH-BBi">
-                        <rect key="frame" x="0.0" y="44" width="552" height="487"/>
+                        <rect key="frame" x="0.0" y="44" width="552" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms Of Use" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hTV-Fa-M8n">
-                                <rect key="frame" x="30" y="8" width="492" height="471"/>
+                                <rect key="frame" x="30" y="8" width="492" height="521"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -1026,17 +1029,17 @@
         <!--a b o u t-->
         <scene sceneID="sPq-TD-mKD">
             <objects>
-                <viewController title="a b o u t" id="1Be-Cm-Jbh" customClass="AboutController" customModule="Spore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="a b o u t" id="1Be-Cm-Jbh" customClass="AboutController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Dq7-1s-A4J"/>
                         <viewControllerLayoutGuide type="bottom" id="IM0-IN-Cep"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="HAO-HZ-eo4">
-                        <rect key="frame" x="0.0" y="44" width="552" height="487"/>
+                        <rect key="frame" x="0.0" y="44" width="552" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92Y-nK-6Ui">
-                                <rect key="frame" x="30" y="8" width="492" height="471"/>
+                                <rect key="frame" x="30" y="8" width="492" height="521"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -1062,18 +1065,18 @@
         </scene>
     </scenes>
     <resources>
-        <image name="CameraSwitch" width="44" height="44"/>
+        <image name="BeaconsButton" width="22" height="22"/>
+        <image name="CameraSwitch" width="22" height="22"/>
         <image name="CancelPhoto" width="44" height="44"/>
         <image name="FlashButtonOff" width="44" height="44"/>
-        <image name="Globe" width="44" height="44"/>
+        <image name="Globe" width="22" height="22"/>
         <image name="LogoFront" width="200" height="50"/>
         <image name="SendPhoto" width="73" height="44"/>
-        <image name="UserList" width="48" height="48"/>
-        <image name="UserSettings" width="44" height="44"/>
+        <image name="UserSettings" width="22" height="22"/>
         <image name="backButton" width="44" height="44"/>
-        <image name="cameraButton" width="44" height="44"/>
+        <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="nRp-o4-b8z"/>
+        <segue reference="8ds-TT-rzm"/>
     </inferredMetricsTieBreakers>
 </document>

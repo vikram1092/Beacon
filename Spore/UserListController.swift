@@ -472,6 +472,7 @@ class UserListController: UITableViewController {
         //If user is to receive photos, execute the following
         if userToReceivePhotos > 0 {
             
+            
             //Get unsent photos in the database equal to how many the user gets
             let query = PFQuery(className:"photo")
             query.whereKeyExists("photo")
@@ -485,13 +486,16 @@ class UserListController: UITableViewController {
             }
             query.limit = userToReceivePhotos
             
+            
             //Query with above conditions
             query.findObjectsInBackgroundWithBlock({ (photos, error) -> Void in
+                
                 
                 if error != nil {
                     print("Photo query error: " + error!.description)
                 }
                 else if photos!.count < 1 {
+                    
                     
                     //Either recurse the same method with different parameters or end search
                     if self.userToReceivePhotos > 0 {
@@ -521,13 +525,11 @@ class UserListController: UITableViewController {
                     
                     print("photo count: " + String(photos!.count))
                     
-                    //Create temporary list and run for each returned object
+                    //Update objects and create a temporary array of them
                     var tempList = Array<PFObject>()
                     
                     for photoObject in photos!{
                         
-                        //Increment how much user receives
-                        userReceivedPhotos += 1
                         
                         //Mark unread
                         photoObject["unread"] = true
@@ -562,28 +564,37 @@ class UserListController: UITableViewController {
                         tempList.append(photoObject)
                         print("tempList count: " + String(tempList.count))
                         
-                        //Save object to database
-                        print("Saving object!")
-                        photoObject.saveInBackgroundWithBlock({ (saved, error) -> Void in
-                            
-                            if error != nil {
-                                print("Error saving object to DB: \(error)")
-                            }
-                            else if saved {
-                                print("Saved object!")
-                            }
-                            else if !saved {
-                                print("Photo not saved")
-                            }
-                        })
-                        print("userList count: " + String(self.userList.count))
                     }
+                    
                     
                     //Add objects to user list
                     print("Adding new objects to userList")
                     
                     for object in tempList {
-                        self.userList.append(object)
+                        
+                        //If objects haven't been added already, add, increment counter and save them
+                        if !self.userList.contains(object) {
+                            
+                            self.userList.append(object)
+                            
+                            //Increment how much user receives
+                            userReceivedPhotos += 1
+                            
+                            //Save object to database
+                            print("Saving object!")
+                            object.saveInBackgroundWithBlock({ (saved, error) -> Void in
+                                
+                                if error != nil {
+                                    print("Error saving object to DB: \(error)")
+                                }
+                                else if saved {
+                                    print("Saved object!")
+                                }
+                                else if !saved {
+                                    print("Photo not saved")
+                                }
+                            })
+                        }
                     }
                     
                     print("Reloading table after new objects")
@@ -903,6 +914,7 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
+        
         //Deselect row
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
@@ -910,7 +922,10 @@ class UserListController: UITableViewController {
         let cell = tableView.cellForRowAtIndexPath(indexPath)!
         let userListIndex = userList.count - 1 - indexPath.row
         
-        //If photo to be sent, send. Else if row is within time, display photo or video. Else, animate
+        
+        //If photo to be sent by user, send.
+        //Else if row is within time, display photo or video. 
+        //Else, animate.
         if userList[userListIndex]["sentBy"] as! String == userEmail && userList[userListIndex]["receivedBy"] == nil {
             
             print("Send photo")
@@ -920,12 +935,16 @@ class UserListController: UITableViewController {
             
             print("Show photo")
             
+            //Start UI animation
+            let countryBackground = cell.viewWithTag(6) as! CountryBackground
+            countryBackground.startAnimating()
             
-            //Initialize parent VC variables
+            
+            //Initialize superior VC variables
             let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
             grandparent.snap.image = nil
             
-            //Get video trigger from DB object
+            //Get variable to know if media is a video
             var isVideo = false
             if userList[userListIndex]["isVideo"] != nil {
                 
@@ -935,9 +954,6 @@ class UserListController: UITableViewController {
             //Get PFFile
             let objectToDisplay = userList[userListIndex]["photo"] as! PFFile
             
-            //Start UI animation
-            let countryBackground = cell.viewWithTag(6) as! CountryBackground
-            countryBackground.startAnimating()
             
             //Handle for videos and pictures uniqeuly
             if isVideo {
@@ -953,7 +969,6 @@ class UserListController: UITableViewController {
                         videoData?.writeToFile(self.videoPath, atomically: true)
                         
                         //Initialize movie layer
-                        print(self.videoPath)
                         print("Initilizing video player")
                         let player = AVPlayer(URL: NSURL(fileURLWithPath: self.videoPath))
                         grandparent.moviePlayer = AVPlayerLayer(player: player)

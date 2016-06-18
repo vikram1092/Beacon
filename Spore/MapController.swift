@@ -255,6 +255,8 @@ class MapController: UIViewController, MKMapViewDelegate {
             let query = PFQuery(className: "photo")
             query.whereKey("sentBy", equalTo: self.userEmail)
             query.whereKeyExists("receivedLatitude")
+            query.orderByDescending("createdAt")
+            query.limit = 1000
             
             query.findObjectsInBackgroundWithBlock { (photoObjects, markerError) -> Void in
                 
@@ -325,8 +327,11 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             //Mark markers as not loaded and run query
             let query = PFQuery(className: "photo")
+            print(self.userEmail)
             query.whereKey("receivedBy", equalTo: self.userEmail)
             query.whereKeyExists("sentFrom")
+            query.orderByDescending("receivedAt")
+            query.limit = 1000
             
             query.findObjectsInBackgroundWithBlock { (photoObjects, markerError) -> Void in
                 
@@ -347,7 +352,8 @@ class MapController: UIViewController, MKMapViewDelegate {
                             let longitude = coordinates.longitude
                             let markerCoord2D = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
                             
-                                
+                            print("\(coordinates.latitude), \(coordinates.longitude)")
+                            
                             //Add annotation to map
                             if !self.loadedInArray(markerCoord2D, array: self.loadedReceivedMarkers) && !(latitude == 0.0 && longitude == 0.0){
                                 

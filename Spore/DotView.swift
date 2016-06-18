@@ -20,7 +20,6 @@ class DotView: UIView {
         
         super.init(coder: aDecoder)
         
-        initializeViews()
     }
     
 
@@ -28,7 +27,6 @@ class DotView: UIView {
         
         super.init(frame: frame)
         
-        initializeViews()
     }
     
     
@@ -45,17 +43,14 @@ class DotView: UIView {
             }
             
             //Set dots
-            for x in 0..<Int(self.bounds.width/horizontalBounds) {
+            for x in 0...Int(self.bounds.width/horizontalBounds) {
                 
                 let horizontalPosition = (CGFloat(x) * horizontalBounds) + horizontalOffset
                 let verticalPosition = CGFloat(y) * verticalBounds
-                
-                if horizontalPosition < self.bounds.width {
-                    
-                    let dot = Dot()
-                    dot.center = CGPoint(x: horizontalPosition, y: verticalPosition)
-                    self.addSubview(dot)
-                }
+            
+                let dot = Dot()
+                dot.center = CGPoint(x: horizontalPosition, y: verticalPosition)
+                self.addSubview(dot)
             }
         }
     }

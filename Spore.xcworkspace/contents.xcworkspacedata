@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Spore.xcodeproj">
+      location = "group:/Users/vikramramkumar/Desktop/Apps/Spore/Beacon.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

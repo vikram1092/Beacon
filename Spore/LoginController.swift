@@ -29,6 +29,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         super.viewDidLoad()
         
         self.view.sendSubviewToBack(dotView)
+        dotView.frame = self.view.bounds
+        dotView.initializeViews()
     }
     
     
@@ -42,6 +44,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         // Configure Facebook login button
         fbLoginButton.delegate = self
+        
         
     }
     
