@@ -54,6 +54,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         setUserLocation()
     }
     
+    
     override func viewDidAppear(animated: Bool) {
         
         //Run as normal
@@ -224,6 +225,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         userDefaults.setObject(nil, forKey: "userName")
         userDefaults.setObject(nil, forKey: "userEmail")
     }
+    
     
     internal func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         

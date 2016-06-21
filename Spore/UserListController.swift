@@ -800,7 +800,7 @@ class UserListController: UITableViewController {
             //State variable is a state code
             if state!.characters.count == 2 {
                 
-                titleView.text = countryTable.getStateName(state!.lowercaseString) + ", " + country
+                titleView.text = (countryTable.getStateName(state!.lowercaseString) + ", " + country)
                 imageView.image = countryTable.getStateImage(state!.lowercaseString).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
             }
             //State variable is not a state code
@@ -878,25 +878,43 @@ class UserListController: UITableViewController {
         
         
         //Declare spam button
-        let spam = UITableViewRowAction(style: .Normal, title: "Spam") { (action, index) -> Void in
+        let spam = UITableViewRowAction(style: .Normal, title: "Report") { (action, index) -> Void in
             
-            print("Marked as spam")
             
-            //Do in background
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+            //Get beacon from array
+            let userListLength = self.userList.count - 1
+            let object = self.userList[userListLength - indexPath.row]
+            
+            
+            //Show alert controller to ensure report action
+            let alert = UIAlertController(title: "", message: "Are you sure you want to report this beacon? Wrongful reporting will count against you.", preferredStyle: UIAlertControllerStyle.ActionSheet)
+            
+            //Add confirmation button
+            alert.addAction(UIAlertAction(title: "Report", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
                 
-                //Get user from table and ban
-                let userListLength = self.userList.count - 1
-                let object = self.userList[userListLength - indexPath.row]
-                object.setObject(true, forKey: "spam")
-                object.saveInBackground()
                 
-                //Run method to check if user ban-worthy
-                self.banUser(object.objectForKey("sentBy") as! String)
-            })
+                //Update object and - if applicable - user in background
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+                    
+                    //Update object
+                    print("Reported")
+                    object.setObject(true, forKey: "spam")
+                    object.saveInBackground()
+                    
+                    //Run method to check if user ban-worthy
+                    self.banUser(object.objectForKey("sentBy") as! String)
+                })
+            }))
+            
+            //Add cancel button
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
+            
+            //Present alert controller
+            self.presentViewController(alert, animated: true, completion: nil)
             
             //End editing view
             tableView.setEditing(false, animated: true)
+            
         }
         spam.backgroundColor = UIColor(red: 254.0/255.0, green: 90.0/255.0, blue: 93.0/255.0, alpha: 1)
         
@@ -1079,6 +1097,54 @@ class UserListController: UITableViewController {
             
             print("Snap expired")
             
+            //Get cell views
+            let cell = tableView.cellForRowAtIndexPath(indexPath)!
+            
+            let titleView = cell.viewWithTag(1) as! UILabel
+            let subTitleView = cell.viewWithTag(2) as! UILabel
+            let imageView = cell.viewWithTag(5) as! UIImageView
+            let imageBackground = cell.viewWithTag(6) as! CountryBackground
+            let slideIndicator = cell.viewWithTag(3) as! UIImageView
+            
+            //Establish required variables
+            let backgroundIntensity = CGFloat(imageBackground.bounds.width * 0.8)
+            let imageIntensity = CGFloat(imageView.bounds.width * 0.8)
+            let initialImageBounds = CGRect(x: 16, y: 16, width: 49, height: 49)
+            let duration = 0.6
+            
+            
+            //Animate country view contraction
+            UIView.animateWithDuration(duration/2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+                
+                //imageView.bounds = CGRect(x: initialImageBounds.minX + imageIntensity, y: initialImageBounds.minY + imageIntensity, width: initialImageBounds.width - (imageIntensity * 2), height: initialImageBounds.height - (imageIntensity * 2))
+                
+                imageView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
+                
+                }, completion: { (Bool) in
+                    
+                    //Change image bounds to original
+                    UIView.animateWithDuration(duration/2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+                        
+                        //imageView.bounds = initialImageBounds
+                        
+                        imageView.transform = CGAffineTransformMakeRotation(2 * CGFloat(M_PI))
+                        
+                        }, completion: nil)
+            })
+            
+            /*
+            let currentRotation = atan2(imageBackground.transform.b, imageBackground.transform.a)
+            let spin = CABasicAnimation(keyPath: "transform.rotation")
+            spin.duration = 0.7
+            spin.fromValue = currentRotation
+            spin.toValue = M_PI*2 + Double(currentRotation)
+            spin.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+            
+            imageBackground.layer.addAnimation(spin, forKey: nil)
+            */
+            
+            
+            /*
             UIView.animateWithDuration(0.1, animations: { () -> Void in
                 
                 cell.center = CGPoint(x: cell.center.x+25, y: cell.center.y)
@@ -1118,7 +1184,7 @@ class UserListController: UITableViewController {
                                     })
                             })
                     })
-            })
+            })*/
             
         }
         
@@ -1164,8 +1230,8 @@ class UserListController: UITableViewController {
             if rowsError != nil {
                 print("Error retrieving row count: \(rowsError)")
             }
-                //Ban user if this is the second strike
-            else if rows!.count > 1 {
+            //Ban user if this is the third strike
+            else if rows!.count > 2 {
                 
                 //Query to ban user
                 print(rows!.count)
@@ -1350,6 +1416,27 @@ class UserListController: UITableViewController {
                 }
                 
                 }, completion: nil)
+            
+        case .Cancelled:
+            
+            print("Country swipe cancelled")
+            //Move object first
+            self.countryObject.center.x = self.countryCenter.x
+            
+            //Since content view is the direct subview layer, we have to first go into that
+            for subview in cell.subviews[0].subviews {
+                
+                //Ensure that the subview is not the image, its background or the map label
+                if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
+                    
+                    subview.alpha = 1
+                }
+                    //Hide map label
+                else if subview.tag == 3 {
+                    
+                        subview.alpha = 0
+                }
+            }
             
         default:
             print("default")

@@ -19,10 +19,6 @@
 		D1293AA91CFD2B2600279EDA /* circle_01b36a_90.png in Resources */ = {isa = PBXBuildFile; fileRef = D1293A971CFD2B2600279EDA /* circle_01b36a_90.png */; };
 		D136589E1C55BF5C005AEC61 /* cameraButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D136589C1C55BF5C005AEC61 /* cameraButton.png */; };
 		D136589F1C55BF5C005AEC61 /* cameraButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D136589D1C55BF5C005AEC61 /* cameraButton@x3.png */; };
-		D1372FD71C959274009DCA29 /* flashDisabledButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD31C959273009DCA29 /* flashDisabledButton.png */; };
-		D1372FD81C959274009DCA29 /* flashDisabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */; };
-		D1372FD91C959274009DCA29 /* flashEnabledButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD51C959274009DCA29 /* flashEnabledButton.png */; };
-		D1372FDA1C959274009DCA29 /* flashEnabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */; };
 		D137E8771CA95BB9004F9B44 /* TermsOfUseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */; };
 		D137E8791CA95C46004F9B44 /* AboutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D137E8781CA95C45004F9B44 /* AboutController.swift */; };
 		D137EBDB1CC50F0600F2DCB3 /* CameraBackButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D137EBD91CC50F0600F2DCB3 /* CameraBackButton.png */; };
@@ -98,6 +94,14 @@
 		D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */; };
 		D1B9C7211C2258B800D9AEE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D1B9C7201C2258B800D9AEE7 /* Assets.xcassets */; };
 		D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C72B1C22608600D9AEE7 /* MainController.swift */; };
+		D1B9DEDA1D16EF6D00B0EEDE /* flashDisabledButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1B9DED81D16EF6D00B0EEDE /* flashDisabledButton@x2.png */; };
+		D1B9DEDB1D16EF6D00B0EEDE /* flashEnabledButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1B9DED91D16EF6D00B0EEDE /* flashEnabledButton@x2.png */; };
+		D1B9DEE01D16EFB500B0EEDE /* flashDisabledButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1B9DEDC1D16EFB500B0EEDE /* flashDisabledButton.png */; };
+		D1B9DEE11D16EFB500B0EEDE /* flashDisabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1B9DEDD1D16EFB500B0EEDE /* flashDisabledButton@x3.png */; };
+		D1B9DEE21D16EFB500B0EEDE /* flashEnabledButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1B9DEDE1D16EFB500B0EEDE /* flashEnabledButton.png */; };
+		D1B9DEE31D16EFB500B0EEDE /* flashEnabledButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1B9DEDF1D16EFB500B0EEDE /* flashEnabledButton@x3.png */; };
+		D1B9DEE51D17173C00B0EEDE /* CancelPhoto@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1B9DEE41D17173C00B0EEDE /* CancelPhoto@x2.png */; };
+		D1B9DEE71D174C8A00B0EEDE /* SendPhoto@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1B9DEE61D174C8A00B0EEDE /* SendPhoto@x2.png */; };
 		D1BFDC571D13588D00F9E33D /* userSettings.png in Resources */ = {isa = PBXBuildFile; fileRef = D1BFDC541D13588D00F9E33D /* userSettings.png */; };
 		D1BFDC581D13588D00F9E33D /* userSettings@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1BFDC551D13588D00F9E33D /* userSettings@x2.png */; };
 		D1BFDC591D13588D00F9E33D /* userSettings@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1BFDC561D13588D00F9E33D /* userSettings@x3.png */; };
@@ -112,7 +116,14 @@
 		D1DF78661D06691C003FD319 /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = D1DF78651D06691C003FD319 /* Countries.geojson */; };
 		D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E08D1E1C5D430E0070DA9A /* MapKit.framework */; };
 		D1E15E1A1CC5A1A300C27CDF /* ReceivedBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E15E191CC5A1A300C27CDF /* ReceivedBeacon.swift */; };
+		D1EC0ED71D18D59E00FFC94D /* CameraBackButton2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1EC0ED41D18D59E00FFC94D /* CameraBackButton2.png */; };
+		D1EC0ED81D18D59E00FFC94D /* CameraBackButton2@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1EC0ED51D18D59E00FFC94D /* CameraBackButton2@x2.png */; };
+		D1EC0ED91D18D59E00FFC94D /* CameraBackButton2@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1EC0ED61D18D59E00FFC94D /* CameraBackButton2@x3.png */; };
+		D1EC0EDD1D18E97B00FFC94D /* SendPhoto2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1EC0EDA1D18E97B00FFC94D /* SendPhoto2.png */; };
+		D1EC0EDE1D18E97B00FFC94D /* SendPhoto2@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1EC0EDB1D18E97B00FFC94D /* SendPhoto2@x2.png */; };
+		D1EC0EDF1D18E97B00FFC94D /* SendPhoto2@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1EC0EDC1D18E97B00FFC94D /* SendPhoto2@x3.png */; };
 		D1EC295C1C2E1E850014DE7E /* Countries in Resources */ = {isa = PBXBuildFile; fileRef = D1EC295B1C2E1E850014DE7E /* Countries */; };
+		D1F3354F1D156C1D000FFBD9 /* CameraBackButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1F3354E1D156C1D000FFBD9 /* CameraBackButton@x2.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -140,10 +151,6 @@
 		D1293A971CFD2B2600279EDA /* circle_01b36a_90.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle_01b36a_90.png; sourceTree = "<group>"; };
 		D136589C1C55BF5C005AEC61 /* cameraButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cameraButton.png; path = "../../Spore Images/cameraButton.png"; sourceTree = "<group>"; };
 		D136589D1C55BF5C005AEC61 /* cameraButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cameraButton@x3.png"; path = "../../Spore Images/cameraButton@x3.png"; sourceTree = "<group>"; };
-		D1372FD31C959273009DCA29 /* flashDisabledButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flashDisabledButton.png; sourceTree = "<group>"; };
-		D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashDisabledButton@x3.png"; sourceTree = "<group>"; };
-		D1372FD51C959274009DCA29 /* flashEnabledButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flashEnabledButton.png; sourceTree = "<group>"; };
-		D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashEnabledButton@x3.png"; sourceTree = "<group>"; };
 		D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfUseController.swift; sourceTree = SOURCE_ROOT; };
 		D137E8781CA95C45004F9B44 /* AboutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutController.swift; sourceTree = SOURCE_ROOT; };
 		D137EBD91CC50F0600F2DCB3 /* CameraBackButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraBackButton.png; path = "../../Spore Images/CameraBackButton.png"; sourceTree = "<group>"; };
@@ -227,6 +234,14 @@
 		D1B9C7201C2258B800D9AEE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D1B9C7251C2258B800D9AEE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1B9C72B1C22608600D9AEE7 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		D1B9DED81D16EF6D00B0EEDE /* flashDisabledButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "flashDisabledButton@x2.png"; path = "../../Spore Images/flashDisabledButton@x2.png"; sourceTree = "<group>"; };
+		D1B9DED91D16EF6D00B0EEDE /* flashEnabledButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "flashEnabledButton@x2.png"; path = "../../Spore Images/flashEnabledButton@x2.png"; sourceTree = "<group>"; };
+		D1B9DEDC1D16EFB500B0EEDE /* flashDisabledButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = flashDisabledButton.png; path = "../../Spore Images/flashDisabledButton.png"; sourceTree = "<group>"; };
+		D1B9DEDD1D16EFB500B0EEDE /* flashDisabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "flashDisabledButton@x3.png"; path = "../../Spore Images/flashDisabledButton@x3.png"; sourceTree = "<group>"; };
+		D1B9DEDE1D16EFB500B0EEDE /* flashEnabledButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = flashEnabledButton.png; path = "../../Spore Images/flashEnabledButton.png"; sourceTree = "<group>"; };
+		D1B9DEDF1D16EFB500B0EEDE /* flashEnabledButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "flashEnabledButton@x3.png"; path = "../../Spore Images/flashEnabledButton@x3.png"; sourceTree = "<group>"; };
+		D1B9DEE41D17173C00B0EEDE /* CancelPhoto@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CancelPhoto@x2.png"; path = "../../Spore Images/CancelPhoto@x2.png"; sourceTree = "<group>"; };
+		D1B9DEE61D174C8A00B0EEDE /* SendPhoto@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SendPhoto@x2.png"; path = "../../Spore Images/SendPhoto@x2.png"; sourceTree = "<group>"; };
 		D1BFDC541D13588D00F9E33D /* userSettings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userSettings.png; path = "../../Spore Images/userSettings.png"; sourceTree = "<group>"; };
 		D1BFDC551D13588D00F9E33D /* userSettings@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "userSettings@x2.png"; path = "../../Spore Images/userSettings@x2.png"; sourceTree = "<group>"; };
 		D1BFDC561D13588D00F9E33D /* userSettings@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "userSettings@x3.png"; path = "../../Spore Images/userSettings@x3.png"; sourceTree = "<group>"; };
@@ -241,7 +256,14 @@
 		D1DF78651D06691C003FD319 /* Countries.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
 		D1E08D1E1C5D430E0070DA9A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D1E15E191CC5A1A300C27CDF /* ReceivedBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceivedBeacon.swift; sourceTree = "<group>"; };
+		D1EC0ED41D18D59E00FFC94D /* CameraBackButton2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraBackButton2.png; path = "../../Spore Images/CameraBackButton2.png"; sourceTree = "<group>"; };
+		D1EC0ED51D18D59E00FFC94D /* CameraBackButton2@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CameraBackButton2@x2.png"; path = "../../Spore Images/CameraBackButton2@x2.png"; sourceTree = "<group>"; };
+		D1EC0ED61D18D59E00FFC94D /* CameraBackButton2@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CameraBackButton2@x3.png"; path = "../../Spore Images/CameraBackButton2@x3.png"; sourceTree = "<group>"; };
+		D1EC0EDA1D18E97B00FFC94D /* SendPhoto2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SendPhoto2.png; path = "../../Spore Images/SendPhoto2.png"; sourceTree = "<group>"; };
+		D1EC0EDB1D18E97B00FFC94D /* SendPhoto2@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SendPhoto2@x2.png"; path = "../../Spore Images/SendPhoto2@x2.png"; sourceTree = "<group>"; };
+		D1EC0EDC1D18E97B00FFC94D /* SendPhoto2@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SendPhoto2@x3.png"; path = "../../Spore Images/SendPhoto2@x3.png"; sourceTree = "<group>"; };
 		D1EC295B1C2E1E850014DE7E /* Countries */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Countries; path = ../../Countries; sourceTree = "<group>"; };
+		D1F3354E1D156C1D000FFBD9 /* CameraBackButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CameraBackButton@x2.png"; path = "../../Spore Images/CameraBackButton@x2.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -324,18 +346,29 @@
 		D136589B1C55BC59005AEC61 /* CameraButtons */ = {
 			isa = PBXGroup;
 			children = (
+				D1EC0EDA1D18E97B00FFC94D /* SendPhoto2.png */,
+				D1EC0EDB1D18E97B00FFC94D /* SendPhoto2@x2.png */,
+				D1EC0EDC1D18E97B00FFC94D /* SendPhoto2@x3.png */,
+				D1EC0ED41D18D59E00FFC94D /* CameraBackButton2.png */,
+				D1EC0ED51D18D59E00FFC94D /* CameraBackButton2@x2.png */,
+				D1EC0ED61D18D59E00FFC94D /* CameraBackButton2@x3.png */,
 				D137EBD91CC50F0600F2DCB3 /* CameraBackButton.png */,
+				D1F3354E1D156C1D000FFBD9 /* CameraBackButton@x2.png */,
 				D137EBDA1CC50F0600F2DCB3 /* CameraBackButton@x3.png */,
-				D1372FD31C959273009DCA29 /* flashDisabledButton.png */,
-				D1372FD41C959274009DCA29 /* flashDisabledButton@x3.png */,
-				D1372FD51C959274009DCA29 /* flashEnabledButton.png */,
-				D1372FD61C959274009DCA29 /* flashEnabledButton@x3.png */,
+				D1B9DEDC1D16EFB500B0EEDE /* flashDisabledButton.png */,
+				D1B9DED81D16EF6D00B0EEDE /* flashDisabledButton@x2.png */,
+				D1B9DEDD1D16EFB500B0EEDE /* flashDisabledButton@x3.png */,
+				D1B9DEDE1D16EFB500B0EEDE /* flashEnabledButton.png */,
+				D1B9DED91D16EF6D00B0EEDE /* flashEnabledButton@x2.png */,
+				D1B9DEDF1D16EFB500B0EEDE /* flashEnabledButton@x3.png */,
 				D144F1F51C44178500E07700 /* SendPhoto.png */,
+				D1B9DEE61D174C8A00B0EEDE /* SendPhoto@x2.png */,
 				D144F1F61C44178500E07700 /* SendPhoto@x3.png */,
-				D17040B01D14A133007416B1 /* CameraSwitch@x2.png */,
 				D17A5F101C338BA000EE94DE /* CameraSwitch.png */,
+				D17040B01D14A133007416B1 /* CameraSwitch@x2.png */,
 				D144F1F31C4414A300E07700 /* CameraSwitch@x3.png */,
 				D144F1EF1C4412D500E07700 /* CancelPhoto.png */,
+				D1B9DEE41D17173C00B0EEDE /* CancelPhoto@x2.png */,
 				D144F1F01C4412D500E07700 /* CancelPhoto@x3.png */,
 			);
 			name = CameraButtons;
@@ -615,23 +648,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1B9DEE31D16EFB500B0EEDE /* flashEnabledButton@x3.png in Resources */,
 				D1BFDC581D13588D00F9E33D /* userSettings@x2.png in Resources */,
 				D1BFDC591D13588D00F9E33D /* userSettings@x3.png in Resources */,
 				D17040B61D14DC2F007416B1 /* BeaconsButton@x2.png in Resources */,
+				D1B9DEDB1D16EF6D00B0EEDE /* flashEnabledButton@x2.png in Resources */,
+				D1EC0ED91D18D59E00FFC94D /* CameraBackButton2@x3.png in Resources */,
+				D1EC0ED81D18D59E00FFC94D /* CameraBackButton2@x2.png in Resources */,
 				D1293AA31CFD2B2600279EDA /* circle_01b36a_50.png in Resources */,
-				D1372FD71C959274009DCA29 /* flashDisabledButton.png in Resources */,
 				D1293AA41CFD2B2600279EDA /* circle_01b36a_120.png in Resources */,
+				D1B9DEE71D174C8A00B0EEDE /* SendPhoto@x2.png in Resources */,
 				D19E741F1D0A51D90051CD40 /* BeaconLogin.png in Resources */,
 				D13F42C01CDAD6110011F12C /* LaunchImageCaptureButton@x3.png in Resources */,
-				D1372FD81C959274009DCA29 /* flashDisabledButton@x3.png in Resources */,
 				D19CEB8E1D120209003AA8E5 /* Logo@x80.png in Resources */,
 				D1DF78661D06691C003FD319 /* Countries.geojson in Resources */,
-				D1372FDA1C959274009DCA29 /* flashEnabledButton@x3.png in Resources */,
 				D18F3EE51CFBA2A8000681DE /* BeaconTable.png in Resources */,
 				D19CEB911D120209003AA8E5 /* Logo@x120.png in Resources */,
 				D144F1F21C4412D500E07700 /* CancelPhoto@x3.png in Resources */,
+				D1EC0EDF1D18E97B00FFC94D /* SendPhoto2@x3.png in Resources */,
 				D1BFDC5B1D13663500F9E33D /* cameraButton@x2.png in Resources */,
 				D19CEB8B1D120209003AA8E5 /* Logo@x29.png in Resources */,
+				D1EC0EDE1D18E97B00FFC94D /* SendPhoto2@x2.png in Resources */,
 				D17040B71D14DC2F007416B1 /* BeaconsButton@x3.png in Resources */,
 				D16D5CEB1CD99EB4005F401F /* Launch Screen.storyboard in Resources */,
 				D1DF78641D0668FD003FD319 /* BeaconTable@x3.png in Resources */,
@@ -641,7 +678,6 @@
 				D13F42BF1CDAD6110011F12C /* LaunchImageCaptureButton.png in Resources */,
 				D1293AA51CFD2B2600279EDA /* circle_01b36a_40.png in Resources */,
 				D144F1F11C4412D500E07700 /* CancelPhoto.png in Resources */,
-				D1372FD91C959274009DCA29 /* flashEnabledButton.png in Resources */,
 				D1293AA11CFD2B2600279EDA /* circle_01b36a_100.png in Resources */,
 				D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */,
 				D19A91511D0B68E3004D8D47 /* circle_01b36a_30.png in Resources */,
@@ -655,6 +691,8 @@
 				D19A914D1D0B68E3004D8D47 /* circle_01b36a_50.png in Resources */,
 				D144F1F41C4414A300E07700 /* CameraSwitch@x3.png in Resources */,
 				D19A914E1D0B68E3004D8D47 /* circle_01b36a_120.png in Resources */,
+				D1F3354F1D156C1D000FFBD9 /* CameraBackButton@x2.png in Resources */,
+				D1B9DEE51D17173C00B0EEDE /* CancelPhoto@x2.png in Resources */,
 				D19A91531D0B68E3004D8D47 /* circle_01b36a_90.png in Resources */,
 				D19CEB8D1D120209003AA8E5 /* Logo@x58.png in Resources */,
 				D1BFDC571D13588D00F9E33D /* userSettings.png in Resources */,
@@ -663,20 +701,26 @@
 				D1CDF52D1D138FB30021C46D /* globe@x3.png in Resources */,
 				D19E74211D0A51D90051CD40 /* BeaconLogin@x3.png in Resources */,
 				D1EC295C1C2E1E850014DE7E /* Countries in Resources */,
+				D1B9DEE21D16EFB500B0EEDE /* flashEnabledButton.png in Resources */,
 				D1293AA71CFD2B2600279EDA /* circle_01b36a_30.png in Resources */,
 				D136589E1C55BF5C005AEC61 /* cameraButton.png in Resources */,
 				D17040B51D14DC2F007416B1 /* BeaconsButton.png in Resources */,
+				D1EC0ED71D18D59E00FFC94D /* CameraBackButton2.png in Resources */,
+				D1B9DEDA1D16EF6D00B0EEDE /* flashDisabledButton@x2.png in Resources */,
 				D19A914C1D0B68E3004D8D47 /* circle_01b36a_150.png in Resources */,
+				D1B9DEE01D16EFB500B0EEDE /* flashDisabledButton.png in Resources */,
 				D1293AA61CFD2B2600279EDA /* circle_01b36a_80.png in Resources */,
 				D137EBDB1CC50F0600F2DCB3 /* CameraBackButton.png in Resources */,
 				D19A914F1D0B68E3004D8D47 /* circle_01b36a_40.png in Resources */,
 				D144F1F81C44178500E07700 /* SendPhoto@x3.png in Resources */,
 				D144F1F71C44178500E07700 /* SendPhoto.png in Resources */,
 				D1293AA81CFD2B2600279EDA /* circle_01b36a_60.png in Resources */,
+				D1EC0EDD1D18E97B00FFC94D /* SendPhoto2.png in Resources */,
 				D136589F1C55BF5C005AEC61 /* cameraButton@x3.png in Resources */,
 				D19CEB921D120209003AA8E5 /* Logo@x180.png in Resources */,
 				D1CDF52B1D138FB30021C46D /* globe.png in Resources */,
 				D19CEB901D120209003AA8E5 /* Logo@x114.png in Resources */,
+				D1B9DEE11D16EFB500B0EEDE /* flashDisabledButton@x3.png in Resources */,
 				D1D8A5491C5D3AA100E95BCE /* Settings.bundle in Resources */,
 				D19E74201D0A51D90051CD40 /* BeaconLogin@x2.png in Resources */,
 				D19CEB8F1D120209003AA8E5 /* Logo@x87.png in Resources */,

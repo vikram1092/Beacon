@@ -100,12 +100,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         
         //Adjust views
-        self.backButton.imageEdgeInsets = UIEdgeInsets(top: 26, left: 20, bottom: 20, right: 26)
-        self.cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 26, left: 26, bottom: 20, right: 20)
-        self.flashButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 26, right: 26)
-        self.closeButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 26, right: 26)
+        self.backButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 20)
+        self.photoSendButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 0)
+        self.cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 20, right: 20)
+        self.flashButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 10)
+        self.closeButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 10)
         self.cameraImage.addSubview(self.snapTimer)
         self.captureButton.addSubview(self.captureShape)
+        
         
     }
     
@@ -186,8 +188,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                     
                     //Set up camera and begin session
-                    self.initialSessionSetup()
-                    self.initialViewSetup()
+                    self.initializeSession()
+                    self.initializeView()
                 })
             })
             
@@ -214,7 +216,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func initialViewSetup() {
+    internal func initializeView() {
         
         print("initialViewSetup")
         //Clear video temp files
@@ -222,15 +224,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func initialSessionSetup() {
+    internal func initializeSession() {
     
         
         print("initialSessionSetup")
         //Check permissions
         if checkAllPermissions() {
             
-            // Set up camera session & microphone
-            captureSession.sessionPreset = AVCaptureSessionPresetMedium
+            //Set up camera session & microphone
+            captureSession.sessionPreset = AVCaptureSessionPresetPhoto
             microphone = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
             let devices = AVCaptureDevice.devices()
             
@@ -355,6 +357,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             print("Continuous auto exposure supported")
             captureDevice!.exposureMode = AVCaptureExposureMode.ContinuousAutoExposure
         }
+        if captureDevice!.lowLightBoostSupported {
+            
+            print("Low light boost supported")
+            captureDevice!.automaticallyEnablesLowLightBoostWhenAvailable = true
+        }
         
         captureDevice!.unlockForConfiguration()
     }
@@ -386,11 +393,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         do {
             
             print("add inputs")
-            /*if try captureSession.canAddInput(AVCaptureDeviceInput(device: microphone)) {
-                
-                try captureSession.addInput(AVCaptureDeviceInput(device: microphone))
-            }*/
-            
             if try captureSession.canAddInput(AVCaptureDeviceInput(device: captureDevice)) {
                 
                 try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
@@ -438,14 +440,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBAction func backButtonPressed(sender: AnyObject) {
         
         //Segue back
-        segueToTable()
+        segueToTable(false)
     }
     
     
     @IBAction func switchCamera(sender: AnyObject) {
         
         
-        if captureSession.running {
+        if captureSession.running && !movieFileOutput.recording {
             
             //Dispatch to camera dedicated serial queue
             dispatch_async(cameraQueue, { () -> Void in
@@ -612,8 +614,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 stopTakingVideo()
             }
             
-        default:
-            print("")
+        default: ()
         }
     }
     
@@ -1057,7 +1058,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     
                     self.activityIndicator.stopAnimating()
                     self.closePhoto(self)
-                    self.segueToTable()
+                    self.segueToTable(true)
                 })
             }
         }
@@ -1545,11 +1546,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func segueToTable() {
+    internal func segueToTable(segueToTop: Bool) {
         
         //Move within tab controller
         self.tabBarController!.tabBar.hidden = false
         self.tabBarController?.selectedIndex = 1
+        
+        if segueToTop && tabBarController!.selectedViewController!.isViewLoaded() {
+            
+            let main = tabBarController!.selectedViewController as! MainController
+            let userList = main.childViewControllers[0] as! UserListController
+            userList.tableView.setContentOffset(CGPointZero, animated: true)
+        }
     }
     
     

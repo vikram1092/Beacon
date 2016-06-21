@@ -12,6 +12,7 @@ import UIKit
 class CaptureShape: UIView {
     
     let background = CAShapeLayer()
+    let ring = CAShapeLayer()
     let border = CAShapeLayer()
     let record = CAShapeLayer()
     
@@ -19,25 +20,41 @@ class CaptureShape: UIView {
         
         super.init(coder: aDecoder)
         
+        //Initialize variables
         let frame = super.frame
         self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
         
+        
         //Set background
         background.path = UIBezierPath(ovalInRect: CGRect(x: 5.0, y: 5.0, width: frame.width - 10, height: frame.height - 10)).CGPath
-        background.fillColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.7).CGColor
+        background.fillColor = UIColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 0.9).CGColor
+        
+        //Set ring
+        ring.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        ring.fillColor = UIColor.clearColor().CGColor
+        ring.strokeColor = UIColor.whiteColor().CGColor
+        ring.lineWidth = 3
+        ring.strokeStart = 0.4
+        ring.strokeEnd = 1
+        ring.borderWidth = 1
+        ring.borderColor = UIColor.blackColor().CGColor
+        ring.lineCap = kCALineCapRound
         
         //Set border
         border.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        border.fillColor = UIColor.clearColor().CGColor
-        border.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1).CGColor
-        border.lineWidth = 3
-        border.strokeStart = 0.4
-        border.strokeEnd = 1
+        border.fillColor = ring.fillColor
+        border.strokeColor = UIColor.blackColor().CGColor
+        border.lineWidth = ring.lineWidth + 0.5
+        border.strokeStart = ring.strokeStart
+        border.strokeEnd = ring.strokeEnd
         border.borderColor = UIColor.blackColor().CGColor
         border.lineCap = kCALineCapRound
-
+        
         self.layer.addSublayer(background)
         self.layer.addSublayer(border)
+        self.layer.addSublayer(ring)
+        
+        
     }
     
     
@@ -54,12 +71,13 @@ class CaptureShape: UIView {
         
         self.layer.addSublayer(record)
         
-        //Animate the timer
+        //Declare animations for recording
         let progress = CABasicAnimation(keyPath: "strokeStart")
         let expansion = CABasicAnimation(keyPath: "path")
-        let width = CABasicAnimation(keyPath: "lineWidth")
+        let ringWidth = CABasicAnimation(keyPath: "lineWidth")
+        let borderWidth = CABasicAnimation(keyPath: "lineWidth")
         
-        //Configure animation
+        //Configure recording
         progress.duration = 10
         progress.fromValue = 1.0
         progress.toValue = 0.4
@@ -74,27 +92,45 @@ class CaptureShape: UIView {
         expansion.fillMode = kCAFillModeForwards
         
         
-        //Configure width change
-        width.duration = 2
-        width.fromValue = 3
-        width.toValue = 5
-        width.removedOnCompletion = false
-        width.fillMode = kCAFillModeForwards
+        //Configure ring and record width change
+        ringWidth.duration = 2
+        ringWidth.fromValue = 3
+        ringWidth.toValue = 5
+        ringWidth.removedOnCompletion = false
+        ringWidth.fillMode = kCAFillModeForwards
+        
+        //Configure border change. Difference is in the lineWidth values
+        borderWidth.duration = 2
+        borderWidth.fromValue = 4
+        borderWidth.toValue = 6
+        borderWidth.removedOnCompletion = false
+        borderWidth.fillMode = kCAFillModeForwards
             
-            
+        //Add animations to layers
         record.addAnimation(progress, forKey: nil)
         record.addAnimation(expansion, forKey: nil)
-        record.addAnimation(width, forKey: nil)
+        record.addAnimation(ringWidth, forKey: nil)
+        
+        ring.addAnimation(expansion, forKey: nil)
+        ring.addAnimation(ringWidth, forKey: nil)
         
         border.addAnimation(expansion, forKey: nil)
-        border.addAnimation(width, forKey: nil)
+        border.addAnimation(borderWidth, forKey: nil)
     }
     
     internal func stopRecording() {
         
+        
+        //Remove animations to layers, reset dimensions and remove the recording layer
+        ring.removeAllAnimations()
         border.removeAllAnimations()
+        
+        ring.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        ring.lineWidth = 3
+        
         border.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        border.lineWidth = 3
+        border.lineWidth = ring.lineWidth + 1
+        
         record.removeFromSuperlayer()
     }
     
