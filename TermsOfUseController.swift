@@ -13,18 +13,19 @@ import UIKit
 class TermsOfUseController: UIViewController {
     
     
-    @IBOutlet var termsOfUse: UILabel!
-    
-    let termsText = "TERMS OF USE \n \n Don't be lewdicrous. "
-    
+    @IBOutlet var textView: UITextView!
     
     
     override func viewDidLoad() {
         
         //Load view as normal
         super.viewDidLoad()
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
         
-        termsOfUse.text = termsText
+        textView.scrollEnabled = true
     }
     
     

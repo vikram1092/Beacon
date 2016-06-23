@@ -26,8 +26,11 @@ class CaptureShape: UIView {
         
         
         //Set background
-        background.path = UIBezierPath(ovalInRect: CGRect(x: 5.0, y: 5.0, width: frame.width - 10, height: frame.height - 10)).CGPath
-        background.fillColor = UIColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 0.9).CGColor
+        background.path = UIBezierPath(ovalInRect: CGRect(x: 8.0, y: 8.0, width: frame.width - 16, height: frame.height - 16)).CGPath
+        background.fillColor = UIColor.clearColor().CGColor
+        background.strokeColor = UIColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 0.9).CGColor
+        background.lineWidth = 2
+        
         
         //Set ring
         ring.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
@@ -63,7 +66,7 @@ class CaptureShape: UIView {
         //Set recording stroke
         record.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         record.fillColor = UIColor.clearColor().CGColor
-        record.strokeColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.9).CGColor
+        record.strokeColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue: 203.0/255.0, alpha: 1).CGColor
         record.lineWidth = 3
         record.strokeStart = 1.0
         record.strokeEnd = 1.0

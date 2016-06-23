@@ -446,13 +446,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func switchCamera(sender: AnyObject) {
         
-        
+        //Perform only if camera is running and not recording
         if captureSession.running && !movieFileOutput.recording {
             
             //Dispatch to camera dedicated serial queue
             dispatch_async(cameraQueue, { () -> Void in
                 
-                //Dispatch to high priority queue and monitor from serial queue
+                //Dispatch to high priority queue
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                     
                     self.captureSession.stopRunning()

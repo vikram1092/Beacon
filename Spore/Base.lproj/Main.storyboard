@@ -346,25 +346,149 @@
                         <rect key="frame" x="0.0" y="44" width="552" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mqL-5j-2JW">
-                                <rect key="frame" x="30" y="8" width="492" height="521"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qQN-Za-ivi">
+                                <rect key="frame" x="20" y="0.0" width="512" height="537"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Being a part of the beacon network means you will share minimal personal information with us, which we have a moral obligation to hold private and treat sensitively. Below is the breakdown of all aspects of user information we require and share.  
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">1.	Why We Request Information</string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+In order to keep Beacon a safe and fun environment for all, we require some basic information from you. We ask for location information in order to pinpoint where our beacons are taken, and we ask for a name and email address from Facebook in order to hold users accountable for any complaints received from others. More details about this are provided in the following sections.
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">2.	How We Get Your Information</string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+At Beacon, we get your information in one of two ways:
+• Information you provide us through Facebook
+• Location information you require to use the Beacon app.
+Details on how we use this information is provided in the following steps. 
+
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">3.	How We Use Your Location</string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+To use Beacon, you need to share your location with us. So your location is triangulated by us – badly. Why? So even though we use your city, state and country to let other users know where they got their beacons from, you can rest assured that your detected location is vague up to a kilometer.
+Your location is never used when you’re not using the app. We only care about your political location for the fun stuff in the app!
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">4.	How We Use Your Facebook Information</string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+We need to keep our beacons fun! A few bad apples can ruin a good thing for the whole bunch. In order to keep things clean and merry for everyone, we require you to establish some accountability with us using your Facebook credentials. This way, when a user who has violated our terms of service gets kicked out, they cannot simply make another account and continue. They stay out until we decide to forgive them.
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="mqL-5j-2JW" firstAttribute="trailing" secondItem="7XT-kT-AKZ" secondAttribute="trailingMargin" constant="-10" id="4qQ-li-osB"/>
-                            <constraint firstItem="mqL-5j-2JW" firstAttribute="centerX" secondItem="7XT-kT-AKZ" secondAttribute="centerX" id="Bke-oi-dZX"/>
-                            <constraint firstItem="mqL-5j-2JW" firstAttribute="leading" secondItem="7XT-kT-AKZ" secondAttribute="leadingMargin" constant="10" id="WYW-65-QD2"/>
-                            <constraint firstItem="mqL-5j-2JW" firstAttribute="top" secondItem="EBQ-sh-A9H" secondAttribute="bottom" constant="8" id="hhY-aq-JcF"/>
-                            <constraint firstItem="J0f-90-a8d" firstAttribute="top" secondItem="mqL-5j-2JW" secondAttribute="bottom" constant="8" id="n0O-O3-NE9"/>
+                            <constraint firstItem="qQN-Za-ivi" firstAttribute="top" secondItem="EBQ-sh-A9H" secondAttribute="bottom" id="8bT-uO-eRR"/>
+                            <constraint firstItem="qQN-Za-ivi" firstAttribute="trailing" secondItem="7XT-kT-AKZ" secondAttribute="trailingMargin" id="Eeb-23-Cva"/>
+                            <constraint firstItem="qQN-Za-ivi" firstAttribute="leading" secondItem="7XT-kT-AKZ" secondAttribute="leadingMargin" id="Ndp-lc-dHM"/>
+                            <constraint firstItem="J0f-90-a8d" firstAttribute="top" secondItem="qQN-Za-ivi" secondAttribute="bottom" id="yct-ah-nSd"/>
                         </constraints>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
-                        <outlet property="privacyPolicy" destination="mqL-5j-2JW" id="4ue-EU-MCO"/>
+                        <outlet property="textView" destination="qQN-Za-ivi" id="zjW-Hg-8rT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rzr-U1-gfx" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -379,7 +503,7 @@
                         <rect key="frame" x="0.0" y="44" width="552" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.97443657841823061" green="0.97443657841823061" blue="0.97443657841823061" alpha="1" colorSpace="calibratedRGB"/>
-                        <color key="separatorColor" red="0.97443657839999998" green="0.97443657839999998" blue="0.97443657839999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="separatorColor" red="0.93922796581769441" green="0.93922796581769441" blue="0.93922796581769441" alpha="1" colorSpace="calibratedRGB"/>
                         <sections>
                             <tableViewSection id="uZF-Rr-RM8">
                                 <cells>
@@ -989,10 +1113,10 @@
             </objects>
             <point key="canvasLocation" x="993" y="305"/>
         </scene>
-        <!--t e r m s   o f   u s e-->
+        <!--t e r m s   o f   s e r v i c e-->
         <scene sceneID="zI9-tE-hdL">
             <objects>
-                <viewController title="t e r m s   o f   u s e" id="asR-1j-sne" customClass="TermsOfUseController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="t e r m s   o f   s e r v i c e" id="asR-1j-sne" customClass="TermsOfUseController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1Sh-h3-wl7"/>
                         <viewControllerLayoutGuide type="bottom" id="XMF-pB-bA9"/>
@@ -1001,25 +1125,376 @@
                         <rect key="frame" x="0.0" y="44" width="552" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms Of Use" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hTV-Fa-M8n">
-                                <rect key="frame" x="30" y="8" width="492" height="521"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HQ6-Hb-OWD">
+                                <rect key="frame" x="20" y="0.0" width="512" height="537"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <attributedString key="attributedText">
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="Welcome to Beacon!">
+                                        <attributes>
+                                            <font key="NSFont" size="24" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Beacon is a random media sharing service that instantly connects people with strangers across the globe. The service is aimed to broaden the human experience of living in today’s extremely well connected planet. 
+
+Beacon is for people to come together in a friendly manner, learn about each other, and embrace our diversity. A user shares their own adventurous, momentous, cultural, emotional and physical experiences with others by sending a beacon out, receiving others’ experiences in return.
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">1.	Who Can Use Beacon</string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+Anyone with a valid Facebook profile can use Beacon.
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">2.	How to Use Beacon</string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+In Beacon, users can perform these key things:
+• Send a beacon out to the world about something interesting they experience
+• Receive a beacon from somewhere in the world for each beacon they send 
+• See where the received beacon comes from on a map
+• See where in the world their own beacons have landed
+• Report a received beacon
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">3.	Beacon Code of Conduct</string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+Beacon determines the code of conduct for the information shared, and reserves the right to revoke access from any user who violates the following terms.
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">3.1	Sending Beacons</string>
+                                        <attributes>
+                                            <font key="NSFont" size="15" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="15" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="15" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+A user must not send beacons that do any of the following:
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Advocate or illustrate violence or intolerance of any kind
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Depict illegal activities, such as drug use, theft, vandalism, etc. 
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Contain any personal information 
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Contain lewd imagery or profane language
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Contain advertising
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Further political stances or be used for political campaigning
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Propagate religious views 
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Lack common courtesy, compassion, or etiquette 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content" base64-UTF8="YES">
+DQ
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">3.2	Receiving Beacons</string>
+                                        <attributes>
+                                            <font key="NSFont" size="15" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="15" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="15" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+A user must not wrongfully report beacons they receive. Doing so will result in a ban.
+3.3	Using this app
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">Users must not use Beacon to damage or endanger anyone or anything, including themselves
+•</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="Users must not share, solicit or trade any of the content received in Beacon">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content" base64-UTF8="YES">
+DQ
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content"> 
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">4.	Access Revoking</string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+Beacon reserves the right to revoke access from any user under any circumstances whatsoever.
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="hTV-Fa-M8n" firstAttribute="trailing" secondItem="pBX-BH-BBi" secondAttribute="trailingMargin" constant="-10" id="BVH-jR-1Jh"/>
-                            <constraint firstItem="hTV-Fa-M8n" firstAttribute="leading" secondItem="pBX-BH-BBi" secondAttribute="leadingMargin" constant="10" id="FpP-Vf-MDr"/>
-                            <constraint firstItem="hTV-Fa-M8n" firstAttribute="centerX" secondItem="pBX-BH-BBi" secondAttribute="centerX" id="Xr7-7w-zT2"/>
-                            <constraint firstItem="hTV-Fa-M8n" firstAttribute="top" secondItem="1Sh-h3-wl7" secondAttribute="bottom" constant="8" id="jHA-iO-Wqm"/>
-                            <constraint firstItem="XMF-pB-bA9" firstAttribute="top" secondItem="hTV-Fa-M8n" secondAttribute="bottom" constant="8" id="xCx-4Q-i4s"/>
+                            <constraint firstItem="HQ6-Hb-OWD" firstAttribute="trailing" secondItem="pBX-BH-BBi" secondAttribute="trailingMargin" id="H0u-76-c9B"/>
+                            <constraint firstItem="HQ6-Hb-OWD" firstAttribute="leading" secondItem="pBX-BH-BBi" secondAttribute="leadingMargin" id="XOa-6g-UBc"/>
+                            <constraint firstItem="HQ6-Hb-OWD" firstAttribute="top" secondItem="1Sh-h3-wl7" secondAttribute="bottom" id="bNi-7h-2am"/>
+                            <constraint firstItem="XMF-pB-bA9" firstAttribute="top" secondItem="HQ6-Hb-OWD" secondAttribute="bottom" id="gpN-qg-06Y"/>
                         </constraints>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
-                        <outlet property="termsOfUse" destination="hTV-Fa-M8n" id="WP1-M4-0lw"/>
+                        <outlet property="textView" destination="HQ6-Hb-OWD" id="HqI-C9-NdQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P5W-Ku-4Of" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1038,25 +1513,113 @@
                         <rect key="frame" x="0.0" y="44" width="552" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92Y-nK-6Ui">
-                                <rect key="frame" x="30" y="8" width="492" height="521"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9kT-dW-2Kb">
+                                <rect key="frame" x="20" y="0.0" width="512" height="537"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content"> 
+Beacon is a fun way to explore the diversity of the connected world we live in. Your beacons of art, adventures, food, conversations, jokes, and more are anonymously delivered to people, and you are given peeks at other people’s experiences in different parts of this planet. 
+
+Beacon is created by Vikram Ramkumar. 
+
+Designers: Vikram Ramkumar, Colin Beirne, Malorie Pangilinan
+
+
+
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="Licenses">
+                                        <attributes>
+                                            <font key="NSFont" size="24" name="HelveticaNeue-Thin"/>
+                                            <font key="NSOriginalFont" size="24" name="HelveticaNeue-Thin"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content" base64-UTF8="YES">
+Cgo
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="Country Map Icons">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+
+Provided by Github mapsicon, user djaiss.
+
+
+
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="FBAnnotationClusteringSwift">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
+
+Copyright (c) 2015 Ribl LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="92Y-nK-6Ui" firstAttribute="trailing" secondItem="HAO-HZ-eo4" secondAttribute="trailingMargin" constant="-10" id="5DC-1d-Izt"/>
-                            <constraint firstItem="IM0-IN-Cep" firstAttribute="top" secondItem="92Y-nK-6Ui" secondAttribute="bottom" constant="8" id="GzM-nX-bwo"/>
-                            <constraint firstItem="92Y-nK-6Ui" firstAttribute="leading" secondItem="HAO-HZ-eo4" secondAttribute="leadingMargin" constant="10" id="NGQ-YU-bpg"/>
-                            <constraint firstItem="92Y-nK-6Ui" firstAttribute="centerX" secondItem="HAO-HZ-eo4" secondAttribute="centerX" id="gCe-qq-1qN"/>
-                            <constraint firstItem="92Y-nK-6Ui" firstAttribute="top" secondItem="Dq7-1s-A4J" secondAttribute="bottom" constant="8" id="txJ-uP-gW5"/>
+                            <constraint firstItem="9kT-dW-2Kb" firstAttribute="trailing" secondItem="HAO-HZ-eo4" secondAttribute="trailingMargin" id="452-FE-M2l"/>
+                            <constraint firstItem="9kT-dW-2Kb" firstAttribute="top" secondItem="Dq7-1s-A4J" secondAttribute="bottom" id="Zjq-RU-c8s"/>
+                            <constraint firstItem="IM0-IN-Cep" firstAttribute="top" secondItem="9kT-dW-2Kb" secondAttribute="bottom" id="b3n-bm-Rlc"/>
+                            <constraint firstItem="9kT-dW-2Kb" firstAttribute="leading" secondItem="HAO-HZ-eo4" secondAttribute="leadingMargin" id="kHy-JT-zh5"/>
                         </constraints>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
-                        <outlet property="about" destination="92Y-nK-6Ui" id="Gs0-Fk-a13"/>
+                        <outlet property="textView" destination="9kT-dW-2Kb" id="hfm-cX-esi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o5P-FC-Esg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1077,6 +1640,6 @@
         <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8ds-TT-rzm"/>
+        <segue reference="fzn-UV-xBd"/>
     </inferredMetricsTieBreakers>
 </document>

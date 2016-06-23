@@ -1099,95 +1099,51 @@ class UserListController: UITableViewController {
             
             //Get cell views
             let cell = tableView.cellForRowAtIndexPath(indexPath)!
-            
             let titleView = cell.viewWithTag(1) as! UILabel
             let subTitleView = cell.viewWithTag(2) as! UILabel
             let imageView = cell.viewWithTag(5) as! UIImageView
-            let imageBackground = cell.viewWithTag(6) as! CountryBackground
-            let slideIndicator = cell.viewWithTag(3) as! UIImageView
             
             //Establish required variables
-            let backgroundIntensity = CGFloat(imageBackground.bounds.width * 0.8)
-            let imageIntensity = CGFloat(imageView.bounds.width * 0.8)
-            let initialImageBounds = CGRect(x: 16, y: 16, width: 49, height: 49)
+            let textIntensity = CGFloat(15)
             let duration = 0.6
             
             
-            //Animate country view contraction
+            //Animate country image view spin
             UIView.animateWithDuration(duration/2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
                 
-                //imageView.bounds = CGRect(x: initialImageBounds.minX + imageIntensity, y: initialImageBounds.minY + imageIntensity, width: initialImageBounds.width - (imageIntensity * 2), height: initialImageBounds.height - (imageIntensity * 2))
                 
                 imageView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
                 
                 }, completion: { (Bool) in
                     
-                    //Change image bounds to original
+                    //Change image bounds to original upon completion
                     UIView.animateWithDuration(duration/2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
                         
-                        //imageView.bounds = initialImageBounds
                         
                         imageView.transform = CGAffineTransformMakeRotation(2 * CGFloat(M_PI))
                         
                         }, completion: nil)
             })
             
-            /*
-            let currentRotation = atan2(imageBackground.transform.b, imageBackground.transform.a)
-            let spin = CABasicAnimation(keyPath: "transform.rotation")
-            spin.duration = 0.7
-            spin.fromValue = currentRotation
-            spin.toValue = M_PI*2 + Double(currentRotation)
-            spin.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
             
-            imageBackground.layer.addAnimation(spin, forKey: nil)
-            */
-            
-            
-            /*
-            UIView.animateWithDuration(0.1, animations: { () -> Void in
+            //Animate text views' glide
+            UIView.animateWithDuration(duration/4, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
                 
-                cell.center = CGPoint(x: cell.center.x+25, y: cell.center.y)
+                titleView.center = CGPoint(x: titleView.center.x + textIntensity, y: titleView.center.y)
+                subTitleView.center = CGPoint(x: subTitleView.center.x - textIntensity/3, y: subTitleView.center.y)
                 
-                }, completion: { (Bool) -> Void in
+                }, completion: { (Bool) in
                     
-                    UIView.animateWithDuration(0.1, animations: { () -> Void in
+                    //Move text views back
+                    UIView.animateWithDuration(duration + duration/3, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.TransitionNone, animations: {
                         
-                        cell.center = CGPoint(x: cell.center.x-25, y: cell.center.y)
                         
-                        }, completion: { (Bool) -> Void in
-                            
-                            UIView.animateWithDuration(0.1, animations: { () -> Void in
-                                
-                                cell.center = CGPoint(x: cell.center.x+15, y: cell.center.y)
-                                
-                                }, completion: { (Bool) -> Void in
-                                    
-                                    UIView.animateWithDuration(0.1, animations: { () -> Void in
-                                        
-                                        cell.center = CGPoint(x: cell.center.x-15, y: cell.center.y)
-                                        
-                                        }, completion: { (Bool) -> Void in
-                                            
-                                            UIView.animateWithDuration(0.1, animations: { () -> Void in
-                                                
-                                                cell.center = CGPoint(x: cell.center.x+7, y: cell.center.y)
-                                                
-                                                }, completion: { (Bool) -> Void in
-                                                    
-                                                    UIView.animateWithDuration(0.1, animations: { () -> Void in
-                                                        
-                                                        cell.center = CGPoint(x: cell.center.x-7, y: cell.center.y)
-                                                        
-                                                    })
-                                            })
-                                    })
-                            })
-                    })
-            })*/
-            
+                        titleView.center = CGPoint(x: titleView.center.x - textIntensity, y: titleView.center.y)
+                        subTitleView.center = CGPoint(x: subTitleView.center.x + textIntensity/3, y: subTitleView.center.y)
+                        
+                        }, completion: nil)
+            })
         }
-        
     }
     
     

@@ -13,18 +13,19 @@ import UIKit
 class AboutController: UIViewController {
     
     
-    @IBOutlet var about: UILabel!
-    
-    let aboutText = "About \n \n Planet Earth sends its regards. "
-    
+    @IBOutlet var textView: UITextView!
     
     
     override func viewDidLoad() {
         
         //Load view as normal
         super.viewDidLoad()
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
         
-        about.text = aboutText
+        textView.scrollEnabled = true
     }
     
     
