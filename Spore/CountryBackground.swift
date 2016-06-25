@@ -85,7 +85,7 @@ class CountryBackground: UIView {
         
         rotateAnimation.fromValue = CGFloat(-M_PI/2)
         rotateAnimation.toValue = CGFloat(3 * M_PI / 2)
-        rotateAnimation.duration = 1.5
+        rotateAnimation.duration = 1
         rotateAnimation.repeatCount = HUGE
         
         

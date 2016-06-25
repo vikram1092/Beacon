@@ -33,7 +33,8 @@ class UserListController: UITableViewController {
     var countryTable = CountryTable()
     var countryObject = UIView()
     var updatingUserList = false
-    var alertShowed = false
+    var haveSetAlertAfterSending = false
+    var showNoMoreBeaconsAlert = false
     
     var locManager = CLLocationManager()
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -91,7 +92,6 @@ class UserListController: UITableViewController {
             //Get userToReceivePhotos
             if userDefaults.integerForKey("userToReceivePhotos") > 0 {
                 userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
-                print("usertoReceivePhotos: " + String(userToReceivePhotos))
             }
             
             //Load user list
@@ -241,8 +241,7 @@ class UserListController: UITableViewController {
             }
             else if objects!.count > 0 && objects!.count != self.userList.count {
                 
-                print(objects!.count)
-                print(self.userList.count)
+                
                 //Changes have taken place in local datastore, reload table and send unsent photos
                 self.userList = objects!
                 print("Reloading table after local retreival")
@@ -254,8 +253,9 @@ class UserListController: UITableViewController {
                     
                 })
                 
-                //Send any unsent photos and update the table with new photos
+                //Set alert flag, send any unsent photos and update the table with new photos
                 print("Adding new photos")
+                self.haveSetAlertAfterSending = false
                 self.sendUnsentPhotos()
                 self.updateUserList(false)
             }
@@ -275,11 +275,20 @@ class UserListController: UITableViewController {
     
     internal func sendUnsentPhotos() {
         
+        //Send all photos that haven't been sent
         for photoObj in self.userList {
+            
             
             if photoObj["sentBy"] as! String == self.userEmail && photoObj["receivedBy"] == nil {
                 
-                //Send unsent photos and update user list
+                //Enable no more beacons left alert if it hasn't been shown
+                if !haveSetAlertAfterSending {
+                
+                    haveSetAlertAfterSending = true
+                    showNoMoreBeaconsAlert = true
+                }
+                
+                //Send each photo
                 self.sendUnsentPhoto(photoObj, updateUserList: true)
             }
         }
@@ -299,7 +308,7 @@ class UserListController: UITableViewController {
             //Add to list
             sendingList.append(photoObject)
             
-            //Initialize variables
+            //Initialize user variables
             let geoPoint = photoObject["sentFrom"] as! PFGeoPoint
             let sentCountry = photoObject["countryCode"] as? String
             let sentState = photoObject["sentState"] as? String
@@ -310,6 +319,7 @@ class UserListController: UITableViewController {
             let countryBackground = cell?.viewWithTag(6) as? CountryBackground
             print(countryBackground)
             let subTitleView = cell?.viewWithTag(2) as? UILabel
+            
             
             //Update cell to let user know photo is processing
             photoObject.removeObjectForKey("sendingStatus")
@@ -324,6 +334,7 @@ class UserListController: UITableViewController {
             }
             
             
+            //If geopoint is valid & we don't  have political details, get them first. If we already have those details, send photo
             if (geoPoint.latitude != 0.0 || geoPoint.longitude != 0.0) && (sentCountry == "" && (sentState == nil || sentState == "") && (sentCity == nil || sentCity == "")) {
                 
                 getPoliticalDetails(geoPoint, photoObject: photoObject)
@@ -431,7 +442,7 @@ class UserListController: UITableViewController {
         }
         else {
             
-            //Remove from local datastore
+            //Remove from local datastore and temporary sending list
             self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
             photoObj.unpinInBackground()
             
@@ -474,6 +485,7 @@ class UserListController: UITableViewController {
             
             
             //Get unsent photos in the database equal to how many the user gets
+            //Place conditions to get unreceived photos from people prefereably not from the same country
             let query = PFQuery(className:"photo")
             query.whereKeyExists("photo")
             query.whereKey("sentBy", notEqualTo: userEmail)
@@ -500,18 +512,24 @@ class UserListController: UITableViewController {
                     //Either recurse the same method with different parameters or end search
                     if self.userToReceivePhotos > 0 {
                         
-                        //End search, don't repeat alert if you've showed it once, unless the user refreshes
+                        //End search, only show if the showNoMoreBeaconsAlert flag is raised
+                        print("showNoMoreBeaconsAlert \(self.showNoMoreBeaconsAlert)")
                         if sameCountry {
                             
-                            self.alertShowed = true
                             self.updatingUserList = false
-                            
                             print("Database empty.")
+                            
                             //Let the user know that the database if user hasn't switched out already
-                            if self.tabBarController?.selectedIndex == 1 && self.refreshControl!.refreshing {
-                                let alert = UIAlertController(title: "Beacons To Come!", message: "All the beacons have been captured! Check back to detect stray beacons!", preferredStyle: UIAlertControllerStyle.Alert)
-                                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
-                                self.presentViewController(alert, animated: true, completion: nil)
+                            if self.tabBarController?.selectedIndex == 1 && self.showNoMoreBeaconsAlert {
+                                
+                                self.showNoMoreBeaconsAlert = false
+                                
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    
+                                    let alert = UIAlertController(title: "Beacons To Come!", message: "All the beacons have been captured, check back to detect stray beacons!", preferredStyle: UIAlertControllerStyle.Alert)
+                                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
+                                    self.presentViewController(alert, animated: true, completion: nil)
+                                })
                             }
                         }
                         else if !sameCountry {
@@ -620,7 +638,6 @@ class UserListController: UITableViewController {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        self.updatingUserList = false
                         self.refreshControl!.endRefreshing()
                     })
                 }
@@ -641,7 +658,7 @@ class UserListController: UITableViewController {
     
     @IBAction func refreshControl(sender: AnyObject) {
         
-        //Refresh data and reload table within that function
+        //Enable no more beacons alert, refresh data and reload table within that function
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
             
             self.updateUserList(false)
@@ -666,7 +683,7 @@ class UserListController: UITableViewController {
         refreshControl!.backgroundColor = refreshBackgroundColor
         
         //Add target
-        self.refreshControl!.addTarget(self, action: #selector(UserListController.refreshNeeded), forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(refreshNeeded), forControlEvents: UIControlEvents.ValueChanged)
 
     }
     
@@ -703,7 +720,7 @@ class UserListController: UITableViewController {
         
         //Begin animation and set flag to refresh
         print("starting animation")
-        print(tableView.contentOffset.y)
+        self.showNoMoreBeaconsAlert = true
         beaconRefresh.startAnimating()
     }
     
@@ -733,7 +750,7 @@ class UserListController: UITableViewController {
         
         
         //Configure image sliding and action
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(UserListController.detectPan(_:)))
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(detectPan(_:)))
         imageBackground.addGestureRecognizer(pan)
         
         
@@ -996,7 +1013,7 @@ class UserListController: UITableViewController {
                         
                         //Set close function
                         NSNotificationCenter.defaultCenter().addObserver(self,
-                            selector: #selector(UserListController.closeVideo),
+                            selector: #selector(self.closeVideo),
                             name: AVPlayerItemDidPlayToEndTimeNotification,
                             object: grandparent.moviePlayer.player!.currentItem)
                         

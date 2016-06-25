@@ -83,6 +83,6 @@
         <image name="CameraSwitch" width="33" height="33"/>
         <image name="FlashButtonOff" width="33" height="33"/>
         <image name="LaunchCaptureButton" width="107" height="107"/>
-        <image name="backButton" width="33" height="33"/>
+        <image name="backButton" width="55" height="55"/>
     </resources>
 </document>

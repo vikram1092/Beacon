@@ -85,13 +85,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
             
             //Register for interruption notifications
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CameraController.handleCaptureSessionInterruption(_:)), name: AVCaptureSessionWasInterruptedNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.handleCaptureSessionInterruption(_:)), name: AVCaptureSessionWasInterruptedNotification, object: nil)
             
-            //NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleAudioSessionInterruption:"), name: AVAudioSessionInterruptionNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.continueVideo), name: UIApplicationWillEnterForegroundNotification, object: nil)
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CameraController.continueVideo), name: UIApplicationWillEnterForegroundNotification, object: nil)
-            
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CameraController.doBackgroundTasks), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.doBackgroundTasks), name: UIApplicationDidEnterBackgroundNotification, object: nil)
             
             
         }
@@ -100,7 +98,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         
         //Adjust views
-        self.backButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 20)
+        self.backButton.imageEdgeInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 30)
         self.photoSendButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 0)
         self.cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 20, right: 20)
         self.flashButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 10)
@@ -601,7 +599,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             audioRecorder.record()
             
             //Start timer
-            videoTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(CameraController.stopTakingVideo), userInfo: nil, repeats: false)
+            videoTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(stopTakingVideo), userInfo: nil, repeats: false)
             
             //Start recording animation
             captureShape.startRecording()
@@ -735,7 +733,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Set loop function
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: #selector(CameraController.restartVideoFromBeginning),
+            selector: #selector(restartVideoFromBeginning),
             name: AVPlayerItemDidPlayToEndTimeNotification,
             object: moviePlayer.player!.currentItem)
         

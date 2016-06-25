@@ -46,11 +46,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         //Get user defaults
         getUserDefaults()
         
-        //Configure profile picture
-        countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        countryBackground.bringSubviewToFront(countryPicture)
-        
-        //Set user location
+        //Configure country picture
         setUserLocation()
     }
     
@@ -170,13 +166,13 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
             
             if userState.characters.count == 2 {
                 
-                print(1)
+                
                 text = countryTable.getStateName(userState) + ", " + countryTable.getCountryName(userCountry)
                 countryPicture.image = countryTable.getStateImage(userState).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
             }
             else {
                 
-                print(2)
+                
                 let stateCode = countryTable.getStateCode(userState)
                 if stateCode == "Unknown" {
                     
@@ -193,7 +189,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         else if userCity != "" {
             
             text = userCity + ", " + countryTable.getCountryName(userCountry)
-            countryPicture.image = countryTable.getStateImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         }
         else if userCountry != "" {
             
