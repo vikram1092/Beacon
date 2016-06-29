@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+
 class BeaconRefresh: UIView {
     
     
@@ -17,7 +18,6 @@ class BeaconRefresh: UIView {
     let finalDepth = CGFloat(120.0)
     var number = 13
     var isAnimating = false
-    var readyToUpdateViews = true
     var beaconIndicator = BeaconingIndicator()
     
     
@@ -51,12 +51,12 @@ class BeaconRefresh: UIView {
     
     internal func updateViews(ratio: CGFloat) {
         
+        
         if !beaconIndicator.isAnimating {
             
             let depth = min(max(50,initialDepth + ratio * 2), finalDepth)
             let rotation = (depth - initialDepth) * CGFloat(M_PI)/(finalDepth - initialDepth)
             let offset = (-3 * CGFloat(M_PI)/2)
-            //beaconIndicator.center = CGPoint(x: beaconIndicator.center.x, y:  depth)
             beaconIndicator.transform = CGAffineTransformMakeRotation(rotation + offset)
         }
     }

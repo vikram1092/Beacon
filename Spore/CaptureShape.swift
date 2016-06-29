@@ -17,6 +17,8 @@ class CaptureShape: UIView {
     let border1 = CAShapeLayer()
     let border2 = CAShapeLayer()
     let record = CAShapeLayer()
+    let record2 = CAShapeLayer()
+    var beacons = UIImageView()
     
     
     required init?(coder aDecoder: NSCoder) {
@@ -26,7 +28,7 @@ class CaptureShape: UIView {
         
         //Initialize variables
         let frame = super.frame
-        self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
+        self.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI)/2)
         
         
         //Set auxRing
@@ -75,11 +77,20 @@ class CaptureShape: UIView {
         border1.lineCap = kCALineCapRound
         
         
+        //Initialize beacons image
+        beacons = self.viewWithTag(5) as! UIImageView
+        beacons.image = UIImage(named: "BeaconsButton")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        beacons.tintColor = UIColor.whiteColor()
+        beacons.contentMode = UIViewContentMode.Center
+        beacons.transform = CGAffineTransformMakeRotation(CGFloat(M_PI/2))
+        
+        
         //Add all to view
         self.layer.addSublayer(border2)
         self.layer.addSublayer(auxRing)
         self.layer.addSublayer(border1)
         self.layer.addSublayer(beaconRing)
+        self.addSubview(beacons)
         
     }
     
@@ -97,101 +108,83 @@ class CaptureShape: UIView {
         record.strokeEnd = 1.0
         record.lineCap = kCALineCapRound
         
+        //Add recording layer
+        record2.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        record2.fillColor = UIColor.clearColor().CGColor
+        record2.strokeColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue: 203.0/255.0, alpha: 1).CGColor
+        record2.lineWidth = beaconRing.lineWidth
+        record2.strokeStart = auxRing.strokeEnd
+        record2.strokeEnd = auxRing.strokeEnd
+        record2.lineCap = kCALineCapRound
+        
         self.layer.addSublayer(record)
+        self.layer.addSublayer(record2)
         
         //Declare animations and parameters for recording
         let progress = CABasicAnimation(keyPath: "strokeStart")
+        let progress2 = CABasicAnimation(keyPath: "strokeStart")
         let expansion = CABasicAnimation(keyPath: "path")
-        let contraction = CABasicAnimation(keyPath: "path")
-        let beaconRingWidth = CABasicAnimation(keyPath: "lineWidth")
-        let border2Width = CABasicAnimation(keyPath: "lineWidth")
-        let strokeStartExpansion = CABasicAnimation(keyPath: "strokeStart")
-        let strokeEndExpansion = CABasicAnimation(keyPath: "strokeEnd")
         let recordingDuration = 10.0
-        let otherDuration = 1.0
+
         
         //Configure recording animation
         progress.duration = recordingDuration
         progress.fromValue = 1.0
         progress.toValue = 0.4
+        progress.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         progress.removedOnCompletion = false
         progress.fillMode = kCAFillModeForwards
         
+        //Configure recording animation
+        progress2.duration = recordingDuration
+        progress2.fromValue = 0.35
+        progress2.toValue = 0.05
+        progress2.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        progress2.removedOnCompletion = false
+        progress2.fillMode = kCAFillModeForwards
         
         //Configure expansion for beaconRing
         expansion.duration = 1
         expansion.fromValue = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        expansion.toValue = UIBezierPath(ovalInRect: CGRect(x: -8.0, y: -8.0, width: frame.width + 16, height: frame.height + 16)).CGPath
+        expansion.toValue = UIBezierPath(ovalInRect: CGRect(x: -6.0, y: -6.0, width: frame.width + 12, height: frame.height + 12)).CGPath
         expansion.removedOnCompletion = false
         expansion.fillMode = kCAFillModeForwards
         
-        
-        //Configure beaconRing and record layers' width change
-        beaconRingWidth.duration = otherDuration
-        beaconRingWidth.fromValue = beaconRing.lineWidth
-        beaconRingWidth.toValue = beaconRing.lineWidth + 2
-        beaconRingWidth.removedOnCompletion = false
-        beaconRingWidth.fillMode = kCAFillModeForwards
-        
-        
-        //Configure border1 change. Difference is in the lineWidth values
-        border2Width.duration = otherDuration
-        border2Width.fromValue = beaconRing.lineWidth + 1
-        border2Width.toValue = beaconRing.lineWidth + 3
-        border2Width.beginTime = CACurrentMediaTime() + 0.5
-        border2Width.removedOnCompletion = false
-        border2Width.fillMode = kCAFillModeForwards
-        
-        
-        //Configure contraction for auxRing
-        contraction.duration = otherDuration
-        contraction.fromValue = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        contraction.toValue = UIBezierPath(ovalInRect: CGRect(x: 20.0, y: 20.0, width: frame.width - 40, height: frame.height - 40)).CGPath
-        contraction.beginTime = CACurrentMediaTime() + 0.5
-        contraction.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-        contraction.removedOnCompletion = false
-        contraction.fillMode = kCAFillModeForwards
-        
-        //Add strokeStartExpanson for auxRing
-        strokeStartExpansion.duration = otherDuration
-        strokeStartExpansion.fromValue = 0.05
-        strokeStartExpansion.toValue = 0.0
-        strokeStartExpansion.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-        strokeStartExpansion.beginTime = CACurrentMediaTime() + 0.5
-        strokeStartExpansion.removedOnCompletion = false
-        strokeStartExpansion.fillMode = kCAFillModeForwards
-        
-        
-        //Add strokeExpanson for auxRing
-        strokeEndExpansion.duration = otherDuration
-        strokeEndExpansion.fromValue = 0.35
-        strokeEndExpansion.toValue = 1.0
-        strokeEndExpansion.beginTime = CACurrentMediaTime() + 0.5
-        strokeEndExpansion.removedOnCompletion = false
-        strokeEndExpansion.fillMode = kCAFillModeForwards
-        
-        
         //Add animations to layers
-        record.addAnimation(progress, forKey: nil)
-        record.addAnimation(expansion, forKey: nil)
-        
         beaconRing.addAnimation(expansion, forKey: nil)
-        
         border1.addAnimation(expansion, forKey: nil)
-        
-        auxRing.addAnimation(contraction, forKey: nil)
-        auxRing.addAnimation(strokeStartExpansion, forKey: nil)
-        auxRing.addAnimation(strokeEndExpansion, forKey: nil)
-        //auxRing.addAnimation(border2Width, forKey: nil)
-        
-        border2.addAnimation(contraction, forKey: nil)
-        border2.addAnimation(strokeStartExpansion, forKey: nil)
-        border2.addAnimation(strokeEndExpansion, forKey: nil)
-        //border2.addAnimation(border2Width, forKey: nil)
+        auxRing.addAnimation(expansion, forKey: nil)
+        border2.addAnimation(expansion, forKey: nil)
+        record.addAnimation(expansion, forKey: nil)
+        record2.addAnimation(expansion, forKey: nil)
+        record.addAnimation(progress, forKey: nil)
+        record2.addAnimation(progress2, forKey: nil)
         
     }
     
+    
+    internal func showBeaconsView() {
+        
+        
+        //Show beacons view
+        UIView.animateWithDuration(0.2) { 
+            
+            self.beacons.alpha = 1
+        }
+    }
+    
+    
+    internal func hideBeaconsView() {
+        
+        UIView.animateWithDuration(0.2) { 
+            
+            self.beacons.alpha = 0
+        }
+    }
+    
+    
     internal func stopRecording() {
+        
         
         //Remove animations to layers, reset dimensions and remove the recording layer
         beaconRing.removeAllAnimations()
@@ -200,6 +193,8 @@ class CaptureShape: UIView {
         border2.removeAllAnimations()
         
         record.removeFromSuperlayer()
+        record2.removeFromSuperlayer()
+        
     }
     
 }

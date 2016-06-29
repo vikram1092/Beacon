@@ -108,11 +108,9 @@ public class SentAnnotationClusterView : MKAnnotationView {
     
     override public func layoutSubviews() {
         
+        
         // Images are faster than using drawRect:
-        
         let imageAsset = UIImage(named: imageName, inBundle: (!loadExternalImage) ? NSBundle(forClass: SentAnnotationClusterView.self) : nil, compatibleWithTraitCollection: nil)
-        
-        //UIImage(named: imageName)!
         
         countLabel?.frame = self.bounds
         image = imageAsset

@@ -21,7 +21,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBOutlet var cameraImage: UIImageView!
     @IBOutlet var flashButton: UIButton!
     @IBOutlet var captureButton: UIButton!
-    @IBOutlet var backButton: UIButton!
     @IBOutlet var closeButton: UIButton!
     @IBOutlet var photoSendButton: UIButton!
     @IBOutlet var cameraSwitchButton: UIButton!
@@ -98,7 +97,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         
         //Adjust views
-        self.backButton.imageEdgeInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 30)
         self.photoSendButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 0)
         self.cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 20, right: 20)
         self.flashButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 10)
@@ -120,7 +118,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         closeButton.hidden = true
         photoSendButton.hidden = true
         flashButton.hidden = false
-        backButton.hidden = false
         captureButton.hidden = false
         cameraSwitchButton.hidden = false
         
@@ -546,21 +543,29 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
                 
-                let image = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
-                let data_image = UIImage(data: image)
-                self.cameraImage.image = data_image
-                self.captureSession.stopRunning()
-                
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if error != nil {
                     
-                    //Change elements on screen
-                    self.backButton.hidden = true
-                    self.captureButton.hidden = true
-                    self.flashButton.hidden = true
-                    self.cameraSwitchButton.hidden = true
-                    self.closeButton.hidden = false
-                    self.photoSendButton.hidden = false
-                })
+                    print("Error capturing photo: \(error)")
+                }
+                else {
+                    
+                    //Capture image if no errors in connection occurred
+                    let image = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
+                    let data_image = UIImage(data: image)
+                    self.cameraImage.image = data_image
+                    self.captureSession.stopRunning()
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        //Change elements on screen
+                        self.captureButton.hidden = true
+                        self.flashButton.hidden = true
+                        self.cameraSwitchButton.hidden = true
+                        self.closeButton.hidden = false
+                        self.photoSendButton.hidden = false
+                    })
+                    
+                }
             }
         }
         
@@ -570,49 +575,50 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func takeVideo(sender: UILongPressGestureRecognizer) {
         
-        
-        switch sender.state {
+        if captureSession.running {
             
-        case .Began:
-            
-            //Change elements on screen
-            self.backButton.hidden = true
-            self.flashButton.hidden = true
-            self.cameraSwitchButton.hidden = true
-            
-            //Set path for video
-            let videoUrl = NSURL(fileURLWithPath: initialVideoPath)
-            let audioUrl = NSURL(fileURLWithPath: initialAudioPath)
-            
-            //Set up audio recorder
-            do {
-                audioRecorder = try AVAudioRecorder(URL: audioUrl, settings: recorderSettings)
-                audioRecorder.delegate = self
+            switch sender.state {
+                
+            case .Began:
+                
+                //Change elements on screen
+                self.flashButton.hidden = true
+                self.cameraSwitchButton.hidden = true
+                
+                //Set path for video
+                let videoUrl = NSURL(fileURLWithPath: initialVideoPath)
+                let audioUrl = NSURL(fileURLWithPath: initialAudioPath)
+                
+                //Set up audio recorder
+                do {
+                    audioRecorder = try AVAudioRecorder(URL: audioUrl, settings: recorderSettings)
+                    audioRecorder.delegate = self
+                }
+                catch let error as NSError { print("Error recoding audio: \(error)")}
+                
+                //Start recording video and audio
+                print("Beginning video recording")
+                movieFileOutput.stopRecording()
+                audioRecorder.stop()
+                movieFileOutput.startRecordingToOutputFileURL(videoUrl, recordingDelegate: VideoDelegate())
+                audioRecorder.record()
+                
+                //Start timer
+                videoTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(stopTakingVideo), userInfo: nil, repeats: false)
+                
+                //Start recording animation
+                captureShape.startRecording()
+                
+            case .Ended:
+                
+                //Stop video if user stops and timer hasn't fired already
+                print("Ended video recording")
+                if videoTimer.valid {
+                    stopTakingVideo()
+                }
+                
+            default: ()
             }
-            catch let error as NSError { print("Error recoding audio: \(error)")}
-            
-            //Start recording video and audio
-            print("Beginning video recording")
-            movieFileOutput.stopRecording()
-            audioRecorder.stop()
-            movieFileOutput.startRecordingToOutputFileURL(videoUrl, recordingDelegate: VideoDelegate())
-            audioRecorder.record()
-            
-            //Start timer
-            videoTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(stopTakingVideo), userInfo: nil, repeats: false)
-            
-            //Start recording animation
-            captureShape.startRecording()
-            
-        case .Ended:
-            
-            //Stop video if user stops and timer hasn't fired already
-            print("Ended video recording")
-            if videoTimer.valid {
-                stopTakingVideo()
-            }
-            
-        default: ()
         }
     }
     
@@ -622,18 +628,19 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Stop everything
         print("Ending video recording")
         videoTimer.invalidate()
-        captureShape.stopRecording()
         movieFileOutput.stopRecording()
         audioRecorder.stop()
         captureSession.stopRunning()
         
         //Change elements on screen
-        self.backButton.hidden = true
         self.captureButton.hidden = true
         self.flashButton.hidden = true
         self.cameraSwitchButton.hidden = true
         self.closeButton.hidden = false
         self.photoSendButton.hidden = false
+        
+        
+        captureShape.stopRecording()
         
         //Merge audio and video files into one file, then play for user
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
@@ -845,7 +852,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.closeButton.hidden = true
         self.photoSendButton.hidden = true
         self.flashButton.hidden = false
-        self.backButton.hidden = false
         self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
         self.cameraImage.image = nil
@@ -1479,6 +1485,98 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 try AVAudioSession.sharedInstance().setActive(true)
             }
             catch let error as NSError { print("Error setting audio session category \(error)") }
+        }
+    }
+    
+    
+    @IBAction func detectPan(recognizer: UIPanGestureRecognizer) {
+        
+        
+        //Check if view is the Country Background class
+        let panningView = recognizer.view!
+        let translation = recognizer.translationInView(recognizer.view!.superview)
+        
+        
+        switch recognizer.state {
+            
+            
+        case .Began:
+            
+            //Disable touches in all other views
+            cameraImage.userInteractionEnabled = false
+            flashButton.userInteractionEnabled = false
+            cameraSwitchButton.userInteractionEnabled = false
+            
+            
+        case .Ended:
+            
+            
+            //Enable touches in all other views
+            cameraImage.userInteractionEnabled = true
+            flashButton.userInteractionEnabled = true
+            cameraSwitchButton.userInteractionEnabled = true
+            
+            //If distance is considerable, segue to table
+            let distance = self.view.center.x - panningView.center.x
+            let threshold = self.view.bounds.width * 0.20
+            
+            if abs(distance) > threshold {
+                
+                segueToTable(false)
+            }
+            
+            //Move country back and bring back elements
+            print("Pan ended")
+            UIView.animateWithDuration(0.4, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+                
+                //Move object first
+                panningView.center.x = self.view.center.x
+                self.captureShape.hideBeaconsView()
+                panningView.transform = CGAffineTransformMakeRotation(0)
+                
+                }, completion: nil)
+            
+            
+        case .Cancelled:
+            
+            
+            //Enable touches in all other views
+            cameraImage.userInteractionEnabled = true
+            flashButton.userInteractionEnabled = true
+            cameraSwitchButton.userInteractionEnabled = true
+            
+            //Move country back and bring back elements
+            print("Moving country back")
+            UIView.animateWithDuration(0.4, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+                
+                //Move object first
+                panningView.center.x = self.view.center.x
+                self.captureShape.hideBeaconsView()
+                panningView.transform = CGAffineTransformMakeRotation(0)
+                
+                }, completion: nil)
+            
+            
+        default:
+            
+            
+            //Move view according to pan. If view passes a certain threshold, show beacons button
+            let distance = self.view.center.x - panningView.center.x
+            panningView.center.x = self.view.center.x + translation.x
+            panningView.transform = CGAffineTransformMakeRotation(-distance/(panningView.bounds.width/2))
+            captureShape.beacons.transform = CGAffineTransformMakeRotation(CGFloat(M_PI)/2 + distance/(panningView.bounds.width/2))
+            
+            let threshold = self.view.bounds.width * 0.20
+            
+            
+            if abs(distance) > threshold {
+                
+                captureShape.showBeaconsView()
+            }
+            else {
+                
+                captureShape.hideBeaconsView()
+            }
         }
     }
     

@@ -38,8 +38,8 @@ class UserListController: UITableViewController {
     
     var locManager = CLLocationManager()
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-    let defaultColor = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1).CGColor
-    let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
+    let defaultColor = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1)
+    let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1)
     let refreshBackgroundColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue:203.0/255.0, alpha: 1)
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
@@ -758,7 +758,7 @@ class UserListController: UITableViewController {
         if userList[userListIndex]["sentBy"] as! String == userEmail && userList[userListIndex]["receivedBy"] == nil {
             
             //Set background color
-            imageBackground.changeBackgroundColor(sendingColor)
+            imageBackground.changeBackgroundColor(sendingColor.CGColor)
             imageBackground.setProgress(0.6)
             
             //Configure subtext
@@ -779,7 +779,7 @@ class UserListController: UITableViewController {
         else {
             
             //Set background color & kill any animations
-            imageBackground.changeBackgroundColor(defaultColor)
+            imageBackground.changeBackgroundColor(defaultColor.CGColor)
             userList[userListIndex].removeObjectForKey("isAnimating")
             imageBackground.stopAnimating()
             
@@ -1336,11 +1336,11 @@ class UserListController: UITableViewController {
             
             
             //Calculate distance fraction
-            let countryDistance = abs(countryObject.center.x - countryCenter.x)
-            let distanceFraction = countryDistance/self.view.bounds.width
+            let distance = countryObject.center.x
+            let threshold = self.view.bounds.width * 0.60
             
             //If moved to the other side of the screen, go to map and show country
-            if distanceFraction > 0.60 {
+            if distance > threshold {
                 
                 let index = tableView.indexPathForCell(cell)!.row
                 let userListIndex = userList.count - index - 1
@@ -1415,6 +1415,27 @@ class UserListController: UITableViewController {
             print("default")
             countryObject.center.x = translation.x + countryCenter.x
             
+            //Calculate distance fraction
+            let slideIndicator = cell.viewWithTag(3) as! UIImageView
+            let distance = countryObject.center.x
+            let threshold = self.view.bounds.width * 0.60
+            
+            if distance > threshold && slideIndicator.tintColor == UIColor.lightGrayColor() {
+                
+                print("turning default color")
+                UIView.animateWithDuration(0.1, animations: {
+                    
+                    slideIndicator.tintColor = self.defaultColor
+                })
+            }
+            else if distance <= threshold && slideIndicator.tintColor != UIColor.lightGrayColor() {
+                
+                print("turning gray color")
+                UIView.animateWithDuration(0.1, animations: { 
+                    
+                    slideIndicator.tintColor = UIColor.lightGrayColor()
+                })
+            }
         }
     }
     

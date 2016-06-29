@@ -84,7 +84,7 @@ class BeaconingIndicator: UIView {
         self.hidden = false
         isAnimating = true
         
-        rotateAnimation.fromValue = -90.0 * CGFloat(M_PI)/180.0
+        rotateAnimation.fromValue = -CGFloat(M_PI)/2
         rotateAnimation.toValue = 3 * CGFloat(M_PI)/2
         rotateAnimation.duration = 1
         rotateAnimation.repeatCount = HUGE
