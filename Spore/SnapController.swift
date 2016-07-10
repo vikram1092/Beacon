@@ -26,11 +26,13 @@ class SnapController: UIViewController {
     @IBOutlet var snapTimer: SnapTimer!
     @IBOutlet var container: UIView!
     
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
         snap.addSubview(snapTimer)
     }
+    
     
     override func viewWillAppear(animated: Bool) {
         
@@ -57,19 +59,24 @@ class SnapController: UIViewController {
         
         print("Tapped!")
         
-        self.snap.userInteractionEnabled = false
-        self.snapTimer.alpha = 0
         
         if self.hideStatusBar {
             
             self.toggleStatusBar()
         }
         
-        UIView.animateWithDuration(0.3) { () -> Void in
+        UIView.animateWithDuration(0.3, animations: { 
             
             self.snap.alpha = 0
-            self.moviePlayer.player = nil
-            self.moviePlayer.removeFromSuperlayer()
+            self.snapTimer.alpha = 0
+            
+            }) { (Bool) in
+                
+                self.moviePlayer.player = nil
+                self.moviePlayer.removeFromSuperlayer()
+                self.snap.image = nil
+                self.snap.userInteractionEnabled = false
+                self.container.userInteractionEnabled = true
         }
     }
     
@@ -81,6 +88,10 @@ class SnapController: UIViewController {
             
         case .Began:
             
+            //Restrict touches to snap only
+            container.userInteractionEnabled = false
+            
+            //Show status bar if hidden
             if self.hideStatusBar {
                 
                 toggleStatusBar()
@@ -93,13 +104,13 @@ class SnapController: UIViewController {
             snap.center.y = lastLocation.y + translation.y
             
             
-        case .Ended:
+        case .Ended, .Cancelled:
             
             let snapDistance = abs(snap.center.y - self.view.center.y)
             let distanceFraction = snapDistance/self.view.bounds.height
             
             
-            //If not moved much, move snap back
+            //If not moved much, move snap back and hide status bar
             if distanceFraction < 0.10 {
                 
                 print("Moving image back")
@@ -113,7 +124,7 @@ class SnapController: UIViewController {
                     }
                 }
             }
-                //Else, slide off screen
+            //Else, slide off screen
             else {
                 
                 print("Moving image off")
@@ -130,8 +141,10 @@ class SnapController: UIViewController {
                         self.moviePlayer.removeFromSuperlayer()
                         self.snap.alpha = 0
                         self.snap.userInteractionEnabled = false
+                        self.container.userInteractionEnabled = true
                 })
             }
+            
         default:
             print("default")
         }

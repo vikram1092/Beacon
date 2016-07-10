@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             self.window?.rootViewController = initialViewController
             self.window?.makeKeyAndVisible()
-
+            
         }
         
         let parseConfiguration = ParseClientConfiguration(block: { (ParseMutableClientConfiguration) -> Void in

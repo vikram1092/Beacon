@@ -14,7 +14,8 @@ import Parse
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
     
-    @IBOutlet var dotView: DotView!
+    @IBOutlet var dotViewLeft: DotView!
+    @IBOutlet var dotViewRight: DotView!
     @IBOutlet var alertButton: UIButton!
     @IBOutlet var fbLoginButton: FBSDKLoginButton!
     var userName = ""
@@ -28,9 +29,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         //Load as normal
         super.viewDidLoad()
         
-        self.view.sendSubviewToBack(dotView)
-        dotView.frame = self.view.bounds
-        dotView.initializeViews()
+        self.view.sendSubviewToBack(dotViewLeft)
+        self.view.sendSubviewToBack(dotViewRight)
+        dotViewLeft.frame = self.view.bounds
+        dotViewRight.frame = self.view.bounds
+        dotViewLeft.initializeViews()
+        dotViewRight.initializeViews()
     }
     
     
@@ -46,6 +50,27 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         fbLoginButton.delegate = self
         
         
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        if !dotViewLeft.isAnimating {
+            
+            dotViewLeft.startAnimations(25)
+        }
+        
+        if !dotViewRight.isAnimating {
+            
+            dotViewRight.startAnimations(-25)
+        }
+    }
+    
+    
+    override func viewDidDisappear(animated: Bool) {
+        
+        //Stop all animations
+        dotViewLeft.stopAnimating()
+        dotViewRight.stopAnimating()
     }
     
     

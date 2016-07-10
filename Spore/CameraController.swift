@@ -18,12 +18,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     //UI elements
+    @IBOutlet var topGradient: UIView!
+    @IBOutlet var bottomGradient: UIView!
     @IBOutlet var cameraImage: UIImageView!
     @IBOutlet var flashButton: UIButton!
     @IBOutlet var captureButton: UIButton!
     @IBOutlet var closeButton: UIButton!
-    @IBOutlet var photoSendButton: UIButton!
     @IBOutlet var cameraSwitchButton: UIButton!
+    @IBOutlet var backButton: UIButton!
     @IBOutlet var activityIndicator: BeaconingIndicator!
     @IBOutlet var snapTimer: SnapTimer!
     @IBOutlet var captureShape: CaptureShape!
@@ -69,6 +71,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var userEmail = ""
     var firstTime = true
     var saveMedia = true
+    var beaconSending = false
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     //If we find a device we'll store it here for later use
@@ -81,6 +84,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Run view load as normal
         super.viewDidLoad()
         
+        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
             
             //Register for interruption notifications
@@ -90,20 +94,24 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.doBackgroundTasks), name: UIApplicationDidEnterBackgroundNotification, object: nil)
             
-            
         }
+        
+        
+        //Set gradients
+        setGradients()
+        
         
         //Set color for activity indicator
         self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
         
-        //Adjust views
-        self.photoSendButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 0, right: 0)
-        self.cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 20, right: 20)
-        self.flashButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 10)
-        self.closeButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 10)
-        self.cameraImage.addSubview(self.snapTimer)
-        self.captureButton.addSubview(self.captureShape)
         
+        //Adjust button views
+        cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 20, right: 20)
+        flashButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 10)
+        closeButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 10)
+        backButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 10, right: 10)
+        cameraImage.addSubview(snapTimer)
+        captureButton.addSubview(captureShape)
         
     }
     
@@ -116,10 +124,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Initialize buttons
         closeButton.hidden = true
-        photoSendButton.hidden = true
         flashButton.hidden = false
         captureButton.hidden = false
         cameraSwitchButton.hidden = false
+        backButton.hidden = false
         
         //Hide alert layers
         closeAlert()
@@ -158,6 +166,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     override func viewDidDisappear(animated: Bool) {
+        
+        //Hide preview layer
+        previewLayer?.hidden = true
         
         //Turn off flash
         turnTorchOff()
@@ -204,9 +215,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                     
                     self.captureSession.startRunning()
+                    self.previewLayer?.hidden = false
                     self.initializeLocationManager()
                 })
             })
+        }
+        else if !firstTime && captureSession.running && captureDevice != nil {
+            
+            previewLayer?.hidden = false
         }
     }
     
@@ -274,32 +290,23 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Configure device modes
         initializeCaptureDevice()
         
-        //Configure capture session audio session
+        //Configure capture session
         captureSession.automaticallyConfiguresApplicationAudioSession = false
+        captureSession.commitConfiguration()
         
-        //Create and add the camera preview layer to camera image
+        //Create the camera preview layer to add to the camera image
         print("add session to layer")
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer!.hidden = true
-        
-        //Commit configuration, run camera, add layer and configure layout subviews
-        print("start running")
-        captureSession.commitConfiguration()
         
         //Add preview layer and perform view fixes again
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             
             print("add camera image")
-            self.previewLayer!.hidden = false
             if self.firstTime {
                 
                 print("adding sublayer")
                 self.cameraImage.layer.addSublayer(self.previewLayer!)
-                
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
-                    self.viewDidLayoutSubviews()
-                })
+                self.viewDidLayoutSubviews()
                 
                 dispatch_async(self.cameraQueue, { () -> Void in
                     
@@ -308,6 +315,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 })
             }
             
+            //Show preview layer now
+            self.previewLayer!.hidden = false
+            
+            //Set first time flag off
             self.firstTime = false
         }
     }
@@ -541,6 +552,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Capture image
         if !stillImageOutput.capturingStillImage && captureSession.running {
             
+            
+            //Take a photo asyncronously and prepare button for sending
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
                 
                 if error != nil {
@@ -558,17 +571,22 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
                         //Change elements on screen
-                        self.captureButton.hidden = true
+                        //self.captureButton.hidden = true
                         self.flashButton.hidden = true
                         self.cameraSwitchButton.hidden = true
+                        self.backButton.hidden = true
                         self.closeButton.hidden = false
-                        self.photoSendButton.hidden = false
+                        
+                        self.captureShape.transitionToSendMode()
                     })
-                    
                 }
             }
         }
-        
+        else if captureShape.sendView.alpha == 1 && !beaconSending {
+            
+            //Send beacon if send button has been activated and a beacon is not currently sending
+            sendBeacon()
+        }
         print("Pressed!")
     }
     
@@ -584,6 +602,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 //Change elements on screen
                 self.flashButton.hidden = true
                 self.cameraSwitchButton.hidden = true
+                self.backButton.hidden = true
                 
                 //Set path for video
                 let videoUrl = NSURL(fileURLWithPath: initialVideoPath)
@@ -633,14 +652,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         captureSession.stopRunning()
         
         //Change elements on screen
-        self.captureButton.hidden = true
+        //self.captureButton.hidden = true
         self.flashButton.hidden = true
         self.cameraSwitchButton.hidden = true
+        self.backButton.hidden = true
         self.closeButton.hidden = false
-        self.photoSendButton.hidden = false
         
         
-        captureShape.stopRecording()
+        captureShape.transitionToSendMode()
         
         //Merge audio and video files into one file, then play for user
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
@@ -845,15 +864,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         moviePlayer.player = nil
         moviePlayer.removeFromSuperlayer()
         snapTimer.alpha = 0
+        captureShape.resetShape()
         captureSession.startRunning()
         clearVideoTempFiles()
         
         //Update screen elements
         self.closeButton.hidden = true
-        self.photoSendButton.hidden = true
         self.flashButton.hidden = false
-        self.captureButton.hidden = false
+        //self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
+        self.backButton.hidden = false
         self.cameraImage.image = nil
         
     }
@@ -891,12 +911,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    @IBAction func sendPhoto(sender: AnyObject) {
+    internal func sendBeacon() {
     
         
         //Kick off activity indicator & hide button
         activityIndicator.startAnimating()
-        photoSendButton.hidden = true
+        beaconSending = true
         
         if userCountry == "" {
             
@@ -904,20 +924,20 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             dispatch_async(cameraQueue, { () -> Void in
                 
-                self.savePhotoToList()
+                self.saveBeaconToList()
             })
         }
         else {
             
             dispatch_async(cameraQueue, { () -> Void in
                 
-                self.savePhotoToList()
+                self.saveBeaconToList()
             })
         }
     }
     
     
-    internal func savePhotoToList() {
+    internal func saveBeaconToList() {
         
         
         let photoObject = PFObject(className:"photo")
@@ -1063,6 +1083,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     self.activityIndicator.stopAnimating()
                     self.closePhoto(self)
                     self.segueToTable(true)
+                    
+                    self.beaconSending = false
                 })
             }
         }
@@ -1202,7 +1224,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         let locationPermission = CLLocationManager.authorizationStatus()
         let microphonePermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio)
         
-        if cameraPermission == AVAuthorizationStatus.Authorized && locationPermission == CLAuthorizationStatus.AuthorizedWhenInUse && microphonePermission == AVAuthorizationStatus.Authorized {
+        if cameraPermission == AVAuthorizationStatus.Authorized && locationPermission == CLAuthorizationStatus.AuthorizedWhenInUse && microphonePermission != AVAuthorizationStatus.NotDetermined {
             
             print("All permissions are good")
             return true
@@ -1215,16 +1237,21 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func requestPermissions() {
         
         
+        //Initialize permissions and check each one
         let cameraPermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         let locationPermission = CLLocationManager.authorizationStatus()
         let microphonePermission = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio)
-        print("Reached requestPermission")
+        print("requestPermission")
         
-        //Check camera  permission
+        
+        //Check camera permission
         if cameraPermission == AVAuthorizationStatus.NotDetermined {
             
+            
+            //Request access for camera
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (Bool) -> Void in
                 
+                //Check all permissions after user response
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
                     if self.checkAllPermissions() {
@@ -1253,6 +1280,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Check microphone permission
         else if microphonePermission == AVAuthorizationStatus.NotDetermined {
             
+            
+            //Request access for microphone
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio, completionHandler: { (Bool) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -1263,10 +1292,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     else { self.requestPermissions() }
                 })
             })
-        }
-        else if microphonePermission == AVAuthorizationStatus.Denied || cameraPermission == AVAuthorizationStatus.Restricted {
-            
-            showAlert("Please enable microphone from your settings, you'll need it to use this app.")
         }
     }
     
@@ -1502,6 +1527,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
         case .Began:
             
+            
             //Disable touches in all other views
             cameraImage.userInteractionEnabled = false
             flashButton.userInteractionEnabled = false
@@ -1516,22 +1542,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             flashButton.userInteractionEnabled = true
             cameraSwitchButton.userInteractionEnabled = true
             
-            //If distance is considerable, segue to table
-            let distance = self.view.center.x - panningView.center.x
-            let threshold = self.view.bounds.width * 0.20
-            
-            if abs(distance) > threshold {
-                
-                segueToTable(false)
-            }
-            
             //Move country back and bring back elements
             print("Pan ended")
-            UIView.animateWithDuration(0.4, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+            UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
                 
                 //Move object first
                 panningView.center.x = self.view.center.x
-                self.captureShape.hideBeaconsView()
                 panningView.transform = CGAffineTransformMakeRotation(0)
                 
                 }, completion: nil)
@@ -1547,11 +1563,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             //Move country back and bring back elements
             print("Moving country back")
-            UIView.animateWithDuration(0.4, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+            UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
                 
                 //Move object first
                 panningView.center.x = self.view.center.x
-                self.captureShape.hideBeaconsView()
                 panningView.transform = CGAffineTransformMakeRotation(0)
                 
                 }, completion: nil)
@@ -1561,30 +1576,31 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             
             //Move view according to pan. If view passes a certain threshold, show beacons button
-            let distance = self.view.center.x - panningView.center.x
-            panningView.center.x = self.view.center.x + translation.x
-            panningView.transform = CGAffineTransformMakeRotation(-distance/(panningView.bounds.width/2))
-            captureShape.beacons.transform = CGAffineTransformMakeRotation(CGFloat(M_PI)/2 + distance/(panningView.bounds.width/2))
+            let threshold = CGFloat(50)
+            let distance = max(min(translation.x/3, threshold), -threshold)
+            panningView.center.x = self.view.center.x + distance
             
-            let threshold = self.view.bounds.width * 0.20
-            
-            
-            if abs(distance) > threshold {
-                
-                captureShape.showBeaconsView()
-            }
-            else {
-                
-                captureShape.hideBeaconsView()
-            }
         }
     }
     
     
-    override func prefersStatusBarHidden() -> Bool {
+    internal func setGradients() {
         
-        print("Status bar hiding method - Camera Controller")
-        return true
+        
+        //Set gradient views
+        let topGradientLayer = CAGradientLayer()
+        let bottomGradientLayer = CAGradientLayer()
+        let color1 = UIColor(red: 0, green: 0, blue: 0, alpha: 0.15).CGColor
+        let color2 = UIColor.clearColor().CGColor
+        
+        topGradientLayer.frame = topGradient.bounds
+        bottomGradientLayer.frame = bottomGradient.bounds
+        
+        topGradientLayer.colors = [color1, color2]
+        bottomGradientLayer.colors = [color2, color1]
+        
+        topGradient.layer.addSublayer(topGradientLayer)
+        bottomGradient.layer.addSublayer(bottomGradientLayer)
     }
     
     
@@ -1683,6 +1699,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
         
         print("Finished recording")
+    }
+    
+    
+    override func prefersStatusBarHidden() -> Bool {
+        
+        print("Status bar hiding method - Camera Controller")
+        return true
     }
     
     

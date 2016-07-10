@@ -13,6 +13,7 @@ import MapKit
 
 class MapController: UIViewController, MKMapViewDelegate {
     
+    
     var countries = NSArray()
     var userName = ""
     var userEmail = ""
@@ -44,18 +45,21 @@ class MapController: UIViewController, MKMapViewDelegate {
         //Run view load as normal
         super.viewDidLoad()
         
+        //Get user info
         getUserDefaults()
         
         //Initialize corner radius for beacon control
         beaconControl.layer.cornerRadius = 15.0
-        beaconControl.layer.borderColor = UIColor.darkGrayColor().CGColor
-        beaconControl.layer.borderWidth = 1.0
+        beaconControl.layer.borderColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue:203.0/255.0, alpha: 1).CGColor
+        beaconControl.layer.borderWidth = 1.5
         beaconControl.layer.masksToBounds = true
+        
     }
     
     
     override func viewDidAppear(animated: Bool) {
         
+        //Load view as normal
         super.viewDidAppear(true)
         
         //Load the user list and annotations onto the map if they're not being loaded already
@@ -111,9 +115,11 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func getDetailsToDrawCountry(countryCode: String) {
         
+        
+        //Set countries loaded flag
         countriesAreLoaded = false
         
-        //Initialize dummy index
+        //Initialize index
         var index = -1
         
         //Initialize country array if not already loaded
@@ -139,10 +145,10 @@ class MapController: UIViewController, MKMapViewDelegate {
         //Draw country on map if index is valid
         if (index != -1) {
             
-            //Set color for country
-            let color = receivedColor //UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 1)
-
             
+            //Set color for country
+            let color = receivedColor
+
             //Check if country is one polygon or multiple.
             //If multiple, handle each one of them
             if countries[index].objectForKey("geometry")!.objectForKey("type") as! String == "Polygon" {
@@ -163,9 +169,8 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
         }
         
+        //Reset countries loaded
         self.countriesAreLoaded = true
-        
-        print("Countries finished \(self.countriesAreLoaded) + \(self.receivedMarkersAreLoaded)")
         
         //Stop activity indicator if the countries are already loaded
         if self.sentMarkersAreLoaded && self.receivedMarkersAreLoaded {
@@ -198,9 +203,11 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func drawCountry(polygon: NSMutableArray, color: UIColor) {
         
+        
         //Configure path
         var location = CLLocationCoordinate2D()
         var path = Array<CLLocationCoordinate2D>()
+        
         
         //Iterate through all coordinates in polygon & add to path
         for element in polygon {
@@ -226,13 +233,14 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
         }
         
+        
+        //Add polygon to map in main thread if map is the selected index
         let pointer = UnsafeMutablePointer<CLLocationCoordinate2D>(path)
         let country = CountryPolyline(coordinates: pointer, count: path.count)
         
         //Assign color
         country.color = color
         
-        //Add polygon to map in main thread if map is the selected index
         if self.tabBarController?.selectedIndex == 2 {
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in

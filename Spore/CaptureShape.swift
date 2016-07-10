@@ -12,13 +12,26 @@ import UIKit
 class CaptureShape: UIView {
     
     
+    //Declare animations and parameters for recording
+    let progress = CABasicAnimation(keyPath: "strokeStart")
+    let progress2 = CABasicAnimation(keyPath: "strokeStart")
+    let expansion = CABasicAnimation(keyPath: "path")
+    let rotate = CABasicAnimation(keyPath: "transform.rotation")
+    let reverseRotate = CABasicAnimation(keyPath: "transform.rotation")
+    let primaryColor = UIColor(red: 195.0/255.0, green: 58.0/255.0, blue: 62.0/255.0, alpha: 1).CGColor
+    let secondaryColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue: 203.0/255.0, alpha: 1).CGColor
+    var sendView = UILabel()
+    let recordingDuration = 10.0
+    var timer = NSTimer()
+    var timerValue = 0.0
+    
+    //Declare shape layers
     let auxRing = CAShapeLayer()
     let beaconRing = CAShapeLayer()
     let border1 = CAShapeLayer()
     let border2 = CAShapeLayer()
     let record = CAShapeLayer()
     let record2 = CAShapeLayer()
-    var beacons = UIImageView()
     
     
     required init?(coder aDecoder: NSCoder) {
@@ -35,8 +48,6 @@ class CaptureShape: UIView {
         auxRing.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         auxRing.fillColor = UIColor.clearColor().CGColor
         auxRing.strokeColor = UIColor.whiteColor().CGColor
-        //(red: 0.85, green: 0.85, blue: 0.85, alpha: 0.7).CGColor
-            //UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1).CGColor
         auxRing.lineWidth = 5
         auxRing.strokeStart = 0.05
         auxRing.strokeEnd = 0.35
@@ -77,20 +88,16 @@ class CaptureShape: UIView {
         border1.lineCap = kCALineCapRound
         
         
-        //Initialize beacons image
-        beacons = self.viewWithTag(5) as! UIImageView
-        beacons.image = UIImage(named: "BeaconsButton")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        beacons.tintColor = UIColor.whiteColor()
-        beacons.contentMode = UIViewContentMode.Center
-        beacons.transform = CGAffineTransformMakeRotation(CGFloat(M_PI/2))
-        
-        
         //Add all to view
         self.layer.addSublayer(border2)
         self.layer.addSublayer(auxRing)
         self.layer.addSublayer(border1)
         self.layer.addSublayer(beaconRing)
-        self.addSubview(beacons)
+        
+        
+        //Initialize sending view
+        sendView = self.viewWithTag(1) as! UILabel
+        sendView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI)/2)
         
     }
     
@@ -98,34 +105,60 @@ class CaptureShape: UIView {
     internal func startRecording() {
         
         
-        //Add recording layer
+        //Initialize record layers
+        initializeRecordLayers()
+        self.layer.addSublayer(record)
+        self.layer.addSublayer(record2)
+        
+        
+        //Start timer
+        timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(incrementTimer), userInfo: nil, repeats: true)
+        timer.fire()
+        
+        
+        //Initialize animations
+        initializeAnimations()
+        
+        
+        //Add animations to layers
+        beaconRing.addAnimation(expansion, forKey: "expansion")
+        border1.addAnimation(expansion, forKey: "expansion")
+        auxRing.addAnimation(expansion, forKey: "expansion")
+        border2.addAnimation(expansion, forKey: "expansion")
+        record.addAnimation(expansion, forKey: "expansion")
+        record2.addAnimation(expansion, forKey: "expansion")
+        record.addAnimation(progress, forKey: "progress")
+        record2.addAnimation(progress2, forKey: "progress")
+        
+    }
+    
+    
+    internal func initializeRecordLayers() {
+        
+        
+        //Initialize recording layer 1
         record.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         record.fillColor = UIColor.clearColor().CGColor
-        record.strokeColor = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1).CGColor
-        //UIColor(red: 50.0/255.0, green: 137.0/255.0, blue: 203.0/255.0, alpha: 1).CGColor
+        record.strokeColor = primaryColor
         record.lineWidth = beaconRing.lineWidth
         record.strokeStart = 1.0
         record.strokeEnd = 1.0
         record.lineCap = kCALineCapRound
         
-        //Add recording layer
+        //Initialize recording layer 2
         record2.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         record2.fillColor = UIColor.clearColor().CGColor
-        record2.strokeColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue: 203.0/255.0, alpha: 1).CGColor
+        record2.strokeColor = secondaryColor
         record2.lineWidth = beaconRing.lineWidth
         record2.strokeStart = auxRing.strokeEnd
         record2.strokeEnd = auxRing.strokeEnd
         record2.lineCap = kCALineCapRound
         
-        self.layer.addSublayer(record)
-        self.layer.addSublayer(record2)
+    }
+    
+    
+    internal func initializeAnimations() {
         
-        //Declare animations and parameters for recording
-        let progress = CABasicAnimation(keyPath: "strokeStart")
-        let progress2 = CABasicAnimation(keyPath: "strokeStart")
-        let expansion = CABasicAnimation(keyPath: "path")
-        let recordingDuration = 10.0
-
         
         //Configure recording animation
         progress.duration = recordingDuration
@@ -133,7 +166,7 @@ class CaptureShape: UIView {
         progress.toValue = 0.4
         progress.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         progress.removedOnCompletion = false
-        progress.fillMode = kCAFillModeForwards
+        progress.fillMode = kCAFillModeBoth
         
         //Configure recording animation
         progress2.duration = recordingDuration
@@ -141,60 +174,134 @@ class CaptureShape: UIView {
         progress2.toValue = 0.05
         progress2.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         progress2.removedOnCompletion = false
-        progress2.fillMode = kCAFillModeForwards
+        progress2.fillMode = kCAFillModeBoth
         
         //Configure expansion for beaconRing
-        expansion.duration = 1
+        expansion.duration = 0.5
         expansion.fromValue = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         expansion.toValue = UIBezierPath(ovalInRect: CGRect(x: -6.0, y: -6.0, width: frame.width + 12, height: frame.height + 12)).CGPath
         expansion.removedOnCompletion = false
-        expansion.fillMode = kCAFillModeForwards
+        expansion.fillMode = kCAFillModeBoth
         
-        //Add animations to layers
-        beaconRing.addAnimation(expansion, forKey: nil)
-        border1.addAnimation(expansion, forKey: nil)
-        auxRing.addAnimation(expansion, forKey: nil)
-        border2.addAnimation(expansion, forKey: nil)
-        record.addAnimation(expansion, forKey: nil)
-        record2.addAnimation(expansion, forKey: nil)
+    }
+    
+    
+    internal func incrementTimer() {
+        
+        timerValue += timer.timeInterval * 0.1
+    }
+    
+    
+    internal func transitionToSendMode() {
+        
+        
+        //Add layers and animations if they're not there (in case user is taking a picture)
+        if !self.layer.sublayers!.contains(record) {
+            
+            
+            //Initialize and add record layers
+            initializeRecordLayers()
+            
+            self.layer.addSublayer(record)
+            self.layer.addSublayer(record2)
+            
+            //Initialize and add animations
+            initializeAnimations()
+            
+            beaconRing.addAnimation(expansion, forKey: "expansion")
+            border1.addAnimation(expansion, forKey: "expansion")
+            auxRing.addAnimation(expansion, forKey: "expansion")
+            border2.addAnimation(expansion, forKey: "expansion")
+            record.addAnimation(expansion, forKey: "expansion")
+            record2.addAnimation(expansion, forKey: "expansion")
+        }
+        
+        
+        //Complete rings and show send views
+        completeRings()
+        showSendView()
+        spin()
+    }
+    
+    
+    internal func completeRings() {
+        
+        
+        
+        //Adjust progress animations and add them again to complete the rings
+        progress.fromValue = max(record.strokeStart - 0.6 * CGFloat(timerValue) - 0.1, 0.4)
+        progress2.fromValue = max(record2.strokeStart - 0.3 * CGFloat(timerValue) - 0.05, 0.05)
+        
+        progress.duration = 0.5
+        progress2.duration = 0.5
+        
         record.addAnimation(progress, forKey: nil)
         record2.addAnimation(progress2, forKey: nil)
         
     }
     
     
-    internal func showBeaconsView() {
+    internal func spin() {
         
         
-        //Show beacons view
-        UIView.animateWithDuration(0.2) { 
+        //Spin animation
+        rotate.fromValue = -CGFloat(M_PI)/2
+        rotate.toValue = 3 * CGFloat(M_PI)/2
+        rotate.duration = 20
+        rotate.repeatCount = HUGE
+        rotate.fillMode = kCAFillModeForwards
+        rotate.removedOnCompletion = false
+        
+        
+        //Counter spin animation for send view
+        reverseRotate.fromValue = CGFloat(M_PI)/2
+        reverseRotate.toValue = -3 * CGFloat(M_PI)/2
+        reverseRotate.duration = 20
+        reverseRotate.repeatCount = HUGE
+        reverseRotate.fillMode = kCAFillModeForwards
+        reverseRotate.removedOnCompletion = false
+        
+        self.layer.addAnimation(rotate, forKey: nil)
+        sendView.layer.addAnimation(reverseRotate, forKey: nil)
+    }
+    
+    
+    internal func showSendView() {
+        
+        //Show send view
+        UIView.animateWithDuration(0.5) { 
             
-            self.beacons.alpha = 1
+            self.sendView.alpha = 1.0
         }
     }
     
     
-    internal func hideBeaconsView() {
-        
-        UIView.animateWithDuration(0.2) { 
-            
-            self.beacons.alpha = 0
-        }
-    }
-    
-    
-    internal func stopRecording() {
+    internal func resetShape() {
         
         
-        //Remove animations to layers, reset dimensions and remove the recording layer
+        //Reset timer, remove animations to layers, reset dimensions and remove the recording layer
+        timer.invalidate()
+        timerValue = 0.0
+        sendView.alpha = 0.0
+        
+        self.layer.removeAllAnimations()
+        sendView.layer.removeAllAnimations()
         beaconRing.removeAllAnimations()
         border1.removeAllAnimations()
         auxRing.removeAllAnimations()
         border2.removeAllAnimations()
+        record.removeAllAnimations()
+        record2.removeAllAnimations()
+        
+        let originalPath = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        beaconRing.path = originalPath
+        auxRing.path = originalPath
+        border1.path = originalPath
+        border2.path = originalPath
+        
         
         record.removeFromSuperlayer()
         record2.removeFromSuperlayer()
-        
     }
     
 }

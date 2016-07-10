@@ -18,18 +18,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQx-md-Vy2" customClass="DotView" customModule="Beacon" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="575" height="585"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="0.0" y="432" width="552" height="55"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
+                                <rect key="frame" x="25" y="15" width="575" height="585"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
+                                <rect key="frame" x="0.0" y="545" width="600" height="55"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="9Ba-78-DLG"/>
                                 </constraints>
                                 <state key="normal" title="Button"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="20" y="210" width="512" height="65"/>
+                                <rect key="frame" x="20" y="210" width="560" height="65"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="65" id="5ad-e3-KjW"/>
                                 </constraints>
@@ -47,28 +50,32 @@
                                     <action selector="alertButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WGk-0c-n9r"/>
                                 </connections>
                             </button>
-                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
-                                <rect key="frame" x="184" y="95" width="185" height="80"/>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
+                                <rect key="frame" x="208" y="95" width="185" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="hwy-79-fj2"/>
                                     <constraint firstAttribute="width" constant="185" id="nms-e5-Qmk"/>
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="0.31769081690000001" green="0.44732541529999997" blue="0.78039215689999997" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="0E2-bh-ZgZ"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="6of-JT-td1"/>
                             <constraint firstItem="FJd-ej-OVL" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottomMargin" id="CvU-3S-EXM"/>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="75" id="EU3-gi-YfB"/>
+                            <constraint firstItem="ZQx-md-Vy2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="HYR-Es-uNB"/>
+                            <constraint firstItem="ZQx-md-Vy2" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="MGH-vP-dRB"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="MZ3-Ga-dzE"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="PFH-cV-MJ6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="RuU-zb-YbY"/>
+                            <constraint firstItem="ZQx-md-Vy2" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="-5" id="YwG-Gc-BOV"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="f2E-N9-ebj"/>
-                            <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="rqS-OZ-r9g"/>
+                            <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="rqS-OZ-r9g"/>
                             <constraint firstAttribute="trailingMargin" secondItem="FJd-ej-OVL" secondAttribute="trailing" constant="-20" id="sI0-L7-Ra1"/>
-                            <constraint firstItem="FJd-ej-OVL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="tIi-Nn-x30"/>
+                            <constraint firstItem="FJd-ej-OVL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="15" id="tIi-Nn-x30"/>
                             <constraint firstItem="gQw-9e-GDG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="vai-CJ-lGd"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ZQx-md-Vy2" secondAttribute="bottom" constant="15" id="y5J-qD-ZwW"/>
                         </constraints>
                     </view>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
@@ -76,14 +83,15 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="alertButton" destination="Hoa-RA-aL6" id="E5B-62-oqr"/>
-                        <outlet property="dotView" destination="FJd-ej-OVL" id="eMm-RA-WxF"/>
+                        <outlet property="dotViewLeft" destination="ZQx-md-Vy2" id="qVU-OB-17U"/>
+                        <outlet property="dotViewRight" destination="FJd-ej-OVL" id="rd5-km-PSu"/>
                         <outlet property="fbLoginButton" destination="gQw-9e-GDG" id="6at-YT-Qh3"/>
                         <segue destination="UdC-tP-fdI" kind="presentation" identifier="LoginToMain" id="BF7-rl-4Xr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-512" y="302.5"/>
+            <point key="canvasLocation" x="-512" y="301.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="9x9-5Y-FFL">
@@ -195,6 +203,14 @@
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView userInteractionEnabled="NO" alpha="0.0" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="n3W-4F-bd8">
+                                            <rect key="frame" x="494" y="33" width="20" height="20"/>
+                                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="20" id="n0O-TB-xbj"/>
+                                                <constraint firstAttribute="width" constant="20" id="qhZ-gP-ebZ"/>
+                                            </constraints>
+                                        </imageView>
                                         <view tag="6" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZG5-GW-eje" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
                                             <rect key="frame" x="13" y="8" width="75" height="75"/>
                                             <subviews>
@@ -216,14 +232,6 @@
                                                 <constraint firstItem="Cbp-co-DR1" firstAttribute="centerY" secondItem="ZG5-GW-eje" secondAttribute="centerY" id="XjD-A7-7Xt"/>
                                             </constraints>
                                         </view>
-                                        <imageView userInteractionEnabled="NO" alpha="0.0" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="n3W-4F-bd8">
-                                            <rect key="frame" x="504" y="33" width="20" height="20"/>
-                                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="20" id="n0O-TB-xbj"/>
-                                                <constraint firstAttribute="width" constant="20" id="qhZ-gP-ebZ"/>
-                                            </constraints>
-                                        </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afh-sq-STl">
                                             <rect key="frame" x="102" y="17" width="427" height="29"/>
                                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
@@ -232,7 +240,7 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="trailingMargin" secondItem="n3W-4F-bd8" secondAttribute="trailing" constant="20" id="9Zf-sq-zlx"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="n3W-4F-bd8" secondAttribute="trailing" constant="30" id="9Zf-sq-zlx"/>
                                         <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="14" id="Adr-YN-JUc"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="afh-sq-STl" secondAttribute="trailing" constant="15" id="F4m-Pl-aJ7"/>
                                         <constraint firstItem="ZG5-GW-eje" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="5" id="Lky-pf-pVp"/>
@@ -286,6 +294,7 @@
                             </view>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cfu-aR-nPw">
                                 <rect key="frame" x="233" y="30" width="133" height="29"/>
+                                <color key="backgroundColor" white="1" alpha="0.90357730263157898" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="133" id="JIu-Bi-TsF"/>
                                     <constraint firstAttribute="height" constant="28" id="fJW-iC-xql"/>
@@ -294,7 +303,7 @@
                                     <segment title="Received"/>
                                     <segment title="Sent"/>
                                 </segments>
-                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="beaconControlChanged:" destination="mKN-em-9dv" eventType="valueChanged" id="zgq-CZ-5ea"/>
                                 </connections>
@@ -793,6 +802,21 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                     <outletCollection property="gestureRecognizers" destination="lys-UW-y2P" appends="YES" id="uuJ-RV-00n"/>
                                 </connections>
                             </imageView>
+                            <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b8f-Kk-hzX">
+                                <rect key="frame" x="20" y="0.0" width="560" height="75"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="75" id="J4i-qO-Yos"/>
+                                </constraints>
+                            </view>
+                            <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cyG-G3-pf0">
+                                <rect key="frame" x="20" y="476" width="560" height="75"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="48" id="31D-9H-0UH"/>
+                                    <constraint firstAttribute="height" constant="75" id="QDy-CK-KCx"/>
+                                </constraints>
+                            </view>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6kZ-YB-AMf">
                                 <rect key="frame" x="20" y="0.0" width="75" height="75"/>
                                 <constraints>
@@ -805,19 +829,6 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                 </state>
                                 <connections>
                                     <action selector="closePhoto:" destination="GJW-g9-4yK" eventType="touchUpInside" id="wAG-Dt-vcL"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TR3-R2-xgu">
-                                <rect key="frame" x="505" y="476" width="75" height="75"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="75" id="6sO-Y6-B8P"/>
-                                    <constraint firstAttribute="width" constant="75" id="l86-TQ-2vs"/>
-                                </constraints>
-                                <state key="normal" image="SendPhoto">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="sendPhoto:" destination="GJW-g9-4yK" eventType="touchUpInside" id="7wF-pV-At3"/>
                                 </connections>
                             </button>
                             <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TXH-DP-OjX" customClass="SnapTimer" customModule="Beacon" customModuleProvider="target">
@@ -864,6 +875,9 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                     <rect key="frame" x="0.0" y="0.0" width="560" height="600"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Altiplano.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="Bz0-Br-GqQ">
+                                            <rect key="frame" x="0.0" y="0.0" width="560" height="600"/>
+                                        </imageView>
                                         <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zsQ-hW-6sa">
                                             <rect key="frame" x="0.0" y="0.0" width="560" height="600"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="jDm-qM-oJb">
@@ -891,10 +905,14 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         </visualEffectView>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="Bz0-Br-GqQ" firstAttribute="leading" secondItem="A4C-XN-iC3" secondAttribute="leading" id="9jd-EN-3Tr"/>
                                         <constraint firstItem="zsQ-hW-6sa" firstAttribute="leading" secondItem="A4C-XN-iC3" secondAttribute="leading" id="IzT-Oc-pVh"/>
                                         <constraint firstAttribute="bottom" secondItem="zsQ-hW-6sa" secondAttribute="bottom" id="Jf2-Zr-cbG"/>
                                         <constraint firstItem="zsQ-hW-6sa" firstAttribute="centerX" secondItem="A4C-XN-iC3" secondAttribute="centerX" id="KCM-hh-MUK"/>
                                         <constraint firstItem="zsQ-hW-6sa" firstAttribute="top" secondItem="A4C-XN-iC3" secondAttribute="top" id="ff7-Qo-GBv"/>
+                                        <constraint firstItem="Bz0-Br-GqQ" firstAttribute="top" secondItem="A4C-XN-iC3" secondAttribute="top" id="fp1-Ta-rXH"/>
+                                        <constraint firstAttribute="trailing" secondItem="Bz0-Br-GqQ" secondAttribute="trailing" id="gWH-2r-Eqt"/>
+                                        <constraint firstAttribute="bottom" secondItem="Bz0-Br-GqQ" secondAttribute="bottom" id="hiE-8R-0OJ"/>
                                         <constraint firstAttribute="trailing" secondItem="zsQ-hW-6sa" secondAttribute="trailing" id="pKt-iM-A3o"/>
                                     </constraints>
                                 </view>
@@ -903,32 +921,48 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iP7-5k-Seg" customClass="CaptureShape" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="265" y="461" width="70" height="70"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" alpha="0.0" tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="eK8-vC-mLJ">
-                                        <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sNA-Tc-aVq">
+                                        <rect key="frame" x="8" y="8" width="54" height="54"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="54" id="UM0-te-fJf"/>
+                                            <constraint firstAttribute="width" constant="54" id="jrA-dZ-BV6"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <color key="textColor" red="0.97443657839999998" green="0.97443657839999998" blue="0.97443657839999998" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <size key="shadowOffset" width="0.0" height="1"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="70" id="55I-eC-pbg"/>
-                                    <constraint firstAttribute="bottom" secondItem="eK8-vC-mLJ" secondAttribute="bottom" id="9lZ-K0-rA2"/>
-                                    <constraint firstItem="eK8-vC-mLJ" firstAttribute="leading" secondItem="iP7-5k-Seg" secondAttribute="leading" id="NMv-nQ-Kcd"/>
+                                    <constraint firstItem="sNA-Tc-aVq" firstAttribute="centerX" secondItem="iP7-5k-Seg" secondAttribute="centerX" id="BFp-QX-S3k"/>
                                     <constraint firstAttribute="width" constant="70" id="SkX-ug-xky"/>
-                                    <constraint firstAttribute="trailing" secondItem="eK8-vC-mLJ" secondAttribute="trailing" id="VaB-UQ-reu"/>
-                                    <constraint firstItem="eK8-vC-mLJ" firstAttribute="top" secondItem="iP7-5k-Seg" secondAttribute="top" id="aje-Km-GVK"/>
+                                    <constraint firstItem="sNA-Tc-aVq" firstAttribute="centerY" secondItem="iP7-5k-Seg" secondAttribute="centerY" id="wkb-1t-zd9"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iHt-xd-9r4">
-                                <rect key="frame" x="261" y="453" width="78" height="78"/>
+                                <rect key="frame" x="265" y="461" width="70" height="70"/>
                                 <gestureRecognizers/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="78" id="WJn-bo-l1a"/>
-                                    <constraint firstAttribute="height" constant="78" id="cUG-RI-Pvt"/>
+                                    <constraint firstAttribute="width" constant="70" id="WJn-bo-l1a"/>
+                                    <constraint firstAttribute="height" constant="70" id="cUG-RI-Pvt"/>
                                 </constraints>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="B2V-Ko-uyR" appends="YES" id="9ba-uR-YxB"/>
                                     <outletCollection property="gestureRecognizers" destination="PGU-5u-ZO6" appends="YES" id="u4h-Z2-nv9"/>
                                     <outletCollection property="gestureRecognizers" destination="Gxv-Ac-Ujk" appends="YES" id="uJ4-bx-01M"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y8f-f4-Hlu">
+                                <rect key="frame" x="20" y="476" width="75" height="75"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="75" id="LmP-EP-aqD"/>
+                                    <constraint firstAttribute="height" constant="75" id="ex7-NN-hmB"/>
+                                </constraints>
+                                <state key="normal" image="backButton"/>
+                                <connections>
+                                    <action selector="backButtonPressed:" destination="GJW-g9-4yK" eventType="touchUpInside" id="XTw-gO-a00"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -939,7 +973,6 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                             <constraint firstAttribute="trailingMargin" secondItem="TXH-DP-OjX" secondAttribute="trailing" constant="31" id="3fy-91-lzZ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="J8y-Vv-KtF" secondAttribute="trailing" id="5t6-KM-bIh"/>
                             <constraint firstItem="9aK-Ms-lBE" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="63B-h1-9bK"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="TR3-R2-xgu" secondAttribute="trailing" id="7V2-fp-zUQ"/>
                             <constraint firstItem="4QP-Z7-Dah" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="8xE-L0-pr0"/>
                             <constraint firstItem="6kZ-YB-AMf" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="BGW-Mb-dHo"/>
                             <constraint firstItem="xaF-sl-7DU" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="DYA-9l-O1e"/>
@@ -952,14 +985,21 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                             <constraint firstItem="6kZ-YB-AMf" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="P4Q-Oj-07D"/>
                             <constraint firstItem="4QP-Z7-Dah" firstAttribute="centerY" secondItem="BHi-eI-7If" secondAttribute="centerY" id="Rhf-86-dJt"/>
                             <constraint firstItem="iHt-xd-9r4" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="UUN-ao-EyO"/>
+                            <constraint firstItem="b8f-Kk-hzX" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="Uav-wd-UuX"/>
                             <constraint firstItem="J8y-Vv-KtF" firstAttribute="bottom" secondItem="BHi-eI-7If" secondAttribute="bottomMargin" id="WGw-px-exy"/>
-                            <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="TR3-R2-xgu" secondAttribute="bottom" id="Yia-l2-pWM"/>
+                            <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="y8f-f4-Hlu" secondAttribute="bottom" id="Zl7-rs-GRb"/>
                             <constraint firstItem="J8y-Vv-KtF" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="aN2-Lz-NJH"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="iP7-5k-Seg" secondAttribute="bottom" constant="20" id="bL7-ja-VDS"/>
+                            <constraint firstItem="b8f-Kk-hzX" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="bY1-OD-sLV"/>
+                            <constraint firstItem="y8f-f4-Hlu" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="e1d-Dy-FWf"/>
+                            <constraint firstItem="b8f-Kk-hzX" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="e9K-XT-bbQ"/>
+                            <constraint firstItem="cyG-G3-pf0" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="iec-Xa-V6D"/>
                             <constraint firstItem="xaF-sl-7DU" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="jLu-fs-XoA"/>
                             <constraint firstItem="iP7-5k-Seg" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="k7s-sl-91l"/>
                             <constraint firstItem="9aK-Ms-lBE" firstAttribute="top" secondItem="BHi-eI-7If" secondAttribute="topMargin" id="lfa-XV-gcI"/>
+                            <constraint firstItem="cyG-G3-pf0" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="m9l-n7-NUt"/>
                             <constraint firstItem="J8y-Vv-KtF" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="pvy-kd-aUc"/>
+                            <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="cyG-G3-pf0" secondAttribute="bottom" id="q2y-Pb-IxX"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="iHt-xd-9r4" secondAttribute="bottom" constant="20" id="ywo-Ja-XxN"/>
                         </constraints>
                     </view>
@@ -969,14 +1009,16 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                         <outlet property="activityIndicator" destination="4QP-Z7-Dah" id="c6E-4E-MLt"/>
                         <outlet property="alertButton" destination="UJb-FU-ePe" id="nyH-L0-evE"/>
                         <outlet property="alertView" destination="J8y-Vv-KtF" id="ftr-JQ-IBC"/>
+                        <outlet property="backButton" destination="y8f-f4-Hlu" id="QoJ-gJ-ezB"/>
+                        <outlet property="bottomGradient" destination="cyG-G3-pf0" id="EIY-o7-OlF"/>
                         <outlet property="cameraImage" destination="9aK-Ms-lBE" id="6AR-SV-eLl"/>
                         <outlet property="cameraSwitchButton" destination="euw-Gq-Mbr" id="i39-li-shn"/>
                         <outlet property="captureButton" destination="iHt-xd-9r4" id="5Ta-KR-UNw"/>
                         <outlet property="captureShape" destination="iP7-5k-Seg" id="9z6-Cg-SaY"/>
                         <outlet property="closeButton" destination="6kZ-YB-AMf" id="yZe-QI-mhU"/>
                         <outlet property="flashButton" destination="xaF-sl-7DU" id="ZTk-h1-nPf"/>
-                        <outlet property="photoSendButton" destination="TR3-R2-xgu" id="EnY-tV-G9G"/>
                         <outlet property="snapTimer" destination="TXH-DP-OjX" id="DQA-Sm-XKX"/>
+                        <outlet property="topGradient" destination="b8f-Kk-hzX" id="dfv-Dd-It0"/>
                         <segue destination="BYZ-38-t0r" kind="presentation" identifier="CameraToLoginSegue" id="8ds-TT-rzm"/>
                     </connections>
                 </viewController>
@@ -1079,7 +1121,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                         <action selector="snapTapped:" destination="UdC-tP-fdI" id="K8e-MZ-NLA"/>
                     </connections>
                 </tapGestureRecognizer>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="xCL-cu-aLA">
+                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="xCL-cu-aLA">
                     <connections>
                         <action selector="snapPanned:" destination="UdC-tP-fdI" id="jM6-gp-3iy"/>
                     </connections>
@@ -1630,14 +1672,15 @@ THE SOFTWARE.
         </scene>
     </scenes>
     <resources>
+        <image name="Altiplano.jpg" width="5184" height="3456"/>
         <image name="BeaconsButton" width="22" height="22"/>
         <image name="CameraSwitch" width="33" height="33"/>
         <image name="CancelPhoto" width="33" height="33"/>
         <image name="FlashButtonOff" width="33" height="33"/>
         <image name="Globe" width="22" height="22"/>
         <image name="LogoFront" width="200" height="50"/>
-        <image name="SendPhoto" width="55" height="55"/>
         <image name="UserSettings" width="22" height="22"/>
+        <image name="backButton" width="33" height="33"/>
         <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>

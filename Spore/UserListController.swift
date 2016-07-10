@@ -727,6 +727,7 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
+        
         print("cellForRowAtIndexPath")
         //Initialize variables:
         //Array is printed backwards so userListLength is initialized
@@ -1412,29 +1413,61 @@ class UserListController: UITableViewController {
             }
             
         default:
-            print("default")
-            countryObject.center.x = translation.x + countryCenter.x
             
             //Calculate distance fraction
             let slideIndicator = cell.viewWithTag(3) as! UIImageView
-            let distance = countryObject.center.x
-            let threshold = self.view.bounds.width * 0.60
+            let distance = translation.x
+            let threshold = self.view.bounds.width * 0.50
             
             if distance > threshold && slideIndicator.tintColor == UIColor.lightGrayColor() {
                 
-                print("turning default color")
-                UIView.animateWithDuration(0.1, animations: {
-                    
-                    slideIndicator.tintColor = self.defaultColor
-                })
-            }
-            else if distance <= threshold && slideIndicator.tintColor != UIColor.lightGrayColor() {
                 
-                print("turning gray color")
-                UIView.animateWithDuration(0.1, animations: { 
+                //Stick country to maps icon
+                print("turning default color")
+                
+                
+                UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
                     
-                    slideIndicator.tintColor = UIColor.lightGrayColor()
-                })
+                    
+                    //Move country to maps
+                    if self.countryObject.center.x != slideIndicator.center.x {
+                        
+                        self.countryObject.center = CGPoint(x: slideIndicator.center.x, y: self.countryObject.center.y)
+                    }
+                    
+                    //Change tint
+                    slideIndicator.tintColor = self.defaultColor
+                    
+                    }, completion: nil)
+                
+            }
+            else if distance <= threshold {
+                
+                
+                //Move country as per slide. Animate if it's coming back into panning control
+                print("turning gray color")
+                if countryObject.center.x == slideIndicator.center.x {
+                    
+                    UIView.animateWithDuration(0.2, animations: {
+                        
+                        self.countryObject.center.x = translation.x + self.countryCenter.x
+                    })
+                }
+                else {
+                    
+                    self.countryObject.center.x = translation.x + self.countryCenter.x
+                }
+                
+                
+                //If slide indicator is not gray, turn it to gray
+                if slideIndicator.tintColor != UIColor.lightGrayColor() {
+                    
+                    UIView.animateWithDuration(0.3, animations: {
+                        
+                        //Bring country back to panning and change tint
+                        slideIndicator.tintColor = UIColor.lightGrayColor()
+                    })
+                }
             }
         }
     }

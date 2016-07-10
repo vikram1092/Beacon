@@ -12,7 +12,7 @@ import ParseUI
 import Foundation
 import AVFoundation
 
-class MainController: UIViewController, UITableViewDelegate, CLLocationManagerDelegate {
+class MainController: UIViewController {
     
     
     let userDefaults = NSUserDefaults.standardUserDefaults()
