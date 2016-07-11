@@ -76,7 +76,7 @@ class FocusShape: UIView {
         focusStrokeBorder.strokeEnd = 1.0
         
         
-        self.layer.addSublayer(focusFill)
+        //self.layer.addSublayer(focusFill)
         self.layer.addSublayer(focusStrokeBorder)
         self.layer.addSublayer(focusStroke)
         

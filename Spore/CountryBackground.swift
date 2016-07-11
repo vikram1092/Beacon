@@ -79,17 +79,18 @@ class CountryBackground: UIView {
     
     
     internal func startAnimating() {
-        
+    
         isAnimating = true
         progressView.layer.removeAllAnimations()
         
         rotateAnimation.fromValue = CGFloat(-M_PI/2)
-        rotateAnimation.toValue = CGFloat(3 * M_PI / 2)
+        rotateAnimation.toValue = CGFloat(3 * M_PI/2)
         rotateAnimation.duration = 1
         rotateAnimation.repeatCount = HUGE
         
         
-        progressView.layer.addAnimation(rotateAnimation, forKey: nil)
+        progressView.layer.addAnimation(rotateAnimation, forKey: "rotate")
+    
     }
     
     
@@ -97,7 +98,7 @@ class CountryBackground: UIView {
         
         if isAnimating {
             
-            progressView.layer.addAnimation(rotateAnimation, forKey: nil)
+            progressView.layer.addAnimation(rotateAnimation, forKey: "rotate")
         }
     }
     

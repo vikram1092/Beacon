@@ -292,11 +292,19 @@
                                     <outlet property="delegate" destination="mKN-em-9dv" id="WWm-4f-16M"/>
                                 </connections>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nNv-uA-SEt" customClass="BeaconingIndicator" customModule="Beacon" customModuleProvider="target">
+                                <rect key="frame" x="520" y="491" width="40" height="40"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="Xri-cF-NtQ"/>
+                                    <constraint firstAttribute="height" constant="40" id="m5Y-bv-1Gc"/>
+                                </constraints>
+                            </view>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cfu-aR-nPw">
-                                <rect key="frame" x="233" y="30" width="133" height="29"/>
+                                <rect key="frame" x="224" y="30" width="151" height="29"/>
                                 <color key="backgroundColor" white="1" alpha="0.90357730263157898" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="133" id="JIu-Bi-TsF"/>
+                                    <constraint firstAttribute="width" constant="151" id="JIu-Bi-TsF"/>
                                     <constraint firstAttribute="height" constant="28" id="fJW-iC-xql"/>
                                 </constraints>
                                 <segments>
@@ -308,14 +316,6 @@
                                     <action selector="beaconControlChanged:" destination="mKN-em-9dv" eventType="valueChanged" id="zgq-CZ-5ea"/>
                                 </connections>
                             </segmentedControl>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nNv-uA-SEt" customClass="BeaconingIndicator" customModule="Beacon" customModuleProvider="target">
-                                <rect key="frame" x="520" y="491" width="40" height="40"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="Xri-cF-NtQ"/>
-                                    <constraint firstAttribute="height" constant="40" id="m5Y-bv-1Gc"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>

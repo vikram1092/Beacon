@@ -317,7 +317,6 @@ class UserListController: UITableViewController {
             //Declare necessary variables
             let cell = getCellForObject(photoObject)
             let countryBackground = cell?.viewWithTag(6) as? CountryBackground
-            print(countryBackground)
             let subTitleView = cell?.viewWithTag(2) as? UILabel
             
             
@@ -357,11 +356,15 @@ class UserListController: UITableViewController {
         //If photo exists, send the object. If not, delete it
         if fileManager.fileExistsAtPath(filePath) {
             
-            photoObj["photo"] = PFFile(data: NSData(contentsOfFile: filePath)!)
+            
             //Save photo object
+            photoObj["photo"] = PFFile(data: NSData(contentsOfFile: filePath)!)
             photoObj.saveInBackgroundWithBlock { (saved, error) -> Void in
                 
+                
                 if error != nil {
+                    
+                    
                     print("Error saving object: \(error)")
                     
                     //Let user know
@@ -383,6 +386,7 @@ class UserListController: UITableViewController {
                     }
                 }
                 else if saved {
+                    
                     
                     //If sent, remove locally
                     print("Removing sent object: ")
@@ -419,6 +423,7 @@ class UserListController: UITableViewController {
                 }
                 else if !saved {
                     
+                    
                     //If sending fails, let user know
                     photoObj.setObject("Ready", forKey: "sendingStatus")
                     photoObj.removeObjectForKey("isAnimating")
@@ -441,6 +446,7 @@ class UserListController: UITableViewController {
             }
         }
         else {
+            
             
             //Remove from local datastore and temporary sending list
             self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
@@ -772,24 +778,23 @@ class UserListController: UITableViewController {
                 imageBackground.startAnimating()
             }
             else {
-                
+                 
                 subTitleView.text = "Ready To Send"
                 imageBackground.stopAnimating()
             }
         }
         else {
             
+            
             //Set background color & kill any animations
             imageBackground.changeBackgroundColor(defaultColor.CGColor)
             userList[userListIndex].removeObjectForKey("isAnimating")
             imageBackground.stopAnimating()
             
-            //Get time string
-            let timeString = timeSinceDate(date!, numericDates: true)
-            
-            
             
             //Configure time left for photo
+            let timeString = timeSinceDate(date!, numericDates: true)
+            
             if withinTime(date!) {
                 imageBackground.setProgress(getTimeFraction(date!))
             }
@@ -1568,7 +1573,13 @@ class UserListController: UITableViewController {
                     let cell = self.getCellForObject(photoObject)
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        self.tableView.reloadRowsAtIndexPaths([self.tableView.indexPathForCell(cell!)!], withRowAnimation: UITableViewRowAnimation.Automatic)
+                        if cell != nil {
+                            
+                            if self.tableView.visibleCells.contains(cell!) {
+                                
+                                self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
+                            }
+                        }
                     })
                 }
                 
