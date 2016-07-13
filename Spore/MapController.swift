@@ -335,10 +335,10 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             //Mark markers as not loaded and run query
             let query = PFQuery(className: "photo")
-            print(self.userEmail)
             query.whereKey("receivedBy", equalTo: self.userEmail)
             query.whereKeyExists("sentFrom")
             query.orderByDescending("receivedAt")
+            query.fromLocalDatastore()
             query.limit = 1000
             
             query.findObjectsInBackgroundWithBlock { (photoObjects, markerError) -> Void in

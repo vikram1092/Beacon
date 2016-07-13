@@ -106,7 +106,7 @@
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="barTintColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
-                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
+                            <fontDescription key="fontDescription" type="system" weight="light" pointSize="19"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>
                     </navigationBar>
@@ -143,7 +143,7 @@
                                 </constraints>
                                 <color key="barTintColor" red="0.19726986577466918" green="0.53785170728279308" blue="0.79480144101876671" alpha="1" colorSpace="calibratedRGB"/>
                                 <textAttributes key="titleTextAttributes">
-                                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
+                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="19"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <offsetWrapper key="textShadowOffset" horizontal="0.0" vertical="0.0"/>
                                 </textAttributes>
@@ -1684,6 +1684,6 @@ THE SOFTWARE.
         <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8ds-TT-rzm"/>
+        <segue reference="fzn-UV-xBd"/>
     </inferredMetricsTieBreakers>
 </document>

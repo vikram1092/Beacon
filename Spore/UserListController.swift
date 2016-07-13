@@ -1398,6 +1398,7 @@ class UserListController: UITableViewController {
             
         case .Cancelled:
             
+            
             print("Country swipe cancelled")
             //Move object first
             self.countryObject.center.x = self.countryCenter.x
@@ -1418,6 +1419,7 @@ class UserListController: UITableViewController {
             }
             
         default:
+            
             
             //Calculate distance fraction
             let slideIndicator = cell.viewWithTag(3) as! UIImageView
