@@ -74,6 +74,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var beaconSending = false
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
+    //Tutorial variables
+    var tutorialTakeBeaconLabel = UILabel?()
+    var tutorialSendBeaconLabel = UILabel?()
+    
     //If we find a device we'll store it here for later use
     var captureDevice : AVCaptureDevice?
     var microphone : AVCaptureDevice?
@@ -232,6 +236,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         print("initialViewSetup")
         //Clear video temp files
         clearVideoTempFiles()
+        
+        //Show tutorial label
+        showTutorialTakeBeaconLabel()
     }
     
     
@@ -433,6 +440,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             print(saveMedia)
         }
     }
+    
+    
     
     
     @IBAction func flashButtonPressed(sender: AnyObject) {
@@ -879,6 +888,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
+    
+    
     internal func clearVideoTempFiles() {
         
         do {
@@ -1124,6 +1135,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
+    
+    
     @IBAction func cameraTapped(sender: UITapGestureRecognizer) {
         
         if captureSession.running && alertView.alpha == 0 {
@@ -1211,10 +1224,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
-    internal func delay(delay: Double, closure:()->()) {
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
-    }
     
     
     internal func checkAllPermissions() -> Bool {
@@ -1333,7 +1342,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Get country for current row
         let location = CLLocation(latitude: locGeoPoint.latitude, longitude: locGeoPoint.longitude)
-        print(location)
+
         
         CLGeocoder().reverseGeocodeLocation(location) { (placemarks, locationError) -> Void in
             
@@ -1358,9 +1367,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     self.userCity = placemarks![0].locality!
                 }
                 
+                //Save location information
                 self.saveUserLocationDefaults()
-                
-                self.closeAlert()
             }
             else {
                 print("Problem with the data received from geocoder")
@@ -1395,6 +1403,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             })
         }
     }
+    
+    
     
     
     internal func showAlert(alertText: String) {
@@ -1514,6 +1524,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
     
     
+    
+    
     @IBAction func detectPan(recognizer: UIPanGestureRecognizer) {
         
         
@@ -1602,6 +1614,21 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         topGradient.layer.addSublayer(topGradientLayer)
         bottomGradient.layer.addSublayer(bottomGradientLayer)
     }
+    
+    
+    
+    
+    internal func showTutorialTakeBeaconLabel() {
+        
+        
+        //Show label if the user default is nil
+        if userDefaults.valueForKey("takeBeacon") != nil {
+            
+            tutorialTakeBeaconLabel = UILabel()
+        }
+    }
+    
+    
     
     
     internal func userIsBanned() {

@@ -18,8 +18,8 @@ class CaptureShape: UIView {
     let expansion = CABasicAnimation(keyPath: "path")
     let rotate = CABasicAnimation(keyPath: "transform.rotation")
     let reverseRotate = CABasicAnimation(keyPath: "transform.rotation")
-    let primaryColor = UIColor(red: 195.0/255.0, green: 58.0/255.0, blue: 62.0/255.0, alpha: 1).CGColor
-    let secondaryColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue: 203.0/255.0, alpha: 1).CGColor
+    let primaryColor = BeaconColors().redColor.CGColor
+    let secondaryColor = BeaconColors().blueColor.CGColor
     var sendView = UILabel()
     let recordingDuration = 10.0
     var timer = NSTimer()
@@ -97,6 +97,9 @@ class CaptureShape: UIView {
         
         //Initialize sending view
         sendView = self.viewWithTag(1) as! UILabel
+        sendView.attributedText = NSAttributedString(string: "Send", attributes: [NSStrokeWidthAttributeName: -3.0,
+        NSStrokeColorAttributeName: UIColor.blackColor(),
+        NSForegroundColorAttributeName: UIColor.whiteColor()])
         sendView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI)/2)
         
     }
@@ -221,6 +224,7 @@ class CaptureShape: UIView {
         completeRings()
         showSendView()
         spin()
+        
     }
     
     

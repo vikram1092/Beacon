@@ -46,6 +46,9 @@
 		D15241CB1C2B9CD100914FE8 /* SettingsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */; };
 		D1593FCB1D0D824A00C6B8E2 /* DotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1593FCA1D0D824A00C6B8E2 /* DotView.swift */; };
 		D15BBFD21C7358AF00C0CC6E /* SnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BBFD11C7358AF00C0CC6E /* SnapController.swift */; };
+		D15F8CD31D3861C80097F772 /* SendPhoto2.png in Resources */ = {isa = PBXBuildFile; fileRef = D15F8CD01D3861C80097F772 /* SendPhoto2.png */; };
+		D15F8CD41D3861C80097F772 /* SendPhoto2@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D15F8CD11D3861C80097F772 /* SendPhoto2@x2.png */; };
+		D15F8CD51D3861C80097F772 /* SendPhoto2@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D15F8CD21D3861C80097F772 /* SendPhoto2@x3.png */; };
 		D1645E5E1D23F95E00A61EE9 /* Logo@x29.png in Resources */ = {isa = PBXBuildFile; fileRef = D1645E561D23F95E00A61EE9 /* Logo@x29.png */; };
 		D1645E5F1D23F95E00A61EE9 /* Logo@x57.png in Resources */ = {isa = PBXBuildFile; fileRef = D1645E571D23F95E00A61EE9 /* Logo@x57.png */; };
 		D1645E601D23F95E00A61EE9 /* Logo@x58.png in Resources */ = {isa = PBXBuildFile; fileRef = D1645E581D23F95E00A61EE9 /* Logo@x58.png */; };
@@ -75,6 +78,7 @@
 		D19E74211D0A51D90051CD40 /* BeaconLogin@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D19E741E1D0A51D90051CD40 /* BeaconLogin@x3.png */; };
 		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
+		D1A40C231D3A6FD0000D3CC5 /* BeaconColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */; };
 		D1ACB1C61D2C9D0E00224F42 /* SlideButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C31D2C9D0E00224F42 /* SlideButton.png */; };
 		D1ACB1C71D2C9D0E00224F42 /* SlideButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C41D2C9D0E00224F42 /* SlideButton@x2.png */; };
 		D1ACB1C81D2C9D0E00224F42 /* SlideButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C51D2C9D0E00224F42 /* SlideButton@x3.png */; };
@@ -176,6 +180,9 @@
 		D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableController.swift; sourceTree = "<group>"; };
 		D1593FCA1D0D824A00C6B8E2 /* DotView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
 		D15BBFD11C7358AF00C0CC6E /* SnapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapController.swift; sourceTree = "<group>"; };
+		D15F8CD01D3861C80097F772 /* SendPhoto2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SendPhoto2.png; path = "../../Spore Images/SendPhoto2.png"; sourceTree = "<group>"; };
+		D15F8CD11D3861C80097F772 /* SendPhoto2@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SendPhoto2@x2.png"; path = "../../Spore Images/SendPhoto2@x2.png"; sourceTree = "<group>"; };
+		D15F8CD21D3861C80097F772 /* SendPhoto2@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SendPhoto2@x3.png"; path = "../../Spore Images/SendPhoto2@x3.png"; sourceTree = "<group>"; };
 		D1645E561D23F95E00A61EE9 /* Logo@x29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Logo@x29.png"; path = "../../Spore Images/Logo/Logo@x29.png"; sourceTree = "<group>"; };
 		D1645E571D23F95E00A61EE9 /* Logo@x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Logo@x57.png"; path = "../../Spore Images/Logo/Logo@x57.png"; sourceTree = "<group>"; };
 		D1645E581D23F95E00A61EE9 /* Logo@x58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Logo@x58.png"; path = "../../Spore Images/Logo/Logo@x58.png"; sourceTree = "<group>"; };
@@ -211,6 +218,7 @@
 		D19E95E11C753473000106DE /* SporeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SporeTests.swift; sourceTree = "<group>"; };
 		D19E95E31C753473000106DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1A3E8A01C78F70A00E115FC /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconColors.swift; sourceTree = "<group>"; };
 		D1ACB1C31D2C9D0E00224F42 /* SlideButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SlideButton.png; path = "../../Spore Images/SlideButton.png"; sourceTree = "<group>"; };
 		D1ACB1C41D2C9D0E00224F42 /* SlideButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SlideButton@x2.png"; path = "../../Spore Images/SlideButton@x2.png"; sourceTree = "<group>"; };
 		D1ACB1C51D2C9D0E00224F42 /* SlideButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SlideButton@x3.png"; path = "../../Spore Images/SlideButton@x3.png"; sourceTree = "<group>"; };
@@ -320,6 +328,9 @@
 				D1ACB1C31D2C9D0E00224F42 /* SlideButton.png */,
 				D1ACB1C41D2C9D0E00224F42 /* SlideButton@x2.png */,
 				D1ACB1C51D2C9D0E00224F42 /* SlideButton@x3.png */,
+				D15F8CD01D3861C80097F772 /* SendPhoto2.png */,
+				D15F8CD11D3861C80097F772 /* SendPhoto2@x2.png */,
+				D15F8CD21D3861C80097F772 /* SendPhoto2@x3.png */,
 			);
 			name = CameraButtons;
 			sourceTree = "<group>";
@@ -497,6 +508,7 @@
 		D1B9C7181C2258B800D9AEE7 /* Beacon */ = {
 			isa = PBXGroup;
 			children = (
+				D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */,
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
 				D19A71021CEBFB08003B3E74 /* Dot.swift */,
 				D1593FCA1D0D824A00C6B8E2 /* DotView.swift */,
@@ -651,6 +663,7 @@
 				D17040B61D14DC2F007416B1 /* BeaconsButton@x2.png in Resources */,
 				D14D43521D21D454009645D1 /* circle_01b36a_120.png in Resources */,
 				D1B9DEDB1D16EF6D00B0EEDE /* flashEnabledButton@x2.png in Resources */,
+				D15F8CD41D3861C80097F772 /* SendPhoto2@x2.png in Resources */,
 				D1EC0ED91D18D59E00FFC94D /* CameraBackButton2@x3.png in Resources */,
 				D1ACB1C81D2C9D0E00224F42 /* SlideButton@x3.png in Resources */,
 				D1EC0ED81D18D59E00FFC94D /* CameraBackButton2@x2.png in Resources */,
@@ -704,6 +717,7 @@
 				D1B9DEDA1D16EF6D00B0EEDE /* flashDisabledButton@x2.png in Resources */,
 				D1B9DEE01D16EFB500B0EEDE /* flashDisabledButton.png in Resources */,
 				D1ACB1C71D2C9D0E00224F42 /* SlideButton@x2.png in Resources */,
+				D15F8CD51D3861C80097F772 /* SendPhoto2@x3.png in Resources */,
 				D137EBDB1CC50F0600F2DCB3 /* CameraBackButton.png in Resources */,
 				D14D434F1D21D454009645D1 /* circle_01b36a_100.png in Resources */,
 				D1645E631D23F95E00A61EE9 /* Logo@x114.png in Resources */,
@@ -714,6 +728,7 @@
 				D14D43531D21D454009645D1 /* circle_01b36a_40.png in Resources */,
 				D1CDF52B1D138FB30021C46D /* globe.png in Resources */,
 				D1B9DEE11D16EFB500B0EEDE /* flashDisabledButton@x3.png in Resources */,
+				D15F8CD31D3861C80097F772 /* SendPhoto2.png in Resources */,
 				D1D8A5491C5D3AA100E95BCE /* Settings.bundle in Resources */,
 				D19E74201D0A51D90051CD40 /* BeaconLogin@x2.png in Resources */,
 				D14D434D1D21D454009645D1 /* circle_01b36a_60.png in Resources */,
@@ -802,6 +817,7 @@
 				D1593FCB1D0D824A00C6B8E2 /* DotView.swift in Sources */,
 				D1E15E1A1CC5A1A300C27CDF /* ReceivedBeacon.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
+				D1A40C231D3A6FD0000D3CC5 /* BeaconColors.swift in Sources */,
 				D1785A561C3F68280020AD99 /* CameraController.swift in Sources */,
 				D183BFA31CF76C1F00A9E08A /* SentBeacon.swift in Sources */,
 				D1DB75311CD6FA9E009690BE /* BeaconingIndicator.swift in Sources */,

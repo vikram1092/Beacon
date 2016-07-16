@@ -32,8 +32,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     var receivedMarkersAreLoaded = false
     let receivedClusteringManager = ReceivedClusteringManager()
     
-    let receivedColor = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1)
-    let sentColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1)
+    let receivedColor = BeaconColors().redColor
+    let sentColor = BeaconColors().yellowColor
     
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var beaconControl: UISegmentedControl!

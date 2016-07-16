@@ -921,24 +921,21 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iP7-5k-Seg" customClass="CaptureShape" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="265" y="461" width="70" height="70"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sNA-Tc-aVq">
-                                        <rect key="frame" x="8" y="8" width="54" height="54"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="54" id="UM0-te-fJf"/>
-                                            <constraint firstAttribute="width" constant="54" id="jrA-dZ-BV6"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.97443657839999998" green="0.97443657839999998" blue="0.97443657839999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ugf-Ek-SMG">
+                                        <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
-                                        <size key="shadowOffset" width="0.0" height="1"/>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="Ugf-Ek-SMG" firstAttribute="leading" secondItem="iP7-5k-Seg" secondAttribute="leading" id="1EW-a5-SKc"/>
+                                    <constraint firstItem="Ugf-Ek-SMG" firstAttribute="top" secondItem="iP7-5k-Seg" secondAttribute="top" id="2cf-ah-zjj"/>
                                     <constraint firstAttribute="height" constant="70" id="55I-eC-pbg"/>
-                                    <constraint firstItem="sNA-Tc-aVq" firstAttribute="centerX" secondItem="iP7-5k-Seg" secondAttribute="centerX" id="BFp-QX-S3k"/>
                                     <constraint firstAttribute="width" constant="70" id="SkX-ug-xky"/>
-                                    <constraint firstItem="sNA-Tc-aVq" firstAttribute="centerY" secondItem="iP7-5k-Seg" secondAttribute="centerY" id="wkb-1t-zd9"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ugf-Ek-SMG" secondAttribute="trailing" id="msA-QE-SmX"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ugf-Ek-SMG" secondAttribute="bottom" id="sdN-t4-mJ8"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iHt-xd-9r4">
@@ -1565,9 +1562,27 @@ Beacon reserves the right to revoke access from any user under any circumstances
                                         <string key="content"> 
 Beacon is a fun way to explore the diversity of the connected world we live in. Your beacons of art, adventures, food, conversations, jokes, and more are anonymously delivered to people, and you are given peeks at other people’s experiences in different parts of this planet. 
 
+
 Beacon is created by Vikram Ramkumar. 
 
-Designers: Vikram Ramkumar, Colin Beirne, Malorie Pangilinan
+
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="Designers">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Thin"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">: 
+Vikram Ramkumar
+Colin Beirne
+Malorie Pangilinan
 
 
 
@@ -1684,6 +1699,6 @@ THE SOFTWARE.
         <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="fzn-UV-xBd"/>
+        <segue reference="8ds-TT-rzm"/>
     </inferredMetricsTieBreakers>
 </document>

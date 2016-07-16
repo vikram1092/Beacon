@@ -13,7 +13,6 @@ import UIKit
 class BeaconRefresh: UIView {
     
     
-    let color = UIColor(red: 189.0/255.0, green: 27.0/255.0, blue: 83.0/255.0, alpha: 1).CGColor
     let initialDepth = CGFloat(5.0)
     let finalDepth = CGFloat(120.0)
     var number = 13

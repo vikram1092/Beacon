@@ -67,16 +67,14 @@ class SnapController: UIViewController {
         
         UIView.animateWithDuration(0.3, animations: { 
             
+            //Animate disappearance
             self.snap.alpha = 0
             self.snapTimer.alpha = 0
             
             }) { (Bool) in
                 
-                self.moviePlayer.player = nil
-                self.moviePlayer.removeFromSuperlayer()
-                self.snap.image = nil
-                self.snap.userInteractionEnabled = false
-                self.container.userInteractionEnabled = true
+                //Close beacon after animation
+                self.closeBeacon()
         }
     }
     
@@ -136,12 +134,7 @@ class SnapController: UIViewController {
                     
                     }, completion: { (BooleanLiteralType) -> Void in
                         
-                        //Post slide snap config
-                        self.moviePlayer.player = nil
-                        self.moviePlayer.removeFromSuperlayer()
-                        self.snap.alpha = 0
-                        self.snap.userInteractionEnabled = false
-                        self.container.userInteractionEnabled = true
+                        self.closeBeacon()
                 })
             }
             
@@ -151,10 +144,23 @@ class SnapController: UIViewController {
     }
     
     
+    internal func closeBeacon() {
+        
+        
+        //Post slide snap config
+        self.moviePlayer.player = nil
+        self.moviePlayer.removeFromSuperlayer()
+        self.snap.image = nil
+        self.snap.alpha = 0
+        self.snap.userInteractionEnabled = false
+        self.container.userInteractionEnabled = true
+        
+    }
+    
+    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
         print("Touching")
-        //snap.superview!.bringSubviewToFront(snap)
         lastLocation = snap.center
         
     }

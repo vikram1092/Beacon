@@ -38,9 +38,9 @@ class UserListController: UITableViewController {
     
     var locManager = CLLocationManager()
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-    let defaultColor = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1)
-    let sendingColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1)
-    let refreshBackgroundColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue:203.0/255.0, alpha: 1)
+    let defaultColor = BeaconColors().redColor
+    let sendingColor = BeaconColors().yellowColor
+    let refreshBackgroundColor = BeaconColors().blueColor
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
@@ -1028,40 +1028,44 @@ class UserListController: UITableViewController {
                         //Update UI in main queue
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
-                            print("Adding video player")
-                            countryBackground.stopAnimating()
-                            
-                            if !grandparent.hideStatusBar {
+                            //Show video to user if user is still on the user list tab
+                            if self.tabBarController?.selectedIndex == 1 {
                                 
-                                grandparent.toggleStatusBar()
+                                print("Adding video player")
+                                countryBackground.stopAnimating()
+                                
+                                if !grandparent.hideStatusBar {
+                                    
+                                    grandparent.toggleStatusBar()
+                                }
+                                grandparent.snap.userInteractionEnabled = true
+                                grandparent.snap.backgroundColor = UIColor.blackColor()
+                                grandparent.moviePlayer.frame = grandparent.snap.bounds
+                                grandparent.snap.layer.addSublayer(grandparent.moviePlayer)
+                                grandparent.snap.alpha = 1
+                                
+                                //Bring timer to front
+                                grandparent.snap.bringSubviewToFront(grandparent.snapTimer)
+                                
+                                //Play video
+                                grandparent.moviePlayer.player!.play()
+                                
+                                //Start timer
+                                grandparent.snapTimer.startTimer(player.currentItem!.asset.duration)
+                                
+                                
+                                
+                                //Reset cell to read if currently unread
+                                if self.userList[userListIndex]["unread"] != nil {
+                                    
+                                    let titleView = cell.viewWithTag(1) as! UILabel
+                                    self.userList[userListIndex].removeObjectForKey("unread")
+                                    self.userList[userListIndex].pinInBackground()
+                                    
+                                    titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+                                }
+
                             }
-                            grandparent.snap.userInteractionEnabled = true
-                            grandparent.snap.backgroundColor = UIColor.blackColor()
-                            grandparent.moviePlayer.frame = grandparent.snap.bounds
-                            grandparent.snap.layer.addSublayer(grandparent.moviePlayer)
-                            grandparent.snap.alpha = 1
-                            
-                            //Bring timer to front
-                            grandparent.snap.bringSubviewToFront(grandparent.snapTimer)
-                            
-                            //Play video
-                            grandparent.moviePlayer.player!.play()
-                            
-                            //Start timer
-                            grandparent.snapTimer.startTimer(player.currentItem!.asset.duration)
-                            
-                            
-                            
-                            //Reset cell to read if currently unread
-                            if self.userList[userListIndex]["unread"] != nil {
-                                
-                                let titleView = cell.viewWithTag(1) as! UILabel
-                                self.userList[userListIndex].removeObjectForKey("unread")
-                                self.userList[userListIndex].pinInBackground()
-                                
-                                titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
-                            }
-                            
                         })
                     }
                 })
@@ -1087,27 +1091,31 @@ class UserListController: UITableViewController {
                         //Stop animation
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
-                            //Decode and display image for user
-                            if !grandparent.hideStatusBar {
+                            //Show photo to user if user is still on user list tab
+                            if self.tabBarController?.selectedIndex == 1 {
                                 
-                                grandparent.toggleStatusBar()
-                            }
-                            
-                            grandparent.snap.userInteractionEnabled = true
-                            
-                            //Hide timer
-                            grandparent.snapTimer.alpha = 0
-                            grandparent.snap.alpha = 1
-                            
-                            
-                            //Reset cell to read if currently unread
-                            if self.userList[userListIndex]["unread"] != nil {
+                                //Decode and display image for user
+                                if !grandparent.hideStatusBar {
+                                    
+                                    grandparent.toggleStatusBar()
+                                }
                                 
-                                let titleView = cell.viewWithTag(1) as! UILabel
-                                self.userList[userListIndex].removeObjectForKey("unread")
-                                self.userList[userListIndex].pinInBackground()
+                                grandparent.snap.userInteractionEnabled = true
                                 
-                                titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+                                //Hide timer
+                                grandparent.snapTimer.alpha = 0
+                                grandparent.snap.alpha = 1
+                                
+                                
+                                //Reset cell to read if currently unread
+                                if self.userList[userListIndex]["unread"] != nil {
+                                    
+                                    let titleView = cell.viewWithTag(1) as! UILabel
+                                    self.userList[userListIndex].removeObjectForKey("unread")
+                                    self.userList[userListIndex].pinInBackground()
+                                    
+                                    titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+                                }
                             }
                         })
                     }
@@ -1254,12 +1262,10 @@ class UserListController: UITableViewController {
         
         let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
         
-        //Stop animation
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             
-            grandparent.moviePlayer.player = nil
-            grandparent.moviePlayer.removeFromSuperlayer()
-            grandparent.snap.alpha = 0
+            //Send close function
+            grandparent.closeBeacon()
             
             //Only toggle if status bar hidden
             if grandparent.hideStatusBar {
@@ -1268,6 +1274,7 @@ class UserListController: UITableViewController {
             }
         })
         
+        //Clear temporary file
         clearLocalFile(videoPath)
     }
     

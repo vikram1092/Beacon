@@ -16,7 +16,7 @@ class BeaconingIndicator: UIView {
     let dot = CAShapeLayer()
     let swirl = CAShapeLayer()
     let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
-    let color = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1).CGColor
+    let color = BeaconColors().redColor.CGColor
     var isAnimating = false
     
     
