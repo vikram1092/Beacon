@@ -98,10 +98,12 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
             let alert = UIAlertController(title: "", message: "Are you sure you want to log out?", preferredStyle: UIAlertControllerStyle.ActionSheet)
             
             //Add confirmation button
-            alert.addAction(UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
+            let logOutAction = UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Destructive , handler: { (UIAlertAction) -> Void in
                 
-                self.logoutUser()
-            }))
+                    self.logoutUser()
+                })
+            
+            alert.addAction(logOutAction)
             
             //Add cancel button
             alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))

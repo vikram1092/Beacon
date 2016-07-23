@@ -13,13 +13,13 @@ class CaptureShape: UIView {
     
     
     //Declare animations and parameters for recording
-    let progress = CABasicAnimation(keyPath: "strokeStart")
-    let progress2 = CABasicAnimation(keyPath: "strokeStart")
+    let progress = CABasicAnimation(keyPath: "strokeEnd")
+    let progress2 = CABasicAnimation(keyPath: "strokeEnd")
     let expansion = CABasicAnimation(keyPath: "path")
     let rotate = CABasicAnimation(keyPath: "transform.rotation")
     let reverseRotate = CABasicAnimation(keyPath: "transform.rotation")
-    let primaryColor = BeaconColors().redColor.CGColor
-    let secondaryColor = BeaconColors().blueColor.CGColor
+    let primaryColor = BeaconColors().redColor
+    let secondaryColor = BeaconColors().blueColor
     var sendView = UILabel()
     let recordingDuration = 10.0
     var timer = NSTimer()
@@ -97,11 +97,14 @@ class CaptureShape: UIView {
         
         //Initialize sending view
         sendView = self.viewWithTag(1) as! UILabel
-        sendView.attributedText = NSAttributedString(string: "Send", attributes: [NSStrokeWidthAttributeName: -3.0,
-        NSStrokeColorAttributeName: UIColor.blackColor(),
-        NSForegroundColorAttributeName: UIColor.whiteColor()])
+        sendView.backgroundColor = secondaryColor
+        /*sendView.attributedText = NSAttributedString(string: "Send", attributes: [NSStrokeWidthAttributeName: -3.0,
+            NSStrokeColorAttributeName: UIColor.blackColor(),
+            NSForegroundColorAttributeName: UIColor.whiteColor()])*/
         sendView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI)/2)
-        
+        sendView.clipsToBounds = true
+        sendView.layer.cornerRadius = sendView.bounds.width/2
+        sendView.layer.borderWidth = 0.5
     }
     
     
@@ -142,19 +145,19 @@ class CaptureShape: UIView {
         //Initialize recording layer 1
         record.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         record.fillColor = UIColor.clearColor().CGColor
-        record.strokeColor = primaryColor
+        record.strokeColor = primaryColor.CGColor
         record.lineWidth = beaconRing.lineWidth
-        record.strokeStart = 1.0
-        record.strokeEnd = 1.0
+        record.strokeStart = 0.4
+        record.strokeEnd = 0.4
         record.lineCap = kCALineCapRound
         
         //Initialize recording layer 2
         record2.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         record2.fillColor = UIColor.clearColor().CGColor
-        record2.strokeColor = secondaryColor
+        record2.strokeColor = secondaryColor.CGColor
         record2.lineWidth = beaconRing.lineWidth
-        record2.strokeStart = auxRing.strokeEnd
-        record2.strokeEnd = auxRing.strokeEnd
+        record2.strokeStart = auxRing.strokeStart
+        record2.strokeEnd = auxRing.strokeStart
         record2.lineCap = kCALineCapRound
         
     }
@@ -165,16 +168,16 @@ class CaptureShape: UIView {
         
         //Configure recording animation
         progress.duration = recordingDuration
-        progress.fromValue = 1.0
-        progress.toValue = 0.4
+        progress.fromValue = 0.4
+        progress.toValue = 1.0
         progress.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         progress.removedOnCompletion = false
         progress.fillMode = kCAFillModeBoth
         
         //Configure recording animation
         progress2.duration = recordingDuration
-        progress2.fromValue = 0.35
-        progress2.toValue = 0.05
+        progress2.fromValue = 0.05
+        progress2.toValue = 0.35
         progress2.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         progress2.removedOnCompletion = false
         progress2.fillMode = kCAFillModeBoth
@@ -219,8 +222,7 @@ class CaptureShape: UIView {
             record2.addAnimation(expansion, forKey: "expansion")
         }
         
-        
-        //Complete rings and show send views
+        //Do animations to transition
         completeRings()
         showSendView()
         spin()
@@ -231,17 +233,29 @@ class CaptureShape: UIView {
     internal func completeRings() {
         
         
-        
         //Adjust progress animations and add them again to complete the rings
-        progress.fromValue = max(record.strokeStart - 0.6 * CGFloat(timerValue) - 0.1, 0.4)
-        progress2.fromValue = max(record2.strokeStart - 0.3 * CGFloat(timerValue) - 0.05, 0.05)
+        progress.fromValue = max(record.strokeStart + 0.6 * CGFloat(timerValue) + 0.1, 0.4)
+        progress2.fromValue = max(record2.strokeStart + 0.3 * CGFloat(timerValue) + 0.05, 0.05)
         
         progress.duration = 0.5
         progress2.duration = 0.5
         
+        //Animate completion and remove underlying rings
+        CATransaction.begin()
+        CATransaction.setCompletionBlock { 
+            
+            //Remove white rings
+            if self.sendView.alpha != 0 {
+                
+                self.beaconRing.removeFromSuperlayer()
+                self.auxRing.removeFromSuperlayer()
+            }
+        }
+        
         record.addAnimation(progress, forKey: nil)
         record2.addAnimation(progress2, forKey: nil)
         
+        CATransaction.commit()
     }
     
     
@@ -267,6 +281,7 @@ class CaptureShape: UIView {
         
         self.layer.addAnimation(rotate, forKey: nil)
         sendView.layer.addAnimation(reverseRotate, forKey: nil)
+        
     }
     
     
@@ -306,6 +321,8 @@ class CaptureShape: UIView {
         
         record.removeFromSuperlayer()
         record2.removeFromSuperlayer()
+        self.layer.addSublayer(beaconRing)
+        self.layer.addSublayer(auxRing)
     }
     
 }

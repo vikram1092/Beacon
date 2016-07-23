@@ -35,6 +35,7 @@ class UserListController: UITableViewController {
     var updatingUserList = false
     var haveSetAlertAfterSending = false
     var showNoMoreBeaconsAlert = false
+    var tutorialSwipeBeaconView = TutorialView()
     
     var locManager = CLLocationManager()
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -115,6 +116,8 @@ class UserListController: UITableViewController {
         refreshControl!.endRefreshing()
         beaconRefresh.stopAnimating()
     }
+    
+    
     
     
     internal func userIsBanned() {
@@ -271,6 +274,8 @@ class UserListController: UITableViewController {
             }
         }
     }
+    
+    
     
     
     internal func sendUnsentPhotos() {
@@ -519,7 +524,6 @@ class UserListController: UITableViewController {
                     if self.userToReceivePhotos > 0 {
                         
                         //End search, only show if the showNoMoreBeaconsAlert flag is raised
-                        print("showNoMoreBeaconsAlert \(self.showNoMoreBeaconsAlert)")
                         if sameCountry {
                             
                             self.updatingUserList = false
@@ -532,7 +536,7 @@ class UserListController: UITableViewController {
                                 
                                 dispatch_async(dispatch_get_main_queue(), {
                                     
-                                    let alert = UIAlertController(title: "Beacons To Come!", message: "All the beacons have been captured, check back to detect stray beacons!", preferredStyle: UIAlertControllerStyle.Alert)
+                                    let alert = UIAlertController(title: "Beacons To Come!", message: "Users will be sending beacons soon, check back to get them!", preferredStyle: UIAlertControllerStyle.Alert)
                                     alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
                                     self.presentViewController(alert, animated: true, completion: nil)
                                 })
@@ -546,8 +550,6 @@ class UserListController: UITableViewController {
                     }
                 }
                 else {
-                    
-                    print("photo count: " + String(photos!.count))
                     
                     //Update objects and create a temporary array of them
                     var tempList = Array<PFObject>()
@@ -586,7 +588,6 @@ class UserListController: UITableViewController {
                         
                         //Add object to userList
                         tempList.append(photoObject)
-                        print("tempList count: " + String(tempList.count))
                         
                     }
                     
@@ -627,6 +628,9 @@ class UserListController: UITableViewController {
                         //Reload table
                         self.tableView.reloadData()
                         
+                        //Show swipe beacon tutorial view
+                        self.showTutorialSwipeBeaconView()
+                        
                         //Save user list
                         print("Saving user list")
                         self.saveUserList()
@@ -660,6 +664,8 @@ class UserListController: UITableViewController {
             })
         }
     }
+    
+    
     
     
     @IBAction func refreshControl(sender: AnyObject) {
@@ -729,6 +735,8 @@ class UserListController: UITableViewController {
         self.showNoMoreBeaconsAlert = true
         beaconRefresh.startAnimating()
     }
+    
+    
     
     
     internal override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -1178,6 +1186,8 @@ class UserListController: UITableViewController {
     }
     
     
+    
+    
     internal func resumeAnimations() {
         
         print("resumeCellAnimations")
@@ -1279,6 +1289,8 @@ class UserListController: UITableViewController {
     }
     
     
+    
+    
     internal func updateUserPhotos() {
     
         self.userToReceivePhotos += 1
@@ -1349,8 +1361,8 @@ class UserListController: UITableViewController {
             
             
             //Calculate distance fraction
-            let distance = countryObject.center.x
-            let threshold = self.view.bounds.width * 0.60
+            let distance = translation.x
+            let threshold = self.view.bounds.width * 0.50
             
             //If moved to the other side of the screen, go to map and show country
             if distance > threshold {
@@ -1433,7 +1445,7 @@ class UserListController: UITableViewController {
             let distance = translation.x
             let threshold = self.view.bounds.width * 0.50
             
-            if distance > threshold && slideIndicator.tintColor == UIColor.lightGrayColor() {
+            if distance >= threshold && slideIndicator.tintColor == UIColor.lightGrayColor() {
                 
                 
                 //Stick country to maps icon
@@ -1455,7 +1467,7 @@ class UserListController: UITableViewController {
                     }, completion: nil)
                 
             }
-            else if distance <= threshold {
+            else if distance < threshold {
                 
                 
                 //Move country as per slide. Animate if it's coming back into panning control
@@ -1634,6 +1646,49 @@ class UserListController: UITableViewController {
     }
     
     
+    
+    
+    internal func showTutorialSwipeBeaconView() {
+        
+        
+        //Show label if the user default is nil
+        print("showTutorialSwipeBeaconView")
+        if userDefaults.objectForKey("tutorialSwipeBeacon") == nil {
+            
+            let heading = "You Got A Beacon!"
+            let text = "Tap to open\nSwipe country to view in map"
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(210)
+                self.tutorialSwipeBeaconView = TutorialView(frame: CGRect(x: 20, y: self.tableView.frame.minY + self.tableView.rowHeight + 15, width: width, height: height))
+                self.tutorialSwipeBeaconView.pointTriangleUp()
+                self.tutorialSwipeBeaconView.moveTriangle(CGPoint(x: -width/2 + 30, y: 0))
+                self.tutorialSwipeBeaconView.showText(heading, text: text)
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialSwipeBeaconView)
+                self.view.bringSubviewToFront(self.tutorialSwipeBeaconView)
+            })
+        }
+    }
+    
+    
+    internal func removeTutorialSwipeBeaconView() {
+        
+        //Remove send beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialSwipeBeacon") == nil {
+            
+            tutorialSwipeBeaconView.removeView("tutorialSwipeBeacon")
+        }
+    }
+    
+    
+    
+    
     internal func segueToMap(location: CLLocationCoordinate2D, country: String?) {
         
         //Move to the map
@@ -1649,6 +1704,11 @@ class UserListController: UITableViewController {
         
         //Pan to selected location
         map.goToCountry(location)
+        
+        
+        //Remove swipe beacon tutorial view
+        removeTutorialSwipeBeaconView()
+        
         
         //If the country exists, outline the country
         if country != nil {
@@ -1682,6 +1742,8 @@ class UserListController: UITableViewController {
             loginController.alertButton.alpha = 0
         }
     }
+    
+    
     
         
     internal func withinTime(date: NSDate) -> BooleanLiteralType {
@@ -1773,5 +1835,8 @@ class UserListController: UITableViewController {
         }
         
     }
+    
+    
+    
     
 }

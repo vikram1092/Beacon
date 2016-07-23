@@ -14,13 +14,14 @@ import Parse
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
     
+    @IBOutlet var logoView: UIImageView!
     @IBOutlet var dotViewLeft: DotView!
     @IBOutlet var dotViewRight: DotView!
     @IBOutlet var alertButton: UIButton!
     @IBOutlet var fbLoginButton: FBSDKLoginButton!
     var userName = ""
     var userEmail = ""
-    var bannedText = "You have been suspended due to some photos you've sent. Please allow us to investigate and reach a decision."
+    var bannedText = "You have been suspended due to some beacons you've sent. Please allow us to investigate and check back later."
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     
@@ -31,6 +32,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         self.view.sendSubviewToBack(dotViewLeft)
         self.view.sendSubviewToBack(dotViewRight)
+
         dotViewLeft.frame = self.view.bounds
         dotViewRight.frame = self.view.bounds
         dotViewLeft.initializeViews()
@@ -56,12 +58,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         if !dotViewLeft.isAnimating {
             
-            dotViewLeft.startAnimations(25)
+            dotViewLeft.startAnimating(25)
         }
         
         if !dotViewRight.isAnimating {
             
-            dotViewRight.startAnimations(-25)
+            dotViewRight.startAnimating(-25)
         }
     }
     
@@ -127,8 +129,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     internal func checkWithDatabase(result: AnyObject, source: String) {
         
         
-        let userResult = result as! NSDictionary
         //Query to find email ID in database. If it doesn't exist, create it.
+        let userResult = result as! NSDictionary
         self.userName = userResult.objectForKey("name") as! String
         self.userEmail = userResult.objectForKey("email") as! String
         

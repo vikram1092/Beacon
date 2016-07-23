@@ -62,7 +62,6 @@
 		D17040B51D14DC2F007416B1 /* BeaconsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D17040B21D14DC2F007416B1 /* BeaconsButton.png */; };
 		D17040B61D14DC2F007416B1 /* BeaconsButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D17040B31D14DC2F007416B1 /* BeaconsButton@x2.png */; };
 		D17040B71D14DC2F007416B1 /* BeaconsButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D17040B41D14DC2F007416B1 /* BeaconsButton@x3.png */; };
-		D176D4731C852077004A812E /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = D176D4721C852077004A812E /* Line.swift */; };
 		D1785A561C3F68280020AD99 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1785A551C3F68280020AD99 /* CameraController.swift */; };
 		D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */ = {isa = PBXBuildFile; fileRef = D17A5F101C338BA000EE94DE /* CameraSwitch.png */; };
 		D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17B2CD51C977BA100CD6782 /* CountryTable.swift */; };
@@ -73,12 +72,10 @@
 		D18F3EEB1CFBA7A0000681DE /* BeaconTable@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D18F3EEA1CFBA7A0000681DE /* BeaconTable@x2.png */; };
 		D195159D1C7232F600053A22 /* VideoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D195159C1C7232F600053A22 /* VideoDelegate.swift */; };
 		D19A71031CEBFB08003B3E74 /* Dot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A71021CEBFB08003B3E74 /* Dot.swift */; };
-		D19E741F1D0A51D90051CD40 /* BeaconLogin.png in Resources */ = {isa = PBXBuildFile; fileRef = D19E741C1D0A51D90051CD40 /* BeaconLogin.png */; };
-		D19E74201D0A51D90051CD40 /* BeaconLogin@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D19E741D1D0A51D90051CD40 /* BeaconLogin@x2.png */; };
-		D19E74211D0A51D90051CD40 /* BeaconLogin@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D19E741E1D0A51D90051CD40 /* BeaconLogin@x3.png */; };
 		D19E95E21C753473000106DE /* SporeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19E95E11C753473000106DE /* SporeTests.swift */; };
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
 		D1A40C231D3A6FD0000D3CC5 /* BeaconColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */; };
+		D1A40C251D3A83A6000D3CC5 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A40C241D3A83A6000D3CC5 /* TutorialView.swift */; };
 		D1ACB1C61D2C9D0E00224F42 /* SlideButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C31D2C9D0E00224F42 /* SlideButton.png */; };
 		D1ACB1C71D2C9D0E00224F42 /* SlideButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C41D2C9D0E00224F42 /* SlideButton@x2.png */; };
 		D1ACB1C81D2C9D0E00224F42 /* SlideButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C51D2C9D0E00224F42 /* SlideButton@x3.png */; };
@@ -113,6 +110,9 @@
 		D1CDF52B1D138FB30021C46D /* globe.png in Resources */ = {isa = PBXBuildFile; fileRef = D1CDF5281D138FB30021C46D /* globe.png */; };
 		D1CDF52C1D138FB30021C46D /* globe@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1CDF5291D138FB30021C46D /* globe@x2.png */; };
 		D1CDF52D1D138FB30021C46D /* globe@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1CDF52A1D138FB30021C46D /* globe@x3.png */; };
+		D1CF44201D42775A004B52A3 /* BeaconLogin.png in Resources */ = {isa = PBXBuildFile; fileRef = D1CF441D1D42775A004B52A3 /* BeaconLogin.png */; };
+		D1CF44211D42775A004B52A3 /* BeaconLogin@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1CF441E1D42775A004B52A3 /* BeaconLogin@x2.png */; };
+		D1CF44221D42775A004B52A3 /* BeaconLogin@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1CF441F1D42775A004B52A3 /* BeaconLogin@x3.png */; };
 		D1D8A5491C5D3AA100E95BCE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D1D8A5481C5D3AA100E95BCE /* Settings.bundle */; };
 		D1DA41341CBD9FD9002585FF /* FocusShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA41331CBD9FD9002585FF /* FocusShape.swift */; };
 		D1DB75311CD6FA9E009690BE /* BeaconingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DB75301CD6FA9E009690BE /* BeaconingIndicator.swift */; };
@@ -200,7 +200,6 @@
 		D172F6681CA9FB9F00752CEF /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "Pods/../build/Debug-iphoneos/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		D172F6691CA9FB9F00752CEF /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = "Pods/../build/Debug-iphoneos/Parse.framework"; sourceTree = "<group>"; };
 		D172F66A1CA9FB9F00752CEF /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "Pods/../build/Debug-iphoneos/ParseUI.framework"; sourceTree = "<group>"; };
-		D176D4721C852077004A812E /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		D1785A551C3F68280020AD99 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		D17A5F101C338BA000EE94DE /* CameraSwitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CameraSwitch.png; path = "../../Spore Images/CameraSwitch.png"; sourceTree = "<group>"; };
 		D17B2CD51C977BA100CD6782 /* CountryTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryTable.swift; sourceTree = "<group>"; };
@@ -211,14 +210,12 @@
 		D18F3EEA1CFBA7A0000681DE /* BeaconTable@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BeaconTable@x2.png"; sourceTree = "<group>"; };
 		D195159C1C7232F600053A22 /* VideoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDelegate.swift; sourceTree = "<group>"; };
 		D19A71021CEBFB08003B3E74 /* Dot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dot.swift; sourceTree = "<group>"; };
-		D19E741C1D0A51D90051CD40 /* BeaconLogin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BeaconLogin.png; sourceTree = "<group>"; };
-		D19E741D1D0A51D90051CD40 /* BeaconLogin@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BeaconLogin@x2.png"; sourceTree = "<group>"; };
-		D19E741E1D0A51D90051CD40 /* BeaconLogin@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BeaconLogin@x3.png"; sourceTree = "<group>"; };
 		D19E95DF1C753473000106DE /* Beacon.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Beacon.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D19E95E11C753473000106DE /* SporeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SporeTests.swift; sourceTree = "<group>"; };
 		D19E95E31C753473000106DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1A3E8A01C78F70A00E115FC /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconColors.swift; sourceTree = "<group>"; };
+		D1A40C241D3A83A6000D3CC5 /* TutorialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
 		D1ACB1C31D2C9D0E00224F42 /* SlideButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SlideButton.png; path = "../../Spore Images/SlideButton.png"; sourceTree = "<group>"; };
 		D1ACB1C41D2C9D0E00224F42 /* SlideButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SlideButton@x2.png"; path = "../../Spore Images/SlideButton@x2.png"; sourceTree = "<group>"; };
 		D1ACB1C51D2C9D0E00224F42 /* SlideButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SlideButton@x3.png"; path = "../../Spore Images/SlideButton@x3.png"; sourceTree = "<group>"; };
@@ -255,6 +252,9 @@
 		D1CDF5281D138FB30021C46D /* globe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = globe.png; path = "../../Spore Images/globe.png"; sourceTree = "<group>"; };
 		D1CDF5291D138FB30021C46D /* globe@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "globe@x2.png"; path = "../../Spore Images/globe@x2.png"; sourceTree = "<group>"; };
 		D1CDF52A1D138FB30021C46D /* globe@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "globe@x3.png"; path = "../../Spore Images/globe@x3.png"; sourceTree = "<group>"; };
+		D1CF441D1D42775A004B52A3 /* BeaconLogin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BeaconLogin.png; path = "../../Spore Images/Logo/BeaconLogin.png"; sourceTree = "<group>"; };
+		D1CF441E1D42775A004B52A3 /* BeaconLogin@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "BeaconLogin@x2.png"; path = "../../Spore Images/Logo/BeaconLogin@x2.png"; sourceTree = "<group>"; };
+		D1CF441F1D42775A004B52A3 /* BeaconLogin@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "BeaconLogin@x3.png"; path = "../../Spore Images/Logo/BeaconLogin@x3.png"; sourceTree = "<group>"; };
 		D1D8A5481C5D3AA100E95BCE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D1DA41331CBD9FD9002585FF /* FocusShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusShape.swift; sourceTree = "<group>"; };
 		D1DB75301CD6FA9E009690BE /* BeaconingIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconingIndicator.swift; sourceTree = "<group>"; };
@@ -441,11 +441,11 @@
 				D1645E5D1D23F95E00A61EE9 /* Logo@x180.png */,
 				D14D432D1D21D454009645D1 /* Clusters */,
 				D18F3EE21CFBA2A8000681DE /* BeaconTable.png */,
-				D19E741C1D0A51D90051CD40 /* BeaconLogin.png */,
-				D19E741D1D0A51D90051CD40 /* BeaconLogin@x2.png */,
-				D19E741E1D0A51D90051CD40 /* BeaconLogin@x3.png */,
 				D18F3EEA1CFBA7A0000681DE /* BeaconTable@x2.png */,
 				D1DF78631D0668FD003FD319 /* BeaconTable@x3.png */,
+				D1CF441D1D42775A004B52A3 /* BeaconLogin.png */,
+				D1CF441E1D42775A004B52A3 /* BeaconLogin@x2.png */,
+				D1CF441F1D42775A004B52A3 /* BeaconLogin@x3.png */,
 				D1EDE4F91D32D6CE0026D23C /* Altiplano.jpg */,
 				D13F42BD1CDAD6110011F12C /* LaunchImageCaptureButton.png */,
 				D13F42BE1CDAD6110011F12C /* LaunchImageCaptureButton@x3.png */,
@@ -508,12 +508,11 @@
 		D1B9C7181C2258B800D9AEE7 /* Beacon */ = {
 			isa = PBXGroup;
 			children = (
-				D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */,
 				D1B9C7191C2258B800D9AEE7 /* AppDelegate.swift */,
+				D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */,
 				D19A71021CEBFB08003B3E74 /* Dot.swift */,
 				D1593FCA1D0D824A00C6B8E2 /* DotView.swift */,
 				D1B9C71B1C2258B800D9AEE7 /* LoginController.swift */,
-				D176D4721C852077004A812E /* Line.swift */,
 				D17B2CD51C977BA100CD6782 /* CountryTable.swift */,
 				D139D46C1CA5675F00909BF5 /* SnapTimer.swift */,
 				D1DB75301CD6FA9E009690BE /* BeaconingIndicator.swift */,
@@ -535,6 +534,7 @@
 				D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */,
 				D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */,
 				D137E8781CA95C45004F9B44 /* AboutController.swift */,
+				D1A40C241D3A83A6000D3CC5 /* TutorialView.swift */,
 				D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */,
 				D16D5CEA1CD99EB4005F401F /* Launch Screen.storyboard */,
 				D18AE6861C2DC24F00B74ED0 /* Images */,
@@ -667,8 +667,8 @@
 				D1EC0ED91D18D59E00FFC94D /* CameraBackButton2@x3.png in Resources */,
 				D1ACB1C81D2C9D0E00224F42 /* SlideButton@x3.png in Resources */,
 				D1EC0ED81D18D59E00FFC94D /* CameraBackButton2@x2.png in Resources */,
+				D1CF44211D42775A004B52A3 /* BeaconLogin@x2.png in Resources */,
 				D1645E651D23F95E00A61EE9 /* Logo@x180.png in Resources */,
-				D19E741F1D0A51D90051CD40 /* BeaconLogin.png in Resources */,
 				D13F42C01CDAD6110011F12C /* LaunchImageCaptureButton@x3.png in Resources */,
 				D1DF78661D06691C003FD319 /* Countries.geojson in Resources */,
 				D1ACB1C61D2C9D0E00224F42 /* SlideButton.png in Resources */,
@@ -689,6 +689,7 @@
 				D18F3EEB1CFBA7A0000681DE /* BeaconTable@x2.png in Resources */,
 				D13F42BF1CDAD6110011F12C /* LaunchImageCaptureButton.png in Resources */,
 				D1645E5E1D23F95E00A61EE9 /* Logo@x29.png in Resources */,
+				D1CF44201D42775A004B52A3 /* BeaconLogin.png in Resources */,
 				D144F1F11C4412D500E07700 /* CancelPhoto.png in Resources */,
 				D14D434A1D21D454009645D1 /* circle_01b36a_40.png in Resources */,
 				D17A5F111C338BA000EE94DE /* CameraSwitch.png in Resources */,
@@ -705,7 +706,7 @@
 				D17040B11D14A133007416B1 /* CameraSwitch@x2.png in Resources */,
 				D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */,
 				D1CDF52D1D138FB30021C46D /* globe@x3.png in Resources */,
-				D19E74211D0A51D90051CD40 /* BeaconLogin@x3.png in Resources */,
+				D1CF44221D42775A004B52A3 /* BeaconLogin@x3.png in Resources */,
 				D1645E611D23F95E00A61EE9 /* Logo@x80.png in Resources */,
 				D14D434B1D21D454009645D1 /* circle_01b36a_80.png in Resources */,
 				D1EC295C1C2E1E850014DE7E /* Countries in Resources */,
@@ -730,7 +731,6 @@
 				D1B9DEE11D16EFB500B0EEDE /* flashDisabledButton@x3.png in Resources */,
 				D15F8CD31D3861C80097F772 /* SendPhoto2.png in Resources */,
 				D1D8A5491C5D3AA100E95BCE /* Settings.bundle in Resources */,
-				D19E74201D0A51D90051CD40 /* BeaconLogin@x2.png in Resources */,
 				D14D434D1D21D454009645D1 /* circle_01b36a_60.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -813,7 +813,6 @@
 				D188D7B51C283A5F0066E773 /* SettingsController.swift in Sources */,
 				D17B2CD61C977BA100CD6782 /* CountryTable.swift in Sources */,
 				D137E8791CA95C46004F9B44 /* AboutController.swift in Sources */,
-				D176D4731C852077004A812E /* Line.swift in Sources */,
 				D1593FCB1D0D824A00C6B8E2 /* DotView.swift in Sources */,
 				D1E15E1A1CC5A1A300C27CDF /* ReceivedBeacon.swift in Sources */,
 				D1B9C72C1C22608600D9AEE7 /* MainController.swift in Sources */,
@@ -826,6 +825,7 @@
 				D139D46D1CA5675F00909BF5 /* SnapTimer.swift in Sources */,
 				D13B0D481CA385BA0035759D /* CountryBackground.swift in Sources */,
 				D1AD47061CF7BF210028942F /* FBQuadTreeNode.swift in Sources */,
+				D1A40C251D3A83A6000D3CC5 /* TutorialView.swift in Sources */,
 				D1AD470F1CF7C70E0028942F /* ReceivedAnnotationCluster.swift in Sources */,
 				D1AD47011CF7BF210028942F /* SentAnnotationCluster.swift in Sources */,
 				D1AD470D1CF7C6040028942F /* ReceivedClusteringManager.swift in Sources */,

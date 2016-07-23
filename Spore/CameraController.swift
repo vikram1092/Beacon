@@ -62,7 +62,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     let compressionGroup = dispatch_group_create()
     
     //User variables
-    let bannedTitle = "userIsBanned"
     var userLocation = PFGeoPoint(latitude: 0, longitude: 0)
     var userCountry = ""
     var userState = ""
@@ -75,8 +74,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     //Tutorial variables
-    var tutorialTakeBeaconLabel = UILabel?()
-    var tutorialSendBeaconLabel = UILabel?()
+    var tutorialTakeBeaconView = TutorialView()
+    var tutorialSendBeaconView = TutorialView()
     
     //If we find a device we'll store it here for later use
     var captureDevice : AVCaptureDevice?
@@ -237,8 +236,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Clear video temp files
         clearVideoTempFiles()
         
-        //Show tutorial label
-        showTutorialTakeBeaconLabel()
     }
     
     
@@ -305,6 +302,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         print("add session to layer")
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         
+        
         //Add preview layer and perform view fixes again
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             
@@ -318,12 +316,19 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 dispatch_async(self.cameraQueue, { () -> Void in
                     
                     self.captureSession.startRunning()
+                    
+                    dispatch_async(dispatch_get_main_queue(), { 
+                        
+                        //Show preview layer now
+                        self.previewLayer!.hidden = false
+                        
+                        //Show take beacon tutorial view
+                        self.showTutorialTakeBeaconView()
+                    })
+                    
                     self.initializeLocationManager()
                 })
             }
-            
-            //Show preview layer now
-            self.previewLayer!.hidden = false
             
             //Set first time flag off
             self.firstTime = false
@@ -461,8 +466,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func switchCamera(sender: AnyObject) {
         
+        
         //Perform only if camera is running and not recording
         if captureSession.running && !movieFileOutput.recording {
+            
             
             //Dispatch to camera dedicated serial queue
             dispatch_async(cameraQueue, { () -> Void in
@@ -478,7 +485,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     
                     //Remove camera input from session
                     let inputs = self.captureSession.inputs
-                    print(inputs.count)
                     self.captureSession.beginConfiguration()
                     self.captureSession.removeInput(inputs[0] as! AVCaptureInput)
                     
@@ -558,9 +564,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func takePhoto(sender: UITapGestureRecognizer) {
         
+        
         //Capture image
         if !stillImageOutput.capturingStillImage && captureSession.running {
             
+            
+            //Hide take beacon tutorial view
+            removeTutorialTakeBeaconView()
             
             //Take a photo asyncronously and prepare button for sending
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
@@ -580,18 +590,23 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
                         //Change elements on screen
-                        //self.captureButton.hidden = true
                         self.flashButton.hidden = true
                         self.cameraSwitchButton.hidden = true
                         self.backButton.hidden = true
                         self.closeButton.hidden = false
                         
+                        //Show send beacon tutorial view and transition to send mode
+                        self.showTutorialSendBeaconView()
                         self.captureShape.transitionToSendMode()
                     })
                 }
             }
         }
-        else if captureShape.sendView.alpha == 1 && !beaconSending {
+        else if captureShape.sendView.alpha == 1 && !stillImageOutput.capturingStillImage && !movieFileOutput.recording && !beaconSending {
+            
+            
+            //Hide send beacon tutorial view
+            removeTutorialSendBeaconView()
             
             //Send beacon if send button has been activated and a beacon is not currently sending
             sendBeacon()
@@ -602,11 +617,17 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func takeVideo(sender: UILongPressGestureRecognizer) {
         
+        
+        //If capture session is running, take the video
         if captureSession.running {
+            
             
             switch sender.state {
                 
             case .Began:
+                
+                //Hide tutorial view
+                removeTutorialTakeBeaconView()
                 
                 //Change elements on screen
                 self.flashButton.hidden = true
@@ -637,13 +658,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 //Start recording animation
                 captureShape.startRecording()
                 
+                
             case .Ended:
+                
                 
                 //Stop video if user stops and timer hasn't fired already
                 print("Ended video recording")
                 if videoTimer.valid {
                     stopTakingVideo()
                 }
+                
                 
             default: ()
             }
@@ -661,25 +685,26 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         captureSession.stopRunning()
         
         //Change elements on screen
-        //self.captureButton.hidden = true
         self.flashButton.hidden = true
         self.cameraSwitchButton.hidden = true
         self.backButton.hidden = true
         self.closeButton.hidden = false
         
-        
+        //Show send beacon tutorial view and transition to send mode
+        self.showTutorialSendBeaconView()
         captureShape.transitionToSendMode()
+        
         
         //Merge audio and video files into one file, then play for user
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
             
             self.mergeAudio(NSURL(fileURLWithPath: self.initialAudioPath), moviePathUrl: NSURL(fileURLWithPath: self.initialVideoPath), savePathUrl: NSURL(fileURLWithPath: self.videoPath))
         }
-        
     }
     
     
     internal func mergeAudio(audioURL: NSURL, moviePathUrl: NSURL, savePathUrl: NSURL) {
+        
         
         //Merge available audio and video files into one final video file
         let composition = AVMutableComposition()
@@ -689,13 +714,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         let sourceAsset = AVURLAsset(URL: moviePathUrl, options: option as? [String : AnyObject])
         let audioAsset = AVURLAsset(URL: audioURL, options: option as? [String : AnyObject])
         
+        
         //Default composition turns the video into landscape orientation. This returns the video into portrait orientation
         trackVideo.preferredTransform = CGAffineTransformMakeRotation(90.0 * CGFloat(M_PI) / 180.0)
-        
-        print(sourceAsset)
-        print("playable: \(sourceAsset.playable)")
-        print("exportable: \(sourceAsset.exportable)")
-        print("readable: \(sourceAsset.readable)")
         
         let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
         let audios = audioAsset.tracksWithMediaType(AVMediaTypeAudio)
@@ -729,8 +750,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 })
             }
             catch let error as NSError { print("Error inserting time range: \(error)") }
+            
         }
         else if fileManager.fileExistsAtPath(initialVideoPath) {
+            
             
             //If video exists but audio doesn't, copy file to final location
             do {
@@ -751,37 +774,40 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func initializeMoviePlayer() {
         
         
-        //Initialize movie layer
-        print("initializeMoviePlayer")
-        let player = AVPlayer(URL: NSURL(fileURLWithPath: videoPath))
-        moviePlayer = AVPlayerLayer(player: player)
-        
-        //Set frame and video gravity
-        moviePlayer.frame = self.view.bounds
-        moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-        
-        //Change audio session if user is in a call
-        if CTCallCenter().currentCalls != nil {
+        //Check close button to avoid a simultaneous button press glitch
+        if !closeButton.hidden {
             
-            changeAudioSession(AVAudioSessionCategoryAmbient)
+            //Initialize movie layer
+            print("initializeMoviePlayer")
+            let player = AVPlayer(URL: NSURL(fileURLWithPath: videoPath))
+            moviePlayer = AVPlayerLayer(player: player)
+            
+            //Set frame and video gravity
+            moviePlayer.frame = self.view.bounds
+            moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+            
+            //Change audio session if user is in a call
+            if CTCallCenter().currentCalls != nil {
+                
+                changeAudioSession(AVAudioSessionCategoryAmbient)
+            }
+            
+            //Set loop function
+            NSNotificationCenter.defaultCenter().addObserver(self,
+                selector: #selector(restartVideoFromBeginning),
+                name: AVPlayerItemDidPlayToEndTimeNotification,
+                object: moviePlayer.player!.currentItem)
+            
+            //Add layer to view and bring timer to front
+            cameraImage.layer.addSublayer(moviePlayer)
+            cameraImage.bringSubviewToFront(snapTimer)
+            
+            //Play video
+            moviePlayer.player!.play()
+            
+            //Start timer
+            snapTimer.startTimer(player.currentItem!.asset.duration)
         }
-        
-        //Set loop function
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: #selector(restartVideoFromBeginning),
-            name: AVPlayerItemDidPlayToEndTimeNotification,
-            object: moviePlayer.player!.currentItem)
-        
-        //Add layer to view and bring timer to front
-        cameraImage.layer.addSublayer(moviePlayer)
-        cameraImage.bringSubviewToFront(snapTimer)
-        
-        //Play video
-        moviePlayer.player!.play()
-        print(moviePlayer.player!.mediaSelectionCriteriaForMediaCharacteristic(AVMediaCharacteristicAudible))
-        
-        //Start timer
-        snapTimer.startTimer(player.currentItem!.asset.duration)
     }
 
     
@@ -880,11 +906,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Update screen elements
         self.closeButton.hidden = true
         self.flashButton.hidden = false
-        //self.captureButton.hidden = false
         self.cameraSwitchButton.hidden = false
         self.backButton.hidden = false
         self.cameraImage.image = nil
         
+        //Remove send beacon tutorial
+        self.removeTutorialSendBeaconView()
     }
     
     
@@ -1021,6 +1048,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 print("Reached completion of compression")
                 if session.status == AVAssetExportSessionStatus.Completed
                 {
+                    
                     let compressedData = NSData(contentsOfFile: compressedVideoPath)
                     
                     if compressedData != nil {
@@ -1029,10 +1057,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 }
                 else
                 {
-                    let alert = UIAlertView(title: "Uh oh", message: " There was a problem compressing the video, try again. Error: \(session.error!.localizedDescription)", delegate: nil, cancelButtonTitle: "Okay")
-                    
-                    alert.show()
-                    
+                    print("Error compressing video: \(session.error)")
                 }
                 
                 dispatch_group_leave(self.compressionGroup)
@@ -1618,13 +1643,79 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     
-    internal func showTutorialTakeBeaconLabel() {
+    internal func showTutorialTakeBeaconView() {
         
         
         //Show label if the user default is nil
-        if userDefaults.valueForKey("takeBeacon") != nil {
+        print("showTutorialTakeBeaconView")
+        if userDefaults.objectForKey("tutorialTakeBeacon") == nil {
             
-            tutorialTakeBeaconLabel = UILabel()
+            let heading = "Take A Beacon!"
+            let text = "Press for photo\nHold for video"
+            
+            dispatch_async(dispatch_get_main_queue(), { 
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(170)
+                let verticalPoint = self.captureButton.frame.minY
+                self.tutorialTakeBeaconView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2, y: verticalPoint - height - 50, width: width, height: height))
+                self.tutorialTakeBeaconView.showText(heading, text: text)
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialTakeBeaconView)
+                self.view.bringSubviewToFront(self.tutorialTakeBeaconView)
+            })
+        }
+    }
+    
+    
+    internal func removeTutorialTakeBeaconView() {
+        
+        //Remove take beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialTakeBeacon") == nil {
+            
+            tutorialTakeBeaconView.removeView("tutorialTakeBeacon")
+        }
+    }
+    
+    
+    internal func showTutorialSendBeaconView() {
+        
+        
+        //Show label if the user default is nil
+        print("showTutorialSendBeaconView")
+        if userDefaults.objectForKey("tutorialSendBeacon") == nil {
+            
+            let heading = "Send The Beacon!"
+            let text = "You'll get one back from somewhere in the world"
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(190)
+                let verticalPoint = self.captureButton.frame.minY
+                self.tutorialSendBeaconView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2, y: verticalPoint - height - 50, width: width, height: height))
+                self.tutorialSendBeaconView.showText(heading, text: text)
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialSendBeaconView)
+                self.view.bringSubviewToFront(self.tutorialSendBeaconView)
+                
+            })
+        }
+    }
+    
+    
+    internal func removeTutorialSendBeaconView() {
+        
+        //Remove send beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialSendBeacon") == nil {
+            
+            tutorialSendBeaconView.removeView("tutorialSendBeacon")
         }
     }
     

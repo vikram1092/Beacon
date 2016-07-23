@@ -20,23 +20,20 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQx-md-Vy2" customClass="DotView" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="575" height="585"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
+                                        <rect key="frame" x="25" y="15" width="575" height="585"/>
+                                    </view>
+                                </subviews>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
-                                <rect key="frame" x="25" y="15" width="575" height="585"/>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="0.0" y="545" width="600" height="55"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                                <rect key="frame" x="0.0" y="253" width="600" height="94"/>
+                                <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="55" id="9Ba-78-DLG"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="20" y="210" width="560" height="65"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="65" id="5ad-e3-KjW"/>
+                                    <constraint firstAttribute="height" constant="94" id="5ad-e3-KjW"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <inset key="contentEdgeInsets" minX="20" minY="0.0" maxX="20" maxY="0.0"/>
                                 <state key="normal" title="Button">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -50,31 +47,32 @@
                                     <action selector="alertButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WGk-0c-n9r"/>
                                 </connections>
                             </button>
-                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
-                                <rect key="frame" x="208" y="95" width="185" height="80"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="80" id="hwy-79-fj2"/>
-                                    <constraint firstAttribute="width" constant="185" id="nms-e5-Qmk"/>
-                                </constraints>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
+                                <rect key="frame" x="0.0" y="95" width="600" height="50"/>
+                                <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
+                                <rect key="frame" x="0.0" y="529" width="600" height="71"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="71" id="EZo-Vu-LVi"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="2kD-Y1-z0V" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="0E2-bh-ZgZ"/>
-                            <constraint firstItem="Hoa-RA-aL6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="6of-JT-td1"/>
-                            <constraint firstItem="FJd-ej-OVL" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottomMargin" id="CvU-3S-EXM"/>
-                            <constraint firstItem="2kD-Y1-z0V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="75" id="EU3-gi-YfB"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="5U6-6u-5Y5"/>
+                            <constraint firstItem="Hoa-RA-aL6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="6of-JT-td1"/>
                             <constraint firstItem="ZQx-md-Vy2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="HYR-Es-uNB"/>
                             <constraint firstItem="ZQx-md-Vy2" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="MGH-vP-dRB"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="MZ3-Ga-dzE"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="PFH-cV-MJ6"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="RuU-zb-YbY"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="2kD-Y1-z0V" secondAttribute="trailing" constant="-20" id="Q7y-Rq-QCq"/>
                             <constraint firstItem="ZQx-md-Vy2" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="-5" id="YwG-Gc-BOV"/>
-                            <constraint firstItem="Hoa-RA-aL6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="f2E-N9-ebj"/>
-                            <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="rqS-OZ-r9g"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="FJd-ej-OVL" secondAttribute="trailing" constant="-20" id="sI0-L7-Ra1"/>
-                            <constraint firstItem="FJd-ej-OVL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="15" id="tIi-Nn-x30"/>
-                            <constraint firstItem="gQw-9e-GDG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="vai-CJ-lGd"/>
+                            <constraint firstItem="gQw-9e-GDG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="ZZi-Q5-lRK"/>
+                            <constraint firstItem="2kD-Y1-z0V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="75" id="edR-ec-F02"/>
+                            <constraint firstItem="Hoa-RA-aL6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="20" id="f2E-N9-ebj"/>
+                            <constraint firstItem="2kD-Y1-z0V" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="reB-Zs-snP"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="rxy-Me-TZO"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ZQx-md-Vy2" secondAttribute="bottom" constant="15" id="y5J-qD-ZwW"/>
                         </constraints>
                     </view>
@@ -86,12 +84,13 @@
                         <outlet property="dotViewLeft" destination="ZQx-md-Vy2" id="qVU-OB-17U"/>
                         <outlet property="dotViewRight" destination="FJd-ej-OVL" id="rd5-km-PSu"/>
                         <outlet property="fbLoginButton" destination="gQw-9e-GDG" id="6at-YT-Qh3"/>
+                        <outlet property="logoView" destination="2kD-Y1-z0V" id="pfn-QS-tNs"/>
                         <segue destination="UdC-tP-fdI" kind="presentation" identifier="LoginToMain" id="BF7-rl-4Xr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-512" y="301.5"/>
+            <point key="canvasLocation" x="-512" y="301"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="9x9-5Y-FFL">
@@ -685,7 +684,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                             <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Logout" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6fY-ie-kWd">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log Out" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6fY-ie-kWd">
                                                     <rect key="frame" x="8" y="11" width="536" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.97254901959999995" green="0.37254901959999998" blue="0.37647058820000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -922,20 +921,20 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                 <rect key="frame" x="265" y="461" width="70" height="70"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ugf-Ek-SMG">
-                                        <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                        <rect key="frame" x="8" y="8" width="54" height="54"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="Ugf-Ek-SMG" firstAttribute="leading" secondItem="iP7-5k-Seg" secondAttribute="leading" id="1EW-a5-SKc"/>
-                                    <constraint firstItem="Ugf-Ek-SMG" firstAttribute="top" secondItem="iP7-5k-Seg" secondAttribute="top" id="2cf-ah-zjj"/>
+                                    <constraint firstItem="Ugf-Ek-SMG" firstAttribute="leading" secondItem="iP7-5k-Seg" secondAttribute="leading" constant="8" id="1EW-a5-SKc"/>
+                                    <constraint firstItem="Ugf-Ek-SMG" firstAttribute="top" secondItem="iP7-5k-Seg" secondAttribute="top" constant="8" id="2cf-ah-zjj"/>
                                     <constraint firstAttribute="height" constant="70" id="55I-eC-pbg"/>
                                     <constraint firstAttribute="width" constant="70" id="SkX-ug-xky"/>
-                                    <constraint firstAttribute="trailing" secondItem="Ugf-Ek-SMG" secondAttribute="trailing" id="msA-QE-SmX"/>
-                                    <constraint firstAttribute="bottom" secondItem="Ugf-Ek-SMG" secondAttribute="bottom" id="sdN-t4-mJ8"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ugf-Ek-SMG" secondAttribute="trailing" constant="8" id="msA-QE-SmX"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ugf-Ek-SMG" secondAttribute="bottom" constant="8" id="sdN-t4-mJ8"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iHt-xd-9r4">
@@ -1699,6 +1698,6 @@ THE SOFTWARE.
         <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8ds-TT-rzm"/>
+        <segue reference="fzn-UV-xBd"/>
     </inferredMetricsTieBreakers>
 </document>

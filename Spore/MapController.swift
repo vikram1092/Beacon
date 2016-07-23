@@ -35,6 +35,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     let receivedColor = BeaconColors().redColor
     let sentColor = BeaconColors().yellowColor
     
+    var tutorialBeaconControlView = TutorialView()
+    
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var beaconControl: UISegmentedControl!
     @IBOutlet var activityIndicator: BeaconingIndicator!
@@ -76,12 +78,19 @@ class MapController: UIViewController, MKMapViewDelegate {
                 self.loadReceivedMarkers()
             }
         }
+        
+        //Show beacon control tutorial view
+        showTutorialBeaconControlView()
     }
     
     
     override func viewDidDisappear(animated: Bool) {
         
+        //Remove all overlays
         mapView.removeOverlays(mapView.overlays)
+        
+        //Remove beacon control tutorial view
+        removeTutorialBeaconControlView()
     }
     
     
@@ -102,6 +111,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
 
+    
+    
     internal func goToCountry(location: CLLocationCoordinate2D) {
 
         print("User picture coordinates:" + String(location))
@@ -403,6 +414,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
+    
+    
     internal func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
         
         let polylineRenderer = MKPolylineRenderer(overlay: overlay)
@@ -473,6 +486,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
+    
+    
     @IBAction func beaconControlChanged(sender: AnyObject) {
         
         //First remove all existing annotations
@@ -510,6 +525,48 @@ class MapController: UIViewController, MKMapViewDelegate {
         return false
     }
     
+    
+    
+    
+    internal func showTutorialBeaconControlView() {
+        
+        
+        //Show label if the user default is nil
+        print("showTutorialBeaconControlView")
+        if userDefaults.objectForKey("tutorialBeaconControl") == nil {
+            
+            let heading = "Your Beacons"
+            let text = "Received: Where you got beacons from\nSent: Where your beacons went"
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(260)
+                self.tutorialBeaconControlView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2, y: self.beaconControl.frame.maxY + 25, width: width, height: height))
+                self.tutorialBeaconControlView.showText(heading, text: text)
+                self.tutorialBeaconControlView.pointTriangleUp()
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialBeaconControlView)
+                self.view.bringSubviewToFront(self.tutorialBeaconControlView)
+            })
+        }
+    }
+    
+    
+    internal func removeTutorialBeaconControlView() {
+        
+        //Remove take beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialBeaconControl") == nil {
+            
+            tutorialBeaconControlView.removeView("tutorialBeaconControl")
+        }
+    }
+    
+    
+
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
