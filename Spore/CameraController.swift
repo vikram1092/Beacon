@@ -142,8 +142,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     override func viewDidLayoutSubviews() {
         
-        print("viewDidLayoutSubviews")
         //Adjusts camera to the screen after updating view
+        print("viewDidLayoutSubviews")
         if previewLayer != nil {
         
             let bounds = cameraImage.bounds
@@ -418,7 +418,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         }
         catch {
             
-            showAlert("Camera not found. \nPlease check your settings.")
+            showAlert("Camera not found.\nPlease check your settings.")
         }
         
     }
@@ -451,7 +451,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func flashButtonPressed(sender: AnyObject) {
         
-        print("Toggling flash!")
         //Turn on torch if flash is on
         toggleTorchMode()
     }
@@ -943,7 +942,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func updateUserPhotos() {
     
         let userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos") + 1
-        print("userToReceiveStatus saving..." + String(userToReceivePhotos))
         userDefaults.setInteger(userToReceivePhotos, forKey: "userToReceivePhotos")
         print("Saved userToReceivePhotos")
     }
@@ -1018,7 +1016,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             do {
                 let attr : NSDictionary? = try NSFileManager.defaultManager().attributesOfItemAtPath(videoPath)
                 
-                print((attr!.fileSize()/1024)/1024)
             } catch {
                 print("Error: \(error)")
             }
@@ -1047,15 +1044,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 print("Reached completion of compression")
                 if session.status == AVAssetExportSessionStatus.Completed
-                {
-                    
-                    let compressedData = NSData(contentsOfFile: compressedVideoPath)
-                    
-                    if compressedData != nil {
-                        print("File size after compression: \(Double(compressedData!.length / 1048576)) mb")
-                    }
-                }
-                else
+                { }
+                else if session.error != nil
                 {
                     print("Error compressing video: \(session.error)")
                 }
@@ -1063,11 +1053,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 dispatch_group_leave(self.compressionGroup)
             })
             
-            
+            //Wait until dispatch group is finished, then proceed
             dispatch_group_wait(compressionGroup, DISPATCH_TIME_FOREVER)
             
-            
-            print("File exists: \(fileManager.fileExistsAtPath(compressedVideoPath))")
             if fileManager.fileExistsAtPath(compressedVideoPath) {
                 
                 photoObject["isVideo"] = true
@@ -1090,8 +1078,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             let imageData = UIImageJPEGRepresentation(self.cameraImage.image!, CGFloat(0.6))
             imageData!.writeToFile(imagePath, atomically: true)
             
-            print("File exists: \(fileManager.fileExistsAtPath(imagePath))")
-            
             photoObject["isVideo"] = false
             
             //Save image to local library
@@ -1110,7 +1096,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             else {
                 
                 //Segue back to table
-                print("Pinned: \(pinned)")
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
                     // The photo has been saved, update user photos
@@ -1167,7 +1152,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         if captureSession.running && alertView.alpha == 0 {
             
             //Configure variables
-            print(sender.view)
             let touchPoint = sender.locationInView(sender.view)
             let focusPointx = touchPoint.x/sender.view!.bounds.width
             let focusPointy = touchPoint.y/sender.view!.bounds.height
@@ -1340,11 +1324,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        //Gets user location and adds it to the main location variable
         if let locValue:CLLocationCoordinate2D = manager.location?.coordinate {
             
+            //Gets user location and adds it to the main location variable
             userLocation = PFGeoPoint(latitude: locValue.latitude, longitude: locValue.longitude)
-            print("locations = \(locValue.latitude) \(locValue.longitude)")
             
             //Stop updating location and get the country code for this location
             locManager.stopUpdatingLocation()
@@ -1355,15 +1338,13 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 self.userDefaults.setObject(self.userLocation.latitude, forKey: "userLatitude")
                 self.userDefaults.setObject(self.userLocation.longitude, forKey: "userLongitude")
-                
-                print(self.userLocation.latitude)
-                print(self.userLocation.longitude)
             })
         }
     }
     
     
     internal func getPoliticalDetails(locGeoPoint: PFGeoPoint) {
+        
         
         //Get country for current row
         let location = CLLocation(latitude: locGeoPoint.latitude, longitude: locGeoPoint.longitude)
@@ -1462,43 +1443,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 self.captureSession.stopRunning()
             })
-        }
-    }
-    
-    
-    internal func handleAudioSessionInterruption(notification: NSNotification) {
-        
-        
-        let userInfo = (notification.userInfo! as NSDictionary)
-        print(userInfo)
-        let reason = userInfo.objectForKey(AVAudioSessionInterruptionTypeKey) as! NSNumber
-        
-        if reason == AVAudioSessionInterruptionType.Began.rawValue {
-            
-            if captureSession.running {
-                
-                //Stop capture session if it was running
-                print("Interruption began")
-                captureSessionInterrupted = true
-                /*showAlert("Another app is using your recording features.")
-                dispatch_async(cameraQueue, { () -> Void in
-                    
-                    self.captureSession.stopRunning()
-                })*/
-            }
-        }
-        else if reason == AVAudioSessionInterruptionType.Ended.rawValue {
-            
-            if captureSessionInterrupted {
-                
-                print("Interruption ended")
-                captureSessionInterrupted = false
-                /*closeAlert()
-                dispatch_async(cameraQueue, { () -> Void in
-                    
-                    self.captureSession.startRunning()
-                })*/
-            }
         }
     }
     
@@ -1726,7 +1670,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Show alert if user is banned
         let query = PFQuery(className: "users")
-        print("user email: " + userEmail)
         query.whereKey("email", equalTo: userEmail)
         query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
             

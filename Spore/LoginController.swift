@@ -148,7 +148,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 //Check if user is banned in database
                 print("Object 'users' count: \(users!.count)")
                 let userBanned = users![0]["banned"] as! BooleanLiteralType
-                print(userBanned)
                 
                 //If user is banned, show message stating ban
                 if userBanned == true {

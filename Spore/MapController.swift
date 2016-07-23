@@ -100,13 +100,11 @@ class MapController: UIViewController, MKMapViewDelegate {
         if userDefaults.objectForKey("userName") != nil {
             
             userName = userDefaults.objectForKey("userName") as! String
-            print(userName)
         }
         
         if userDefaults.objectForKey("userEmail") != nil {
             
             userEmail = userDefaults.objectForKey("userEmail") as! String
-            print(userEmail)
         }
     }
     
@@ -115,7 +113,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func goToCountry(location: CLLocationCoordinate2D) {
 
-        print("User picture coordinates:" + String(location))
+        
         let span = MKCoordinateSpan(latitudeDelta: 4, longitudeDelta: 4)
         let region = MKCoordinateRegion(center: location, span: span)
         
@@ -147,7 +145,6 @@ class MapController: UIViewController, MKMapViewDelegate {
             //Check if current JSON country iso code matches with desired country
             if isoCode == countryCode.uppercaseString {
                 
-                print(countryElement.objectForKey("properties")!.objectForKey("ISO_A2") as! String)
                 index = countries.indexOfObject(countryElement)
                 break
             }
@@ -286,7 +283,6 @@ class MapController: UIViewController, MKMapViewDelegate {
                 else if photoObjects!.count > 0 {
                     
                     //For each row received, get location and plot on map
-                    print("Query returned \(photoObjects!.count) rows")
                     for photoObject in photoObjects! {
                         
                         let latitude = photoObject.objectForKey("receivedLatitude") as? Double
@@ -324,7 +320,6 @@ class MapController: UIViewController, MKMapViewDelegate {
                 //Stop activity indicator if the countries are already loaded
                 self.sentMarkersAreLoaded = true
                 
-                print("Sent Markers finished \(self.countriesAreLoaded) + \(self.receivedMarkersAreLoaded)")
                 if self.countriesAreLoaded && self.receivedMarkersAreLoaded {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -361,7 +356,6 @@ class MapController: UIViewController, MKMapViewDelegate {
                 else if photoObjects!.count > 0 {
                     
                     //For each row received, get location and plot on map
-                    print("Query returned \(photoObjects!.count) rows")
                     for photoObject in photoObjects! {
                         
                         if photoObject.objectForKey("sentFrom") != nil {
@@ -371,7 +365,6 @@ class MapController: UIViewController, MKMapViewDelegate {
                             let longitude = coordinates.longitude
                             let markerCoord2D = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
                             
-                            print("\(coordinates.latitude), \(coordinates.longitude)")
                             
                             //Add annotation to map
                             if !self.loadedInArray(markerCoord2D, array: self.loadedReceivedMarkers) && !(latitude == 0.0 && longitude == 0.0){
@@ -401,7 +394,6 @@ class MapController: UIViewController, MKMapViewDelegate {
                 //Stop activity indicator if the countries are already loaded
                 self.receivedMarkersAreLoaded = true
                 
-                print("Received Markers finished \(self.countriesAreLoaded) + \(self.sentMarkersAreLoaded)")
                 if self.countriesAreLoaded && self.sentMarkersAreLoaded {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in

@@ -161,9 +161,8 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     internal func setUserLocation() {
         
         
+        //Set location image and text
         var text = ""
-        
-        print(userCity + ", " + userState + ", " + userCountry)
         if userCountry == "us" && userState != "" {
             
             if userState.characters.count == 2 {

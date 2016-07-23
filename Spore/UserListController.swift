@@ -35,6 +35,8 @@ class UserListController: UITableViewController {
     var updatingUserList = false
     var haveSetAlertAfterSending = false
     var showNoMoreBeaconsAlert = false
+    
+    var tutorialTapBeaconView = TutorialView()
     var tutorialSwipeBeaconView = TutorialView()
     
     var locManager = CLLocationManager()
@@ -124,7 +126,6 @@ class UserListController: UITableViewController {
         
         //Show alert if user is banned
         let query = PFQuery(className: "users")
-        print("user email: " + userEmail)
         query.whereKey("email", equalTo: userEmail)
         query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
             
@@ -629,7 +630,7 @@ class UserListController: UITableViewController {
                         self.tableView.reloadData()
                         
                         //Show swipe beacon tutorial view
-                        self.showTutorialSwipeBeaconView()
+                        self.showTutorialTapBeaconView()
                         
                         //Save user list
                         print("Saving user list")
@@ -720,9 +721,9 @@ class UserListController: UITableViewController {
     
     override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         
+        //Refresh table
         if refreshControl!.refreshing {
             
-            print(scrollView.contentOffset.y)
             updateUserList(false)
         }
     }
@@ -745,7 +746,6 @@ class UserListController: UITableViewController {
         print("cellForRowAtIndexPath")
         //Initialize variables:
         //Array is printed backwards so userListLength is initialized
-        print("Reached cell" + String(indexPath.row))
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
         let titleView = cell.viewWithTag(1) as! UILabel
         let subTitleView = cell.viewWithTag(2) as! UILabel
@@ -982,7 +982,10 @@ class UserListController: UITableViewController {
         }
         else if withinTime(userList[userListIndex].objectForKey("receivedAt") as! NSDate) {
             
+            
             print("Show photo")
+            //Hide tap beacon tutorial view
+            removeTutorialTapBeaconView()
             
             //Start UI animation
             let countryBackground = cell.viewWithTag(6) as! CountryBackground
@@ -1072,6 +1075,9 @@ class UserListController: UITableViewController {
                                     
                                     titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
                                 }
+                                
+                                //Show swipe beacon tutorial view
+                                self.showTutorialSwipeBeaconView()
 
                             }
                         })
@@ -1124,6 +1130,10 @@ class UserListController: UITableViewController {
                                     
                                     titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
                                 }
+                                
+                                //Show swipe beacon tutorial view
+                                self.showTutorialSwipeBeaconView()
+
                             }
                         })
                     }
@@ -1215,7 +1225,7 @@ class UserListController: UITableViewController {
     
     internal func banUser(sentBy: String) {
         
-        print(sentBy)
+        
         
         //Count rows reported belonging to user
         let countQuery = PFQuery(className: "photo")
@@ -1231,7 +1241,6 @@ class UserListController: UITableViewController {
             else if rows!.count > 2 {
                 
                 //Query to ban user
-                print(rows!.count)
                 let query = PFQuery(className: "users")
                 query.whereKey("email", equalTo: sentBy)
                 query.getFirstObjectInBackgroundWithBlock({ (userObject, userError) -> Void in
@@ -1294,7 +1303,6 @@ class UserListController: UITableViewController {
     internal func updateUserPhotos() {
     
         self.userToReceivePhotos += 1
-        print("userToReceiveStatus saving..." + String(self.userToReceivePhotos))
         self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
         print("Saved userToReceivePhotos")
     }
@@ -1540,10 +1548,10 @@ class UserListController: UITableViewController {
     
     internal func getPoliticalDetails(locGeoPoint: PFGeoPoint, photoObject: PFObject) {
         
+        
         //Initialize coordinate details
         print("getPoliticalDetails")
         let location = CLLocation(latitude: locGeoPoint.latitude, longitude: locGeoPoint.longitude)
-        print(location)
         
         //Get political information, update the object and send it to the database
         CLGeocoder().reverseGeocodeLocation(location) { (placemarks, locationError) -> Void in
@@ -1557,7 +1565,6 @@ class UserListController: UITableViewController {
                 self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObject)!)
                 let cell = self.getCellForObject(photoObject)
                 let countryBackground = cell?.viewWithTag(6) as? CountryBackground
-                print(countryBackground)
                 let subTitleView = cell?.viewWithTag(2) as? UILabel
                 
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -1616,7 +1623,6 @@ class UserListController: UITableViewController {
                         self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObject)!)
                         let cell = self.getCellForObject(photoObject)
                         let countryBackground = cell?.viewWithTag(6) as? CountryBackground
-                        print(countryBackground)
                         let subTitleView = cell?.viewWithTag(2) as? UILabel
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -1648,6 +1654,44 @@ class UserListController: UITableViewController {
     
     
     
+    internal func showTutorialTapBeaconView() {
+        
+        
+        //Show label if the user default is nil
+        print("showTutorialTapBeaconView")
+        if userDefaults.objectForKey("showTutorialTapBeacon") == nil {
+            
+            let heading = "You Got A Beacon!"
+            let text = "Tap to open it!"
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(210)
+                self.tutorialTapBeaconView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2, y: self.tableView.frame.minY + self.tableView.rowHeight + 15, width: width, height: height))
+                self.tutorialTapBeaconView.pointTriangleUp()
+                self.tutorialTapBeaconView.showText(heading, text: text)
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialTapBeaconView)
+                self.view.bringSubviewToFront(self.tutorialTapBeaconView)
+            })
+        }
+    }
+    
+    
+    internal func removeTutorialTapBeaconView() {
+        
+        //Remove send beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialTapBeacon") == nil {
+            
+            tutorialTapBeaconView.removeView("tutorialTapBeacon")
+        }
+    }
+    
+    
     internal func showTutorialSwipeBeaconView() {
         
         
@@ -1655,8 +1699,8 @@ class UserListController: UITableViewController {
         print("showTutorialSwipeBeaconView")
         if userDefaults.objectForKey("tutorialSwipeBeacon") == nil {
             
-            let heading = "You Got A Beacon!"
-            let text = "Tap to open\nSwipe country to view in map"
+            let heading = "Take It To The Map!"
+            let text = "Swipe the country to the right\nto see it on the map"
             
             dispatch_async(dispatch_get_main_queue(), {
                 
