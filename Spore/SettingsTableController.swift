@@ -169,7 +169,16 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
                 
                 
                 text = countryTable.getStateName(userState) + ", " + countryTable.getCountryName(userCountry)
-                countryPicture.image = countryTable.getStateImage(userState).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                
+                //Set image for state if it exists. If not, use country image
+                if countryTable.getStateImage(userState) == UIImage(named: "Countries/Unknown/128.png") {
+                    
+                    countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                }
+                else {
+                    
+                    countryPicture.image = countryTable.getStateImage(userState).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                }
             }
             else {
                 

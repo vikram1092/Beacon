@@ -35,7 +35,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     let receivedColor = BeaconColors().redColor
     let sentColor = BeaconColors().yellowColor
     
-    var tutorialBeaconControlView = TutorialView()
+    var tutorialBeaconControlReceivedView = TutorialView()
+    var tutorialBeaconControlSentView = TutorialView()
     
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var beaconControl: UISegmentedControl!
@@ -80,7 +81,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
         
         //Show beacon control tutorial view
-        showTutorialBeaconControlView()
+        showTutorialBeaconControlReceivedView()
     }
     
     
@@ -90,7 +91,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         mapView.removeOverlays(mapView.overlays)
         
         //Remove beacon control tutorial view
-        removeTutorialBeaconControlView()
+        removeTutorialBeaconControlReceivedView()
     }
     
     
@@ -487,13 +488,18 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         if beaconControl.selectedSegmentIndex == 0 {
             
-            //Load received markers
+            //Load received markers, show tutorial view
             mapView.addAnnotations(loadedReceivedMarkers)
+            removeTutorialBeaconControlSentView()
+            showTutorialBeaconControlReceivedView()
+            
         }
         else if beaconControl.selectedSegmentIndex == 1 {
             
             //Load sent markers
             mapView.addAnnotations(loadedSentMarkers)
+            removeTutorialBeaconControlReceivedView()
+            showTutorialBeaconControlSentView()
         }
         
         //Cluster annotations
@@ -520,40 +526,78 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     
     
-    internal func showTutorialBeaconControlView() {
+    internal func showTutorialBeaconControlReceivedView() {
         
         
         //Show label if the user default is nil
-        print("showTutorialBeaconControlView")
-        if userDefaults.objectForKey("tutorialBeaconControl") == nil {
+        print("showTutorialBeaconControlReceivedView")
+        if userDefaults.objectForKey("tutorialBeaconControlReceived") == nil {
             
-            let heading = "Your Beacons"
-            let text = "Received: Where you got beacons from\nSent: Where your beacons went"
+            let heading = "Received Beacons"
+            let text = "Where you got beacons from"
             
             dispatch_async(dispatch_get_main_queue(), {
                 
                 
                 //Set bounds and create tutorial view
                 let height = CGFloat(100)
-                let width = CGFloat(260)
-                self.tutorialBeaconControlView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2, y: self.beaconControl.frame.maxY + 25, width: width, height: height))
-                self.tutorialBeaconControlView.showText(heading, text: text)
-                self.tutorialBeaconControlView.pointTriangleUp()
+                let width = CGFloat(200)
+                self.tutorialBeaconControlReceivedView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2 - self.beaconControl.bounds.width/4, y: self.beaconControl.frame.maxY + 25, width: width, height: height))
+                self.tutorialBeaconControlReceivedView.showText(heading, text: text)
+                self.tutorialBeaconControlReceivedView.pointTriangleUp()
                 
                 //Add the take beacon view
-                self.view.addSubview(self.tutorialBeaconControlView)
-                self.view.bringSubviewToFront(self.tutorialBeaconControlView)
+                self.view.addSubview(self.tutorialBeaconControlReceivedView)
+                self.view.bringSubviewToFront(self.tutorialBeaconControlReceivedView)
             })
         }
     }
     
     
-    internal func removeTutorialBeaconControlView() {
+    internal func removeTutorialBeaconControlReceivedView() {
         
         //Remove take beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialBeaconControl") == nil {
+        if userDefaults.objectForKey("tutorialBeaconControlReceived") == nil {
             
-            tutorialBeaconControlView.removeView("tutorialBeaconControl")
+            tutorialBeaconControlReceivedView.removeView("tutorialBeaconControlReceived")
+        }
+    }
+    
+    
+    internal func showTutorialBeaconControlSentView() {
+        
+        
+        //Show label if the user default is nil
+        print("showTutorialBeaconControlSentView")
+        if userDefaults.objectForKey("tutorialBeaconControlSent") == nil {
+            
+            let heading = "Beacons You Sent"
+            let text = "Where your beacons went\nafter you sent them"
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(200)
+                self.tutorialBeaconControlSentView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2 + self.beaconControl.bounds.width/4, y: self.beaconControl.frame.maxY + 25, width: width, height: height))
+                self.tutorialBeaconControlSentView.showText(heading, text: text)
+                self.tutorialBeaconControlSentView.pointTriangleUp()
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialBeaconControlSentView)
+                self.view.bringSubviewToFront(self.tutorialBeaconControlSentView)
+            })
+        }
+    }
+    
+    
+    internal func removeTutorialBeaconControlSentView() {
+        
+        //Remove take beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialBeaconControlSent") == nil {
+            
+            tutorialBeaconControlSentView.removeView("tutorialBeaconControlSent")
         }
     }
     

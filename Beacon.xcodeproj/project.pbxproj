@@ -76,6 +76,7 @@
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
 		D1A40C231D3A6FD0000D3CC5 /* BeaconColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */; };
 		D1A40C251D3A83A6000D3CC5 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A40C241D3A83A6000D3CC5 /* TutorialView.swift */; };
+		D1AB163F1D4A9ECE00F0E42C /* LaunchImageCaptureButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1AB163E1D4A9ECE00F0E42C /* LaunchImageCaptureButton@x2.png */; };
 		D1ACB1C61D2C9D0E00224F42 /* SlideButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C31D2C9D0E00224F42 /* SlideButton.png */; };
 		D1ACB1C71D2C9D0E00224F42 /* SlideButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C41D2C9D0E00224F42 /* SlideButton@x2.png */; };
 		D1ACB1C81D2C9D0E00224F42 /* SlideButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1ACB1C51D2C9D0E00224F42 /* SlideButton@x3.png */; };
@@ -216,6 +217,7 @@
 		D1A3E8A01C78F70A00E115FC /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconColors.swift; sourceTree = "<group>"; };
 		D1A40C241D3A83A6000D3CC5 /* TutorialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
+		D1AB163E1D4A9ECE00F0E42C /* LaunchImageCaptureButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LaunchImageCaptureButton@x2.png"; path = "../../Spore Images/LaunchImageCaptureButton@x2.png"; sourceTree = "<group>"; };
 		D1ACB1C31D2C9D0E00224F42 /* SlideButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SlideButton.png; path = "../../Spore Images/SlideButton.png"; sourceTree = "<group>"; };
 		D1ACB1C41D2C9D0E00224F42 /* SlideButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SlideButton@x2.png"; path = "../../Spore Images/SlideButton@x2.png"; sourceTree = "<group>"; };
 		D1ACB1C51D2C9D0E00224F42 /* SlideButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SlideButton@x3.png"; path = "../../Spore Images/SlideButton@x3.png"; sourceTree = "<group>"; };
@@ -448,6 +450,7 @@
 				D1CF441F1D42775A004B52A3 /* BeaconLogin@x3.png */,
 				D1EDE4F91D32D6CE0026D23C /* Altiplano.jpg */,
 				D13F42BD1CDAD6110011F12C /* LaunchImageCaptureButton.png */,
+				D1AB163E1D4A9ECE00F0E42C /* LaunchImageCaptureButton@x2.png */,
 				D13F42BE1CDAD6110011F12C /* LaunchImageCaptureButton@x3.png */,
 				D136589B1C55BC59005AEC61 /* CameraButtons */,
 				D144F1E21C440DE700E07700 /* TabBarButtons */,
@@ -707,6 +710,7 @@
 				D1B9C71F1C2258B800D9AEE7 /* Main.storyboard in Resources */,
 				D1CDF52D1D138FB30021C46D /* globe@x3.png in Resources */,
 				D1CF44221D42775A004B52A3 /* BeaconLogin@x3.png in Resources */,
+				D1AB163F1D4A9ECE00F0E42C /* LaunchImageCaptureButton@x2.png in Resources */,
 				D1645E611D23F95E00A61EE9 /* Logo@x80.png in Resources */,
 				D14D434B1D21D454009645D1 /* circle_01b36a_80.png in Resources */,
 				D1EC295C1C2E1E850014DE7E /* Countries in Resources */,

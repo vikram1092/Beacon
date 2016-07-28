@@ -43,7 +43,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var focusShape = FocusShape()
     var videoTimer = NSTimer()
     let cameraQueue = dispatch_queue_create("", DISPATCH_QUEUE_SERIAL)
-    var captureSessionInterrupted = false
     let recorderSettings = [AVSampleRateKey : NSNumber(float: Float(44100.0)),
         AVFormatIDKey : NSNumber(int: Int32(kAudioFormatAppleLossless)),
         AVNumberOfChannelsKey : NSNumber(int: 1),
@@ -1010,17 +1009,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         photoObject["spam"] = false
         
         
+        //Compress video and send if it exists
         if fileManager.fileExistsAtPath(videoPath) {
             
-            //Compress video and send
-            do {
-                let attr : NSDictionary? = try NSFileManager.defaultManager().attributesOfItemAtPath(videoPath)
-                
-            } catch {
-                print("Error: \(error)")
-            }
-            
-            
+
             //Save video to local library
             if saveMedia {
                 saveVideoLocally()

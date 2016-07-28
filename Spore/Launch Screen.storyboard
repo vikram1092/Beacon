@@ -72,6 +72,6 @@
     <resources>
         <image name="CameraSwitch" width="33" height="33"/>
         <image name="FlashButtonOff" width="33" height="33"/>
-        <image name="LaunchCaptureButton" width="107" height="107"/>
+        <image name="LaunchCaptureButton" width="70" height="70"/>
     </resources>
 </document>

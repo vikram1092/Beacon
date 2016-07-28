@@ -98,13 +98,13 @@ class CaptureShape: UIView {
         //Initialize sending view
         sendView = self.viewWithTag(1) as! UILabel
         sendView.backgroundColor = secondaryColor
-        /*sendView.attributedText = NSAttributedString(string: "Send", attributes: [NSStrokeWidthAttributeName: -3.0,
-            NSStrokeColorAttributeName: UIColor.blackColor(),
-            NSForegroundColorAttributeName: UIColor.whiteColor()])*/
         sendView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI)/2)
         sendView.clipsToBounds = true
         sendView.layer.cornerRadius = sendView.bounds.width/2
         sendView.layer.borderWidth = 0.5
+        
+        
+        
     }
     
     
@@ -324,5 +324,4 @@ class CaptureShape: UIView {
         self.layer.addSublayer(beaconRing)
         self.layer.addSublayer(auxRing)
     }
-    
 }

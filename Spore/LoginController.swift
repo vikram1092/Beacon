@@ -58,12 +58,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         if !dotViewLeft.isAnimating {
             
-            dotViewLeft.startAnimating(25)
+            dotViewLeft.startAnimating(23)
         }
         
         if !dotViewRight.isAnimating {
             
-            dotViewRight.startAnimating(-25)
+            dotViewRight.startAnimating(-23)
         }
     }
     

@@ -11,6 +11,7 @@ import UIKit
 import Parse
 import ParseUI
 import Foundation
+import CoreTelephony
 import AVFoundation
 import FBSDKCoreKit
 import FBSDKLoginKit
@@ -832,7 +833,13 @@ class UserListController: UITableViewController {
             if state!.characters.count == 2 {
                 
                 titleView.text = (countryTable.getStateName(state!.lowercaseString) + ", " + country)
-                imageView.image = countryTable.getStateImage(state!.lowercaseString).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                
+                
+                //Set image for state if it exists. If not, use country image
+                if countryTable.getStateImage(state!.lowercaseString) != UIImage(named: "Countries/Unknown/128.png"){
+                    
+                    imageView.image = countryTable.getStateImage(state!.lowercaseString).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                }
             }
             //State variable is not a state code
             else {
@@ -990,6 +997,18 @@ class UserListController: UITableViewController {
             //Start UI animation
             let countryBackground = cell.viewWithTag(6) as! CountryBackground
             countryBackground.startAnimating()
+            
+            
+            
+            //Set audio session depending on user being on a call or not
+            if CTCallCenter().currentCalls != nil {
+                
+                changeAudioSession(AVAudioSessionCategoryAmbient)
+            }
+            else {
+                
+                changeAudioSession(AVAudioSessionCategoryPlayAndRecord)
+            }
             
             
             //Initialize superior VC variables
@@ -1788,6 +1807,23 @@ class UserListController: UITableViewController {
     }
     
     
+    
+    
+    internal func changeAudioSession(category: String) {
+        
+        //If audio session isn't already the new category, change it
+        if AVAudioSession.sharedInstance().category != category {
+            
+            do {
+                
+                print("Changing session")
+                try AVAudioSession.sharedInstance().setCategory(category, withOptions: [AVAudioSessionCategoryOptions.MixWithOthers, AVAudioSessionCategoryOptions.DefaultToSpeaker])
+                AVAudioSession.sharedInstance()
+                try AVAudioSession.sharedInstance().setActive(true)
+            }
+            catch let error as NSError { print("Error setting audio session category \(error)") }
+        }
+    }
     
         
     internal func withinTime(date: NSDate) -> BooleanLiteralType {
