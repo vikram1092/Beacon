@@ -26,10 +26,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchCaptureButton" translatesAutoresizingMaskIntoConstraints="NO" id="R9L-SP-0rd">
-                                <rect key="frame" x="261" y="502" width="78" height="78"/>
+                                <rect key="frame" x="265" y="510" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="78" id="rGD-XV-n30"/>
-                                    <constraint firstAttribute="height" constant="78" id="yDW-gq-Fkb"/>
+                                    <constraint firstAttribute="width" constant="70" id="rGD-XV-n30"/>
+                                    <constraint firstAttribute="height" constant="70" id="yDW-gq-Fkb"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bgn-aK-2uE">

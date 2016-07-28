@@ -47,7 +47,7 @@ class UserListController: UITableViewController {
     let refreshBackgroundColor = BeaconColors().blueColor
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-    let videoPath = NSTemporaryDirectory() + "receivedVideo.mov"
+    let videoPath = NSTemporaryDirectory() + "receivedVideo.mp4"
     let tableVideoPrefix = NSTemporaryDirectory() + "tableVideo_"
     let tableVideoBounds = CGRect(x: 0, y: 0, width: 85, height: 85)
     let userDefaults = NSUserDefaults.standardUserDefaults()

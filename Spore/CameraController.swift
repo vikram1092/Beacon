@@ -53,10 +53,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var locManager = CLLocationManager()
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-    let videoPath = NSTemporaryDirectory() + "userVideo.mov"
+    let videoPath = NSTemporaryDirectory() + "userVideo.mp4"
     let initialVideoPath = NSTemporaryDirectory() + "initialVideo.mov"
     let initialAudioPath = NSTemporaryDirectory() + "initialAudio.m4a"
-    let videoFileExtension = ".mov"
+    let videoFileExtension = ".mp4"
     let imageFileExtension = ".jpg"
     let compressionGroup = dispatch_group_create()
     
