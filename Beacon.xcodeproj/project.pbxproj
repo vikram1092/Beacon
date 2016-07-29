@@ -546,8 +546,7 @@
 				D1DF78651D06691C003FD319 /* Countries.geojson */,
 				D1B9C7251C2258B800D9AEE7 /* Info.plist */,
 			);
-			name = Beacon;
-			path = Spore;
+			path = Beacon;
 			sourceTree = "<group>";
 		};
 		D9CDAC2BB88D7D39085B896F /* Pods */ = {
