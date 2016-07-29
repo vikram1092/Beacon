@@ -50,7 +50,7 @@ class BeaconRefresh: UIView {
     
     internal func updateViews(ratio: CGFloat) {
         
-        
+        //Update view to rotate as per scroll ratio given
         if !beaconIndicator.isAnimating {
             
             let depth = min(max(50,initialDepth + ratio * 2), finalDepth)
