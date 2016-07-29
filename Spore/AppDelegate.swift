@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let parseConfiguration = ParseClientConfiguration(block: { (ParseMutableClientConfiguration) -> Void in
             ParseMutableClientConfiguration.localDatastoreEnabled = true
             ParseMutableClientConfiguration.applicationId = "4h5gk62hjg62g2h435igou"
-            ParseMutableClientConfiguration.clientKey = "463y6guy53g6piy265huvbu"
+            ParseMutableClientConfiguration.clientKey = "59ad78f5d5g48fhs9f78saf5d67gs"
             ParseMutableClientConfiguration.server = "https://beacon12.herokuapp.com/parse"
         })
         
