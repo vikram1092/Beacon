@@ -26,11 +26,13 @@ class SnapController: UIViewController {
     @IBOutlet var snapTimer: SnapTimer!
     @IBOutlet var container: UIView!
     
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
         snap.addSubview(snapTimer)
     }
+    
     
     override func viewWillAppear(animated: Bool) {
         
@@ -49,42 +51,45 @@ class SnapController: UIViewController {
         
         //Configure gestures & snap
         snap.userInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: ("snapTapped"))
-        let panRecognizer = UIPanGestureRecognizer(target: self, action: "snapSwiped:")
-        snap.addGestureRecognizer(tap)
-        snap.addGestureRecognizer(panRecognizer)
         
     }
     
     
-    internal func snapTapped() {
+    @IBAction func snapTapped(sender: AnyObject) {
         
         print("Tapped!")
         
-        self.snap.userInteractionEnabled = false
         
         if self.hideStatusBar {
             
             self.toggleStatusBar()
         }
         
-        UIView.animateWithDuration(0.3) { () -> Void in
+        UIView.animateWithDuration(0.3, animations: { 
             
+            //Animate disappearance
             self.snap.alpha = 0
-            self.moviePlayer.player = nil
-            self.moviePlayer.removeFromSuperlayer()
+            self.snapTimer.alpha = 0
+            
+            }) { (Bool) in
+                
+                //Close beacon after animation
+                self.closeBeacon()
         }
-        
     }
     
     
-    internal func snapSwiped(recognizer: UIPanGestureRecognizer) {
+    @IBAction func snapPanned(sender: UIPanGestureRecognizer) {
         
         
-        switch recognizer.state {
+        switch sender.state {
             
         case .Began:
             
+            //Restrict touches to snap only
+            container.userInteractionEnabled = false
+            
+            //Show status bar if hidden
             if self.hideStatusBar {
                 
                 toggleStatusBar()
@@ -93,17 +98,17 @@ class SnapController: UIViewController {
         case .Changed:
             
             //Move snap
-            let translation = recognizer.translationInView(snap.superview)
+            let translation = sender.translationInView(snap.superview)
             snap.center.y = lastLocation.y + translation.y
             
             
-        case .Ended:
+        case .Ended, .Cancelled:
             
             let snapDistance = abs(snap.center.y - self.view.center.y)
             let distanceFraction = snapDistance/self.view.bounds.height
             
             
-            //If not moved much, move snap back
+            //If not moved much, move snap back and hide status bar
             if distanceFraction < 0.10 {
                 
                 print("Moving image back")
@@ -129,23 +134,33 @@ class SnapController: UIViewController {
                     
                     }, completion: { (BooleanLiteralType) -> Void in
                         
-                        //Post slide snap config
-                        self.moviePlayer.player = nil
-                        self.moviePlayer.removeFromSuperlayer()
-                        self.snap.alpha = 0
-                        self.snap.userInteractionEnabled = false
+                        self.closeBeacon()
                 })
             }
+            
         default:
             print("default")
         }
     }
     
     
+    internal func closeBeacon() {
+        
+        
+        //Post slide snap config
+        self.moviePlayer.player = nil
+        self.moviePlayer.removeFromSuperlayer()
+        self.snap.image = nil
+        self.snap.alpha = 0
+        self.snap.userInteractionEnabled = false
+        self.container.userInteractionEnabled = true
+        
+    }
+    
+    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
-        print("Moving image around")
-        //snap.superview!.bringSubviewToFront(snap)
+        print("Touching")
         lastLocation = snap.center
         
     }
@@ -160,10 +175,10 @@ class SnapController: UIViewController {
     
     override func childViewControllerForStatusBarHidden() -> UIViewController? {
         
-        print("Status bar hiding method")
+        print("Status bar hiding method - Snap Controller")
         if hideStatusBar {
         
-            print("Status bar is in the center")
+            print("Snap is in the center, rely on self for status bar hiding")
             return nil
         }
         
@@ -173,7 +188,7 @@ class SnapController: UIViewController {
     
     override func childViewControllerForStatusBarStyle() -> UIViewController? {
         
-        print("Status bar style method")
+        print("Status bar style method - Snap Controller")
         return childController
     }
     

@@ -8,13 +8,19 @@
 
 import Foundation
 import UIKit
+import ParseUI
 
 class CountryBackground: UIView {
     
     
     let background = CAShapeLayer()
-    let progressView = CAShapeLayer()
-
+    let progressLayer = CAShapeLayer()
+    var progressView = UIView()
+    let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
+    var isAnimating = false
+    
+    var color = BeaconColors().redColor.CGColor
+    
     
     required init?(coder aDecoder: NSCoder) {
         
@@ -22,28 +28,86 @@ class CountryBackground: UIView {
         
         let frame = super.frame
         
-        background.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        background.fillColor = UIColor(red: 255.0/255.0, green: 103.0/255.0, blue: 102.0/255.0, alpha: 1).CGColor
+        //Create view
+        progressView.frame = self.bounds
+        progressView.backgroundColor = UIColor.clearColor()
+        progressView.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI)/2)
+        self.addSubview(progressView)
         
+        //Create background layer
+        background.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
+        background.fillColor = self.color
         self.layer.addSublayer(background)
+        
+        //Rotate view for progress bar, and rotate country image back
+        let country = self.viewWithTag(5)
+        self.bringSubviewToFront(country!)
+        
+        
+        //Register for interruption notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CountryBackground.resumeAnimating), name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
     
     
     internal func setProgress(progress: Float) {
         
         
-        progressView.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        progressView.fillColor = UIColor.clearColor().CGColor
-        progressView.strokeColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1).CGColor
-        progressView.lineWidth = 4
-        progressView.strokeStart = 1.0 - CGFloat(progress)
-        progressView.strokeEnd = 1.0
+        progressLayer.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         
-        self.layer.addSublayer(progressView)
+        progressLayer.fillColor = UIColor.clearColor().CGColor
+        progressLayer.strokeColor = background.fillColor
+        progressLayer.lineWidth = 2.5
+        progressLayer.strokeStart = 1.0 - CGFloat(progress)
+        progressLayer.strokeEnd = 1.0
+        progressLayer.lineCap = kCALineCapRound
+        
+        progressView.layer.addSublayer(progressLayer)
     }
+    
+    
+    internal func changeBackgroundColor(color: CGColor) {
+        
+        background.fillColor = color
+        progressLayer.fillColor = color
+    }
+    
     
     internal func noProgress() {
         
-        progressView.removeFromSuperlayer()
+        progressLayer.removeFromSuperlayer()
     }
+    
+    
+    internal func startAnimating() {
+    
+        isAnimating = true
+        progressView.layer.removeAllAnimations()
+        
+        rotateAnimation.fromValue = CGFloat(-M_PI/2)
+        rotateAnimation.toValue = CGFloat(3 * M_PI/2)
+        rotateAnimation.duration = 1
+        rotateAnimation.repeatCount = HUGE
+        
+        
+        progressView.layer.addAnimation(rotateAnimation, forKey: "rotate")
+    
+    }
+    
+    
+    internal func resumeAnimating() {
+        
+        if isAnimating {
+            
+            progressView.layer.addAnimation(rotateAnimation, forKey: "rotate")
+        }
+    }
+    
+    
+    internal func stopAnimating() {
+        
+        //Remove animations and hide
+        isAnimating = false
+        progressView.layer.removeAllAnimations()
+    }
+    
 }

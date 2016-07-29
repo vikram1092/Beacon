@@ -14,6 +14,7 @@ class SettingsController: UIViewController {
     var userEmail = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
     
+    
     override func viewDidLoad() {
         
         //Retreive user details
@@ -25,6 +26,7 @@ class SettingsController: UIViewController {
         
     }
     
+    
     override func viewDidAppear(animated: Bool) {
         
         super.viewDidAppear(true)
@@ -33,6 +35,7 @@ class SettingsController: UIViewController {
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         
+        print("Status bar style method - Settings Controller")
         return UIStatusBarStyle.LightContent
     }
     
@@ -41,6 +44,4 @@ class SettingsController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
 }

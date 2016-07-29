@@ -14,17 +14,26 @@ class TabBarController: UITabBarController {
     
     override func viewDidAppear(animated: Bool) {
         
-        self.setNeedsStatusBarAppearanceUpdate()
         super.viewDidAppear(true)
     }
     
     override func childViewControllerForStatusBarStyle() -> UIViewController? {
         
+        print("Status bar style method - Tab Bar Controller")
+        if self.selectedViewController == nil {
+            
+            return CameraController()
+        }
         return self.selectedViewController
     }
     
     override func childViewControllerForStatusBarHidden() -> UIViewController? {
         
+        print("Status bar hiding method - Tab Bar Controller")
+        if self.selectedViewController == nil {
+            
+            return CameraController()
+        }
         return self.selectedViewController
     }
 }

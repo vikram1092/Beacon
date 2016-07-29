@@ -11,20 +11,21 @@ import UIKit
 
 
 class PrivacyPolicyController: UIViewController {
+ 
     
-    
-    @IBOutlet var privacyPolicy: UILabel!
-    
-    let privacyText = "PRIVACY POLICY \n \n Your pictures will be shared with random people, but not your identity. "
-    
+    @IBOutlet var textView: UITextView!
     
     
     override func viewDidLoad() {
         
         //Load view as normal
         super.viewDidLoad()
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
         
-        privacyPolicy.text = privacyText
+        textView.scrollEnabled = true
     }
     
     

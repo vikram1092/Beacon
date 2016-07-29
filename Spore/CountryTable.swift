@@ -15,7 +15,7 @@ class CountryTable {
     
     internal func getCountryImage(countryCode: String) -> UIImage {
         
-        let link  = "Countries/" + countryCode + "/128.png"
+        let link  = "Countries/" + countryCode.lowercaseString + "/128.png"
         
         if let image = UIImage(named: link) {
             
@@ -28,13 +28,13 @@ class CountryTable {
     
     internal func getCountryName(countryCode: String) -> String {
         
-        var countryName = "India"
-        print("Country:" + countryCode)
+        var countryName = "Unknown"
+        print("Country:" + countryCode.lowercaseString)
         
         //Find country and obtain the 2 digit ISO code
-        for country in table {
+        for country in countryTable {
             
-            if country[1] == countryCode {
+            if country[1] == countryCode.lowercaseString {
                 countryName = country[0]
                 break
             }
@@ -43,7 +43,120 @@ class CountryTable {
         return countryName
     }
     
-    var table = [["Afghanistan","af"],
+    
+    internal func getStateName(stateCode: String) -> String {
+        
+        
+        var stateName = "Unknown"
+        print("State:" + stateCode.lowercaseString)
+        
+        //Find state and obtain name from the 2 digit code
+        for state in usaStateTable {
+            
+            if state[1] == stateCode.lowercaseString {
+                stateName = state[0]
+                break
+            }
+        }
+        
+        return stateName
+    }
+    
+    
+    internal func getStateCode(stateName: String) -> String {
+        
+        
+        var stateCode = "Unknown"
+        print("State:" + stateCode.lowercaseString)
+        
+        //Find state and obtain name from the 2 digit code
+        for state in usaStateTable {
+            
+            if state[0].lowercaseString == stateName.lowercaseString {
+                stateCode = state[1]
+                break
+            }
+        }
+        
+        return stateCode
+    }
+    
+    
+    internal func getStateImage(stateCode: String) -> UIImage {
+        
+        let link  = "Countries/States of the United States/" + stateCode.lowercaseString + "/128.png"
+        
+        if let image = UIImage(named: link) {
+            
+            return image
+        }
+        
+        return UIImage(named: "Countries/Unknown/128.png")!
+    }
+    
+    
+    var usaStateTable = [["Alabama", "al"],
+        ["Alaska", "ak"],
+        ["Arizona", "az"],
+        ["Arkansas", "ar"],
+        ["California", "ca"],
+        ["Colorado", "co"],
+        ["Connecticut", "ct"],
+        ["Delaware", "de"],
+        ["Florida", "fl"],
+        ["Georgia", "ga"],
+        ["Hawaii", "hi"],
+        ["Idaho", "id"],
+        ["Illinois", "il"],
+        ["Indiana", "in"],
+        ["Iowa", "ia"],
+        ["Kansas", "ks"],
+        ["Kentucky", "ky"],
+        ["Louisiana", "la"],
+        ["Maine", "me"],
+        ["Maryland", "md"],
+        ["Massachusetts", "ma"],
+        ["Michigan", "mi"],
+        ["Minnesota", "mn"],
+        ["Mississippi", "ms"],
+        ["Missouri", "mo"],
+        ["Montana", "mt"],
+        ["Nebraska", "ne"],
+        ["Nevada", "nv"],
+        ["New Hampshire", "nh"],
+        ["New Jersey", "nj"],
+        ["New Mexico", "nm"],
+        ["New York", "ny"],
+        ["North Carolina", "nc"],
+        ["North Dakota", "nd"],
+        ["Ohio", "oh"],
+        ["Oklahoma", "ok"],
+        ["Oregon", "or"],
+        ["Pennsylvania", "pa"],
+        ["Rhode Island", "ri"],
+        ["South Carolina", "sc"],
+        ["South Dakota", "sd"],
+        ["Tennessee", "tn"],
+        ["Texas", "tx"],
+        ["Utah", "ut"],
+        ["Vermont", "vt"],
+        ["Virginia", "va"],
+        ["Washington", "wa"], 
+        ["West Virginia", "wv"], 
+        ["Wisconsin", "wi"], 
+        ["Wyoming", "wy"], 
+        ["American Samoa", "as"], 
+        ["Washington, D.C.", "dc"],
+        ["Federated States of Micronesia", "fm"], 
+        ["Guam", "gu"], 
+        ["Marshall Islands", "mh"], 
+        ["Northern Mariana Islands", "mp"], 
+        ["Palau", "pw"], 
+        ["Puerto Rico", "pr"], 
+        ["Virgin Islands", "vi"]]
+    
+    
+    var countryTable = [["Afghanistan","af"],
         ["Åland Islands","ax"],
         ["Albania","al"],
         ["Algeria","dz"],
@@ -52,7 +165,7 @@ class CountryTable {
         ["Angola","ao"],
         ["Anguilla","ai"],
         ["Antarctica","aq"],
-        ["Antigua and Barbuda","ag"],
+        ["Antigua & Barbuda","ag"],
         ["Argentina","ar"],
         ["Armenia","am"],
         ["Aruba","aw"],
@@ -70,8 +183,8 @@ class CountryTable {
         ["Bermuda","bm"],
         ["Bhutan","bt"],
         ["Bolivia","bo"],
-        ["Bonaire, Sint Eustatius and Saba","bq"],
-        ["Bosnia and Herzegovina","ba"],
+        ["Bonaire, Sint Eust. & Saba","bq"],
+        ["Bosnia & Herzegovina","ba"],
         ["Botswana","bw"],
         ["Bouvet Island","bv"],
         ["Brazil","br"],
@@ -85,7 +198,7 @@ class CountryTable {
         ["Canada","ca"],
         ["Cabo Verde","cv"],
         ["Cayman Islands","ky"],
-        ["Central African Republic","cf"],
+        ["Central African Rep.","cf"],
         ["Chad","td"],
         ["Chile","cl"],
         ["China","cn"],
@@ -94,7 +207,7 @@ class CountryTable {
         ["Colombia","co"],
         ["Comoros","km"],
         ["Congo","cg"],
-        ["Congo","cd"],
+        ["Rep. of Congo","cd"],
         ["Cook Islands","ck"],
         ["Costa Rica","cr"],
         ["Côte d'Ivoire","ci"],
@@ -139,7 +252,7 @@ class CountryTable {
         ["Guinea-Bissau","gw"],
         ["Guyana","gy"],
         ["Haiti","ht"],
-        ["Heard Island and McDonald Islands","hm"],
+        ["Heard Is & McDonald Is","hm"],
         ["Holy See","va"],
         ["Honduras","hn"],
         ["Hong Kong","hk"],
@@ -164,7 +277,7 @@ class CountryTable {
         ["South Korea","kr"],
         ["Kuwait","kw"],
         ["Kyrgyzstan","kg"],
-        ["Lao People's Democratic Republic","la"],
+        ["Laos","la"],
         ["Latvia","lv"],
         ["Lebanon","lb"],
         ["Lesotho","ls"],
@@ -207,7 +320,7 @@ class CountryTable {
         ["Nigeria","ng"],
         ["Niue","nu"],
         ["Norfolk Island","nf"],
-        ["Northern Mariana Islands","mp"],
+        ["Northern Mariana Is","mp"],
         ["Norway","no"],
         ["Oman","om"],
         ["Pakistan","pk"],
@@ -225,15 +338,15 @@ class CountryTable {
         ["Qatar","qa"],
         ["Réunion","re"],
         ["Romania","ro"],
-        ["Russian Federation","ru"],
+        ["Russia","ru"],
         ["Rwanda","rw"],
         ["Saint Barthélemy","bl"],
-        ["Saint Helena, Ascension and Tristan da Cunha","sh"],
+        ["Saint Helena, Ascension & Tristan da Cunha","sh"],
         ["Saint Kitts and Nevis","kn"],
         ["Saint Lucia","lc"],
         ["Saint Martin (French part)","mf"],
-        ["Saint Pierre and Miquelon","pm"],
-        ["Saint Vincent and the Grenadines","vc"],
+        ["Saint Pierre & Miquelon","pm"],
+        ["Saint Vincent & Grenadines","vc"],
         ["Samoa","ws"],
         ["San Marino","sm"],
         ["Sao Tome and Principe","st"],
@@ -249,7 +362,7 @@ class CountryTable {
         ["Solomon Islands","sb"],
         ["Somalia","so"],
         ["South Africa","za"],
-        ["South Georgia and the South Sandwich Islands","gs"],
+        ["South Georgia & South Sandwich Is","gs"],
         ["South Sudan","ss"],
         ["Spain","es"],
         ["Sri Lanka","lk"],
@@ -259,7 +372,7 @@ class CountryTable {
         ["Swaziland","sz"],
         ["Sweden","se"],
         ["Switzerland","ch"],
-        ["Syrian Arab Republic","sy"],
+        ["Syria","sy"],
         ["Taiwan","tw"],
         ["Tajikistan","tj"],
         ["Tanzania","tz"],
@@ -276,10 +389,10 @@ class CountryTable {
         ["Tuvalu","tv"],
         ["Uganda","ug"],
         ["Ukraine","ua"],
-        ["United Arab Emirates","ae"],
+        ["UAE","ae"],
         ["United Kingdom","gb"],
-        ["United States of America","us"],
-        ["United States Minor Outlying Islands","um"],
+        ["USA","us"],
+        ["US Minor Outlying Islands","um"],
         ["Uruguay","uy"],
         ["Uzbekistan","uz"],
         ["Vanuatu","vu"],
