@@ -740,6 +740,36 @@ class UserListController: UITableViewController {
     
     
     
+    internal override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        
+        
+        //Handle the table if empty
+        if userList.count > 0 {
+            
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+            self.tableView.backgroundView = nil
+            return 1
+        }
+        else {
+            
+            
+            //Display a message when the table is empty
+            let messageLabel = UILabel(frame: CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height))
+            
+            messageLabel.text = "No beacons received yet. Go to the camera and take a beacon!";
+            messageLabel.textColor = UIColor.darkGrayColor()
+            messageLabel.numberOfLines = 0
+            messageLabel.textAlignment = NSTextAlignment.Center
+            messageLabel.font = UIFont.systemFontOfSize(14)
+            messageLabel.sizeToFit()
+            
+            self.tableView.backgroundView = messageLabel
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        }
+        
+        return 0
+    }
+    
     
     internal override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
@@ -1678,7 +1708,7 @@ class UserListController: UITableViewController {
         
         //Show label if the user default is nil
         print("showTutorialTapBeaconView")
-        if userDefaults.objectForKey("showTutorialTapBeacon") == nil {
+        if userDefaults.objectForKey("tutorialTapBeacon") == nil {
             
             let heading = "You Got A Beacon!"
             let text = "Tap to open it!"

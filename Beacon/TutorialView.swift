@@ -24,6 +24,7 @@ class TutorialView: UIView {
     let rectColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1).CGColor
     let headingColor = BeaconColors().blueColor
     let textColor = UIColor.darkGrayColor()
+    let userDefaults = NSUserDefaults.standardUserDefaults()
     
     
     override init(frame: CGRect) {
@@ -164,7 +165,12 @@ class TutorialView: UIView {
             
         }) { (Bool) in
             
-            //Remove view
+            //Set key if not nil and remove view
+            if key != nil {
+                
+                self.userDefaults.setBool(true, forKey: key!)
+            }
+            
             self.removeFromSuperview()
         }
     }

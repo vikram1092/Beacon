@@ -92,7 +92,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         //Remove beacon control tutorial view
         removeTutorialBeaconControlReceivedView()
-    }
+    } 
     
     
     internal func getUserDefaults() {

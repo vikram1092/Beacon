@@ -83,6 +83,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     override func viewDidLoad() {
         
+        
         //Run view load as normal
         super.viewDidLoad()
         
@@ -102,10 +103,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Set gradients
         setGradients()
         
-        
         //Set color for activity indicator
         self.activityIndicator.changeColor(UIColor.whiteColor().CGColor)
-        
         
         //Adjust button views
         cameraSwitchButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 20, right: 20)
@@ -114,11 +113,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         backButton.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 10, right: 10)
         cameraImage.addSubview(snapTimer)
         captureButton.addSubview(captureShape)
-        
     }
     
     
     override func viewWillAppear(animated: Bool) {
+        
         
         print("viewWillAppear")
         //Run as normal
@@ -188,14 +187,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         }
         else if firstTime && captureDevice == nil {
             
-            print("Restart camera")
-            //Start camera session that's already set up in serial queue
+            print("Start camera")
+            //Set up and start camera session
             dispatch_async(cameraQueue, { () -> Void in
                 
                 //Dispatch to high priority queue and monitor from camera queue
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
                     
-                    //Set up camera and begin session
+                    
                     self.initializeSession()
                     self.initializeView()
                 })
@@ -1273,14 +1272,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         }
         else if cameraPermission == AVAuthorizationStatus.Denied || cameraPermission == AVAuthorizationStatus.Restricted {
             
-            showAlert("Please enable camera from your settings, you'll need it to use this app.")
+            showAlert("Please enable the camera from your settings, you'll need it to use this app.")
         }
         //Check location permission
         else if locationPermission == CLAuthorizationStatus.NotDetermined {
             
-            
-            //Request authorization only, refer to override method "didChangeAuthorizationStatus"
-            //for similar completion handling when authorization status changes
+            //Change delegate to self and request authorization.
+            //Refer to override method "didChangeAuthorizationStatus"
+            //for similar completion handling when authorization status changes.
+            locManager.delegate = self
             locManager.requestWhenInUseAuthorization()
         }
         else if locationPermission == CLAuthorizationStatus.Denied || locationPermission == CLAuthorizationStatus.Restricted {
@@ -1391,6 +1391,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         
         if !captureSession.running {
+            
+            print("didChangeAuthorizationStatus: is not running")
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
                 print("Location authorization changed.")
@@ -1399,6 +1401,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 }
                 else { self.requestPermissions() }
             })
+        }
+        else {
+            
+            print("didChangeAuthorizationStatus: is running")
         }
     }
     
@@ -1587,14 +1593,14 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         if userDefaults.objectForKey("tutorialTakeBeacon") == nil {
             
             let heading = "Take A Beacon!"
-            let text = "Press for photo\nHold for video"
+            let text = "Capture something cool!\nPress for photo, hold for video"
             
             dispatch_async(dispatch_get_main_queue(), { 
                 
                 
                 //Set bounds and create tutorial view
                 let height = CGFloat(100)
-                let width = CGFloat(170)
+                let width = CGFloat(200)
                 let verticalPoint = self.captureButton.frame.minY
                 self.tutorialTakeBeaconView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2, y: verticalPoint - height - 50, width: width, height: height))
                 self.tutorialTakeBeaconView.showText(heading, text: text)
@@ -1625,7 +1631,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         if userDefaults.objectForKey("tutorialSendBeacon") == nil {
             
             let heading = "Send The Beacon!"
-            let text = "You'll get one back from somewhere in the world"
+            let text = "You'll get one back from somewhere in the world!"
             
             dispatch_async(dispatch_get_main_queue(), {
                 

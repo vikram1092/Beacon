@@ -55,25 +55,28 @@
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
                                 <rect key="frame" x="0.0" y="95" width="600" height="50"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="ifP-vi-HCl"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="2kD-Y1-z0V" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="12W-fC-mAh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="5U6-6u-5Y5"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="6of-JT-td1"/>
                             <constraint firstAttribute="trailingMargin" secondItem="FJd-ej-OVL" secondAttribute="trailing" constant="-20" id="8ZJ-S2-s5Q"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZQx-md-Vy2" secondAttribute="trailing" constant="5" id="B2e-wr-8dv"/>
                             <constraint firstItem="ZQx-md-Vy2" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="E8T-A0-Y3r"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="MZ3-Ga-dzE"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="2kD-Y1-z0V" secondAttribute="trailing" constant="-20" id="Q7y-Rq-QCq"/>
                             <constraint firstItem="FJd-ej-OVL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="15" id="QrF-ET-16J"/>
+                            <constraint firstItem="2kD-Y1-z0V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="75" id="Us2-kc-Gzc"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ZQx-md-Vy2" secondAttribute="bottom" constant="15" id="V8W-IM-EAo"/>
                             <constraint firstItem="gQw-9e-GDG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="ZZi-Q5-lRK"/>
-                            <constraint firstItem="2kD-Y1-z0V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="75" id="edR-ec-F02"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="2kD-Y1-z0V" secondAttribute="trailing" constant="-20" id="bAO-2m-WDm"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="20" id="f2E-N9-ebj"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="FJd-ej-OVL" secondAttribute="bottom" id="jbY-HI-dej"/>
                             <constraint firstItem="ZQx-md-Vy2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="qtS-sg-4zZ"/>
-                            <constraint firstItem="2kD-Y1-z0V" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="reB-Zs-snP"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="rxy-Me-TZO"/>
                             <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="xlK-Oc-cJE"/>
                         </constraints>
@@ -573,7 +576,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                             <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save your photos and videos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VxS-SN-a1I">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save your beacons" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VxS-SN-a1I">
                                                     <rect key="frame" x="8" y="11" width="314" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="314" id="jmj-7c-Ciq"/>
@@ -1700,6 +1703,6 @@ THE SOFTWARE.
         <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8ds-TT-rzm"/>
+        <segue reference="fzn-UV-xBd"/>
     </inferredMetricsTieBreakers>
 </document>
