@@ -19,9 +19,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     @IBOutlet var dotViewRight: DotView!
     @IBOutlet var alertButton: UIButton!
     @IBOutlet var fbLoginButton: FBSDKLoginButton!
+    @IBOutlet var whyFbButton: UIButton!
+    
     var userName = ""
     var userEmail = ""
     var bannedText = "You have been suspended due to some beacons you've sent. Please allow us to investigate and check back later."
+    var whyFbText = "Our app is completely anonymous and we don't care about your info. We use this to keep everyone accountable for their beacons. Press here to continue."
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     
@@ -56,6 +59,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     override func viewDidAppear(animated: Bool) {
         
+        //Start animating dot views
         if !dotViewLeft.isAnimating {
             
             dotViewLeft.startAnimating(23)
@@ -204,6 +208,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         UIView.animateWithDuration(0.4) { () -> Void in
             
             self.fbLoginButton.alpha = 0
+            self.whyFbButton.alpha = 0
             self.alertButton.alpha = 1
         }
         
@@ -218,6 +223,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         UIView.animateWithDuration(0.4) { () -> Void in
             
             self.fbLoginButton.alpha = 1
+            self.whyFbButton.alpha = 1
             self.alertButton.alpha = 0
         }
     }
@@ -266,6 +272,14 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     internal func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
         print("User Logged Out")
+    }
+    
+    
+    @IBAction func whyFbButtonPressed(sender: AnyObject) {
+        
+        
+        //Show alert to explain
+        showAlert(whyFbText)
     }
     
     

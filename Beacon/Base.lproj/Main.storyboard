@@ -21,6 +21,9 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQx-md-Vy2" customClass="DotView" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="575" height="585"/>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
+                                <rect key="frame" x="25" y="15" width="575" height="585"/>
+                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
                                 <rect key="frame" x="0.0" y="253" width="600" height="94"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -49,9 +52,6 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
-                                <rect key="frame" x="25" y="15" width="575" height="585"/>
-                            </view>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
                                 <rect key="frame" x="0.0" y="95" width="600" height="50"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -59,11 +59,26 @@
                                     <constraint firstAttribute="height" constant="50" id="ifP-vi-HCl"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hqW-1n-3Sk">
+                                <rect key="frame" x="20" y="489" width="110" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="110" id="YEW-5H-NNR"/>
+                                    <constraint firstAttribute="height" constant="40" id="Ygh-FG-nGf"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <state key="normal" title="Why Facebook?">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="whyFbButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="54p-Rc-pBE"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="12W-fC-mAh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="5U6-6u-5Y5"/>
+                            <constraint firstItem="hqW-1n-3Sk" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="6fA-y4-rvi"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="6of-JT-td1"/>
                             <constraint firstAttribute="trailingMargin" secondItem="FJd-ej-OVL" secondAttribute="trailing" constant="-20" id="8ZJ-S2-s5Q"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZQx-md-Vy2" secondAttribute="trailing" constant="5" id="B2e-wr-8dv"/>
@@ -76,6 +91,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="2kD-Y1-z0V" secondAttribute="trailing" constant="-20" id="bAO-2m-WDm"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="20" id="f2E-N9-ebj"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="FJd-ej-OVL" secondAttribute="bottom" id="jbY-HI-dej"/>
+                            <constraint firstItem="gQw-9e-GDG" firstAttribute="top" secondItem="hqW-1n-3Sk" secondAttribute="bottom" id="lGb-OX-dfh"/>
                             <constraint firstItem="ZQx-md-Vy2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="qtS-sg-4zZ"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="rxy-Me-TZO"/>
                             <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="xlK-Oc-cJE"/>
@@ -90,6 +106,7 @@
                         <outlet property="dotViewRight" destination="FJd-ej-OVL" id="rd5-km-PSu"/>
                         <outlet property="fbLoginButton" destination="gQw-9e-GDG" id="6at-YT-Qh3"/>
                         <outlet property="logoView" destination="2kD-Y1-z0V" id="pfn-QS-tNs"/>
+                        <outlet property="whyFbButton" destination="hqW-1n-3Sk" id="JcL-oj-wy2"/>
                         <segue destination="UdC-tP-fdI" kind="presentation" identifier="LoginToMain" id="BF7-rl-4Xr"/>
                     </connections>
                 </viewController>
