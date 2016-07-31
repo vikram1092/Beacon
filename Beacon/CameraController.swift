@@ -587,6 +587,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
                         //Change elements on screen
+                        self.turnTorchOff()
                         self.flashButton.hidden = true
                         self.cameraSwitchButton.hidden = true
                         self.backButton.hidden = true
@@ -680,6 +681,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         movieFileOutput.stopRecording()
         audioRecorder.stop()
         captureSession.stopRunning()
+        turnTorchOff()
         
         //Change elements on screen
         self.flashButton.hidden = true
