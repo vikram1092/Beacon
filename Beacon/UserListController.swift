@@ -39,6 +39,12 @@ class UserListController: UITableViewController {
     
     var tutorialTapBeaconView = TutorialView()
     var tutorialSwipeBeaconView = TutorialView()
+    var tutorialBeaconTimeView = TutorialView()
+    var tutorialReportBeaconView = TutorialView()
+    var tutorialTapBeaconViewShown = false
+    var tutorialSwipeBeaconViewShown = false
+    var tutorialBeaconTimeViewShown = false
+    var tutorialReportBeaconViewShown = false
     
     var locManager = CLLocationManager()
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -118,6 +124,7 @@ class UserListController: UITableViewController {
         reloadVisibleRows()
         refreshControl!.endRefreshing()
         beaconRefresh.stopAnimating()
+        removeTutorialBeaconTimeView()
     }
     
     
@@ -924,6 +931,12 @@ class UserListController: UITableViewController {
     
     internal override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
+        
+        //Remove report beacon tutorial view
+        removeTutorialReportBeaconView()
+        
+        
+        //Get user list information
         let userListLength = self.userList.count - 1
         let toBeSent = userList[userListLength - indexPath.row]["sentBy"] as! String == userEmail && userList[userListLength - indexPath.row]["receivedBy"] == nil
         
@@ -1708,7 +1721,7 @@ class UserListController: UITableViewController {
         
         //Show label if the user default is nil
         print("showTutorialTapBeaconView")
-        if userDefaults.objectForKey("tutorialTapBeacon") == nil {
+        if userDefaults.objectForKey("tutorialTapBeacon") == nil && !tutorialTapBeaconViewShown {
             
             let heading = "You Got A Beacon!"
             let text = "Tap to open it!"
@@ -1726,6 +1739,7 @@ class UserListController: UITableViewController {
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialTapBeaconView)
                 self.view.bringSubviewToFront(self.tutorialTapBeaconView)
+                self.tutorialTapBeaconViewShown = true
             })
         }
     }
@@ -1734,9 +1748,10 @@ class UserListController: UITableViewController {
     internal func removeTutorialTapBeaconView() {
         
         //Remove send beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialTapBeacon") == nil {
+        if userDefaults.objectForKey("tutorialTapBeacon") == nil && tutorialTapBeaconViewShown {
             
             tutorialTapBeaconView.removeView("tutorialTapBeacon")
+            tutorialTapBeaconViewShown = false
         }
     }
     
@@ -1746,7 +1761,7 @@ class UserListController: UITableViewController {
         
         //Show label if the user default is nil
         print("showTutorialSwipeBeaconView")
-        if userDefaults.objectForKey("tutorialSwipeBeacon") == nil {
+        if userDefaults.objectForKey("tutorialSwipeBeacon") == nil && !tutorialSwipeBeaconViewShown {
             
             let heading = "Take It To The Map!"
             let text = "Swipe the country to the right\nto see it on the map"
@@ -1765,7 +1780,13 @@ class UserListController: UITableViewController {
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialSwipeBeaconView)
                 self.view.bringSubviewToFront(self.tutorialSwipeBeaconView)
+                self.tutorialSwipeBeaconViewShown = true
             })
+        }
+        else {
+            
+            //Show beacon time tutorial view
+            showTutorialBeaconTimeView()
         }
     }
     
@@ -1773,9 +1794,98 @@ class UserListController: UITableViewController {
     internal func removeTutorialSwipeBeaconView() {
         
         //Remove send beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialSwipeBeacon") == nil {
+        if userDefaults.objectForKey("tutorialSwipeBeacon") == nil && tutorialSwipeBeaconViewShown {
             
             tutorialSwipeBeaconView.removeView("tutorialSwipeBeacon")
+            tutorialSwipeBeaconViewShown = false
+        }
+    }
+    
+    
+    internal func showTutorialBeaconTimeView() {
+        
+        
+        //Show label if the user default is nil
+        print("showTutorialBeaconTimeView")
+        if userDefaults.objectForKey("tutorialBeaconTime") == nil && !tutorialBeaconTimeViewShown {
+            
+            let heading = "Time Left"
+            let text = "You can see the beacon until\nthe circle disappears"
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(200)
+                self.tutorialBeaconTimeView = TutorialView(frame: CGRect(x: 20, y: self.tableView.frame.minY + self.tableView.rowHeight + 15, width: width, height: height))
+                self.tutorialBeaconTimeView.pointTriangleUp()
+                self.tutorialBeaconTimeView.moveTriangle(CGPoint(x: -width/2 + 30, y: 0))
+                self.tutorialBeaconTimeView.showText(heading, text: text)
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialBeaconTimeView)
+                self.view.bringSubviewToFront(self.tutorialBeaconTimeView)
+                self.tutorialBeaconTimeViewShown = true
+                self.userDefaults.setBool(true, forKey: "tutorialBeaconTime")
+                
+            })
+        }
+        else {
+            
+            //Show report beacon tutorial view
+            showTutorialReportBeaconView()
+        }
+    }
+    
+    
+    internal func removeTutorialBeaconTimeView() {
+        
+        //Remove send beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialBeaconTime") != nil && tutorialBeaconTimeViewShown {
+            
+            tutorialBeaconTimeView.removeView("tutorialBeaconTime")
+            tutorialBeaconTimeViewShown = false
+        }
+    }
+    
+    
+    internal func showTutorialReportBeaconView() {
+        
+        
+        //Show label if the user default is nil
+        print("showTutorialReportBeaconView")
+        if userDefaults.objectForKey("tutorialReportBeacon") == nil && !tutorialReportBeaconViewShown && !tutorialBeaconTimeViewShown {
+            
+            let heading = "Naughty Beacon?"
+            let text = "Swipe left to report it."
+            tutorialReportBeaconViewShown = true
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(210)
+                self.tutorialReportBeaconView = TutorialView(frame: CGRect(x: self.view.bounds.width/2 - width/2, y: self.tableView.frame.minY + self.tableView.rowHeight + 15, width: width, height: height))
+                self.tutorialReportBeaconView.pointTriangleUp()
+                self.tutorialReportBeaconView.showText(heading, text: text)
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialReportBeaconView)
+                self.view.bringSubviewToFront(self.tutorialReportBeaconView)
+            })
+        }
+    }
+    
+    
+    internal func removeTutorialReportBeaconView() {
+        
+        //Remove send beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialReportBeacon") == nil && tutorialReportBeaconViewShown {
+            
+            tutorialReportBeaconView.removeView("tutorialReportBeacon")
+            tutorialBeaconTimeViewShown = false
         }
     }
     
