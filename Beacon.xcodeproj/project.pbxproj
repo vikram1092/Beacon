@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		052155DA757B0752482E71BD /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009B0B61EF1DEC35F92C2FAC /* Pods.framework */; };
+		494C579873E4B7261BAC79BD /* Pods_Beacon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D72ABD25498000DAF7F379F5 /* Pods_Beacon.framework */; };
 		D136589E1C55BF5C005AEC61 /* cameraButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D136589C1C55BF5C005AEC61 /* cameraButton.png */; };
 		D136589F1C55BF5C005AEC61 /* cameraButton@x3.png in Resources */ = {isa = PBXBuildFile; fileRef = D136589D1C55BF5C005AEC61 /* cameraButton@x3.png */; };
 		D137E8771CA95BB9004F9B44 /* TermsOfUseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */; };
@@ -140,8 +140,8 @@
 
 /* Begin PBXFileReference section */
 		009B0B61EF1DEC35F92C2FAC /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8AD4534980CEC18A6FB9004C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		A24AE4AF9B2901968170A7F5 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		7A1A40EE1CF8536030A1AC0C /* Pods-Beacon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Beacon.release.xcconfig"; path = "Pods/Target Support Files/Pods-Beacon/Pods-Beacon.release.xcconfig"; sourceTree = "<group>"; };
+		CA04FC596C873521C3FCC4B4 /* Pods-Beacon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Beacon.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Beacon/Pods-Beacon.debug.xcconfig"; sourceTree = "<group>"; };
 		D136589C1C55BF5C005AEC61 /* cameraButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cameraButton.png; path = "../../Spore Images/cameraButton.png"; sourceTree = "<group>"; };
 		D136589D1C55BF5C005AEC61 /* cameraButton@x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cameraButton@x3.png"; path = "../../Spore Images/cameraButton@x3.png"; sourceTree = "<group>"; };
 		D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfUseController.swift; sourceTree = SOURCE_ROOT; };
@@ -267,6 +267,7 @@
 		D1EC295B1C2E1E850014DE7E /* Countries */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Countries; path = ../../Countries; sourceTree = "<group>"; };
 		D1EDE4F91D32D6CE0026D23C /* Altiplano.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Altiplano.jpg; sourceTree = "<group>"; };
 		D1F3354E1D156C1D000FFBD9 /* CameraBackButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CameraBackButton@x2.png"; path = "../../Spore Images/CameraBackButton@x2.png"; sourceTree = "<group>"; };
+		D72ABD25498000DAF7F379F5 /* Pods_Beacon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Beacon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,7 +283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D1E08D1F1C5D430E0070DA9A /* MapKit.framework in Frameworks */,
-				052155DA757B0752482E71BD /* Pods.framework in Frameworks */,
+				494C579873E4B7261BAC79BD /* Pods_Beacon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,8 +300,18 @@
 				D1E08D1E1C5D430E0070DA9A /* MapKit.framework */,
 				D1D8A5481C5D3AA100E95BCE /* Settings.bundle */,
 				009B0B61EF1DEC35F92C2FAC /* Pods.framework */,
+				D72ABD25498000DAF7F379F5 /* Pods_Beacon.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A800B85C3E074E8429E1751D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CA04FC596C873521C3FCC4B4 /* Pods-Beacon.debug.xcconfig */,
+				7A1A40EE1CF8536030A1AC0C /* Pods-Beacon.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		D136589B1C55BC59005AEC61 /* CameraButtons */ = {
@@ -480,8 +491,8 @@
 			isa = PBXGroup;
 			children = (
 				D1B9C7181C2258B800D9AEE7 /* Beacon */,
-				D9CDAC2BB88D7D39085B896F /* Pods */,
 				7004F287B6C8D91AAD51E180 /* Frameworks */,
+				A800B85C3E074E8429E1751D /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -536,15 +547,6 @@
 			path = Beacon;
 			sourceTree = "<group>";
 		};
-		D9CDAC2BB88D7D39085B896F /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				A24AE4AF9B2901968170A7F5 /* Pods.debug.xcconfig */,
-				8AD4534980CEC18A6FB9004C /* Pods.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -570,12 +572,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D1B9C7281C2258B800D9AEE7 /* Build configuration list for PBXNativeTarget "Beacon" */;
 			buildPhases = (
-				490BAF45932680C93B50B17B /* Check Pods Manifest.lock */,
+				D7988AA3B2651553C8B2C0ED /* [CP] Check Pods Manifest.lock */,
 				D1B9C7121C2258B800D9AEE7 /* Sources */,
 				D1B9C7131C2258B800D9AEE7 /* Frameworks */,
 				D1B9C7141C2258B800D9AEE7 /* Resources */,
-				68FBA8AD43D3EABB3BD213FF /* Embed Pods Frameworks */,
-				3654485AB5D59460D49C1664 /* Copy Pods Resources */,
+				B3F97F742AAB4F805FC8D358 /* [CP] Embed Pods Frameworks */,
+				FE4B22BF141424B6E931D4C8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -728,29 +730,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3654485AB5D59460D49C1664 /* Copy Pods Resources */ = {
+		B3F97F742AAB4F805FC8D358 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Beacon/Pods-Beacon-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		490BAF45932680C93B50B17B /* Check Pods Manifest.lock */ = {
+		D7988AA3B2651553C8B2C0ED /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -758,19 +760,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		68FBA8AD43D3EABB3BD213FF /* Embed Pods Frameworks */ = {
+		FE4B22BF141424B6E931D4C8 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Beacon/Pods-Beacon-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -894,7 +896,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -916,6 +919,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "a8e484fa-c14b-43c8-88a0-bda85ffd29c8";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -938,7 +942,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -953,6 +958,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "a8e484fa-c14b-43c8-88a0-bda85ffd29c8";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -960,11 +966,11 @@
 		};
 		D1B9C7291C2258B800D9AEE7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A24AE4AF9B2901968170A7F5 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = CA04FC596C873521C3FCC4B4 /* Pods-Beacon.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
 				COMPRESS_PNG_FILES = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -974,7 +980,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vikram.Beacon;
 				PRODUCT_NAME = Beacon;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "a8e484fa-c14b-43c8-88a0-bda85ffd29c8";
 				SWIFT_OBJC_BRIDGING_HEADER = "Beacon/Spore-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -982,11 +988,11 @@
 		};
 		D1B9C72A1C2258B800D9AEE7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8AD4534980CEC18A6FB9004C /* Pods.release.xcconfig */;
+			baseConfigurationReference = 7A1A40EE1CF8536030A1AC0C /* Pods-Beacon.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
 				COMPRESS_PNG_FILES = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -996,7 +1002,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vikram.Beacon;
 				PRODUCT_NAME = Beacon;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "a8e484fa-c14b-43c8-88a0-bda85ffd29c8";
 				SWIFT_OBJC_BRIDGING_HEADER = "Beacon/Spore-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

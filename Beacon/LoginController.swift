@@ -7,24 +7,22 @@
 //
 
 import UIKit
-import FBSDKCoreKit
-import FBSDKLoginKit
 import Parse
 
-class LoginController: UIViewController, FBSDKLoginButtonDelegate {
+class LoginController: UIViewController {
 
     
     @IBOutlet var logoView: UIImageView!
     @IBOutlet var dotViewLeft: DotView!
     @IBOutlet var dotViewRight: DotView!
     @IBOutlet var alertButton: UIButton!
-    @IBOutlet var fbLoginButton: FBSDKLoginButton!
-    @IBOutlet var whyFbButton: UIButton!
+    @IBOutlet var workingView: UIView!
+    @IBOutlet var workingMessageLabel: UILabel!
+    @IBOutlet var beaconingIndicator: BeaconingIndicator!
     
-    var userName = ""
-    var userEmail = ""
+    var userID: String? = nil
+    var banned: Bool? = nil
     var bannedText = "You have been suspended due to some beacons you've sent. Please allow us to investigate and check back later."
-    var whyFbText = "Our app is completely anonymous and we don't care about your info. We use this to keep everyone accountable for their beacons. Press here to continue."
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     
@@ -33,6 +31,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         //Load as normal
         super.viewDidLoad()
         
+        //Initialize views
         self.view.sendSubviewToBack(dotViewLeft)
         self.view.sendSubviewToBack(dotViewRight)
 
@@ -40,6 +39,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         dotViewRight.frame = self.view.bounds
         dotViewLeft.initializeViews()
         dotViewRight.initializeViews()
+        
+        beaconingIndicator.changeColor(UIColor.whiteColor().CGColor)
+        
     }
     
     
@@ -47,19 +49,14 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         //Initialize UI objects
         alertButton.alpha = 0
-        
-        //Set permissions to get from Facebook
-        fbLoginButton.readPermissions = ["public_profile", "email", "user_friends"]
-        
-        // Configure Facebook login button
-        fbLoginButton.delegate = self
-        
-        
     }
+    
     
     override func viewDidAppear(animated: Bool) {
         
-        //Start animating dot views
+        //Start animating all views
+        beaconingIndicator.startAnimating()
+        
         if !dotViewLeft.isAnimating {
             
             dotViewLeft.startAnimating(23)
@@ -69,6 +66,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             
             dotViewRight.startAnimating(-23)
         }
+        
+        handleUserRegistration()
     }
     
     
@@ -77,6 +76,222 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         //Stop all animations
         dotViewLeft.stopAnimating()
         dotViewRight.stopAnimating()
+        beaconingIndicator.stopAnimating()
+    }
+    
+    
+    internal func handleUserRegistration() {
+        
+        
+        //Get user defaults
+        getUserDefaults()
+        
+        //Handle the userID depending on whether it's valid or not
+        if userID == nil {
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { 
+                
+                self.generateNewUserID()
+            })
+        }
+        else if userID != nil && banned! {
+            
+            showWorkingView()
+            checkIfUserBanned()
+        }
+    }
+    
+    
+    internal func getUserDefaults() {
+        
+        //Get user ID
+        userID = userDefaults.objectForKey("userID") as? String
+        
+        //Get banned status
+        banned = userDefaults.boolForKey("banned")
+    }
+    
+    
+    internal func generateNewUserID() {
+        
+        
+        //Show user animation
+        showWorkingView()
+        
+        //Create random string
+        let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        var newUserID = ""
+        let length = 50
+        
+        for _ in 0..<length {
+            
+            let randomIndex = Int(arc4random_uniform(UInt32(characters.characters.count)))
+            let newChar = characters[characters.startIndex.advancedBy(randomIndex)]
+            newUserID.append(newChar)
+        }
+        
+        
+        //Check database to see if user exists already
+        do {
+            
+            let query = PFQuery(className: "users")
+            query.whereKey("userID", equalTo: newUserID)
+            let objects = try query.findObjects()
+
+            if objects.count == 0 {
+                
+                //User doesn't exist, save user locally
+                userID = newUserID
+                saveID(userID!)
+                
+                //Also create user in database
+                let user = PFObject(className:"users")
+                user["userID"] = self.userID
+                user["banned"] = false
+                
+                user.saveInBackgroundWithBlock {
+                    (success: Bool, error: NSError?) -> Void in
+                    if (success) {
+                        
+                        // The user has been saved, seque to next screen
+                        print("New user saved")
+                        
+                        self.showAlert(self.userID!)
+                        self.segueToNextView("LoginToMain")
+                    }
+                    else {
+                        
+                        // There was a problem, check error
+                        print("Error saving user: \(error)")
+                        self.showAlert("We encountered an error. Tap here to try again.")
+                        
+                    }
+                }
+            }
+            else if objects.count > 0 {
+                
+                //User exists, redo function
+                generateNewUserID()
+            }
+        }
+        catch let error as NSError {
+            
+            print("Error searching for userID: \(error)")
+            self.showAlert("We encountered an error. Tap here to try again.")
+        }
+    }
+    
+    
+    internal func showWorkingView() {
+        
+        dispatch_async(dispatch_get_main_queue()) { 
+            
+            if self.workingView.alpha != 1 {
+                
+                UIView.animateWithDuration(0.4) {
+                    
+                    self.workingView.alpha = 1
+                }
+            }
+        }
+    }
+    
+    
+    internal func showAlert(text: String) {
+        
+        self.alertButton.setTitle(text, forState: .Normal)
+        self.alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
+        
+        UIView.animateWithDuration(0.2, animations: {
+            
+            self.workingView.alpha = 0
+            }) { (Bool) in
+                
+                UIView.animateWithDuration(0.2) { () -> Void in
+                    
+                    self.alertButton.alpha = 1
+                }
+        }
+        
+    }
+    
+    
+    @IBAction func alertButtonPressed(sender: AnyObject) {
+    
+        
+        UIView.animateWithDuration(0.4, animations: { 
+            
+            //Animate label
+            self.alertButton.alpha = 0
+            
+            }) { (Bool) in
+                
+                //Handle user registration
+                self.handleUserRegistration()
+        }
+        
+    }
+    
+    
+    internal func saveID(id: String) {
+        
+        //Save user ID
+        userDefaults.setObject(id, forKey: "userID")
+    }
+    
+    
+    internal func checkIfUserBanned() {
+        
+        //Show alert if user is banned
+        let query = PFQuery(className: "users")
+        query.whereKey("userID", equalTo: userID!)
+        query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
+            
+            if error != nil {
+                
+                print("Error getting user banned status: " + error!.description)
+            }
+            else {
+                
+                let bannedStatus = userObject!.objectForKey("banned") as! Bool
+                
+                if !bannedStatus {
+                    
+                    //Un-ban user
+                    print("User not banned anymore.")
+                    self.userDefaults.removeObjectForKey("banned")
+                    self.segueToNextView("LoginToMain")
+                }
+                else {
+                    print("User is still banned!")
+                    dispatch_async(dispatch_get_main_queue(), { 
+                        
+                        //Show user that they're still banned
+                        self.showAlert(self.bannedText)
+                    })
+                }
+            }
+        }
+    }
+    
+    
+    internal func segueToNextView(identifier: String) {
+        
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            
+            if self.tabBarController == nil {
+                
+                    
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                    self.performSegueWithIdentifier(identifier, sender: self)
+            }
+            else {
+                
+                //Go to camera
+                self.tabBarController?.selectedIndex = 0
+            }
+        })
     }
     
     
@@ -86,204 +301,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     
-    //Configure Facebook login button
-    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult loginResult: FBSDKLoginManagerLoginResult!, error: NSError!) {
-        
-        if (error != nil) {
-            //Process error
-            print("Facebook Login Error: \(error.description)")
-        }
-        else if loginResult.isCancelled {
-            //Handle cancellations
-            print("Cancelled")
-        }
-        else {
-            //Call function to check with database
-            print("User Logged In: checking with database")
-            getFacebookResults()
-            
-            //Hide button
-            loginButton.alpha = 0
-        }
-    }
-    
-    
-    internal func getFacebookResults() {
-        
-        //Create request to obtain user email and name
-        let accessToken = FBSDKAccessToken.currentAccessToken()
-        let req = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"email,name"], tokenString: accessToken.tokenString, version: nil, HTTPMethod: "GET")
-        
-        req.startWithCompletionHandler({ (connection, result, error : NSError!) -> Void in
-            
-            if(error == nil){
-                
-                //Send database
-                self.checkWithDatabase(result, source: "Facebook")
-            }
-            else{
-                
-                print("error \(error.description)")
-            }
-        })
-    }
-    
-    
-    
-    internal func checkWithDatabase(result: AnyObject, source: String) {
-        
-        
-        //Query to find email ID in database. If it doesn't exist, create it.
-        let userResult = result as! NSDictionary
-        self.userName = userResult.objectForKey("name") as! String
-        self.userEmail = userResult.objectForKey("email") as! String
-        
-        //Save details
-        self.saveNameAndEmail(self.userName, email: self.userEmail)
-        
-        //Initialize query
-        let query = PFQuery(className:"users")
-        query.whereKey("email", equalTo: self.userEmail)
-        
-        query.findObjectsInBackgroundWithBlock({ (users, error) -> Void in
-            
-            if error == nil && users!.count >= 1 {
-                
-                //Check if user is banned in database
-                print("Object 'users' count: \(users!.count)")
-                let userBanned = users![0]["banned"] as! BooleanLiteralType
-                
-                //If user is banned, show message stating ban
-                if userBanned == true {
-                    
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        
-                        self.showAlert(self.bannedText)
-                    })
-                }
-                else {
-                    
-                    // The user is not banned, seque to next screen
-                    print("User logged in, segue-ing")
-                    self.segueToNextView("LoginToMain")
-                }
-            }
-            else if error == nil && users!.count < 1 {
-                
-                //Create user in database when not found
-                let user = PFObject(className:"users")
-                user["source"] = source
-                user["email"] = self.userEmail
-                user["banned"] = false
-                
-                user.saveInBackgroundWithBlock {
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                        
-                        // The user has been saved, seque to next screen
-                        print("New user saved")
-                        self.segueToNextView("LoginToMain")
-                    }
-                    else {
-                        
-                        // There was a problem, check error
-                        print("Error saving user: \(error)")
-                    }
-                }
-            }
-            else {
-                print("Error: \(error)")
-            }
-        })
-        
-        print("result \(userResult)")
-    }
-    
-    
-    internal func showAlert(text: String) {
-        
-        self.alertButton.setTitle(text, forState: .Normal)
-        self.alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
-        
-        UIView.animateWithDuration(0.4) { () -> Void in
-            
-            self.fbLoginButton.alpha = 0
-            self.whyFbButton.alpha = 0
-            self.alertButton.alpha = 1
-        }
-        
-        //Logout user
-        logoutUser()
-        
-    }
-    
-    
-    @IBAction func alertButtonPressed(sender: AnyObject) {
-        
-        UIView.animateWithDuration(0.4) { () -> Void in
-            
-            self.fbLoginButton.alpha = 1
-            self.whyFbButton.alpha = 1
-            self.alertButton.alpha = 0
-        }
-    }
-    
-    
-    internal func logoutUser() {
-        
-        //Logout user
-        let loginManager = FBSDKLoginManager()
-        loginManager.logOut()
-        
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            
-            //Reset name and email local variables
-            self.userDefaults.setObject(nil, forKey: "userName")
-            self.userDefaults.setObject(nil, forKey: "userEmail")
-        }
-    }
-    
-    
-    internal func saveNameAndEmail(name: String, email: String) {
-        
-        userDefaults.setObject(name, forKey: "userName")
-        userDefaults.setObject(email, forKey: "userEmail")
-    }
-    
-    
-    internal func segueToNextView(identifier: String) {
-        
-        
-        if self.tabBarController == nil {
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                
-                //self.dismissViewControllerAnimated(true, completion: nil)
-                self.performSegueWithIdentifier(identifier, sender: self)
-            })
-        }
-        else {
-            
-            //Go to camera
-            self.tabBarController?.selectedIndex = 0
-        }
-    }
-    
-    
-    internal func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
-        print("User Logged Out")
-    }
-    
-    
-    @IBAction func whyFbButtonPressed(sender: AnyObject) {
-        
-        
-        //Show alert to explain
-        showAlert(whyFbText)
-    }
-    
-    
     override func didReceiveMemoryWarning() {
+        
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }

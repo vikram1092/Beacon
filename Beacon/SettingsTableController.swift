@@ -7,21 +7,17 @@
 //
 
 import UIKit
-import FBSDKCoreKit
-import FBSDKLoginKit
 
 class SettingsTableController: UITableViewController, UIGestureRecognizerDelegate {
     
     
     let userDefaults = NSUserDefaults.standardUserDefaults()
-    var userName = ""
-    var userEmail = ""
+    var userID = ""
     var userCountry = ""
     var userState = ""
     var userCity = ""
     let countryTable = CountryTable()
     
-    @IBOutlet var logoutButton: UIView!
     @IBOutlet var countryPicture: UIImageView!
     @IBOutlet var userLocation: UILabel!
     @IBOutlet var countryBackground: CountryBackground!
@@ -92,26 +88,6 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
             
             performSegueWithIdentifier("AboutSegue", sender: self)
         }
-        else if cell!.tag == 10 {
-            
-            //Show alert controller to ensure logout action
-            let alert = UIAlertController(title: "", message: "Are you sure you want to log out?", preferredStyle: UIAlertControllerStyle.ActionSheet)
-            
-            //Add confirmation button
-            let logOutAction = UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Destructive , handler: { (UIAlertAction) -> Void in
-                
-                    self.logoutUser()
-                })
-            
-            alert.addAction(logOutAction)
-            
-            //Add cancel button
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
-            
-            //Present alert controller
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        
         cell!.selected = false
     }
     
@@ -135,10 +111,9 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         
         
         //Retreive user details
-        if userDefaults.objectForKey("userName") != nil {
+        if userDefaults.objectForKey("userID") != nil {
             
-            userName = userDefaults.objectForKey("userName") as! String
-            userEmail = userDefaults.objectForKey("userEmail") as! String
+            userID = userDefaults.objectForKey("userID") as! String
         }
         
         if userDefaults.objectForKey("userCountry") != nil {
@@ -215,21 +190,6 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         
         
         userLocation.text = text
-    }
-    
-    
-    internal func logoutUser() {
-        
-        //Segue back to the login screen
-        performSegueWithIdentifier("Logout", sender: self)
-        
-        //Logout user
-        let loginManager = FBSDKLoginManager()
-        loginManager.logOut()
-        
-        //Reset name and email local variables
-        userDefaults.setObject(nil, forKey: "userName")
-        userDefaults.setObject(nil, forKey: "userEmail")
     }
     
     

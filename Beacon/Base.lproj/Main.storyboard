@@ -21,11 +21,8 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQx-md-Vy2" customClass="DotView" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="575" height="585"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
-                                <rect key="frame" x="25" y="15" width="575" height="585"/>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="0.0" y="253" width="600" height="94"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                                <rect key="frame" x="0.0" y="254" width="600" height="94"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="94" id="5ad-e3-KjW"/>
@@ -45,13 +42,6 @@
                                     <action selector="alertButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WGk-0c-n9r"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-9e-GDG" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="0.0" y="529" width="600" height="71"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="71" id="EZo-Vu-LVi"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                            </button>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoFront" translatesAutoresizingMaskIntoConstraints="NO" id="2kD-Y1-z0V">
                                 <rect key="frame" x="0.0" y="95" width="600" height="50"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -59,41 +49,59 @@
                                     <constraint firstAttribute="height" constant="50" id="ifP-vi-HCl"/>
                                 </constraints>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hqW-1n-3Sk">
-                                <rect key="frame" x="20" y="489" width="110" height="40"/>
+                            <view alpha="0.0" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RLB-pv-k3R">
+                                <rect key="frame" x="0.0" y="368" width="600" height="90"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Getting you started..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U3x-8Z-3wW">
+                                        <rect key="frame" x="209" y="8" width="182" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="496-kn-iqX"/>
+                                            <constraint firstAttribute="width" constant="182" id="EI7-QC-GJb"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aUb-ke-p1J" customClass="BeaconingIndicator" customModule="Beacon" customModuleProvider="target">
+                                        <rect key="frame" x="280" y="44" width="40" height="40"/>
+                                        <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="ZE9-4Z-SP7"/>
+                                            <constraint firstAttribute="width" constant="40" id="jRy-lz-YU4"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="110" id="YEW-5H-NNR"/>
-                                    <constraint firstAttribute="height" constant="40" id="Ygh-FG-nGf"/>
+                                    <constraint firstItem="aUb-ke-p1J" firstAttribute="centerX" secondItem="RLB-pv-k3R" secondAttribute="centerX" id="0wC-V2-rmX"/>
+                                    <constraint firstItem="aUb-ke-p1J" firstAttribute="top" secondItem="U3x-8Z-3wW" secondAttribute="bottom" constant="15" id="PP5-vd-eVy"/>
+                                    <constraint firstAttribute="height" constant="90" id="YTP-wr-VFC"/>
+                                    <constraint firstItem="U3x-8Z-3wW" firstAttribute="top" secondItem="RLB-pv-k3R" secondAttribute="top" constant="8" id="aaj-K6-0Ze"/>
+                                    <constraint firstItem="U3x-8Z-3wW" firstAttribute="centerX" secondItem="RLB-pv-k3R" secondAttribute="centerX" id="tkV-j9-8C5"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <state key="normal" title="Why Facebook?">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="whyFbButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="54p-Rc-pBE"/>
-                                </connections>
-                            </button>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
+                                <rect key="frame" x="25" y="15" width="575" height="585"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="12W-fC-mAh"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="gQw-9e-GDG" secondAttribute="trailing" constant="-20" id="5U6-6u-5Y5"/>
-                            <constraint firstItem="hqW-1n-3Sk" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="6fA-y4-rvi"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="6of-JT-td1"/>
                             <constraint firstAttribute="trailingMargin" secondItem="FJd-ej-OVL" secondAttribute="trailing" constant="-20" id="8ZJ-S2-s5Q"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZQx-md-Vy2" secondAttribute="trailing" constant="5" id="B2e-wr-8dv"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="RLB-pv-k3R" secondAttribute="trailing" constant="-20" id="DFG-bR-mVD"/>
                             <constraint firstItem="ZQx-md-Vy2" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="E8T-A0-Y3r"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="MZ3-Ga-dzE"/>
+                            <constraint firstItem="RLB-pv-k3R" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="QZH-Ty-gh5"/>
                             <constraint firstItem="FJd-ej-OVL" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="15" id="QrF-ET-16J"/>
                             <constraint firstItem="2kD-Y1-z0V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="75" id="Us2-kc-Gzc"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ZQx-md-Vy2" secondAttribute="bottom" constant="15" id="V8W-IM-EAo"/>
-                            <constraint firstItem="gQw-9e-GDG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="ZZi-Q5-lRK"/>
                             <constraint firstAttribute="trailingMargin" secondItem="2kD-Y1-z0V" secondAttribute="trailing" constant="-20" id="bAO-2m-WDm"/>
+                            <constraint firstItem="RLB-pv-k3R" firstAttribute="top" secondItem="Hoa-RA-aL6" secondAttribute="bottom" constant="20" id="d6H-DF-tk9"/>
                             <constraint firstItem="Hoa-RA-aL6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="20" id="f2E-N9-ebj"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="FJd-ej-OVL" secondAttribute="bottom" id="jbY-HI-dej"/>
-                            <constraint firstItem="gQw-9e-GDG" firstAttribute="top" secondItem="hqW-1n-3Sk" secondAttribute="bottom" id="lGb-OX-dfh"/>
                             <constraint firstItem="ZQx-md-Vy2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="qtS-sg-4zZ"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="gQw-9e-GDG" secondAttribute="bottom" id="rxy-Me-TZO"/>
                             <constraint firstItem="FJd-ej-OVL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="xlK-Oc-cJE"/>
                         </constraints>
                     </view>
@@ -102,17 +110,18 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="alertButton" destination="Hoa-RA-aL6" id="E5B-62-oqr"/>
+                        <outlet property="beaconingIndicator" destination="aUb-ke-p1J" id="eRH-ch-K5h"/>
                         <outlet property="dotViewLeft" destination="ZQx-md-Vy2" id="qVU-OB-17U"/>
                         <outlet property="dotViewRight" destination="FJd-ej-OVL" id="rd5-km-PSu"/>
-                        <outlet property="fbLoginButton" destination="gQw-9e-GDG" id="6at-YT-Qh3"/>
                         <outlet property="logoView" destination="2kD-Y1-z0V" id="pfn-QS-tNs"/>
-                        <outlet property="whyFbButton" destination="hqW-1n-3Sk" id="JcL-oj-wy2"/>
+                        <outlet property="workingMessageLabel" destination="U3x-8Z-3wW" id="YfD-3F-ACt"/>
+                        <outlet property="workingView" destination="RLB-pv-k3R" id="jDQ-AP-xmp"/>
                         <segue destination="UdC-tP-fdI" kind="presentation" identifier="LoginToMain" id="BF7-rl-4Xr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-512" y="301"/>
+            <point key="canvasLocation" x="-512" y="300.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="9x9-5Y-FFL">
@@ -215,7 +224,7 @@
                                 <rect key="frame" x="0.0" y="28" width="552" height="85"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pPu-3q-Byg" id="uoS-7a-B7W">
-                                    <rect key="frame" x="0.0" y="0.0" width="552" height="84.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="552" height="84"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
@@ -225,7 +234,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" alpha="0.0" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="n3W-4F-bd8">
-                                            <rect key="frame" x="494" y="33" width="20" height="20"/>
+                                            <rect key="frame" x="494" y="32" width="20" height="20"/>
                                             <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="20" id="n0O-TB-xbj"/>
@@ -541,7 +550,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="35" width="552" height="109"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="E8b-KR-2HN" id="ves-gR-XGW">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="108.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="108"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d8u-fS-2jg" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
@@ -590,7 +599,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="180" width="552" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="teC-K8-OPS" id="ScG-x4-eSV">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save your beacons" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VxS-SN-a1I">
@@ -627,7 +636,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="260" width="552" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="z0z-Kd-bkC" id="pEL-JT-By6">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms of Service" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A6w-T2-Rro">
@@ -651,7 +660,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="304" width="552" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rJP-HY-sSA" id="bdP-hB-NPu">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jin-nh-GGf">
@@ -675,7 +684,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="348" width="552" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZM0-Z6-499" id="g5h-DM-upd">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ae8-r7-heS">
@@ -698,30 +707,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="" id="LVa-QP-fwT">
-                                <cells>
-                                    <tableViewCell clipsSubviews="YES" tag="10" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="4e8-6o-2a9">
-                                        <rect key="frame" x="0.0" y="428" width="552" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4e8-6o-2a9" id="ZKC-FJ-eZZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log Out" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6fY-ie-kWd">
-                                                    <rect key="frame" x="8" y="11" width="536" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" red="0.97254901959999995" green="0.37254901959999998" blue="0.37647058820000001" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="6fY-ie-kWd" firstAttribute="top" secondItem="ZKC-FJ-eZZ" secondAttribute="topMargin" constant="3" id="Bmd-kC-8Tt"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="6fY-ie-kWd" secondAttribute="bottom" constant="3.5" id="NHH-A8-rgq"/>
-                                                <constraint firstItem="6fY-ie-kWd" firstAttribute="leading" secondItem="ZKC-FJ-eZZ" secondAttribute="leadingMargin" id="R61-ya-f0y"/>
-                                                <constraint firstItem="6fY-ie-kWd" firstAttribute="trailing" secondItem="ZKC-FJ-eZZ" secondAttribute="trailingMargin" id="fzh-he-hlq"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
+                                <cells/>
                             </tableViewSection>
                         </sections>
                         <connections>
@@ -737,7 +723,6 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                     <connections>
                         <outlet property="countryBackground" destination="d8u-fS-2jg" id="qCf-A0-yLK"/>
                         <outlet property="countryPicture" destination="o2y-MI-kPe" id="Aq6-77-jNH"/>
-                        <outlet property="logoutButton" destination="ZKC-FJ-eZZ" id="fxE-8Y-Pc0"/>
                         <outlet property="saveSwitch" destination="O8O-pY-68y" id="H6d-Lz-9p8"/>
                         <outlet property="userLocation" destination="DD7-fq-JWD" id="CuU-gX-sEC"/>
                         <segue destination="BYZ-38-t0r" kind="showDetail" identifier="Logout" id="fzn-UV-xBd"/>

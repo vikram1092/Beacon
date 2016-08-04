@@ -15,8 +15,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     
     var countries = NSArray()
-    var userName = ""
-    var userEmail = ""
+    var userID = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
     var userList = Array<PFObject>()
     var countryColor = UIColor()
@@ -45,6 +44,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         
+        
         //Run view load as normal
         super.viewDidLoad()
         
@@ -61,6 +61,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     
     override func viewDidAppear(animated: Bool) {
+        
         
         //Load view as normal
         super.viewDidAppear(true)
@@ -87,6 +88,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     override func viewDidDisappear(animated: Bool) {
         
+        
         //Remove all overlays
         mapView.removeOverlays(mapView.overlays)
         
@@ -97,19 +99,13 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func getUserDefaults() {
         
-        //Get user details
-        if userDefaults.objectForKey("userName") != nil {
-            
-            userName = userDefaults.objectForKey("userName") as! String
-        }
         
-        if userDefaults.objectForKey("userEmail") != nil {
+        //Get user details
+        if userDefaults.objectForKey("userID") != nil {
             
-            userEmail = userDefaults.objectForKey("userEmail") as! String
+            userID = userDefaults.objectForKey("userID") as! String
         }
     }
-    
-
     
     
     internal func goToCountry(location: CLLocationCoordinate2D) {
@@ -194,6 +190,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func loadCountryArray() {
         
+        
         //Load array of country JSON objects
         let filePath = NSBundle.mainBundle().pathForResource("Countries", ofType: "geojson")
         let data = NSData(contentsOfFile: filePath!)!
@@ -263,6 +260,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func loadSentMarkers() {
         
+        
         sentMarkersAreLoaded = false
         
         //Load markers for where user's photos went
@@ -270,7 +268,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             //Mark markers as not loaded and run query
             let query = PFQuery(className: "photo")
-            query.whereKey("sentBy", equalTo: self.userEmail)
+            query.whereKey("sentBy", equalTo: self.userID)
             query.whereKeyExists("receivedLatitude")
             query.orderByDescending("createdAt")
             query.limit = 1000
@@ -335,6 +333,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func loadReceivedMarkers() {
         
+        
         receivedMarkersAreLoaded = false
         
         //Load markers for where user's photos went
@@ -342,7 +341,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             //Mark markers as not loaded and run query
             let query = PFQuery(className: "photo")
-            query.whereKey("receivedBy", equalTo: self.userEmail)
+            query.whereKey("receivedBy", equalTo: self.userID)
             query.whereKeyExists("sentFrom")
             query.orderByDescending("receivedAt")
             query.fromLocalDatastore()
@@ -411,6 +410,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
         
+        
         let polylineRenderer = MKPolylineRenderer(overlay: overlay)
         polylineRenderer.strokeColor = (polylineRenderer.overlay as! CountryPolyline).color
         polylineRenderer.lineWidth = 1
@@ -426,6 +426,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     
     internal func performClustering() {
+        
         
         NSOperationQueue().addOperationWithBlock({
             
@@ -449,6 +450,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     
     internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        
         
         var reuseId = ""
         var view = MKAnnotationView()
@@ -483,6 +485,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     @IBAction func beaconControlChanged(sender: AnyObject) {
         
+        
         //First remove all existing annotations
         mapView.removeAnnotations(mapView.annotations)
         
@@ -508,6 +511,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     
     internal func loadedInArray(location: CLLocationCoordinate2D, array: Array<MKAnnotation>) -> Bool {
+        
         
         for marker in array {
             

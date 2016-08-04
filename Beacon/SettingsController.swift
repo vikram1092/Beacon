@@ -10,16 +10,14 @@ import UIKit
 
 class SettingsController: UIViewController {
     
-    var userName = ""
-    var userEmail = ""
+    var userID = ""
     var userDefaults = NSUserDefaults.standardUserDefaults()
     
     
     override func viewDidLoad() {
         
         //Retreive user details
-        userName = userDefaults.objectForKey("userName") as! String
-        userEmail = userDefaults.objectForKey("userEmail") as! String
+        userID = userDefaults.objectForKey("userID") as! String
         
         //Run view load as normal
         super.viewDidLoad()

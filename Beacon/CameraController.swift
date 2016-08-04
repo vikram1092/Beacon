@@ -11,8 +11,6 @@ import Parse
 import AVFoundation
 import CoreTelephony
 import Photos
-import FBSDKCoreKit
-import FBSDKLoginKit
 
 class CameraController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate, AVAudioRecorderDelegate {
     
@@ -65,8 +63,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var userCountry = ""
     var userState = ""
     var userCity = ""
-    var userName = ""
-    var userEmail = ""
+    var userID = ""
     var firstTime = true
     var saveMedia = true
     var beaconSending = false
@@ -180,7 +177,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         
         print("initializingHandler")
-        if userDefaults.objectForKey("userEmail") == nil {
+        if userDefaults.objectForKey("userID") == nil {
             
             //Go back to login screen if no user is logged on
             segueToLogin()
@@ -425,16 +422,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     internal func getUserDefaults() {
         
         //Get user details
-        if userDefaults.objectForKey("userName") != nil {
+        if userDefaults.objectForKey("userID") != nil {
             
-            userName = userDefaults.objectForKey("userName") as! String
-            print(userName)
-        }
-        
-        if userDefaults.objectForKey("userEmail") != nil {
-            
-            userEmail = userDefaults.objectForKey("userEmail") as! String
-            print(userEmail)
+            userID = userDefaults.objectForKey("userID") as! String
+            print(userID)
         }
         
         if userDefaults.objectForKey("saveMedia") != nil {
@@ -980,13 +971,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Set date and sender
         let date = NSDate()
-        print(date)
         photoObject["sentAt"] = date
-        print(userEmail)
-        photoObject["sentBy"] = userEmail
+        photoObject["sentBy"] = userID
         
         //Set local parameters
-        photoObject["localTag"] = userEmail
+        photoObject["localTag"] = userID
         photoObject["localCreationTag"] = date
         
         //Set user's geolocation
@@ -1670,7 +1659,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Show alert if user is banned
         let query = PFQuery(className: "users")
-        query.whereKey("email", equalTo: userEmail)
+        query.whereKey("userID", equalTo: userID)
         query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
             
             if error != nil {
@@ -1683,17 +1672,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 
                 if bannedStatus {
                     
-                    //Alert user about ban & segue
+                    //Alert user about ban, set user as banned & segue to login
                     print("User is banned.")
                     let alert = UIAlertController(title: "You've been banned", message: "Allow us to investigate this issue & check back soon.", preferredStyle: UIAlertControllerStyle.Alert)
                     alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             
-                            self.logoutUser()
                             self.segueToLogin()
                         })
                     }))
+                    
+                    self.userDefaults.setBool(true, forKey: "banned")
                     
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
@@ -1703,19 +1693,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 }
             }
         }
-    }
-    
-    
-    internal func logoutUser() {
-        
-        //Logout user
-        let loginManager = FBSDKLoginManager()
-        loginManager.logOut()
-        
-        //Reset name and email local variables
-        userDefaults.setObject(nil, forKey: "userName")
-        userDefaults.setObject(nil, forKey: "userEmail")
-        userDefaults.setObject(nil, forKey: "userCountry")
     }
     
     
@@ -1751,7 +1728,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             let loginController = segue.destinationViewController as! LoginController
             
             //Set buttons on appearance
-            loginController.fbLoginButton.alpha = 1
             loginController.alertButton.alpha = 0
         }
     }

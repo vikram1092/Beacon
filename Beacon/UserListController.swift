@@ -13,8 +13,6 @@ import ParseUI
 import Foundation
 import CoreTelephony
 import AVFoundation
-import FBSDKCoreKit
-import FBSDKLoginKit
 
 
 class UserListController: UITableViewController {
@@ -22,8 +20,7 @@ class UserListController: UITableViewController {
     
     var userList = Array<PFObject>()
     var sendingList = Array<PFObject>()
-    var userName = ""
-    var userEmail = ""
+    var userID = ""
     var userCountry = ""
     var userState = ""
     var userCity = ""
@@ -91,7 +88,7 @@ class UserListController: UITableViewController {
         
         //Check user login status
         print("Checking user login status")
-        if userDefaults.objectForKey("userName") != nil {
+        if userDefaults.objectForKey("userID") != nil {
             
             //Check if user is banned in background
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
@@ -134,7 +131,7 @@ class UserListController: UITableViewController {
         
         //Show alert if user is banned
         let query = PFQuery(className: "users")
-        query.whereKey("email", equalTo: userEmail)
+        query.whereKey("userID", equalTo: userID)
         query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
             
             if error != nil {
@@ -147,14 +144,15 @@ class UserListController: UITableViewController {
                 
                 if bannedStatus {
                     
-                    //Alert user about ban & segue
+                    //Alert user about ban, mark user as banned & segue to login
                     print("User banned.")
                     let alert = UIAlertController(title: "You've been banned", message: "Allow us to investigate this issue & check back soon.", preferredStyle: UIAlertControllerStyle.Alert)
                     alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
                         
-                        self.logoutUser()
                         self.segueToLogin()
                     }))
+                    
+                    self.userDefaults.setBool(true, forKey: "banned")
                     
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
@@ -166,31 +164,12 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func logoutUser() {
-        
-        //Logout user
-        let loginManager = FBSDKLoginManager()
-        loginManager.logOut()
-        
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            
-            //Reset name and email local variables
-            self.userDefaults.setObject(nil, forKey: "userName")
-            self.userDefaults.setObject(nil, forKey: "userEmail")
-            self.userDefaults.setObject(nil, forKey: "userCountry")
-            self.userDefaults.setObject(nil, forKey: "userState")
-            self.userDefaults.setObject(nil, forKey: "userCity")
-        }
-    }
-    
-    
     internal func getUserDefaults() {
         
         //Retreive user details
-        if userDefaults.objectForKey("userName") != nil {
+        if userDefaults.objectForKey("userID") != nil {
             
-            userName = userDefaults.objectForKey("userName") as! String
-            userEmail = userDefaults.objectForKey("userEmail") as! String
+            userID = userDefaults.objectForKey("userID") as! String
         }
         
         if userDefaults.objectForKey("userLatitude") != nil {
@@ -242,7 +221,7 @@ class UserListController: UITableViewController {
         print("loadUserList")
         let query = PFQuery(className: "photo")
         query.fromLocalDatastore()
-        query.whereKey("localTag", equalTo: userEmail)
+        query.whereKey("localTag", equalTo: userID)
         
         query.addAscendingOrder("localCreationTag")
         query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
@@ -293,7 +272,7 @@ class UserListController: UITableViewController {
         for photoObj in self.userList {
             
             
-            if photoObj["sentBy"] as! String == self.userEmail && photoObj["receivedBy"] == nil {
+            if photoObj["sentBy"] as! String == self.userID && photoObj["receivedBy"] == nil {
                 
                 //Enable no more beacons left alert if it hasn't been shown
                 if !haveSetAlertAfterSending {
@@ -508,7 +487,7 @@ class UserListController: UITableViewController {
             //Place conditions to get unreceived photos from people prefereably not from the same country
             let query = PFQuery(className:"photo")
             query.whereKeyExists("photo")
-            query.whereKey("sentBy", notEqualTo: userEmail)
+            query.whereKey("sentBy", notEqualTo: userID)
             query.whereKeyDoesNotExist("receivedBy")
             
             if !sameCountry {
@@ -571,11 +550,11 @@ class UserListController: UITableViewController {
                         
                         //Attach receipt details to object
                         photoObject["receivedAt"] = NSDate()
-                        photoObject["receivedBy"] = self.userEmail
+                        photoObject["receivedBy"] = self.userID
                         photoObject["receivedCountry"] = self.userCountry
                         
                         //Add local parameters
-                        photoObject["localTag"] = self.userEmail
+                        photoObject["localTag"] = self.userID
                         photoObject["localCreationTag"] = NSDate()
                         
                         //Add geographic details
@@ -808,7 +787,7 @@ class UserListController: UITableViewController {
         
         
         //Add the country image to its background
-        if userList[userListIndex]["sentBy"] as! String == userEmail && userList[userListIndex]["receivedBy"] == nil {
+        if userList[userListIndex]["sentBy"] as! String == userID && userList[userListIndex]["receivedBy"] == nil {
             
             //Set background color
             imageBackground.changeBackgroundColor(sendingColor.CGColor)
@@ -938,7 +917,7 @@ class UserListController: UITableViewController {
         
         //Get user list information
         let userListLength = self.userList.count - 1
-        let toBeSent = userList[userListLength - indexPath.row]["sentBy"] as! String == userEmail && userList[userListLength - indexPath.row]["receivedBy"] == nil
+        let toBeSent = userList[userListLength - indexPath.row]["sentBy"] as! String == userID && userList[userListLength - indexPath.row]["receivedBy"] == nil
         
         
         //If photo is not to be sent, check if expired
@@ -1025,7 +1004,7 @@ class UserListController: UITableViewController {
         //If photo to be sent by user, send.
         //Else if row is within time, display photo or video. 
         //Else, animate.
-        if userList[userListIndex]["sentBy"] as! String == userEmail && userList[userListIndex]["receivedBy"] == nil {
+        if userList[userListIndex]["sentBy"] as! String == userID && userList[userListIndex]["receivedBy"] == nil {
             
             print("Send photo")
             sendUnsentPhoto(userList[userListIndex], updateUserList: true)
@@ -1304,7 +1283,7 @@ class UserListController: UITableViewController {
                 
                 //Query to ban user
                 let query = PFQuery(className: "users")
-                query.whereKey("email", equalTo: sentBy)
+                query.whereKey("userID", equalTo: sentBy)
                 query.getFirstObjectInBackgroundWithBlock({ (userObject, userError) -> Void in
                     
                     if userError != nil {
@@ -1941,7 +1920,6 @@ class UserListController: UITableViewController {
             let loginController = segue.destinationViewController as! LoginController
             
             //Set buttons on appearance
-            loginController.fbLoginButton.alpha = 1
             loginController.alertButton.alpha = 0
         }
     }

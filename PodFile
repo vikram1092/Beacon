@@ -1,10 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '8.1'
-pod 'FBSDKCoreKit'
-pod 'FBSDKLoginKit'
-pod 'FBSDKShareKit'
+platform :ios, ‘9.1’
 pod ‘Parse’
 pod ‘Bolts’
-pod 'ParseFacebookUtilsV4'
 pod ‘ParseUI’
+target ‘Beacon’
 use_frameworks!
