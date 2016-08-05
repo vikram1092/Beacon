@@ -224,7 +224,7 @@
                                 <rect key="frame" x="0.0" y="28" width="552" height="85"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pPu-3q-Byg" id="uoS-7a-B7W">
-                                    <rect key="frame" x="0.0" y="0.0" width="552" height="84"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="552" height="84.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
@@ -426,7 +426,7 @@
                                     </fragment>
                                     <fragment>
                                         <string key="content">
-In order to keep Beacon a safe and fun environment for all, we require some basic information from you. We ask for location information in order to pinpoint where our beacons are taken, and we ask for a name and email address from Facebook in order to hold users accountable for any complaints received from others. More details about this are provided in the following sections.
+In order to keep Beacon a safe and fun environment for all, we require some basic information from you. We ask for location information in order to pinpoint where our beacons are taken, and we create and hold a random identification for every user in order to hold all users accountable for complaints received from others. More details about this are provided in the following sections.
 </string>
                                         <attributes>
                                             <font key="NSFont" size="14" name="HelveticaNeue"/>
@@ -454,9 +454,7 @@ In order to keep Beacon a safe and fun environment for all, we require some basi
                                     </fragment>
                                     <fragment>
                                         <string key="content">
-At Beacon, we get your information in one of two ways:
-• Information you provide us through Facebook
-• Location information you require to use the Beacon app.
+At Beacon, we only request your location information in order for you to use the Beacon app.
 Details on how we use this information is provided in the following steps. 
 
 </string>
@@ -494,7 +492,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         </attributes>
                                     </fragment>
                                     <fragment>
-                                        <string key="content">4.	How We Use Your Facebook Information</string>
+                                        <string key="content">4.	How We Use Your Information</string>
                                         <attributes>
                                             <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
                                             <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
@@ -507,7 +505,7 @@ Your location is never used when you’re not using the app. We only care about 
                                     </fragment>
                                     <fragment>
                                         <string key="content">
-We need to keep our beacons fun! A few bad apples can ruin a good thing for the whole bunch. In order to keep things clean and merry for everyone, we require you to establish some accountability with us using your Facebook credentials. This way, when a user who has violated our terms of service gets kicked out, they cannot simply make another account and continue. They stay out until we decide to forgive them.
+We need to keep our beacons fun! A few bad apples can ruin a good thing for the whole bunch. In order to keep things clean and merry for everyone, we require you to establish some accountability with us using NO information of your own, we'll handle this part. We identify you anonymously so that when a user violating our terms of service gets kicked out, they stay out.
 </string>
                                         <attributes>
                                             <font key="NSFont" size="14" name="HelveticaNeue"/>
@@ -550,7 +548,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="35" width="552" height="109"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="E8b-KR-2HN" id="ves-gR-XGW">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="108"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="108.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d8u-fS-2jg" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
@@ -599,7 +597,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="180" width="552" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="teC-K8-OPS" id="ScG-x4-eSV">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save your beacons" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VxS-SN-a1I">
@@ -636,7 +634,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="260" width="552" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="z0z-Kd-bkC" id="pEL-JT-By6">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms of Service" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A6w-T2-Rro">
@@ -660,7 +658,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="304" width="552" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rJP-HY-sSA" id="bdP-hB-NPu">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jin-nh-GGf">
@@ -684,7 +682,7 @@ We need to keep our beacons fun! A few bad apples can ruin a good thing for the 
                                         <rect key="frame" x="0.0" y="348" width="552" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZM0-Z6-499" id="g5h-DM-upd">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ae8-r7-heS">
@@ -1228,15 +1226,16 @@ Beacon is for people to come together in a friendly manner, learn about each oth
                                         </attributes>
                                     </fragment>
                                     <fragment>
-                                        <string key="content">
-Anyone with a valid Facebook profile can use Beacon.
+                                        <string key="content" base64-UTF8="YES">
+Cg
 </string>
                                         <attributes>
                                             <font key="NSFont" size="14" name="HelveticaNeue"/>
                                         </attributes>
                                     </fragment>
                                     <fragment>
-                                        <string key="content"> 
+                                        <string key="content">Everybody can use Beacon!
+ 
 </string>
                                         <attributes>
                                             <font key="NSFont" size="14" name="HelveticaNeue"/>
