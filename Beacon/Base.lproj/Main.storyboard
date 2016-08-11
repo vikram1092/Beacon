@@ -21,8 +21,11 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQx-md-Vy2" customClass="DotView" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="575" height="585"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="0.0" y="254" width="600" height="94"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
+                                <rect key="frame" x="25" y="15" width="575" height="585"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                                <rect key="frame" x="0.0" y="253" width="600" height="94"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="94" id="5ad-e3-KjW"/>
@@ -49,8 +52,8 @@
                                     <constraint firstAttribute="height" constant="50" id="ifP-vi-HCl"/>
                                 </constraints>
                             </imageView>
-                            <view alpha="0.0" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RLB-pv-k3R">
-                                <rect key="frame" x="0.0" y="368" width="600" height="90"/>
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RLB-pv-k3R">
+                                <rect key="frame" x="0.0" y="367" width="600" height="90"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Getting you started..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U3x-8Z-3wW">
                                         <rect key="frame" x="209" y="8" width="182" height="21"/>
@@ -79,9 +82,6 @@
                                     <constraint firstItem="U3x-8Z-3wW" firstAttribute="top" secondItem="RLB-pv-k3R" secondAttribute="top" constant="8" id="aaj-K6-0Ze"/>
                                     <constraint firstItem="U3x-8Z-3wW" firstAttribute="centerX" secondItem="RLB-pv-k3R" secondAttribute="centerX" id="tkV-j9-8C5"/>
                                 </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
-                                <rect key="frame" x="25" y="15" width="575" height="585"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -477,36 +477,7 @@ Details on how we use this information is provided in the following steps. 
                                     <fragment>
                                         <string key="content">
 To use Beacon, you need to share your location with us. So your location is triangulated by us – badly. Why? So even though we use your city, state and country to let other users know where they got their beacons from, you can rest assured that your detected location is vague up to a kilometer.
-Your location is never used when you’re not using the app. We only care about your political location for the fun stuff in the app!
-</string>
-                                        <attributes>
-                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
-                                        </attributes>
-                                    </fragment>
-                                    <fragment>
-                                        <string key="content"> 
-</string>
-                                        <attributes>
-                                            <font key="NSFont" size="14" name="HelveticaNeue"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                    <fragment>
-                                        <string key="content">4.	How We Use Your Information</string>
-                                        <attributes>
-                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
-                                            <font key="NSOriginalFont" size="18" name="HelveticaNeue-Light"/>
-                                        </attributes>
-                                    </fragment>
-                                    <fragment content=" ">
-                                        <attributes>
-                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
-                                        </attributes>
-                                    </fragment>
-                                    <fragment>
-                                        <string key="content">
-We need to keep our beacons fun! A few bad apples can ruin a good thing for the whole bunch. In order to keep things clean and merry for everyone, we require you to establish some accountability with us using NO information of your own, we'll handle this part. We identify you anonymously so that when a user violating our terms of service gets kicked out, they stay out.
-</string>
+Your location is never used when you’re not using the app. We only care about your political location for the fun stuff in the app!</string>
                                         <attributes>
                                             <font key="NSFont" size="14" name="HelveticaNeue"/>
                                         </attributes>

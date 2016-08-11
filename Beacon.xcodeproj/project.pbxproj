@@ -532,8 +532,8 @@
 				D195159C1C7232F600053A22 /* VideoDelegate.swift */,
 				D188D7B41C283A5F0066E773 /* SettingsController.swift */,
 				D15241CA1C2B9CD100914FE8 /* SettingsTableController.swift */,
-				D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */,
 				D137E8761CA95BB9004F9B44 /* TermsOfUseController.swift */,
+				D17EFBF71C6D679C0063F8D4 /* PrivacyPolicyController.swift */,
 				D137E8781CA95C45004F9B44 /* AboutController.swift */,
 				D1A40C241D3A83A6000D3CC5 /* TutorialView.swift */,
 				D1B9C71D1C2258B800D9AEE7 /* Main.storyboard */,
@@ -604,7 +604,6 @@
 					};
 					D1B9C7151C2258B800D9AEE7 = {
 						CreatedOnToolsVersion = 7.1.1;
-						DevelopmentTeam = 53738Y87UZ;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -896,8 +895,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -919,7 +918,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "a8e484fa-c14b-43c8-88a0-bda85ffd29c8";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -942,8 +941,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -958,7 +957,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "a8e484fa-c14b-43c8-88a0-bda85ffd29c8";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -969,8 +968,8 @@
 			baseConfigurationReference = CA04FC596C873521C3FCC4B4 /* Pods-Beacon.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vikram Ramkumar (2WSBX5879B)";
 				COMPRESS_PNG_FILES = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -980,7 +979,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vikram.Beacon;
 				PRODUCT_NAME = Beacon;
-				PROVISIONING_PROFILE = "a8e484fa-c14b-43c8-88a0-bda85ffd29c8";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Beacon/Spore-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -991,8 +990,8 @@
 			baseConfigurationReference = 7A1A40EE1CF8536030A1AC0C /* Pods-Beacon.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vikram Ramkumar (53738Y87UZ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vikram Ramkumar (2WSBX5879B)";
 				COMPRESS_PNG_FILES = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1002,7 +1001,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vikram.Beacon;
 				PRODUCT_NAME = Beacon;
-				PROVISIONING_PROFILE = "a8e484fa-c14b-43c8-88a0-bda85ffd29c8";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Beacon/Spore-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
