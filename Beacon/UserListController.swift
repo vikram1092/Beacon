@@ -248,7 +248,7 @@ class UserListController: UITableViewController {
                 print("Adding new photos")
                 self.haveSetAlertAfterSending = false
                 self.sendUnsentPhotos()
-                self.updateUserList(false)
+                self.updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
             }
             else {
                 
@@ -256,7 +256,7 @@ class UserListController: UITableViewController {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                     
                     if !self.updatingUserList {
-                        self.updateUserList(false)
+                        self.updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
                     }
                 })
             }
@@ -408,7 +408,7 @@ class UserListController: UITableViewController {
                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                                     
                                     //Update user list and table
-                                    self.updateUserList(false)
+                                    self.updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
                                 })
                             }
                         })
@@ -471,7 +471,7 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func updateUserList(sameCountry: Bool) {
+    internal func updateUserList(sameCountry: Bool, sameState: Bool, sameCity: Bool, likePrevious: Bool) {
         
         
         //Initialize for subtracting from userToReceivePhotos list
@@ -479,23 +479,104 @@ class UserListController: UITableViewController {
         updatingUserList = true
         var userReceivedPhotos = 0
         
+        
+        
         //If user is to receive photos, execute the following
         if userToReceivePhotos > 0 {
             
             
             //Get unsent photos in the database equal to how many the user gets
-            //Place conditions to get unreceived photos from people prefereably not from the same country
+            //Place conditions to get unreceived photos from people preferably not from the same country
+            //or the previous beacon's location
             let query = PFQuery(className:"photo")
             query.whereKeyExists("photo")
-            query.whereKey("sentBy", notEqualTo: userID)
+            //DEMO CODE - REPLACE BEFORE RELEASE
+            //query.whereKey("sentBy", notEqualTo: userID)
             query.whereKeyDoesNotExist("receivedBy")
-            
-            if !sameCountry {
-                
-                print("Adding country restriction")
-                query.whereKey("countryCode", notEqualTo: userCountry)
-            }
+            query.orderByAscending("createdAt")
             query.limit = userToReceivePhotos
+            
+            let previous = userList.last
+            
+            
+            //Handle rrstrictions per given parameters
+            //First check country restriction, then state restriction, then city
+            //Within these, check for restriction to not be like the previous beacon's location
+            if !sameCountry && !sameState && !sameCity && userCountry != "" {
+            
+                
+                //If likePrevious is false and previous exists, apply country to not be like previous
+                //Else, apply a simple country restriction
+                if !likePrevious && previous != nil {
+                    
+                    
+                    //Ensure previous beacon's country is not nil
+                    //If it is, apply a simple restriction
+                    if previous!["countryCode"] != nil {
+                        
+                        query.whereKey("countryCode", notContainedIn: [userCountry, previous!["countryCode"]])
+                    }
+                    else {
+                        
+                        query.whereKey("countryCode", notEqualTo: userCountry)
+                    }
+                }
+                else {
+                    
+                    query.whereKey("countryCode", notEqualTo: userCountry)
+                }
+                
+            }
+            else if sameCountry && !sameState && !sameCity && userState != "" {
+                
+                
+                //If likePrevious is false and previous exists, apply state to not be like previous
+                //Else, apply a simple state restriction
+                if !likePrevious && previous != nil {
+                    
+                    
+                    //Ensure previous beacon's state is not nil
+                    //If it is, apply a simple restriction
+                    if previous!["sentState"] != nil {
+                        
+                        query.whereKey("sentState", notContainedIn: [userState, previous!["sentState"]])
+                    }
+                    else {
+                        
+                        query.whereKey("sentState", notEqualTo: userState)
+                    }
+                }
+                else {
+                    
+                    query.whereKey("sentState", notEqualTo: userState)
+                }
+                
+            }
+            else if sameCountry && sameState && !sameCity && userCity != "" {
+                
+                
+                //If likePrevious is false and previous exists, apply city to not be like previous
+                //Else, apply a simple city restriction
+                if !likePrevious && previous != nil {
+                    
+                    
+                    //Ensure previous beacon's city is not nil
+                    //If it is, apply a simple restriction
+                    if previous!["sentCity"] != nil {
+                        
+                        query.whereKey("sentCity", notContainedIn: [userCity, previous!["sentCity"]])
+                    }
+                    else {
+                        
+                        query.whereKey("sentCity", notEqualTo: userCity)
+                    }
+                }
+                else {
+                    
+                    query.whereKey("sentCity", notEqualTo: userCity)
+                }
+            }
+            
             
             
             //Query with above conditions
@@ -509,10 +590,13 @@ class UserListController: UITableViewController {
                     
                     
                     //Either recurse the same method with different parameters or end search
+                    //if there are zero results
                     if self.userToReceivePhotos > 0 {
                         
+                        
                         //End search, only show if the showNoMoreBeaconsAlert flag is raised
-                        if sameCountry {
+                        if sameCountry && sameState && sameCity && likePrevious {
+                            
                             
                             self.updatingUserList = false
                             print("Database empty.")
@@ -530,10 +614,40 @@ class UserListController: UITableViewController {
                                 })
                             }
                         }
-                        else if !sameCountry {
+                        else if !sameCountry && !sameState && !sameCity && !likePrevious {
                             
-                            //Query for pictures from the same country
-                            self.updateUserList(true)
+                            //Query for same country not like previous
+                            self.updateUserList(true, sameState: false, sameCity: false, likePrevious: false)
+                        }
+                        else if sameCountry && !sameState && !sameCity && !likePrevious {
+                            
+                            //Query for same state not like previous
+                            self.updateUserList(true, sameState: true, sameCity: false, likePrevious: false)
+                        }
+                        else if sameCountry && sameState && !sameCity && !likePrevious {
+                            
+                            //Query for same city not like previous
+                            self.updateUserList(true, sameState: true, sameCity: true, likePrevious: false)
+                        }
+                        else if sameCountry && sameState && sameCity && !likePrevious {
+                            
+                            //Query for different country, state and city with no previous restriction
+                            self.updateUserList(false, sameState: false, sameCity: false, likePrevious: true)
+                        }
+                        else if !sameCountry && !sameState && !sameCity && likePrevious {
+                            
+                            //Query for same country
+                            self.updateUserList(true, sameState: false, sameCity: false, likePrevious: true)
+                        }
+                        else if sameCountry && !sameState && !sameCity && likePrevious {
+                            
+                            //Query for same state
+                            self.updateUserList(true, sameState: true, sameCity: false, likePrevious: true)
+                        }
+                        else if sameCountry && sameState && !sameCity && likePrevious {
+                            
+                            //Query for same city
+                            self.updateUserList(true, sameState: true, sameCity: true, likePrevious: true)
                         }
                     }
                 }
@@ -651,6 +765,7 @@ class UserListController: UITableViewController {
                 self.refreshControl!.endRefreshing()
             })
         }
+        
     }
     
     
@@ -661,7 +776,7 @@ class UserListController: UITableViewController {
         //Enable no more beacons alert, refresh data and reload table within that function
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
             
-            self.updateUserList(false)
+            self.updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
         }
     }
     
@@ -711,7 +826,7 @@ class UserListController: UITableViewController {
         //Refresh table
         if refreshControl!.refreshing {
             
-            updateUserList(false)
+            updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
         }
     }
     
@@ -768,7 +883,10 @@ class UserListController: UITableViewController {
         let subTitleView = cell.viewWithTag(2) as! UILabel
         let imageView = cell.viewWithTag(5) as! UIImageView
         let imageBackground = cell.viewWithTag(6) as! CountryBackground
-        let slideIndicator = cell.viewWithTag(3) as! UIImageView
+        let slideIndicator = cell.viewWithTag(3)
+        
+        //DEMO CODE - changing slide indicator
+        //let slideIndicator = cell.viewWithTag(3) as! UIImageView
         
         let userListIndex = userList.count - 1 - indexPath.row
         let date = userList[userListIndex]["receivedAt"] as? NSDate
@@ -832,10 +950,11 @@ class UserListController: UITableViewController {
             subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
             subTitleView.text = String(timeString)
             
-            
+             
+            //DEMO CODE TESTING -- Omitted temporarily
             //Configure slide indicator
-            slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-            slideIndicator.tintColor = UIColor.lightGrayColor()
+            //slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            //slideIndicator.tintColor = UIColor.lightGrayColor()
         }
         
         
@@ -1396,12 +1515,15 @@ class UserListController: UITableViewController {
                         subview.alpha = 0
                     })
                 }
-                    //Show map label
+                //Show map label
                 else if subview.tag == 3 {
+                    
+                    let view = subview as! ShapeToGlobe
+                    view.resetStroke()
                     
                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                         
-                        subview.alpha = 1
+                        view.alpha = 1
                     })
                 }
             }
@@ -1454,11 +1576,9 @@ class UserListController: UITableViewController {
                     }
                         //Hide map label
                     else if subview.tag == 3 {
+ 
+                        subview.alpha = 0
                         
-                        UIView.animateWithDuration(0.1, animations: { () -> Void in
-                            
-                            subview.alpha = 0
-                        })
                     }
                 }
                 
@@ -1482,7 +1602,9 @@ class UserListController: UITableViewController {
                     //Hide map label
                 else if subview.tag == 3 {
                     
-                        subview.alpha = 0
+                    let view = subview as! ShapeToGlobe
+                    view.alpha = 0
+                    view.resetStroke()
                 }
             }
             
@@ -1490,7 +1612,8 @@ class UserListController: UITableViewController {
             
             
             //Calculate distance fraction
-            let slideIndicator = cell.viewWithTag(3) as! UIImageView
+            let slideIndicator = cell.viewWithTag(3) as! ShapeToGlobe
+            let countryBackground = cell.viewWithTag(6) as! CountryBackground
             let distance = translation.x
             let threshold = self.view.bounds.width * 0.50
             
@@ -1510,8 +1633,13 @@ class UserListController: UITableViewController {
                         self.countryObject.center = CGPoint(x: slideIndicator.center.x, y: self.countryObject.center.y)
                     }
                     
+                    //DEMO CODE TESTING
                     //Change tint
-                    slideIndicator.tintColor = self.defaultColor
+                    //slideIndicator.tintColor = self.defaultColor
+                    
+                    
+                    //Change shape
+                    slideIndicator.changeToMapMode(countryBackground.bounds.width - slideIndicator.bounds.width, strokeStart: countryBackground.getStrokeStart())
                     
                     }, completion: nil)
                 
@@ -1533,7 +1661,8 @@ class UserListController: UITableViewController {
                     self.countryObject.center.x = translation.x + self.countryCenter.x
                 }
                 
-                
+                //DEMO CODE TESTING
+                /*
                 //If slide indicator is not gray, turn it to gray
                 if slideIndicator.tintColor != UIColor.lightGrayColor() {
                     
@@ -1543,6 +1672,14 @@ class UserListController: UITableViewController {
                         slideIndicator.tintColor = UIColor.lightGrayColor()
                     })
                 }
+ */
+                
+                
+                //Bring country back to panning and change tint
+                slideIndicator.tintColor = UIColor.lightGrayColor()
+                
+                //Change shape
+                slideIndicator.changeToTableMode()
             }
         }
     }
@@ -1569,7 +1706,10 @@ class UserListController: UITableViewController {
                 //Hide map label
                 else if subview.tag == 3 {
                     
-                    subview.alpha = 0
+                    let view = subview as! ShapeToGlobe
+                    view.alpha = 0
+                    view.resetStroke()
+                    
                 }
             }
         }

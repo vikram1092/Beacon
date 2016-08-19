@@ -110,4 +110,21 @@ class CountryBackground: UIView {
         progressView.layer.removeAllAnimations()
     }
     
+    
+    internal func getStrokeStart() -> CGFloat {
+        
+        return progressLayer.strokeStart
+    }
+    
+    
+    internal func getStrokeEnd() -> CGFloat {
+        
+        return progressLayer.strokeEnd
+    }
+    
+    internal func getStrokeWidth() -> CGFloat {
+        
+        return progressLayer.lineWidth
+    }
+    
 }

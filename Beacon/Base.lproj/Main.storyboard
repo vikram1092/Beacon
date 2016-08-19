@@ -160,12 +160,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Heo-1G-5Mg">
-                                <rect key="frame" x="24" y="64" width="552" height="487"/>
-                                <connections>
-                                    <segue destination="WEH-9b-AKs" kind="embed" identifier="tableSegue" id="m5c-nY-2pg"/>
-                                </connections>
-                            </containerView>
                             <navigationBar opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XhY-Ul-YGP">
                                 <rect key="frame" x="0.0" y="20" width="600" height="44"/>
                                 <constraints>
@@ -181,17 +175,22 @@
                                     <navigationItem title="b e a c o n" id="FNA-nf-9kg"/>
                                 </items>
                             </navigationBar>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RFB-5e-TlP">
+                                <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                                <connections>
+                                    <segue destination="WEH-9b-AKs" kind="embed" id="pJP-nv-pDF"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Heo-1G-5Mg" firstAttribute="top" secondItem="XhY-Ul-YGP" secondAttribute="bottom" id="2Lk-AX-SWz"/>
+                            <constraint firstItem="RFB-5e-TlP" firstAttribute="top" secondItem="XhY-Ul-YGP" secondAttribute="bottom" id="3ja-mq-P2W"/>
                             <constraint firstAttribute="trailingMargin" secondItem="XhY-Ul-YGP" secondAttribute="trailing" constant="-20" id="5wW-b0-r6E"/>
                             <constraint firstItem="XhY-Ul-YGP" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leadingMargin" constant="-20" id="FEY-Yw-gLe"/>
-                            <constraint firstItem="Heo-1G-5Mg" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leadingMargin" constant="4" id="PEO-3j-1SO"/>
-                            <constraint firstItem="69W-9e-QTv" firstAttribute="top" secondItem="Heo-1G-5Mg" secondAttribute="bottom" id="QsO-uv-zuG"/>
+                            <constraint firstAttribute="trailing" secondItem="RFB-5e-TlP" secondAttribute="trailing" id="I37-1o-gHP"/>
+                            <constraint firstItem="69W-9e-QTv" firstAttribute="top" secondItem="RFB-5e-TlP" secondAttribute="bottom" id="Muh-h0-Mtu"/>
                             <constraint firstItem="XhY-Ul-YGP" firstAttribute="top" secondItem="JB1-sV-LGU" secondAttribute="bottom" constant="20" id="Tf5-s7-Ram"/>
-                            <constraint firstItem="Heo-1G-5Mg" firstAttribute="centerX" secondItem="Nc3-uR-38l" secondAttribute="centerX" id="ePr-7N-qFZ"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Heo-1G-5Mg" secondAttribute="trailing" constant="4" id="wIO-HJ-swc"/>
+                            <constraint firstItem="RFB-5e-TlP" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leading" id="YVS-Ot-Cdt"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
@@ -203,7 +202,7 @@
                     <connections>
                         <outlet property="navBar" destination="XhY-Ul-YGP" id="lyP-9n-BqP"/>
                         <outlet property="navItem" destination="XhY-Ul-YGP" id="Nvy-oI-hi2"/>
-                        <outlet property="table" destination="Heo-1G-5Mg" id="3d6-l3-FV1"/>
+                        <outlet property="table" destination="RFB-5e-TlP" id="os2-cx-kiH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zhh-Cv-f4U" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -215,34 +214,37 @@
             <objects>
                 <tableViewController id="WEH-9b-AKs" customClass="UserListController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="95" sectionHeaderHeight="28" sectionFooterHeight="28" id="xjG-fJ-7nf">
-                        <rect key="frame" x="0.0" y="0.0" width="552" height="487"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="separatorColor" red="0.97443657839999998" green="0.97443657839999998" blue="0.97443657839999998" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationLevel="1" indentationWidth="10" reuseIdentifier="Cell" rowHeight="85" id="pPu-3q-Byg">
-                                <rect key="frame" x="0.0" y="28" width="552" height="85"/>
+                                <rect key="frame" x="0.0" y="28" width="600" height="85"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pPu-3q-Byg" id="uoS-7a-B7W">
-                                    <rect key="frame" x="0.0" y="0.0" width="552" height="84.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="84.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
-                                            <rect key="frame" x="102" y="45" width="427" height="17"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView userInteractionEnabled="NO" alpha="0.0" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="n3W-4F-bd8">
-                                            <rect key="frame" x="494" y="32" width="20" height="20"/>
+                                        <imageView userInteractionEnabled="NO" alpha="0.0" tag="8" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="n3W-4F-bd8">
+                                            <rect key="frame" x="542" y="32" width="20" height="20"/>
                                             <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="20" id="n0O-TB-xbj"/>
                                                 <constraint firstAttribute="width" constant="20" id="qhZ-gP-ebZ"/>
                                             </constraints>
                                         </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afh-sq-STl">
+                                            <rect key="frame" x="102" y="17" width="475" height="29"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="29" id="7hD-zJ-0eA"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                         <view tag="6" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZG5-GW-eje" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
-                                            <rect key="frame" x="13" y="8" width="75" height="75"/>
+                                            <rect key="frame" x="16" y="5" width="75" height="75"/>
                                             <subviews>
                                                 <imageView tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
                                                     <rect key="frame" x="16" y="16" width="43" height="43"/>
@@ -256,32 +258,42 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <gestureRecognizers/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="75" id="74b-mP-gKR"/>
-                                                <constraint firstItem="Cbp-co-DR1" firstAttribute="centerX" secondItem="ZG5-GW-eje" secondAttribute="centerX" id="PKn-XK-dlC"/>
-                                                <constraint firstAttribute="width" constant="75" id="V2i-9v-8Cl"/>
-                                                <constraint firstItem="Cbp-co-DR1" firstAttribute="centerY" secondItem="ZG5-GW-eje" secondAttribute="centerY" id="XjD-A7-7Xt"/>
+                                                <constraint firstItem="Cbp-co-DR1" firstAttribute="centerY" secondItem="ZG5-GW-eje" secondAttribute="centerY" id="Jfq-w1-aqo"/>
+                                                <constraint firstItem="Cbp-co-DR1" firstAttribute="centerX" secondItem="ZG5-GW-eje" secondAttribute="centerX" id="OBB-O4-4Yf"/>
+                                                <constraint firstAttribute="width" constant="75" id="eMG-UM-gn6"/>
+                                                <constraint firstAttribute="height" constant="75" id="xwh-Y0-zvW"/>
                                             </constraints>
                                         </view>
-                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afh-sq-STl">
-                                            <rect key="frame" x="102" y="17" width="427" height="29"/>
-                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <view userInteractionEnabled="NO" alpha="0.0" tag="3" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E1I-6J-H80" customClass="ShapeToGlobe" customModule="Beacon" customModuleProvider="target">
+                                            <rect key="frame" x="542" y="32" width="20" height="20"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="20" id="AA0-as-kgI"/>
+                                                <constraint firstAttribute="width" constant="20" id="VbD-9v-kS2"/>
+                                            </constraints>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
+                                            <rect key="frame" x="102" y="45" width="475" height="17"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="17" id="6n7-y0-jwh"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="trailingMargin" secondItem="n3W-4F-bd8" secondAttribute="trailing" constant="30" id="9Zf-sq-zlx"/>
-                                        <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="14" id="Adr-YN-JUc"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="afh-sq-STl" secondAttribute="trailing" constant="15" id="F4m-Pl-aJ7"/>
-                                        <constraint firstItem="ZG5-GW-eje" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="5" id="Lky-pf-pVp"/>
-                                        <constraint firstItem="92K-U2-lbN" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="37" id="cXf-ER-xB2"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="92K-U2-lbN" secondAttribute="trailing" constant="15" id="fRt-7y-l6p"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="afh-sq-STl" secondAttribute="bottom" constant="30.5" id="inO-qU-xsG"/>
-                                        <constraint firstItem="afh-sq-STl" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="14" id="iq0-Me-dAl"/>
+                                        <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="11" id="9kL-rc-5Oa"/>
+                                        <constraint firstItem="E1I-6J-H80" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="Mar-ef-Gun"/>
+                                        <constraint firstItem="ZG5-GW-eje" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="OoP-52-SCh"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="92K-U2-lbN" secondAttribute="trailing" constant="15" id="Qom-n4-aDj"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="afh-sq-STl" secondAttribute="trailing" constant="15" id="USi-mt-Wk9"/>
+                                        <constraint firstItem="afh-sq-STl" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="9" id="USp-QO-9Eh"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="E1I-6J-H80" secondAttribute="trailing" constant="30" id="Ug9-iJ-uIt"/>
                                         <constraint firstItem="n3W-4F-bd8" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="jAy-BT-wcJ"/>
-                                        <constraint firstItem="afh-sq-STl" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="9" id="qMX-kO-V02"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="92K-U2-lbN" secondAttribute="bottom" constant="14.5" id="tLU-lU-sHg"/>
-                                        <constraint firstItem="ZG5-GW-eje" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" id="zRM-ms-wct"/>
+                                        <constraint firstItem="afh-sq-STl" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="11" id="pTK-he-tGg"/>
+                                        <constraint firstItem="ZG5-GW-eje" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="8" id="sk3-ti-KDb"/>
+                                        <constraint firstItem="92K-U2-lbN" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="37" id="vMu-0z-V5E"/>
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -317,7 +329,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9zD-hA-Q8J" customClass="MKMapView">
-                                <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <connections>
                                     <outlet property="delegate" destination="mKN-em-9dv" id="WWm-4f-16M"/>
                                 </connections>
@@ -349,16 +361,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="trailing" secondItem="RFN-qL-fP1" secondAttribute="trailingMargin" id="2hV-cA-gz7"/>
+                            <constraint firstAttribute="trailing" secondItem="9zD-hA-Q8J" secondAttribute="trailing" id="0Dt-6n-BKP"/>
                             <constraint firstItem="cfu-aR-nPw" firstAttribute="centerX" secondItem="RFN-qL-fP1" secondAttribute="centerX" id="4kZ-xp-MJV"/>
-                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="centerX" secondItem="RFN-qL-fP1" secondAttribute="centerX" id="BJg-vL-Uu7"/>
-                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="leading" secondItem="RFN-qL-fP1" secondAttribute="leadingMargin" id="Bg5-dQ-Sk0"/>
-                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="top" secondItem="RFN-qL-fP1" secondAttribute="topMargin" id="EgU-f2-eQJ"/>
-                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="centerY" secondItem="RFN-qL-fP1" secondAttribute="centerY" id="Fr1-kF-WtC"/>
                             <constraint firstItem="frc-ec-ku7" firstAttribute="top" secondItem="nNv-uA-SEt" secondAttribute="bottom" constant="20" id="Gvm-za-rea"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nNv-uA-SEt" secondAttribute="trailing" constant="20" id="Kti-sx-4uA"/>
-                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="bottom" secondItem="RFN-qL-fP1" secondAttribute="bottomMargin" id="ayk-3X-nxO"/>
+                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="top" secondItem="x2Z-zG-Pqh" secondAttribute="bottom" id="dE2-cl-gG3"/>
                             <constraint firstItem="cfu-aR-nPw" firstAttribute="top" secondItem="RFN-qL-fP1" secondAttribute="topMargin" constant="30" id="gJJ-4c-BKY"/>
+                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="leading" secondItem="RFN-qL-fP1" secondAttribute="leading" id="qUs-nx-umF"/>
+                            <constraint firstAttribute="bottom" secondItem="9zD-hA-Q8J" secondAttribute="bottom" id="wON-AP-AFl"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="World" image="Globe" id="NCb-7x-d4X"/>
@@ -382,11 +392,11 @@
                         <viewControllerLayoutGuide type="bottom" id="J0f-90-a8d"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="7XT-kT-AKZ">
-                        <rect key="frame" x="0.0" y="44" width="552" height="537"/>
+                        <rect key="frame" x="0.0" y="44" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qQN-Za-ivi">
-                                <rect key="frame" x="20" y="0.0" width="512" height="537"/>
+                                <rect key="frame" x="20" y="0.0" width="560" height="487"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
@@ -508,7 +518,7 @@ Your location is never used when you’re not using the app. We only care about 
             <objects>
                 <tableViewController title="Settings Table" automaticallyAdjustsScrollViewInsets="NO" id="5sm-ep-AXT" customClass="SettingsTableController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" pagingEnabled="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="AAP-IP-RLk">
-                        <rect key="frame" x="0.0" y="44" width="552" height="537"/>
+                        <rect key="frame" x="0.0" y="44" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.97443657841823061" green="0.97443657841823061" blue="0.97443657841823061" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" red="0.97443657839999998" green="0.97443657839999998" blue="0.97443657839999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -516,14 +526,20 @@ Your location is never used when you’re not using the app. We only care about 
                             <tableViewSection id="uZF-Rr-RM8">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="109" id="E8b-KR-2HN">
-                                        <rect key="frame" x="0.0" y="35" width="552" height="109"/>
+                                        <rect key="frame" x="0.0" y="35" width="600" height="109"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="E8b-KR-2HN" id="ves-gR-XGW">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="108.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="108.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Profile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DD7-fq-JWD">
+                                                    <rect key="frame" x="8" y="88" width="584" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d8u-fS-2jg" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
-                                                    <rect key="frame" x="236" y="8" width="75" height="75"/>
+                                                    <rect key="frame" x="260" y="8" width="75" height="75"/>
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o2y-MI-kPe">
                                                             <rect key="frame" x="16" y="16" width="43" height="43"/>
@@ -542,12 +558,6 @@ Your location is never used when you’re not using the app. We only care about 
                                                         <constraint firstItem="o2y-MI-kPe" firstAttribute="centerY" secondItem="d8u-fS-2jg" secondAttribute="centerY" id="jg4-TT-K1o"/>
                                                     </constraints>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Profile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DD7-fq-JWD">
-                                                    <rect key="frame" x="8" y="88" width="536" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
@@ -565,10 +575,10 @@ Your location is never used when you’re not using the app. We only care about 
                             <tableViewSection headerTitle="" id="Jy0-u1-nle">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" id="teC-K8-OPS">
-                                        <rect key="frame" x="0.0" y="180" width="552" height="44"/>
+                                        <rect key="frame" x="0.0" y="180" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="teC-K8-OPS" id="ScG-x4-eSV">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save your beacons" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VxS-SN-a1I">
@@ -582,7 +592,7 @@ Your location is never used when you’re not using the app. We only care about 
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O8O-pY-68y">
-                                                    <rect key="frame" x="485" y="6" width="51" height="31"/>
+                                                    <rect key="frame" x="533" y="6" width="51" height="31"/>
                                                     <color key="onTintColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                                     <connections>
                                                         <action selector="saveSwitchFlipped:" destination="5sm-ep-AXT" eventType="valueChanged" id="jNT-ef-1p9"/>
@@ -602,10 +612,10 @@ Your location is never used when you’re not using the app. We only care about 
                             <tableViewSection headerTitle="" id="xi1-En-Ccq">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" tag="2" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="z0z-Kd-bkC">
-                                        <rect key="frame" x="0.0" y="260" width="552" height="44"/>
+                                        <rect key="frame" x="0.0" y="260" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="z0z-Kd-bkC" id="pEL-JT-By6">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms of Service" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A6w-T2-Rro">
@@ -626,10 +636,10 @@ Your location is never used when you’re not using the app. We only care about 
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" tag="3" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="rJP-HY-sSA">
-                                        <rect key="frame" x="0.0" y="304" width="552" height="44"/>
+                                        <rect key="frame" x="0.0" y="304" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rJP-HY-sSA" id="bdP-hB-NPu">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jin-nh-GGf">
@@ -650,10 +660,10 @@ Your location is never used when you’re not using the app. We only care about 
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" tag="4" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="ZM0-Z6-499">
-                                        <rect key="frame" x="0.0" y="348" width="552" height="44"/>
+                                        <rect key="frame" x="0.0" y="348" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZM0-Z6-499" id="g5h-DM-upd">
-                                            <rect key="frame" x="0.0" y="0.0" width="552" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ae8-r7-heS">
@@ -717,7 +727,7 @@ Your location is never used when you’re not using the app. We only care about 
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="h61-ZD-rF4">
-                                <rect key="frame" x="24" y="20" width="552" height="581"/>
+                                <rect key="frame" x="0.0" y="20" width="600" height="531"/>
                                 <connections>
                                     <segue destination="2kg-ag-T9r" kind="embed" id="IKX-Cg-pWD"/>
                                 </connections>
@@ -734,14 +744,13 @@ Your location is never used when you’re not using the app. We only care about 
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="h61-ZD-rF4" firstAttribute="top" secondItem="tnX-2Q-oBi" secondAttribute="bottom" id="9ag-ye-tvQ"/>
+                            <constraint firstAttribute="trailing" secondItem="h61-ZD-rF4" secondAttribute="trailing" id="FEm-Px-TWB"/>
                             <constraint firstItem="tnX-2Q-oBi" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leadingMargin" constant="-20" id="Fv9-Uo-YD6"/>
                             <constraint firstItem="tnX-2Q-oBi" firstAttribute="top" secondItem="TgT-el-teM" secondAttribute="topMargin" constant="-1" id="alt-ey-geQ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="tnX-2Q-oBi" secondAttribute="trailing" constant="-20" id="ezM-RR-La7"/>
-                            <constraint firstItem="h61-ZD-rF4" firstAttribute="bottom" secondItem="TgT-el-teM" secondAttribute="bottomMargin" constant="50" id="gFp-LH-EXC"/>
-                            <constraint firstItem="h61-ZD-rF4" firstAttribute="centerX" secondItem="TgT-el-teM" secondAttribute="centerX" id="m20-6K-tNB"/>
-                            <constraint firstItem="h61-ZD-rF4" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leadingMargin" constant="4" id="oIN-Bh-Ynr"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="h61-ZD-rF4" secondAttribute="trailing" constant="4" id="sCk-uO-YlR"/>
+                            <constraint firstItem="HSU-i7-9f1" firstAttribute="top" secondItem="h61-ZD-rF4" secondAttribute="bottom" id="g2C-2T-mAU"/>
+                            <constraint firstItem="h61-ZD-rF4" firstAttribute="top" secondItem="tnX-2Q-oBi" secondAttribute="bottom" id="gBV-6p-ftn"/>
+                            <constraint firstItem="h61-ZD-rF4" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leading" id="p6Z-4X-Mm0"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -767,7 +776,7 @@ Your location is never used when you’re not using the app. We only care about 
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9aK-Ms-lBE">
-                                <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
@@ -845,22 +854,22 @@ Your location is never used when you’re not using the app. We only care about 
                                 </connections>
                             </button>
                             <visualEffectView opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J8y-Vv-KtF">
-                                <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="A4C-XN-iC3">
-                                    <rect key="frame" x="0.0" y="0.0" width="560" height="600"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Altiplano.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="Bz0-Br-GqQ">
-                                            <rect key="frame" x="0.0" y="0.0" width="560" height="600"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                         </imageView>
                                         <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zsQ-hW-6sa">
-                                            <rect key="frame" x="0.0" y="0.0" width="560" height="600"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="jDm-qM-oJb">
-                                                <rect key="frame" x="0.0" y="0.0" width="560" height="600"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="UJb-FU-ePe">
-                                                        <rect key="frame" x="20" y="222" width="520" height="156"/>
+                                                        <rect key="frame" x="20" y="222" width="560" height="156"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="156" id="yay-CL-wdj"/>
                                                         </constraints>
@@ -883,7 +892,6 @@ Your location is never used when you’re not using the app. We only care about 
                                         <constraint firstItem="Bz0-Br-GqQ" firstAttribute="leading" secondItem="A4C-XN-iC3" secondAttribute="leading" id="9jd-EN-3Tr"/>
                                         <constraint firstItem="zsQ-hW-6sa" firstAttribute="leading" secondItem="A4C-XN-iC3" secondAttribute="leading" id="IzT-Oc-pVh"/>
                                         <constraint firstAttribute="bottom" secondItem="zsQ-hW-6sa" secondAttribute="bottom" id="Jf2-Zr-cbG"/>
-                                        <constraint firstItem="zsQ-hW-6sa" firstAttribute="centerX" secondItem="A4C-XN-iC3" secondAttribute="centerX" id="KCM-hh-MUK"/>
                                         <constraint firstItem="zsQ-hW-6sa" firstAttribute="top" secondItem="A4C-XN-iC3" secondAttribute="top" id="ff7-Qo-GBv"/>
                                         <constraint firstItem="Bz0-Br-GqQ" firstAttribute="top" secondItem="A4C-XN-iC3" secondAttribute="top" id="fp1-Ta-rXH"/>
                                         <constraint firstAttribute="trailing" secondItem="Bz0-Br-GqQ" secondAttribute="trailing" id="gWH-2r-Eqt"/>
@@ -941,36 +949,39 @@ Your location is never used when you’re not using the app. We only care about 
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="J8y-Vv-KtF" secondAttribute="bottom" id="0dz-nh-vbm"/>
                             <constraint firstItem="euw-Gq-Mbr" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="1wd-QC-nrw"/>
                             <constraint firstAttribute="trailingMargin" secondItem="TXH-DP-OjX" secondAttribute="trailing" constant="31" id="3fy-91-lzZ"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="J8y-Vv-KtF" secondAttribute="trailing" id="5t6-KM-bIh"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="63B-h1-9bK"/>
+                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" constant="20" id="63B-h1-9bK"/>
+                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="7ci-lQ-YIF"/>
+                            <constraint firstAttribute="bottom" secondItem="9aK-Ms-lBE" secondAttribute="bottom" id="8aj-3C-vyz"/>
                             <constraint firstItem="4QP-Z7-Dah" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="8xE-L0-pr0"/>
                             <constraint firstItem="6kZ-YB-AMf" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="BGW-Mb-dHo"/>
+                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="C6h-t5-wVd"/>
                             <constraint firstItem="xaF-sl-7DU" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="DYA-9l-O1e"/>
                             <constraint firstItem="9aK-Ms-lBE" firstAttribute="bottom" secondItem="BHi-eI-7If" secondAttribute="bottomMargin" id="F58-V3-zKC"/>
+                            <constraint firstAttribute="trailing" secondItem="J8y-Vv-KtF" secondAttribute="trailing" id="Gt5-7Y-MjO"/>
                             <constraint firstItem="9aK-Ms-lBE" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="Img-cb-uVc"/>
-                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="top" secondItem="BHi-eI-7If" secondAttribute="topMargin" id="Ja9-wB-NGc"/>
                             <constraint firstItem="TXH-DP-OjX" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" constant="28" id="Jwp-rb-0Bg"/>
                             <constraint firstAttribute="trailingMargin" secondItem="euw-Gq-Mbr" secondAttribute="trailing" id="LNL-Yr-Rqs"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="Ndu-jU-MJE"/>
+                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" constant="-20" id="Ndu-jU-MJE"/>
                             <constraint firstItem="6kZ-YB-AMf" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="P4Q-Oj-07D"/>
                             <constraint firstItem="4QP-Z7-Dah" firstAttribute="centerY" secondItem="BHi-eI-7If" secondAttribute="centerY" id="Rhf-86-dJt"/>
                             <constraint firstItem="iHt-xd-9r4" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="UUN-ao-EyO"/>
                             <constraint firstItem="b8f-Kk-hzX" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="Uav-wd-UuX"/>
-                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="bottom" secondItem="BHi-eI-7If" secondAttribute="bottomMargin" id="WGw-px-exy"/>
+                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="Z8U-Rq-FmQ"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="y8f-f4-Hlu" secondAttribute="bottom" id="Zl7-rs-GRb"/>
-                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="aN2-Lz-NJH"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="iP7-5k-Seg" secondAttribute="bottom" constant="20" id="bL7-ja-VDS"/>
                             <constraint firstItem="b8f-Kk-hzX" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="bY1-OD-sLV"/>
+                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="dTm-tH-S7t"/>
                             <constraint firstItem="y8f-f4-Hlu" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="e1d-Dy-FWf"/>
                             <constraint firstItem="b8f-Kk-hzX" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="e9K-XT-bbQ"/>
+                            <constraint firstAttribute="trailing" secondItem="9aK-Ms-lBE" secondAttribute="trailing" id="frN-6I-gjO"/>
                             <constraint firstItem="cyG-G3-pf0" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="iec-Xa-V6D"/>
                             <constraint firstItem="xaF-sl-7DU" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="jLu-fs-XoA"/>
                             <constraint firstItem="iP7-5k-Seg" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="k7s-sl-91l"/>
                             <constraint firstItem="9aK-Ms-lBE" firstAttribute="top" secondItem="BHi-eI-7If" secondAttribute="topMargin" id="lfa-XV-gcI"/>
                             <constraint firstItem="cyG-G3-pf0" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="m9l-n7-NUt"/>
-                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="pvy-kd-aUc"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="cyG-G3-pf0" secondAttribute="bottom" id="q2y-Pb-IxX"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="iHt-xd-9r4" secondAttribute="bottom" constant="20" id="ywo-Ja-XxN"/>
                         </constraints>
@@ -1138,11 +1149,11 @@ Your location is never used when you’re not using the app. We only care about 
                         <viewControllerLayoutGuide type="bottom" id="XMF-pB-bA9"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="pBX-BH-BBi">
-                        <rect key="frame" x="0.0" y="44" width="552" height="537"/>
+                        <rect key="frame" x="0.0" y="44" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HQ6-Hb-OWD">
-                                <rect key="frame" x="20" y="0.0" width="512" height="537"/>
+                                <rect key="frame" x="20" y="0.0" width="560" height="487"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment content=" ">
@@ -1527,11 +1538,11 @@ Beacon reserves the right to revoke access from any user under any circumstances
                         <viewControllerLayoutGuide type="bottom" id="IM0-IN-Cep"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="HAO-HZ-eo4">
-                        <rect key="frame" x="0.0" y="44" width="552" height="537"/>
+                        <rect key="frame" x="0.0" y="44" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9kT-dW-2Kb">
-                                <rect key="frame" x="20" y="0.0" width="512" height="537"/>
+                                <rect key="frame" x="20" y="0.0" width="560" height="487"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
@@ -1675,6 +1686,6 @@ THE SOFTWARE.
         <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="fzn-UV-xBd"/>
+        <segue reference="8ds-TT-rzm"/>
     </inferredMetricsTieBreakers>
 </document>

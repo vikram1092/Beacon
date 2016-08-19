@@ -13,6 +13,8 @@ import MapKit
 
 class MapController: UIViewController, MKMapViewDelegate {
     
+    let MERCATOR_OFFSET = 268435456.0
+    let MERCATOR_RADIUS = 85445659.44705395
     
     var countries = NSArray()
     var userID = ""
@@ -421,6 +423,13 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     internal func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         
+        //Restrict zoom level
+        if mapView.region.span.longitudeDelta < 0.2 {
+            
+            mapView.setRegion(MKCoordinateRegion(center: mapView.centerCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)), animated: true)
+        }
+        
+        //Perform annotation clustering
         performClustering()
     }
     
