@@ -18,6 +18,7 @@ class CountryBackground: UIView {
     var progressView = UIView()
     let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
     var isAnimating = false
+    var country = UIImageView()
     
     var color = BeaconColors().redColor.CGColor
     
@@ -40,8 +41,8 @@ class CountryBackground: UIView {
         self.layer.addSublayer(background)
         
         //Rotate view for progress bar, and rotate country image back
-        let country = self.viewWithTag(5)
-        self.bringSubviewToFront(country!)
+        country = self.viewWithTag(5) as! UIImageView
+        self.bringSubviewToFront(country)
         
         
         //Register for interruption notifications

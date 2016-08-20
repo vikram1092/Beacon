@@ -24,8 +24,8 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
                                 <rect key="frame" x="25" y="15" width="575" height="585"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="0.0" y="253" width="600" height="94"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                                <rect key="frame" x="0.0" y="254" width="600" height="94"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="94" id="5ad-e3-KjW"/>
@@ -52,8 +52,8 @@
                                     <constraint firstAttribute="height" constant="50" id="ifP-vi-HCl"/>
                                 </constraints>
                             </imageView>
-                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RLB-pv-k3R">
-                                <rect key="frame" x="0.0" y="367" width="600" height="90"/>
+                            <view alpha="0.0" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RLB-pv-k3R">
+                                <rect key="frame" x="0.0" y="368" width="600" height="90"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Getting you started..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U3x-8Z-3wW">
                                         <rect key="frame" x="209" y="8" width="182" height="21"/>
@@ -121,7 +121,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-512" y="300.5"/>
+            <point key="canvasLocation" x="-512" y="300"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="9x9-5Y-FFL">
@@ -160,6 +160,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RFB-5e-TlP">
+                                <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                                <connections>
+                                    <segue destination="WEH-9b-AKs" kind="embed" id="pJP-nv-pDF"/>
+                                </connections>
+                            </containerView>
                             <navigationBar opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XhY-Ul-YGP">
                                 <rect key="frame" x="0.0" y="20" width="600" height="44"/>
                                 <constraints>
@@ -175,22 +181,16 @@
                                     <navigationItem title="b e a c o n" id="FNA-nf-9kg"/>
                                 </items>
                             </navigationBar>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RFB-5e-TlP">
-                                <rect key="frame" x="0.0" y="64" width="600" height="487"/>
-                                <connections>
-                                    <segue destination="WEH-9b-AKs" kind="embed" id="pJP-nv-pDF"/>
-                                </connections>
-                            </containerView>
                         </subviews>
                         <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="RFB-5e-TlP" firstAttribute="top" secondItem="XhY-Ul-YGP" secondAttribute="bottom" id="3ja-mq-P2W"/>
                             <constraint firstAttribute="trailingMargin" secondItem="XhY-Ul-YGP" secondAttribute="trailing" constant="-20" id="5wW-b0-r6E"/>
+                            <constraint firstItem="69W-9e-QTv" firstAttribute="top" secondItem="RFB-5e-TlP" secondAttribute="bottom" id="DCY-W1-ShT"/>
                             <constraint firstItem="XhY-Ul-YGP" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leadingMargin" constant="-20" id="FEY-Yw-gLe"/>
-                            <constraint firstAttribute="trailing" secondItem="RFB-5e-TlP" secondAttribute="trailing" id="I37-1o-gHP"/>
-                            <constraint firstItem="69W-9e-QTv" firstAttribute="top" secondItem="RFB-5e-TlP" secondAttribute="bottom" id="Muh-h0-Mtu"/>
-                            <constraint firstItem="XhY-Ul-YGP" firstAttribute="top" secondItem="JB1-sV-LGU" secondAttribute="bottom" constant="20" id="Tf5-s7-Ram"/>
-                            <constraint firstItem="RFB-5e-TlP" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leading" id="YVS-Ot-Cdt"/>
+                            <constraint firstItem="RFB-5e-TlP" firstAttribute="leading" secondItem="Nc3-uR-38l" secondAttribute="leading" id="HM0-s0-0iq"/>
+                            <constraint firstItem="XhY-Ul-YGP" firstAttribute="top" secondItem="JB1-sV-LGU" secondAttribute="bottom" id="Tf5-s7-Ram"/>
+                            <constraint firstItem="RFB-5e-TlP" firstAttribute="top" secondItem="XhY-Ul-YGP" secondAttribute="bottom" id="tzh-aH-8ah"/>
+                            <constraint firstAttribute="trailing" secondItem="RFB-5e-TlP" secondAttribute="trailing" id="u4p-xb-VpD"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
@@ -223,7 +223,7 @@
                                 <rect key="frame" x="0.0" y="28" width="600" height="85"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pPu-3q-Byg" id="uoS-7a-B7W">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="84.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="84"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" alpha="0.0" tag="8" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="n3W-4F-bd8">
@@ -234,15 +234,6 @@
                                                 <constraint firstAttribute="width" constant="20" id="qhZ-gP-ebZ"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afh-sq-STl">
-                                            <rect key="frame" x="102" y="17" width="475" height="29"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="29" id="7hD-zJ-0eA"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
                                         <view tag="6" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZG5-GW-eje" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
                                             <rect key="frame" x="16" y="5" width="75" height="75"/>
                                             <subviews>
@@ -272,12 +263,21 @@
                                             </constraints>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
-                                            <rect key="frame" x="102" y="45" width="475" height="17"/>
+                                            <rect key="frame" x="102" y="45" width="473" height="17"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="17" id="6n7-y0-jwh"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afh-sq-STl">
+                                            <rect key="frame" x="102" y="17" width="473" height="29"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="29" id="7hD-zJ-0eA"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -286,8 +286,8 @@
                                         <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="11" id="9kL-rc-5Oa"/>
                                         <constraint firstItem="E1I-6J-H80" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="Mar-ef-Gun"/>
                                         <constraint firstItem="ZG5-GW-eje" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="OoP-52-SCh"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="92K-U2-lbN" secondAttribute="trailing" constant="15" id="Qom-n4-aDj"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="afh-sq-STl" secondAttribute="trailing" constant="15" id="USi-mt-Wk9"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="92K-U2-lbN" secondAttribute="trailing" constant="17" id="Qom-n4-aDj"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="afh-sq-STl" secondAttribute="trailing" constant="17" id="USi-mt-Wk9"/>
                                         <constraint firstItem="afh-sq-STl" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="9" id="USp-QO-9Eh"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="E1I-6J-H80" secondAttribute="trailing" constant="30" id="Ug9-iJ-uIt"/>
                                         <constraint firstItem="n3W-4F-bd8" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="jAy-BT-wcJ"/>
@@ -361,14 +361,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="9zD-hA-Q8J" secondAttribute="trailing" id="0Dt-6n-BKP"/>
                             <constraint firstItem="cfu-aR-nPw" firstAttribute="centerX" secondItem="RFN-qL-fP1" secondAttribute="centerX" id="4kZ-xp-MJV"/>
+                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="bottom" secondItem="RFN-qL-fP1" secondAttribute="bottomMargin" id="CAx-X9-8YS"/>
                             <constraint firstItem="frc-ec-ku7" firstAttribute="top" secondItem="nNv-uA-SEt" secondAttribute="bottom" constant="20" id="Gvm-za-rea"/>
+                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="top" secondItem="RFN-qL-fP1" secondAttribute="topMargin" id="H5H-0u-Zi3"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nNv-uA-SEt" secondAttribute="trailing" constant="20" id="Kti-sx-4uA"/>
-                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="top" secondItem="x2Z-zG-Pqh" secondAttribute="bottom" id="dE2-cl-gG3"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="9zD-hA-Q8J" secondAttribute="trailing" constant="-20" id="dQ1-7U-SNO"/>
                             <constraint firstItem="cfu-aR-nPw" firstAttribute="top" secondItem="RFN-qL-fP1" secondAttribute="topMargin" constant="30" id="gJJ-4c-BKY"/>
-                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="leading" secondItem="RFN-qL-fP1" secondAttribute="leading" id="qUs-nx-umF"/>
-                            <constraint firstAttribute="bottom" secondItem="9zD-hA-Q8J" secondAttribute="bottom" id="wON-AP-AFl"/>
+                            <constraint firstItem="9zD-hA-Q8J" firstAttribute="leading" secondItem="RFN-qL-fP1" secondAttribute="leadingMargin" constant="-20" id="iTM-jO-V0e"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="World" image="Globe" id="NCb-7x-d4X"/>
@@ -392,11 +392,11 @@
                         <viewControllerLayoutGuide type="bottom" id="J0f-90-a8d"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="7XT-kT-AKZ">
-                        <rect key="frame" x="0.0" y="44" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="44" width="600" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qQN-Za-ivi">
-                                <rect key="frame" x="20" y="0.0" width="560" height="487"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="537"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
@@ -498,10 +498,10 @@ Your location is never used when you’re not using the app. We only care about 
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="qQN-Za-ivi" firstAttribute="top" secondItem="EBQ-sh-A9H" secondAttribute="bottom" id="8bT-uO-eRR"/>
-                            <constraint firstItem="qQN-Za-ivi" firstAttribute="trailing" secondItem="7XT-kT-AKZ" secondAttribute="trailingMargin" id="Eeb-23-Cva"/>
-                            <constraint firstItem="qQN-Za-ivi" firstAttribute="leading" secondItem="7XT-kT-AKZ" secondAttribute="leadingMargin" id="Ndp-lc-dHM"/>
-                            <constraint firstItem="J0f-90-a8d" firstAttribute="top" secondItem="qQN-Za-ivi" secondAttribute="bottom" id="yct-ah-nSd"/>
+                            <constraint firstItem="J0f-90-a8d" firstAttribute="top" secondItem="qQN-Za-ivi" secondAttribute="bottom" id="4cY-nT-ifw"/>
+                            <constraint firstItem="qQN-Za-ivi" firstAttribute="top" secondItem="EBQ-sh-A9H" secondAttribute="bottom" id="c2t-lt-hA6"/>
+                            <constraint firstItem="qQN-Za-ivi" firstAttribute="leading" secondItem="7XT-kT-AKZ" secondAttribute="leading" id="pbE-L4-sSU"/>
+                            <constraint firstAttribute="trailing" secondItem="qQN-Za-ivi" secondAttribute="trailing" id="z6Y-91-2ZY"/>
                         </constraints>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
@@ -518,7 +518,7 @@ Your location is never used when you’re not using the app. We only care about 
             <objects>
                 <tableViewController title="Settings Table" automaticallyAdjustsScrollViewInsets="NO" id="5sm-ep-AXT" customClass="SettingsTableController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" pagingEnabled="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="AAP-IP-RLk">
-                        <rect key="frame" x="0.0" y="44" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="44" width="600" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.97443657841823061" green="0.97443657841823061" blue="0.97443657841823061" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" red="0.97443657839999998" green="0.97443657839999998" blue="0.97443657839999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -529,11 +529,11 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="35" width="600" height="109"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="E8b-KR-2HN" id="ves-gR-XGW">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="108.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="108"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Profile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DD7-fq-JWD">
-                                                    <rect key="frame" x="8" y="88" width="584" height="21"/>
+                                                    <rect key="frame" x="7" y="87" width="585" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -561,11 +561,11 @@ Your location is never used when you’re not using the app. We only care about 
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
-                                                <constraint firstItem="DD7-fq-JWD" firstAttribute="top" secondItem="d8u-fS-2jg" secondAttribute="bottom" constant="5" id="8In-YW-GTy"/>
+                                                <constraint firstItem="DD7-fq-JWD" firstAttribute="top" secondItem="d8u-fS-2jg" secondAttribute="bottom" constant="4" id="8In-YW-GTy"/>
                                                 <constraint firstItem="DD7-fq-JWD" firstAttribute="trailing" secondItem="ves-gR-XGW" secondAttribute="trailingMargin" id="8uW-Ju-mTg"/>
                                                 <constraint firstItem="d8u-fS-2jg" firstAttribute="top" secondItem="ves-gR-XGW" secondAttribute="topMargin" id="CNR-g9-sh1"/>
                                                 <constraint firstItem="d8u-fS-2jg" firstAttribute="centerX" secondItem="ves-gR-XGW" secondAttribute="centerX" constant="-2.5" id="gxx-zj-zVD"/>
-                                                <constraint firstItem="DD7-fq-JWD" firstAttribute="leading" secondItem="ves-gR-XGW" secondAttribute="leadingMargin" id="yq4-qe-HRD"/>
+                                                <constraint firstItem="DD7-fq-JWD" firstAttribute="leading" secondItem="ves-gR-XGW" secondAttribute="leadingMargin" constant="-1" id="yq4-qe-HRD"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -578,7 +578,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="180" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="teC-K8-OPS" id="ScG-x4-eSV">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save your beacons" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VxS-SN-a1I">
@@ -615,7 +615,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="260" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="z0z-Kd-bkC" id="pEL-JT-By6">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms of Service" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A6w-T2-Rro">
@@ -639,7 +639,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="304" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rJP-HY-sSA" id="bdP-hB-NPu">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jin-nh-GGf">
@@ -663,7 +663,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="348" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZM0-Z6-499" id="g5h-DM-upd">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ae8-r7-heS">
@@ -726,31 +726,31 @@ Your location is never used when you’re not using the app. We only care about 
                         <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="h61-ZD-rF4">
-                                <rect key="frame" x="0.0" y="20" width="600" height="531"/>
-                                <connections>
-                                    <segue destination="2kg-ag-T9r" kind="embed" id="IKX-Cg-pWD"/>
-                                </connections>
-                            </containerView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tnX-2Q-oBi">
-                                <rect key="frame" x="0.0" y="-1" width="600" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tnX-2Q-oBi">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="21"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="wEq-SX-R6E"/>
+                                    <constraint firstAttribute="height" constant="21" id="TM7-do-EQS"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="h61-ZD-rF4">
+                                <rect key="frame" x="0.0" y="20" width="600" height="581"/>
+                                <connections>
+                                    <segue destination="2kg-ag-T9r" kind="embed" id="VKt-mT-unO"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="h61-ZD-rF4" secondAttribute="trailing" id="FEm-Px-TWB"/>
-                            <constraint firstItem="tnX-2Q-oBi" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leadingMargin" constant="-20" id="Fv9-Uo-YD6"/>
-                            <constraint firstItem="tnX-2Q-oBi" firstAttribute="top" secondItem="TgT-el-teM" secondAttribute="topMargin" constant="-1" id="alt-ey-geQ"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="tnX-2Q-oBi" secondAttribute="trailing" constant="-20" id="ezM-RR-La7"/>
-                            <constraint firstItem="HSU-i7-9f1" firstAttribute="top" secondItem="h61-ZD-rF4" secondAttribute="bottom" id="g2C-2T-mAU"/>
-                            <constraint firstItem="h61-ZD-rF4" firstAttribute="top" secondItem="tnX-2Q-oBi" secondAttribute="bottom" id="gBV-6p-ftn"/>
-                            <constraint firstItem="h61-ZD-rF4" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leading" id="p6Z-4X-Mm0"/>
+                            <constraint firstItem="h61-ZD-rF4" firstAttribute="top" secondItem="G7p-g5-E2m" secondAttribute="bottom" id="0Es-hA-AYh"/>
+                            <constraint firstAttribute="bottom" secondItem="h61-ZD-rF4" secondAttribute="bottom" constant="-50" id="VAV-jI-5d2"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="tnX-2Q-oBi" secondAttribute="trailing" constant="-20" id="WI5-5o-iBG"/>
+                            <constraint firstItem="h61-ZD-rF4" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leading" id="XOE-Gq-i0N"/>
+                            <constraint firstItem="h61-ZD-rF4" firstAttribute="top" secondItem="G7p-g5-E2m" secondAttribute="bottom" id="YKf-gh-AuB"/>
+                            <constraint firstAttribute="trailing" secondItem="h61-ZD-rF4" secondAttribute="trailing" id="ccq-xC-2IN"/>
+                            <constraint firstItem="tnX-2Q-oBi" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leadingMargin" constant="-20" id="soX-yO-ynH"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -787,25 +787,24 @@ Your location is never used when you’re not using the app. We only care about 
                                 </connections>
                             </imageView>
                             <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b8f-Kk-hzX">
-                                <rect key="frame" x="20" y="0.0" width="560" height="75"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="75"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="75" id="J4i-qO-Yos"/>
+                                    <constraint firstAttribute="height" constant="75" id="L3v-Zn-PX1"/>
                                 </constraints>
                             </view>
                             <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cyG-G3-pf0">
-                                <rect key="frame" x="20" y="476" width="560" height="75"/>
+                                <rect key="frame" x="0.0" y="476" width="600" height="75"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="48" id="31D-9H-0UH"/>
-                                    <constraint firstAttribute="height" constant="75" id="QDy-CK-KCx"/>
+                                    <constraint firstAttribute="height" constant="75" id="O0a-WA-d8l"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6kZ-YB-AMf">
-                                <rect key="frame" x="20" y="0.0" width="75" height="75"/>
+                                <rect key="frame" x="0.0" y="0.0" width="75" height="75"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="8vk-NN-r9j"/>
-                                    <constraint firstAttribute="height" constant="75" id="vEe-Y3-8YT"/>
+                                    <constraint firstAttribute="height" constant="75" id="8x1-M2-HR6"/>
+                                    <constraint firstAttribute="width" constant="75" id="CuG-m2-YYO"/>
                                 </constraints>
                                 <size key="titleShadowOffset" width="2.2250738585072014e-308" height="2.2250738585072014e-308"/>
                                 <state key="normal" image="CancelPhoto">
@@ -832,10 +831,10 @@ Your location is never used when you’re not using the app. We only care about 
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xaF-sl-7DU">
-                                <rect key="frame" x="20" y="0.0" width="75" height="75"/>
+                                <rect key="frame" x="0.0" y="0.0" width="75" height="75"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="Vow-Su-jsl"/>
-                                    <constraint firstAttribute="height" constant="75" id="cYS-ae-TAw"/>
+                                    <constraint firstAttribute="width" constant="75" id="CnA-UU-Z0L"/>
+                                    <constraint firstAttribute="height" constant="75" id="yTH-CR-3Sa"/>
                                 </constraints>
                                 <state key="normal" image="FlashButtonOff"/>
                                 <connections>
@@ -843,10 +842,10 @@ Your location is never used when you’re not using the app. We only care about 
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="euw-Gq-Mbr">
-                                <rect key="frame" x="505" y="0.0" width="75" height="75"/>
+                                <rect key="frame" x="525" y="0.0" width="75" height="75"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="75" id="7K7-gg-Jgr"/>
-                                    <constraint firstAttribute="width" constant="75" id="vnF-QS-wwW"/>
+                                    <constraint firstAttribute="width" constant="75" id="4R7-Oh-Hbo"/>
+                                    <constraint firstAttribute="height" constant="75" id="zkv-2e-nSJ"/>
                                 </constraints>
                                 <state key="normal" image="CameraSwitch"/>
                                 <connections>
@@ -889,6 +888,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         </visualEffectView>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="zsQ-hW-6sa" firstAttribute="centerX" secondItem="A4C-XN-iC3" secondAttribute="centerX" id="1Mg-7x-WIE"/>
                                         <constraint firstItem="Bz0-Br-GqQ" firstAttribute="leading" secondItem="A4C-XN-iC3" secondAttribute="leading" id="9jd-EN-3Tr"/>
                                         <constraint firstItem="zsQ-hW-6sa" firstAttribute="leading" secondItem="A4C-XN-iC3" secondAttribute="leading" id="IzT-Oc-pVh"/>
                                         <constraint firstAttribute="bottom" secondItem="zsQ-hW-6sa" secondAttribute="bottom" id="Jf2-Zr-cbG"/>
@@ -935,10 +935,10 @@ Your location is never used when you’re not using the app. We only care about 
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y8f-f4-Hlu">
-                                <rect key="frame" x="20" y="476" width="75" height="75"/>
+                                <rect key="frame" x="0.0" y="476" width="75" height="75"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="LmP-EP-aqD"/>
-                                    <constraint firstAttribute="height" constant="75" id="ex7-NN-hmB"/>
+                                    <constraint firstAttribute="width" constant="75" id="LlS-5n-mKC"/>
+                                    <constraint firstAttribute="height" constant="75" id="tuD-67-m2i"/>
                                 </constraints>
                                 <state key="normal" image="backButton"/>
                                 <connections>
@@ -949,44 +949,40 @@ Your location is never used when you’re not using the app. We only care about 
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="J8y-Vv-KtF" secondAttribute="bottom" id="0dz-nh-vbm"/>
-                            <constraint firstItem="euw-Gq-Mbr" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="1wd-QC-nrw"/>
+                            <constraint firstAttribute="trailing" secondItem="b8f-Kk-hzX" secondAttribute="trailing" id="0kg-Ni-wWZ"/>
+                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="1Tx-Fr-hcd"/>
+                            <constraint firstAttribute="bottom" secondItem="J8y-Vv-KtF" secondAttribute="bottom" id="2bQ-jr-0PO"/>
+                            <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="y8f-f4-Hlu" secondAttribute="bottom" id="393-XJ-UD7"/>
                             <constraint firstAttribute="trailingMargin" secondItem="TXH-DP-OjX" secondAttribute="trailing" constant="31" id="3fy-91-lzZ"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" constant="20" id="63B-h1-9bK"/>
-                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="7ci-lQ-YIF"/>
-                            <constraint firstAttribute="bottom" secondItem="9aK-Ms-lBE" secondAttribute="bottom" id="8aj-3C-vyz"/>
+                            <constraint firstItem="xaF-sl-7DU" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="7Bn-Jj-Aex"/>
                             <constraint firstItem="4QP-Z7-Dah" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="8xE-L0-pr0"/>
-                            <constraint firstItem="6kZ-YB-AMf" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="BGW-Mb-dHo"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="C6h-t5-wVd"/>
-                            <constraint firstItem="xaF-sl-7DU" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="DYA-9l-O1e"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="bottom" secondItem="BHi-eI-7If" secondAttribute="bottomMargin" id="F58-V3-zKC"/>
-                            <constraint firstAttribute="trailing" secondItem="J8y-Vv-KtF" secondAttribute="trailing" id="Gt5-7Y-MjO"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="Img-cb-uVc"/>
+                            <constraint firstItem="6kZ-YB-AMf" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="Ax3-Y0-TcY"/>
+                            <constraint firstAttribute="trailing" secondItem="J8y-Vv-KtF" secondAttribute="trailing" id="BHQ-xg-PfP"/>
+                            <constraint firstItem="xaF-sl-7DU" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="Dup-Zw-WCE"/>
+                            <constraint firstAttribute="trailing" secondItem="9aK-Ms-lBE" secondAttribute="trailing" id="HZ2-Gj-xga"/>
+                            <constraint firstItem="euw-Gq-Mbr" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="I00-js-c82"/>
+                            <constraint firstItem="y8f-f4-Hlu" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="J2H-Me-QfI"/>
                             <constraint firstItem="TXH-DP-OjX" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" constant="28" id="Jwp-rb-0Bg"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="euw-Gq-Mbr" secondAttribute="trailing" id="LNL-Yr-Rqs"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" constant="-20" id="Ndu-jU-MJE"/>
-                            <constraint firstItem="6kZ-YB-AMf" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="P4Q-Oj-07D"/>
+                            <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="cyG-G3-pf0" secondAttribute="bottom" id="MYP-rx-qaz"/>
+                            <constraint firstItem="6kZ-YB-AMf" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="NM4-bF-efV"/>
                             <constraint firstItem="4QP-Z7-Dah" firstAttribute="centerY" secondItem="BHi-eI-7If" secondAttribute="centerY" id="Rhf-86-dJt"/>
                             <constraint firstItem="iHt-xd-9r4" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="UUN-ao-EyO"/>
-                            <constraint firstItem="b8f-Kk-hzX" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="Uav-wd-UuX"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="Z8U-Rq-FmQ"/>
-                            <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="y8f-f4-Hlu" secondAttribute="bottom" id="Zl7-rs-GRb"/>
+                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="UYS-2Z-c9x"/>
+                            <constraint firstItem="b8f-Kk-hzX" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="WFc-SV-pmW"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="iP7-5k-Seg" secondAttribute="bottom" constant="20" id="bL7-ja-VDS"/>
-                            <constraint firstItem="b8f-Kk-hzX" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="bY1-OD-sLV"/>
-                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="dTm-tH-S7t"/>
-                            <constraint firstItem="y8f-f4-Hlu" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="e1d-Dy-FWf"/>
-                            <constraint firstItem="b8f-Kk-hzX" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="e9K-XT-bbQ"/>
-                            <constraint firstAttribute="trailing" secondItem="9aK-Ms-lBE" secondAttribute="trailing" id="frN-6I-gjO"/>
-                            <constraint firstItem="cyG-G3-pf0" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leadingMargin" id="iec-Xa-V6D"/>
-                            <constraint firstItem="xaF-sl-7DU" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="jLu-fs-XoA"/>
+                            <constraint firstAttribute="trailing" secondItem="euw-Gq-Mbr" secondAttribute="trailing" id="bsc-Xn-lEP"/>
+                            <constraint firstAttribute="bottom" secondItem="9aK-Ms-lBE" secondAttribute="bottom" id="dc3-ET-1Ws"/>
                             <constraint firstItem="iP7-5k-Seg" firstAttribute="centerX" secondItem="BHi-eI-7If" secondAttribute="centerX" id="k7s-sl-91l"/>
-                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="top" secondItem="BHi-eI-7If" secondAttribute="topMargin" id="lfa-XV-gcI"/>
-                            <constraint firstItem="cyG-G3-pf0" firstAttribute="trailing" secondItem="BHi-eI-7If" secondAttribute="trailingMargin" id="m9l-n7-NUt"/>
-                            <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="cyG-G3-pf0" secondAttribute="bottom" id="q2y-Pb-IxX"/>
+                            <constraint firstItem="9aK-Ms-lBE" firstAttribute="top" secondItem="1kU-Lg-LSU" secondAttribute="bottom" id="l2d-eb-PJa"/>
+                            <constraint firstItem="J8y-Vv-KtF" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="qMP-Nj-0Tl"/>
+                            <constraint firstItem="b8f-Kk-hzX" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="sXC-G2-oTj"/>
+                            <constraint firstItem="cyG-G3-pf0" firstAttribute="leading" secondItem="BHi-eI-7If" secondAttribute="leading" id="uD5-0t-LBL"/>
+                            <constraint firstAttribute="trailing" secondItem="cyG-G3-pf0" secondAttribute="trailing" id="wRj-cy-a5H"/>
                             <constraint firstItem="RHl-1r-erk" firstAttribute="top" secondItem="iHt-xd-9r4" secondAttribute="bottom" constant="20" id="ywo-Ja-XxN"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Camera" image="cameraButton" id="0HC-P9-ynW"/>
+                    <nil key="simulatedStatusBarMetrics"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="activityIndicator" destination="4QP-Z7-Dah" id="c6E-4E-MLt"/>
@@ -1078,15 +1074,14 @@ Your location is never used when you’re not using the app. We only care about 
                         <constraints>
                             <constraint firstItem="FGc-5A-dxM" firstAttribute="top" secondItem="vF0-Rz-t1f" secondAttribute="bottom" constant="20" id="48a-rk-qsq"/>
                             <constraint firstItem="5nW-Kt-8r7" firstAttribute="top" secondItem="v8w-03-VWT" secondAttribute="topMargin" id="A9L-rk-MXH"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="dnc-g5-sLL" secondAttribute="trailing" constant="-20" id="BCo-Dt-DFv"/>
                             <constraint firstItem="ODD-Ld-2eC" firstAttribute="top" secondItem="5nW-Kt-8r7" secondAttribute="bottom" id="ENm-xQ-A78"/>
                             <constraint firstAttribute="trailingMargin" secondItem="5nW-Kt-8r7" secondAttribute="trailing" constant="-20" id="EjQ-3T-4c1"/>
-                            <constraint firstItem="dnc-g5-sLL" firstAttribute="top" secondItem="v8w-03-VWT" secondAttribute="topMargin" id="MaN-oB-RY3"/>
-                            <constraint firstItem="ODD-Ld-2eC" firstAttribute="top" secondItem="dnc-g5-sLL" secondAttribute="bottom" id="RxS-3d-jFK"/>
-                            <constraint firstItem="dnc-g5-sLL" firstAttribute="leading" secondItem="v8w-03-VWT" secondAttribute="leadingMargin" constant="-20" id="aZO-Vf-atN"/>
+                            <constraint firstItem="dnc-g5-sLL" firstAttribute="leading" secondItem="v8w-03-VWT" secondAttribute="leading" id="K9g-X3-t66"/>
+                            <constraint firstAttribute="trailing" secondItem="dnc-g5-sLL" secondAttribute="trailing" id="ZgN-cl-sGD"/>
                             <constraint firstItem="5nW-Kt-8r7" firstAttribute="leading" secondItem="v8w-03-VWT" secondAttribute="leadingMargin" constant="-20" id="ah1-Gk-BtD"/>
+                            <constraint firstItem="dnc-g5-sLL" firstAttribute="top" secondItem="v8w-03-VWT" secondAttribute="topMargin" id="ccn-Kf-8RH"/>
                             <constraint firstItem="FGc-5A-dxM" firstAttribute="trailing" secondItem="v8w-03-VWT" secondAttribute="trailingMargin" id="eRP-GY-oos"/>
-                            <constraint firstItem="dnc-g5-sLL" firstAttribute="centerX" secondItem="v8w-03-VWT" secondAttribute="centerX" id="hIv-d2-CL0"/>
+                            <constraint firstItem="ODD-Ld-2eC" firstAttribute="top" secondItem="dnc-g5-sLL" secondAttribute="bottom" id="edb-IQ-WV1"/>
                             <constraint firstItem="5nW-Kt-8r7" firstAttribute="centerX" secondItem="v8w-03-VWT" secondAttribute="centerX" id="ify-HM-Pra"/>
                         </constraints>
                     </view>
@@ -1117,6 +1112,7 @@ Your location is never used when you’re not using the app. We only care about 
             <objects>
                 <tabBarController storyboardIdentifier="TabBarController" title="TabBarController" extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" definesPresentationContext="YES" hidesBottomBarWhenPushed="YES" id="Z7Z-K5-cIg" customClass="TabBarController" customModule="Beacon" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" placeholderIntrinsicWidth="0.0" placeholderIntrinsicHeight="49" translucent="NO" id="aJK-XO-EX3">
                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="49"/>
@@ -1149,11 +1145,11 @@ Your location is never used when you’re not using the app. We only care about 
                         <viewControllerLayoutGuide type="bottom" id="XMF-pB-bA9"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="pBX-BH-BBi">
-                        <rect key="frame" x="0.0" y="44" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="44" width="600" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HQ6-Hb-OWD">
-                                <rect key="frame" x="20" y="0.0" width="560" height="487"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="537"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment content=" ">
@@ -1514,10 +1510,10 @@ Beacon reserves the right to revoke access from any user under any circumstances
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="HQ6-Hb-OWD" firstAttribute="trailing" secondItem="pBX-BH-BBi" secondAttribute="trailingMargin" id="H0u-76-c9B"/>
-                            <constraint firstItem="HQ6-Hb-OWD" firstAttribute="leading" secondItem="pBX-BH-BBi" secondAttribute="leadingMargin" id="XOa-6g-UBc"/>
-                            <constraint firstItem="HQ6-Hb-OWD" firstAttribute="top" secondItem="1Sh-h3-wl7" secondAttribute="bottom" id="bNi-7h-2am"/>
-                            <constraint firstItem="XMF-pB-bA9" firstAttribute="top" secondItem="HQ6-Hb-OWD" secondAttribute="bottom" id="gpN-qg-06Y"/>
+                            <constraint firstItem="XMF-pB-bA9" firstAttribute="top" secondItem="HQ6-Hb-OWD" secondAttribute="bottom" id="HKa-J4-nxc"/>
+                            <constraint firstItem="HQ6-Hb-OWD" firstAttribute="top" secondItem="1Sh-h3-wl7" secondAttribute="bottom" id="JyS-0e-a3W"/>
+                            <constraint firstAttribute="trailing" secondItem="HQ6-Hb-OWD" secondAttribute="trailing" id="Uda-Wk-2wb"/>
+                            <constraint firstItem="HQ6-Hb-OWD" firstAttribute="leading" secondItem="pBX-BH-BBi" secondAttribute="leading" id="jSA-cb-bo5"/>
                         </constraints>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
@@ -1538,11 +1534,11 @@ Beacon reserves the right to revoke access from any user under any circumstances
                         <viewControllerLayoutGuide type="bottom" id="IM0-IN-Cep"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="HAO-HZ-eo4">
-                        <rect key="frame" x="0.0" y="44" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="44" width="600" height="537"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9kT-dW-2Kb">
-                                <rect key="frame" x="20" y="0.0" width="560" height="487"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="537"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
@@ -1657,10 +1653,10 @@ THE SOFTWARE.
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="9kT-dW-2Kb" firstAttribute="trailing" secondItem="HAO-HZ-eo4" secondAttribute="trailingMargin" id="452-FE-M2l"/>
-                            <constraint firstItem="9kT-dW-2Kb" firstAttribute="top" secondItem="Dq7-1s-A4J" secondAttribute="bottom" id="Zjq-RU-c8s"/>
-                            <constraint firstItem="IM0-IN-Cep" firstAttribute="top" secondItem="9kT-dW-2Kb" secondAttribute="bottom" id="b3n-bm-Rlc"/>
-                            <constraint firstItem="9kT-dW-2Kb" firstAttribute="leading" secondItem="HAO-HZ-eo4" secondAttribute="leadingMargin" id="kHy-JT-zh5"/>
+                            <constraint firstItem="9kT-dW-2Kb" firstAttribute="leading" secondItem="HAO-HZ-eo4" secondAttribute="leading" id="2mc-X5-osa"/>
+                            <constraint firstAttribute="trailing" secondItem="9kT-dW-2Kb" secondAttribute="trailing" id="b56-qo-RT6"/>
+                            <constraint firstItem="IM0-IN-Cep" firstAttribute="top" secondItem="9kT-dW-2Kb" secondAttribute="bottom" id="cLd-vR-5UB"/>
+                            <constraint firstItem="9kT-dW-2Kb" firstAttribute="top" secondItem="Dq7-1s-A4J" secondAttribute="bottom" id="qCw-vE-AQ5"/>
                         </constraints>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>

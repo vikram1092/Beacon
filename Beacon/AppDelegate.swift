@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+        
         //If the user email is not set, segue to login screen
         let userDefaults = NSUserDefaults.standardUserDefaults()
         
