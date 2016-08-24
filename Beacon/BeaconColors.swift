@@ -14,5 +14,7 @@ class BeaconColors {
     let blueColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue:203.0/255.0, alpha: 1)
     let redColor = UIColor(red: 195.0/255.0, green: 77.0/255.0, blue: 84.0/255.0, alpha: 1)
     let yellowColor = UIColor(red: 254.0/255.0, green: 202.0/255.0, blue: 22.0/255.0, alpha: 1)
+    let lightBlueColor = UIColor(red: 190.0/255.0, green: 78.0/255.0, blue: 129.0/255.0, alpha: 1)
+
     
 }

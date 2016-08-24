@@ -29,8 +29,8 @@ class UserListController: UITableViewController {
     var userToReceivePhotos = 0
     var countryCenter = CGPoint(x: 0,y: 0)
     var countryTable = CountryTable()
-    var countryObject = UIView()
-    var updatingUserList = false
+    var checkingForNewBeacons = false
+    var checkingForReplyBeacons = false
     var haveSetAlertAfterSending = false
     var showNoMoreBeaconsAlert = false
     
@@ -47,6 +47,7 @@ class UserListController: UITableViewController {
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
     let defaultColor = BeaconColors().redColor
     let sendingColor = BeaconColors().yellowColor
+    let replyColor = BeaconColors().lightBlueColor
     let refreshBackgroundColor = BeaconColors().blueColor
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
@@ -248,15 +249,15 @@ class UserListController: UITableViewController {
                 print("Adding new photos")
                 self.haveSetAlertAfterSending = false
                 self.sendUnsentPhotos()
-                self.updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
+                self.updateUserList()
             }
             else {
                 
                 //Nothing has changed, update user list if it's not already updating
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                     
-                    if !self.updatingUserList {
-                        self.updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
+                    if !self.checkingForNewBeacons {
+                        self.updateUserList()
                     }
                 })
             }
@@ -382,12 +383,20 @@ class UserListController: UITableViewController {
                     
                     
                     //If sent, remove locally
-                    print("Removing sent object: ")
+                    print("Removing sent object")
                     photoObj.unpinInBackground()
                     
                     if self.userList.contains(photoObj) {
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            
+                            
+                            if photoObj.objectForKey("replyTo") == nil {
+                                
+                                //Update user photo variables
+                                self.updateUserPhotos()
+                            }
+                            
                             
                             //Remove from user list and table and clear local path
                             self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
@@ -399,8 +408,6 @@ class UserListController: UITableViewController {
                                 self.clearLocalFile(filePath)
                             })
                             
-                            //Update user photo variables
-                            self.updateUserPhotos()
                             
                             if updateUserList {
                                 
@@ -408,7 +415,7 @@ class UserListController: UITableViewController {
                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                                     
                                     //Update user list and table
-                                    self.updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
+                                    self.updateUserList()
                                 })
                             }
                         })
@@ -471,14 +478,23 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func updateUserList(sameCountry: Bool, sameState: Bool, sameCity: Bool, likePrevious: Bool) {
+    internal func updateUserList() {
+        
+        //Check for new beacons
+        checkForNewBeacons(false, sameState: false, sameCity: false, likePrevious: false)
+        
+        //Check for reply beacons
+        checkForReplyBeacons()
+    }
+    
+    
+    internal func checkForNewBeacons(sameCountry: Bool, sameState: Bool, sameCity: Bool, likePrevious: Bool) {
         
         
         //Initialize for subtracting from userToReceivePhotos list
-        print("updateUserList")
-        updatingUserList = true
+        print("checkForNewBeacons")
+        checkingForNewBeacons = true
         var userReceivedPhotos = 0
-        
         
         
         //If user is to receive photos, execute the following
@@ -493,17 +509,18 @@ class UserListController: UITableViewController {
             //DEMO CODE - REPLACE BEFORE RELEASE
             //query.whereKey("sentBy", notEqualTo: userID)
             query.whereKeyDoesNotExist("receivedBy")
+            query.whereKeyDoesNotExist("replyTo")
             query.orderByAscending("createdAt")
             query.limit = userToReceivePhotos
             
             let previous = userList.last
             
             
-            //Handle rrstrictions per given parameters
+            //Handle restrictions per given parameters
             //First check country restriction, then state restriction, then city
             //Within these, check for restriction to not be like the previous beacon's location
             if !sameCountry && !sameState && !sameCity && userCountry != "" {
-            
+                
                 
                 //If likePrevious is false and previous exists, apply country to not be like previous
                 //Else, apply a simple country restriction
@@ -580,13 +597,16 @@ class UserListController: UITableViewController {
             
             
             //Query with above conditions
-            query.findObjectsInBackgroundWithBlock({ (photos, error) -> Void in
+            query.findObjectsInBackgroundWithBlock({ (beacons, error) -> Void in
                 
                 
                 if error != nil {
+                    
+                    //Display error and trigger flag
                     print("Photo query error: " + error!.description)
+                    self.checkingForNewBeacons = false
                 }
-                else if photos!.count < 1 {
+                else if beacons!.count < 1 {
                     
                     
                     //Either recurse the same method with different parameters or end search
@@ -598,7 +618,8 @@ class UserListController: UITableViewController {
                         if sameCountry && sameState && sameCity && likePrevious {
                             
                             
-                            self.updatingUserList = false
+                            //Trigger flag
+                            self.checkingForNewBeacons = false
                             print("Database empty.")
                             
                             //Let the user know that the database if user hasn't switched out already
@@ -617,37 +638,37 @@ class UserListController: UITableViewController {
                         else if !sameCountry && !sameState && !sameCity && !likePrevious {
                             
                             //Query for same country not like previous
-                            self.updateUserList(true, sameState: false, sameCity: false, likePrevious: false)
+                            self.checkForNewBeacons(true, sameState: false, sameCity: false, likePrevious: false)
                         }
                         else if sameCountry && !sameState && !sameCity && !likePrevious {
                             
                             //Query for same state not like previous
-                            self.updateUserList(true, sameState: true, sameCity: false, likePrevious: false)
+                            self.checkForNewBeacons(true, sameState: true, sameCity: false, likePrevious: false)
                         }
                         else if sameCountry && sameState && !sameCity && !likePrevious {
                             
                             //Query for same city not like previous
-                            self.updateUserList(true, sameState: true, sameCity: true, likePrevious: false)
+                            self.checkForNewBeacons(true, sameState: true, sameCity: true, likePrevious: false)
                         }
                         else if sameCountry && sameState && sameCity && !likePrevious {
                             
                             //Query for different country, state and city with no previous restriction
-                            self.updateUserList(false, sameState: false, sameCity: false, likePrevious: true)
+                            self.checkForNewBeacons(false, sameState: false, sameCity: false, likePrevious: true)
                         }
                         else if !sameCountry && !sameState && !sameCity && likePrevious {
                             
                             //Query for same country
-                            self.updateUserList(true, sameState: false, sameCity: false, likePrevious: true)
+                            self.checkForNewBeacons(true, sameState: false, sameCity: false, likePrevious: true)
                         }
                         else if sameCountry && !sameState && !sameCity && likePrevious {
                             
                             //Query for same state
-                            self.updateUserList(true, sameState: true, sameCity: false, likePrevious: true)
+                            self.checkForNewBeacons(true, sameState: true, sameCity: false, likePrevious: true)
                         }
                         else if sameCountry && sameState && !sameCity && likePrevious {
                             
                             //Query for same city
-                            self.updateUserList(true, sameState: true, sameCity: true, likePrevious: true)
+                            self.checkForNewBeacons(true, sameState: true, sameCity: true, likePrevious: true)
                         }
                     }
                 }
@@ -656,7 +677,7 @@ class UserListController: UITableViewController {
                     //Update objects and create a temporary array of them
                     var tempList = Array<PFObject>()
                     
-                    for photoObject in photos!{
+                    for photoObject in beacons!{
                         
                         
                         //Mark unread
@@ -741,12 +762,16 @@ class UserListController: UITableViewController {
                         print("Resetting user photos")
                         self.userToReceivePhotos -= userReceivedPhotos
                         self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
+                        
                     })
+                    
+                    //Reset flag
+                    self.checkingForNewBeacons = false
                 }
                 
                 
                 //Stop refreshing
-                if !self.updatingUserList {
+                if !self.checkingForNewBeacons && !self.checkingForReplyBeacons {
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
@@ -761,26 +786,151 @@ class UserListController: UITableViewController {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
                 print("Ending")
-                self.updatingUserList = false
-                self.refreshControl!.endRefreshing()
+                self.checkingForNewBeacons = false
+                if !self.checkingForReplyBeacons {
+                    
+                    self.refreshControl!.endRefreshing()
+                }
             })
         }
         
     }
     
     
+    internal func checkForReplyBeacons() {
+        
+        
+        //Trigger flag
+        print("checkForReplyBeacons")
+        checkingForReplyBeacons = true
+        
+        //Get replies that belong to user and haven't been received
+        let query = PFQuery(className:"photo")
+        query.whereKeyExists("photo")
+        query.whereKey("replyTo", equalTo: userID)
+        query.whereKeyDoesNotExist("receivedBy")
+        query.orderByDescending("createdAt")
+        
+        
+        query.findObjectsInBackgroundWithBlock { (beacons, error) in
+            
+            if error != nil {
+                
+                //Display error
+                print("Error getting reply beacons: \(error)")
+            }
+            else if beacons!.count > 0 {
+                
+                //Update objects and create a temporary array of them
+                var tempList = Array<PFObject>()
+                
+                for beacon in beacons!{
+                    
+                    
+                    //Mark unread
+                    beacon["unread"] = true
+                    
+                    //Attach receipt details to object
+                    beacon["receivedAt"] = NSDate()
+                    beacon["receivedBy"] = self.userID
+                    beacon["receivedCountry"] = self.userCountry
+                    
+                    //Add local parameters
+                    beacon["localTag"] = self.userID
+                    beacon["localCreationTag"] = NSDate()
+                    
+                    //Add geographic details
+                    if self.userState != "" {
+                        
+                        beacon["receivedState"] = self.userState
+                    }
+                    
+                    if self.userCity != "" {
+                        
+                        beacon["receivedCity"] = self.userCity
+                    }
+                    
+                    if self.userDefaults.objectForKey("userLatitude") != nil   {
+                        
+                        beacon["receivedLatitude"] = self.userLatitude
+                        beacon["receivedLongitude"] = self.userLongitude
+                    }
+                    
+                    //Add object to userList
+                    tempList.append(beacon)
+                    
+                }
+                
+                
+                //Add objects to user list
+                print("Adding new objects to userList")
+                
+                for object in tempList {
+                    
+                    //If objects haven't been added already, add,and save them
+                    if !self.userList.contains(object) {
+                        
+                        self.userList.append(object)
+                        
+                        //Save object to database
+                        print("Saving object!")
+                        object.saveInBackgroundWithBlock({ (saved, error) -> Void in
+                            
+                            if error != nil {
+                                print("Error saving object to DB: \(error)")
+                            }
+                            else if saved {
+                                print("Saved object!")
+                            }
+                            else if !saved {
+                                print("Photo not saved")
+                            }
+                        })
+                    }
+                }
+                
+                print("Reloading table after new objects")
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    //Reload table
+                    self.tableView.reloadData()
+                    
+                    //Show swipe beacon tutorial view
+                    self.showTutorialTapBeaconView()
+                    
+                    //Save user list
+                    print("Saving user list")
+                    self.saveUserList()
+                })
+            }
+            
+            
+            //Stop refreshing
+            self.checkingForReplyBeacons = false
+            
+            if !self.checkingForNewBeacons {
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    self.refreshControl!.endRefreshing()
+                })
+            }
+        }
+    }
     
+
     
+
     @IBAction func refreshControl(sender: AnyObject) {
         
         //Enable no more beacons alert, refresh data and reload table within that function
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
             
-            self.updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
+            self.updateUserList()
         }
     }
-    
-    
+
+
     internal func initializeRefreshControl() {
         
         
@@ -826,7 +976,7 @@ class UserListController: UITableViewController {
         //Refresh table
         if refreshControl!.refreshing {
             
-            updateUserList(false, sameState: false, sameCity: false, likePrevious: false)
+            updateUserList()
         }
     }
     
@@ -838,6 +988,7 @@ class UserListController: UITableViewController {
         self.showNoMoreBeaconsAlert = true
         beaconRefresh.startAnimating()
     }
+    
     
     
     
@@ -883,10 +1034,8 @@ class UserListController: UITableViewController {
         let subTitleView = cell.viewWithTag(2) as! UILabel
         let imageView = cell.viewWithTag(5) as! UIImageView
         let imageBackground = cell.viewWithTag(6) as! CountryBackground
-        let slideIndicator = cell.viewWithTag(3)
-        
-        //DEMO CODE - changing slide indicator
-        //let slideIndicator = cell.viewWithTag(3) as! UIImageView
+        let slideMapIndicator = cell.viewWithTag(3) as! UIImageView
+        let slideReplyIndicator = cell.viewWithTag(4) as! UIImageView
         
         let userListIndex = userList.count - 1 - indexPath.row
         let date = userList[userListIndex]["receivedAt"] as? NSDate
@@ -929,8 +1078,13 @@ class UserListController: UITableViewController {
         else {
             
             
-            //Set background color & kill any animations
-            imageBackground.changeBackgroundColor(defaultColor.CGColor)
+            //Set background color  & kill any animations
+            if userList[userListIndex]["replyTo"] != nil {
+                imageBackground.changeBackgroundColor(replyColor.CGColor)
+            }
+            else {
+                imageBackground.changeBackgroundColor(defaultColor.CGColor)
+            }
             userList[userListIndex].removeObjectForKey("isAnimating")
             imageBackground.stopAnimating()
             
@@ -950,11 +1104,14 @@ class UserListController: UITableViewController {
             subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
             subTitleView.text = String(timeString)
             
-             
-            //DEMO CODE TESTING -- Omitted temporarily
-            //Configure slide indicator
-            //slideIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-            //slideIndicator.tintColor = UIColor.lightGrayColor()
+            //Configure slide map indicator
+            slideMapIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            slideMapIndicator.tintColor = UIColor.lightGrayColor()
+            
+            
+            //Configure slide reply indicator
+            slideReplyIndicator.image = UIImage(named: "Reply")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            slideReplyIndicator.tintColor = UIColor.lightGrayColor()
         }
         
         
@@ -1488,13 +1645,20 @@ class UserListController: UITableViewController {
         
         
         //Check if view is the Country Background class
-        countryObject = recognizer.view!
+        let countryObject = recognizer.view as! CountryBackground
         let translation = recognizer.translationInView(recognizer.view!.superview)
         let cell = recognizer.view!.superview!.superview as! UITableViewCell
+        let slideMapIndicator = cell.viewWithTag(3) as! UIImageView
+        let slideReplyIndicator = cell.viewWithTag(4) as! UIImageView
+        let countryBackground = cell.viewWithTag(6) as! CountryBackground
+        let threshold = CGFloat(30)
+        
         
         switch recognizer.state {
             
+            
         case .Began:
+            
             
             //Save original center
             print("Got country's original point")
@@ -1508,7 +1672,7 @@ class UserListController: UITableViewController {
             for subview in cell.subviews[0].subviews {
                 
                 //Ensure that the subview is not the image, its background, or the map label
-                if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
+                if subview.tag != 3 && subview.tag != 4 && subview.tag != 5 && subview.tag != 6 {
                     
                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                         
@@ -1516,10 +1680,9 @@ class UserListController: UITableViewController {
                     })
                 }
                 //Show map label
-                else if subview.tag == 3 {
+                else if subview.tag == 3 || subview.tag == 4 {
                     
-                    let view = subview as! ShapeToGlobe
-                    view.resetStroke()
+                    let view = subview as! UIImageView
                     
                     UIView.animateWithDuration(0.1, animations: { () -> Void in
                         
@@ -1533,10 +1696,11 @@ class UserListController: UITableViewController {
             
             //Calculate distance fraction
             let distance = translation.x
-            let threshold = self.view.bounds.width * 0.50
             
-            //If moved to the other side of the screen, go to map and show country
-            if distance > threshold {
+            //If moved to the map, go to map and show country.
+            //Else if moved to the reply, go to the camera.
+            if countryCenter.x + distance > slideMapIndicator.center.x - (threshold * 2) {
+                
                 
                 let index = tableView.indexPathForCell(cell)!.row
                 let userListIndex = userList.count - index - 1
@@ -1555,27 +1719,42 @@ class UserListController: UITableViewController {
                     self.tabBarController?.selectedIndex = 2
                 }
                 
+                //Reset visible cells to default values
                 resetVisibleCells()
+                
             }
+            else if countryCenter.x + distance > slideReplyIndicator.center.x - threshold && countryCenter.x + distance < slideReplyIndicator.center.x + threshold/2 {
+                
+                //Necessary variables
+                let index = tableView.indexPathForCell(cell)!.row
+                let userListIndex = userList.count - index - 1
+                let replyToUser = userList[userListIndex].valueForKey("sentBy") as! String
+                let replyImage = countryBackground.getImage()
+                
+                //Segue to camera with details
+                segueToCamera(replyToUser, replyImage: replyImage)
+            }
+            
             
             //Move country back and bring back elements
             print("Moving country back")
+            countryObject.changeToCountryMode(true)
+            
             UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
                 
                 //Move object first
-                self.countryObject.center.x = self.countryCenter.x
-                
+                countryObject.center.x = self.countryCenter.x
                 
                 //Since content view is the direct subview layer, we have to first go into that
                 for subview in cell.subviews[0].subviews {
                     
                     //Ensure that the subview is not the image, its background or the map label
-                    if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
+                    if subview.tag != 3 && subview.tag != 4 && subview.tag != 5 && subview.tag != 6 {
                         
                         subview.alpha = 1
                     }
                         //Hide map label
-                    else if subview.tag == 3 {
+                    else if subview.tag == 3 || subview.tag == 4 {
  
                         subview.alpha = 0
                         
@@ -1584,27 +1763,27 @@ class UserListController: UITableViewController {
                 
                 }, completion: nil)
             
+            
         case .Cancelled:
             
             
             print("Country swipe cancelled")
             //Move object first
-            self.countryObject.center.x = self.countryCenter.x
+            countryObject.center.x = self.countryCenter.x
             
             //Since content view is the direct subview layer, we have to first go into that
             for subview in cell.subviews[0].subviews {
                 
                 //Ensure that the subview is not the image, its background or the map label
-                if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
+                if subview.tag != 3 && subview.tag != 4 && subview.tag != 5 && subview.tag != 6 {
                     
                     subview.alpha = 1
                 }
                     //Hide map label
-                else if subview.tag == 3 {
+                else if subview.tag == 3 || subview.tag == 4 {
                     
-                    let view = subview as! ShapeToGlobe
+                    let view = subview as! UIImageView
                     view.alpha = 0
-                    view.resetStroke()
                 }
             }
             
@@ -1612,74 +1791,117 @@ class UserListController: UITableViewController {
             
             
             //Calculate distance fraction
-            let slideIndicator = cell.viewWithTag(3) as! ShapeToGlobe
-            let countryBackground = cell.viewWithTag(6) as! CountryBackground
             let distance = translation.x
-            let threshold = self.view.bounds.width * 0.50
             
-            if distance >= threshold && slideIndicator.tintColor == UIColor.lightGrayColor() {
+            
+            if countryCenter.x + distance > slideMapIndicator.center.x - (threshold * 2) {
                 
                 
-                //Stick country to maps icon
-                print("turning default color")
+                //Change to map indicator view and hide country view continuously
+                countryBackground.changeToMapMode()
                 
                 
-                UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+                //If indicator is inactive, turn it active
+                if slideMapIndicator.tintColor == UIColor.lightGrayColor() {
                     
-                    
-                    //Move country to maps
-                    if self.countryObject.center.x != slideIndicator.center.x {
+                    UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
                         
-                        self.countryObject.center = CGPoint(x: slideIndicator.center.x, y: self.countryObject.center.y)
-                    }
-                    
-                    //DEMO CODE TESTING
-                    //Change tint
-                    //slideIndicator.tintColor = self.defaultColor
-                    
-                    
-                    //Change shape
-                    slideIndicator.changeToMapMode(countryBackground.bounds.width - slideIndicator.bounds.width, strokeStart: countryBackground.getStrokeStart())
-                    
-                    }, completion: nil)
+                        
+                        //Move country to map indicator view
+                        if countryObject.center.x != slideMapIndicator.center.x {
+                            
+                            countryObject.center = CGPoint(x: slideMapIndicator.center.x, y: countryObject.center.y)
+                        }
+                        
+                        //Change reply indicator to default color
+                        slideMapIndicator.tintColor = self.defaultColor
+                        
+                        
+                        //If slide reply indicator is not gray, turn it to gray
+                        if slideReplyIndicator.tintColor != UIColor.lightGrayColor() {
+                            
+                            //Bring country back to panning and change tint
+                            slideReplyIndicator.tintColor = UIColor.lightGrayColor()
+                        }
+                        
+                        }, completion: nil)
+                }
                 
             }
-            else if distance < threshold {
+            else if countryCenter.x + distance > slideReplyIndicator.center.x - threshold && countryCenter.x + distance < slideReplyIndicator.center.x + threshold/2 {
                 
+                
+                //Change to reply indicator view and hide country view continuously
+                countryBackground.changeToReplyMode(true)
+                
+                
+                //If indicator is inactive, turn it active
+                if slideReplyIndicator.tintColor == UIColor.lightGrayColor() {
+                    
+                    UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+                        
+                        
+                        //Move country to reply indicator view
+                        if countryObject.center.x != slideReplyIndicator.center.x {
+                            
+                            countryObject.center = CGPoint(x: slideReplyIndicator.center.x, y: countryObject.center.y)
+                        }
+                        
+                        //Change reply indicator to default color
+                        slideReplyIndicator.tintColor = self.defaultColor
+                        
+                        
+                        //If slide map indicator is not gray, turn it to gray
+                        if slideMapIndicator.tintColor != UIColor.lightGrayColor() {
+                            
+                            //Bring country back to panning and change tint
+                            slideMapIndicator.tintColor = UIColor.lightGrayColor()
+                        }
+                    }, completion: nil)
+                }
+                
+            }
+            else if countryCenter.x + distance < slideReplyIndicator.center.x - threshold {
+                
+                
+                //Change to country mode
+                countryBackground.changeToCountryMode(true)
                 
                 //Move country as per slide. Animate if it's coming back into panning control
                 print("turning gray color")
-                if countryObject.center.x == slideIndicator.center.x {
+                if countryObject.center.x == slideMapIndicator.center.x || countryObject.center.x == slideReplyIndicator.center.x {
                     
                     UIView.animateWithDuration(0.2, animations: {
                         
-                        self.countryObject.center.x = translation.x + self.countryCenter.x
+                        countryObject.center.x = translation.x + self.countryCenter.x
                     })
                 }
                 else {
                     
-                    self.countryObject.center.x = translation.x + self.countryCenter.x
+                    countryObject.center.x = translation.x + self.countryCenter.x
                 }
                 
-                //DEMO CODE TESTING
-                /*
-                //If slide indicator is not gray, turn it to gray
-                if slideIndicator.tintColor != UIColor.lightGrayColor() {
+                
+                
+                //If slide reply indicator is not gray, turn it to gray
+                if slideReplyIndicator.tintColor != UIColor.lightGrayColor() {
                     
                     UIView.animateWithDuration(0.3, animations: {
                         
                         //Bring country back to panning and change tint
-                        slideIndicator.tintColor = UIColor.lightGrayColor()
+                        slideReplyIndicator.tintColor = UIColor.lightGrayColor()
                     })
                 }
- */
                 
-                
-                //Bring country back to panning and change tint
-                slideIndicator.tintColor = UIColor.lightGrayColor()
-                
-                //Change shape
-                slideIndicator.changeToTableMode()
+                //If slide map indicator is not gray, turn it to gray
+                if slideMapIndicator.tintColor != UIColor.lightGrayColor() {
+                    
+                    UIView.animateWithDuration(0.3, animations: {
+                        
+                        //Bring country back to panning and change tint
+                        slideMapIndicator.tintColor = UIColor.lightGrayColor()
+                    })
+                }
             }
         }
     }
@@ -1694,21 +1916,22 @@ class UserListController: UITableViewController {
             for subview in cell.subviews[0].subviews {
                 
                 //Ensure that the subview is not the image, its background or the map label
-                if subview.tag != 3 && subview.tag != 5 && subview.tag != 6 {
+                if subview.tag != 3 && subview.tag != 4 && subview.tag != 5 && subview.tag != 6 {
                     
                     subview.alpha = 1
                 }
-                //Move the country object back
+                //Move the country object back and reset subviews
                 else if subview.tag == 6 {
                     
-                    subview.center.x = self.countryCenter.x
+                    let country = subview as! CountryBackground
+                    country.center.x = self.countryCenter.x
+                    country.changeToCountryMode(false)
                 }
                 //Hide map label
-                else if subview.tag == 3 {
+                else if subview.tag == 3 || subview.tag == 4 {
                     
-                    let view = subview as! ShapeToGlobe
+                    let view = subview as! UIImageView
                     view.alpha = 0
-                    view.resetStroke()
                     
                 }
             }
@@ -2011,10 +2234,21 @@ class UserListController: UITableViewController {
     
     
     
+    internal func segueToCamera(replyToUser: String, replyImage: UIImage) {
+        
+        //Move to the camera
+        tabBarController!.selectedIndex = 0
+        let camera = tabBarController!.viewControllers![0] as! CameraController
+        
+        //Provide reply details
+        camera.replyMode(replyToUser, replyImage: replyImage)
+    }
+    
+    
     internal func segueToMap(location: CLLocationCoordinate2D, country: String?) {
         
         //Move to the map
-        self.tabBarController?.selectedIndex = 2
+        tabBarController!.selectedIndex = 2
         let map = tabBarController!.viewControllers![2] as! MapController
         
         //Switch control if current segment isn't "received"
@@ -2173,8 +2407,6 @@ class UserListController: UITableViewController {
         }
         
     }
-    
-    
     
     
 }

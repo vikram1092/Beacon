@@ -15,17 +15,17 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQx-md-Vy2" customClass="DotView" customModule="Beacon" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="575" height="585"/>
+                                <rect key="frame" x="0.0" y="0.0" width="575" height="472"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJd-ej-OVL" customClass="DotView" customModule="Beacon" customModuleProvider="target">
-                                <rect key="frame" x="25" y="15" width="575" height="585"/>
+                                <rect key="frame" x="25" y="15" width="575" height="472"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
-                                <rect key="frame" x="0.0" y="254" width="600" height="94"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-RA-aL6">
+                                <rect key="frame" x="0.0" y="196" width="600" height="94"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="94" id="5ad-e3-KjW"/>
@@ -52,8 +52,8 @@
                                     <constraint firstAttribute="height" constant="50" id="ifP-vi-HCl"/>
                                 </constraints>
                             </imageView>
-                            <view alpha="0.0" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RLB-pv-k3R">
-                                <rect key="frame" x="0.0" y="368" width="600" height="90"/>
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RLB-pv-k3R">
+                                <rect key="frame" x="0.0" y="310" width="600" height="90"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Getting you started..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U3x-8Z-3wW">
                                         <rect key="frame" x="209" y="8" width="182" height="21"/>
@@ -223,10 +223,19 @@
                                 <rect key="frame" x="0.0" y="28" width="600" height="85"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pPu-3q-Byg" id="uoS-7a-B7W">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="84"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="84.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" alpha="0.0" tag="8" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="n3W-4F-bd8">
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
+                                            <rect key="frame" x="102" y="45" width="473" height="17"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="17" id="6n7-y0-jwh"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" alpha="0.0" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="n3W-4F-bd8">
                                             <rect key="frame" x="542" y="32" width="20" height="20"/>
                                             <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
@@ -234,9 +243,24 @@
                                                 <constraint firstAttribute="width" constant="20" id="qhZ-gP-ebZ"/>
                                             </constraints>
                                         </imageView>
+                                        <imageView userInteractionEnabled="NO" alpha="0.0" tag="4" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Reply" translatesAutoresizingMaskIntoConstraints="NO" id="g7g-Tk-Rky">
+                                            <rect key="frame" x="462" y="33" width="20" height="20"/>
+                                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="20" id="83g-gg-0vg"/>
+                                                <constraint firstAttribute="height" constant="20" id="TuU-aY-ZO7"/>
+                                            </constraints>
+                                        </imageView>
                                         <view tag="6" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZG5-GW-eje" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
                                             <rect key="frame" x="16" y="5" width="75" height="75"/>
                                             <subviews>
+                                                <view alpha="0.0" tag="7" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Qq-wV-ebh" customClass="ShapeToPathView" customModule="Beacon" customModuleProvider="target">
+                                                    <rect key="frame" x="22" y="23" width="30" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="30" id="VRK-L3-bcs"/>
+                                                        <constraint firstAttribute="height" constant="30" id="Ynk-LR-WHf"/>
+                                                    </constraints>
+                                                </view>
                                                 <imageView tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cbp-co-DR1">
                                                     <rect key="frame" x="16" y="16" width="43" height="43"/>
                                                     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -251,26 +275,12 @@
                                             <constraints>
                                                 <constraint firstItem="Cbp-co-DR1" firstAttribute="centerY" secondItem="ZG5-GW-eje" secondAttribute="centerY" id="Jfq-w1-aqo"/>
                                                 <constraint firstItem="Cbp-co-DR1" firstAttribute="centerX" secondItem="ZG5-GW-eje" secondAttribute="centerX" id="OBB-O4-4Yf"/>
+                                                <constraint firstItem="4Qq-wV-ebh" firstAttribute="centerY" secondItem="ZG5-GW-eje" secondAttribute="centerY" id="WsT-Jl-e1Z"/>
+                                                <constraint firstItem="4Qq-wV-ebh" firstAttribute="centerX" secondItem="ZG5-GW-eje" secondAttribute="centerX" id="dDT-Rl-nfI"/>
                                                 <constraint firstAttribute="width" constant="75" id="eMG-UM-gn6"/>
                                                 <constraint firstAttribute="height" constant="75" id="xwh-Y0-zvW"/>
                                             </constraints>
                                         </view>
-                                        <view userInteractionEnabled="NO" alpha="0.0" tag="3" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E1I-6J-H80" customClass="ShapeToGlobe" customModule="Beacon" customModuleProvider="target">
-                                            <rect key="frame" x="542" y="32" width="20" height="20"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="20" id="AA0-as-kgI"/>
-                                                <constraint firstAttribute="width" constant="20" id="VbD-9v-kS2"/>
-                                            </constraints>
-                                        </view>
-                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92K-U2-lbN">
-                                            <rect key="frame" x="102" y="45" width="473" height="17"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="17" id="6n7-y0-jwh"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afh-sq-STl">
                                             <rect key="frame" x="102" y="17" width="473" height="29"/>
                                             <constraints>
@@ -284,12 +294,12 @@
                                     <constraints>
                                         <constraint firstAttribute="trailingMargin" secondItem="n3W-4F-bd8" secondAttribute="trailing" constant="30" id="9Zf-sq-zlx"/>
                                         <constraint firstItem="92K-U2-lbN" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="11" id="9kL-rc-5Oa"/>
-                                        <constraint firstItem="E1I-6J-H80" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="Mar-ef-Gun"/>
                                         <constraint firstItem="ZG5-GW-eje" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="OoP-52-SCh"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="92K-U2-lbN" secondAttribute="trailing" constant="17" id="Qom-n4-aDj"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="afh-sq-STl" secondAttribute="trailing" constant="17" id="USi-mt-Wk9"/>
                                         <constraint firstItem="afh-sq-STl" firstAttribute="top" secondItem="uoS-7a-B7W" secondAttribute="topMargin" constant="9" id="USp-QO-9Eh"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="E1I-6J-H80" secondAttribute="trailing" constant="30" id="Ug9-iJ-uIt"/>
+                                        <constraint firstItem="g7g-Tk-Rky" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="W45-oQ-ebO"/>
+                                        <constraint firstItem="n3W-4F-bd8" firstAttribute="leading" secondItem="g7g-Tk-Rky" secondAttribute="trailing" constant="60" id="aTY-vN-e8D"/>
                                         <constraint firstItem="n3W-4F-bd8" firstAttribute="centerY" secondItem="uoS-7a-B7W" secondAttribute="centerY" id="jAy-BT-wcJ"/>
                                         <constraint firstItem="afh-sq-STl" firstAttribute="leading" secondItem="ZG5-GW-eje" secondAttribute="trailing" constant="11" id="pTK-he-tGg"/>
                                         <constraint firstItem="ZG5-GW-eje" firstAttribute="leading" secondItem="uoS-7a-B7W" secondAttribute="leadingMargin" constant="8" id="sk3-ti-KDb"/>
@@ -529,7 +539,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="35" width="600" height="109"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="E8b-KR-2HN" id="ves-gR-XGW">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="108"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="108.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Profile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DD7-fq-JWD">
@@ -541,6 +551,13 @@ Your location is never used when you’re not using the app. We only care about 
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d8u-fS-2jg" customClass="CountryBackground" customModule="Beacon" customModuleProvider="target">
                                                     <rect key="frame" x="260" y="8" width="75" height="75"/>
                                                     <subviews>
+                                                        <view alpha="0.0" tag="7" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DIr-Ia-Cdu" customClass="ShapeToPathView" customModule="Beacon" customModuleProvider="target">
+                                                            <rect key="frame" x="22" y="23" width="30" height="30"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="30" id="sAN-zN-TsN"/>
+                                                                <constraint firstAttribute="width" constant="30" id="utF-ma-a0Y"/>
+                                                            </constraints>
+                                                        </view>
                                                         <imageView userInteractionEnabled="NO" tag="5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o2y-MI-kPe">
                                                             <rect key="frame" x="16" y="16" width="43" height="43"/>
                                                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -552,10 +569,12 @@ Your location is never used when you’re not using the app. We only care about 
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
+                                                        <constraint firstItem="DIr-Ia-Cdu" firstAttribute="centerY" secondItem="d8u-fS-2jg" secondAttribute="centerY" id="0nY-Hj-mHz"/>
                                                         <constraint firstItem="o2y-MI-kPe" firstAttribute="centerX" secondItem="d8u-fS-2jg" secondAttribute="centerX" id="1Ck-0v-1CE"/>
                                                         <constraint firstAttribute="width" constant="75" id="Kug-VU-Us0"/>
                                                         <constraint firstAttribute="height" constant="75" id="Mki-61-0Qg"/>
                                                         <constraint firstItem="o2y-MI-kPe" firstAttribute="centerY" secondItem="d8u-fS-2jg" secondAttribute="centerY" id="jg4-TT-K1o"/>
+                                                        <constraint firstItem="DIr-Ia-Cdu" firstAttribute="centerX" secondItem="d8u-fS-2jg" secondAttribute="centerX" id="xm4-zZ-N9T"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
@@ -578,7 +597,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="180" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="teC-K8-OPS" id="ScG-x4-eSV">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save your beacons" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VxS-SN-a1I">
@@ -615,7 +634,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="260" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="z0z-Kd-bkC" id="pEL-JT-By6">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms of Service" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A6w-T2-Rro">
@@ -639,7 +658,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="304" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rJP-HY-sSA" id="bdP-hB-NPu">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jin-nh-GGf">
@@ -663,7 +682,7 @@ Your location is never used when you’re not using the app. We only care about 
                                         <rect key="frame" x="0.0" y="348" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZM0-Z6-499" id="g5h-DM-upd">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ae8-r7-heS">
@@ -726,11 +745,11 @@ Your location is never used when you’re not using the app. We only care about 
                         <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tnX-2Q-oBi">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tnX-2Q-oBi">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="21"/>
                                 <color key="backgroundColor" red="0.1972698658" green="0.53785170729999998" blue="0.79480144100000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="TM7-do-EQS"/>
+                                    <constraint firstAttribute="height" constant="21" id="IVI-wD-Are"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
@@ -745,12 +764,13 @@ Your location is never used when you’re not using the app. We only care about 
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="h61-ZD-rF4" firstAttribute="top" secondItem="G7p-g5-E2m" secondAttribute="bottom" id="0Es-hA-AYh"/>
+                            <constraint firstItem="tnX-2Q-oBi" firstAttribute="top" secondItem="TgT-el-teM" secondAttribute="topMargin" id="COO-Xa-pFd"/>
                             <constraint firstAttribute="bottom" secondItem="h61-ZD-rF4" secondAttribute="bottom" constant="-50" id="VAV-jI-5d2"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="tnX-2Q-oBi" secondAttribute="trailing" constant="-20" id="WI5-5o-iBG"/>
                             <constraint firstItem="h61-ZD-rF4" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leading" id="XOE-Gq-i0N"/>
                             <constraint firstItem="h61-ZD-rF4" firstAttribute="top" secondItem="G7p-g5-E2m" secondAttribute="bottom" id="YKf-gh-AuB"/>
                             <constraint firstAttribute="trailing" secondItem="h61-ZD-rF4" secondAttribute="trailing" id="ccq-xC-2IN"/>
-                            <constraint firstItem="tnX-2Q-oBi" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leadingMargin" constant="-20" id="soX-yO-ynH"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="tnX-2Q-oBi" secondAttribute="trailing" constant="-20" id="qcq-vM-HU3"/>
+                            <constraint firstItem="tnX-2Q-oBi" firstAttribute="leading" secondItem="TgT-el-teM" secondAttribute="leadingMargin" constant="-20" id="vZh-xx-alJ"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -1677,11 +1697,12 @@ THE SOFTWARE.
         <image name="FlashButtonOff" width="33" height="33"/>
         <image name="Globe" width="22" height="22"/>
         <image name="LogoFront" width="200" height="50"/>
+        <image name="Reply" width="20" height="20"/>
         <image name="UserSettings" width="22" height="22"/>
         <image name="backButton" width="33" height="33"/>
         <image name="cameraButton" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8ds-TT-rzm"/>
+        <segue reference="nRp-o4-b8z"/>
     </inferredMetricsTieBreakers>
 </document>

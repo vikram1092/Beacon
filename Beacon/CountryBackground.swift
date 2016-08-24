@@ -19,6 +19,11 @@ class CountryBackground: UIView {
     let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
     var isAnimating = false
     var country = UIImageView()
+    var shapeView = ShapeToPathView()
+    var mapMode = false
+    var replyMode = false
+    var countryMode = true
+    let transitionTime = 0.2
     
     var color = BeaconColors().redColor.CGColor
     
@@ -26,6 +31,17 @@ class CountryBackground: UIView {
     required init?(coder aDecoder: NSCoder) {
         
         super.init(coder: aDecoder)
+        
+        initializeViews()
+        
+        //Register for interruption notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CountryBackground.resumeAnimating), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+    }
+    
+    
+    internal func initializeViews() {
+        
         
         let frame = super.frame
         
@@ -42,11 +58,10 @@ class CountryBackground: UIView {
         
         //Rotate view for progress bar, and rotate country image back
         country = self.viewWithTag(5) as! UIImageView
+        shapeView = self.viewWithTag(7) as! ShapeToPathView
+        self.bringSubviewToFront(shapeView)
         self.bringSubviewToFront(country)
         
-        
-        //Register for interruption notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CountryBackground.resumeAnimating), name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
     
     
@@ -112,20 +127,115 @@ class CountryBackground: UIView {
     }
     
     
-    internal func getStrokeStart() -> CGFloat {
+    internal func changeToReplyMode(animated: Bool) {
         
-        return progressLayer.strokeStart
+        
+        print("changeToReplyMode")
+        if !replyMode {
+            
+            //Trigger map mode on
+            mapMode = false
+            replyMode = true
+            countryMode = false
+            
+            //Change shape view to reply mode
+            shapeView = self.viewWithTag(7) as! ShapeToPathView
+            shapeView.changeToReplyMode(animated)
+            
+            UIView.animateWithDuration(transitionTime, animations: {
+                
+                //Hide country view
+                self.country.alpha = 0
+                
+                }, completion: { (Bool) in
+                    
+                    UIView.animateWithDuration(self.transitionTime, animations: {
+                        
+                        //Show shape view
+                        self.shapeView.alpha = 1
+                    })
+            })
+        }
+        else if country.alpha != 0 {
+            
+            UIView.animateWithDuration(self.transitionTime, animations: {
+                
+                //Hide the country view because it glitches with animations
+                self.country.alpha = 0
+            })
+        }
     }
     
     
-    internal func getStrokeEnd() -> CGFloat {
+    internal func changeToMapMode() {
         
-        return progressLayer.strokeEnd
+        
+        print("changeToMapMode")
+        if !mapMode {
+            
+            //Trigger map mode on
+            mapMode = true
+            replyMode = false
+            countryMode = false
+            
+            //Change shape view to reply mode
+            shapeView = self.viewWithTag(7) as! ShapeToPathView
+            shapeView.changeToMapMode()
+            
+        }
+        else if country.alpha != 0 {
+            
+            UIView.animateWithDuration(self.transitionTime, animations: {
+                
+                //Hide the country view because it glitches with animations
+                self.country.alpha = 0
+            })
+        }
     }
     
-    internal func getStrokeWidth() -> CGFloat {
+    
+    internal func changeToCountryMode(animated: Bool) {
         
-        return progressLayer.lineWidth
+        
+        print("changeToCountryMode")
+        if !countryMode {
+            
+            mapMode = false
+            replyMode = false
+            countryMode = true
+            
+            //Hide shape view, animate or depending on variable
+            if animated {
+                
+                UIView.animateWithDuration(transitionTime, animations: {
+                    
+                    self.shapeView.alpha = 0
+                    
+                    }, completion: { (Bool) in
+                        
+                        UIView.animateWithDuration(self.transitionTime, animations: { 
+                            
+                            self.country.alpha = 1
+                        })
+                })
+            }
+            else {
+                
+                self.shapeView.alpha = 0
+                self.country.alpha = 1
+            }
+            
+        }
+        else {
+            
+            //Hide the shape view because it glitches with animations
+            self.shapeView.alpha = 0
+        }
     }
     
+    
+    internal func getImage() -> UIImage {
+        
+        return country.image!
+    }
 }

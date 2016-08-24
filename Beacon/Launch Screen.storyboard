@@ -35,42 +35,42 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bgn-aK-2uE">
                                 <rect key="frame" x="541" y="36" width="33" height="33"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="33" id="cEQ-ko-AXI"/>
-                                    <constraint firstAttribute="width" constant="33" id="dpU-qy-ktS"/>
+                                    <constraint firstAttribute="height" constant="33" id="oud-of-MAL"/>
+                                    <constraint firstAttribute="width" constant="33" id="p1O-Go-IbK"/>
                                 </constraints>
                                 <state key="normal" image="CameraSwitch"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zKW-Mv-aDs">
                                 <rect key="frame" x="26" y="36" width="33" height="33"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="33" id="HHg-eV-uIe"/>
-                                    <constraint firstAttribute="height" constant="33" id="jZO-Yn-MZO"/>
+                                    <constraint firstAttribute="height" constant="33" id="5qQ-Xe-3IQ"/>
+                                    <constraint firstAttribute="width" constant="33" id="vbR-V3-rDN"/>
                                 </constraints>
                                 <state key="normal" image="FlashButtonOff"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tAU-wf-y4s">
-                                <rect key="frame" x="26" y="550" width="33" height="33"/>
+                                <rect key="frame" x="26" y="551" width="33" height="33"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="33" id="1Pj-II-XkL"/>
-                                    <constraint firstAttribute="width" constant="33" id="ecy-he-gf5"/>
+                                    <constraint firstAttribute="width" constant="33" id="Lee-Sr-462"/>
+                                    <constraint firstAttribute="height" constant="33" id="Wuo-km-xdH"/>
                                 </constraints>
                                 <state key="normal" image="backButton"/>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Bgn-aK-2uE" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailingMargin" constant="-6" id="4Lc-Gi-0OZ"/>
-                            <constraint firstItem="zKW-Mv-aDs" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="16" id="9oh-qC-uW4"/>
+                            <constraint firstItem="zKW-Mv-aDs" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="26" id="9EX-Ar-dUU"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="R9L-SP-0rd" secondAttribute="bottom" constant="16" id="9vN-Yr-iqP"/>
+                            <constraint firstItem="zKW-Mv-aDs" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="16" id="LUW-EV-vpZ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="tbl-kh-cNN" secondAttribute="trailing" constant="-20" id="M6s-1k-XK0"/>
                             <constraint firstItem="tbl-kh-cNN" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" id="UwR-JW-pgT"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="tbl-kh-cNN" secondAttribute="bottom" id="YMt-BE-Lfr"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="tAU-wf-y4s" secondAttribute="bottom" constant="17" id="a6j-ud-hRc"/>
-                            <constraint firstItem="zKW-Mv-aDs" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="6" id="aI9-Hm-TjX"/>
                             <constraint firstItem="tbl-kh-cNN" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="ekx-zm-IfH"/>
-                            <constraint firstItem="tAU-wf-y4s" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="6" id="f0a-ag-tuO"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="tAU-wf-y4s" secondAttribute="bottom" constant="16" id="gJN-OM-P1i"/>
+                            <constraint firstItem="Bgn-aK-2uE" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="16" id="hlL-AF-Nwf"/>
                             <constraint firstItem="R9L-SP-0rd" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="lnf-mf-Xug"/>
-                            <constraint firstItem="Bgn-aK-2uE" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="16" id="mOf-dt-3kh"/>
+                            <constraint firstAttribute="trailing" secondItem="Bgn-aK-2uE" secondAttribute="trailing" constant="26" id="oaV-yP-4qm"/>
+                            <constraint firstItem="tAU-wf-y4s" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="26" id="wcc-Wa-0HM"/>
                         </constraints>
                     </view>
                 </viewController>

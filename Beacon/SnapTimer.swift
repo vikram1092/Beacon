@@ -6,7 +6,6 @@
 //  Copyright © 2016 Vikram Ramkumar. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import AVFoundation
 
@@ -14,9 +13,12 @@ import AVFoundation
 class SnapTimer: UIView {
     
     var timer = CAShapeLayer()
-    var timerBackground = CAShapeLayer()
+    var timerView = UIView()
+    var timerBackground = UIView()
+    
     
     required init?(coder aDecoder: NSCoder) {
+        
         
         super.init(coder: aDecoder)
         
@@ -24,8 +26,17 @@ class SnapTimer: UIView {
         self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
         
         //Set background
+        timerBackground = UIView(frame: self.bounds)
+        let blurView = UIVisualEffectView(frame: self.bounds)
+        blurView.effect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
+        timerBackground.addSubview(blurView)
+        timerBackground.layer.cornerRadius = self.bounds.width/2
+        timerBackground.clipsToBounds = true
+        
+        /*
         timerBackground.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         timerBackground.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).CGColor
+        */
         
         //Set timer
         timer.path = UIBezierPath(ovalInRect: CGRect(x: 3.0, y: 3.0, width: frame.width - 6.0, height: frame.height - 6.0)).CGPath
@@ -36,10 +47,15 @@ class SnapTimer: UIView {
         timer.strokeEnd = 1.0
         timer.lineCap = kCALineCapRound
         
+        //Set timer view
+        timerView = UIView(frame: self.bounds)
+        
         //Add sub layers to the view's layer
-        self.layer.addSublayer(timerBackground)
-        self.layer.addSublayer(timer)
+        self.addSubview(timerBackground)
+        timerView.layer.addSublayer(timer)
+        self.addSubview(timerView)
     }
+    
     
     internal func startTimer(duration: CMTime) {
         

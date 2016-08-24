@@ -68,6 +68,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var saveMedia = true
     var beaconSending = false
     let userDefaults = NSUserDefaults.standardUserDefaults()
+    var replyToUser = ""
+    var replyView = UIView()
     
     //Tutorial variables
     var tutorialTakeBeaconView = TutorialView()
@@ -76,6 +78,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     //If we find a device we'll store it here for later use
     var captureDevice : AVCaptureDevice?
     var microphone : AVCaptureDevice?
+    
     
     
     override func viewDidLoad() {
@@ -170,6 +173,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         
         //Turn off flash
         turnTorchOff()
+        
     }
     
     
@@ -553,6 +557,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBAction func takePhoto(sender: UITapGestureRecognizer) {
         
         
+        //Shorten reply view
+        self.shortenReplyView()
+        
         //Capture image
         if !stillImageOutput.capturingStillImage && captureSession.running {
             
@@ -622,6 +629,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 self.flashButton.hidden = true
                 self.cameraSwitchButton.hidden = true
                 self.backButton.hidden = true
+                self.shortenReplyView()
                 
                 //Set path for video
                 let videoUrl = NSURL(fileURLWithPath: initialVideoPath)
@@ -899,6 +907,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.cameraSwitchButton.hidden = false
         self.backButton.hidden = false
         self.cameraImage.image = nil
+        self.expandReplyView()
         
         //Remove send beacon tutorial
         self.removeTutorialSendBeaconView()
@@ -940,7 +949,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func sendBeacon() {
     
-        
+  
         //Kick off activity indicator & hide button
         activityIndicator.startAnimating()
         beaconSending = true
@@ -979,24 +988,27 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         photoObject["localCreationTag"] = date
         
         //Set user's geolocation
-        print(String(userLocation.latitude) + ", " + String(userLocation.longitude))
         photoObject["sentFrom"] = self.userLocation
         
         //Set user's geography details
-        print(userCountry)
         photoObject["countryCode"] = userCountry
         
-        print(userState)
         if userState != "" {
             
             photoObject["sentState"] = userState
         }
-        print(userCity)
         if userCity != "" {
             
             photoObject["sentCity"] = userCity
         }
         photoObject["spam"] = false
+        
+        
+        //Set reply user if it's not blank
+        if replyToUser != "" {
+            
+            photoObject["replyTo"] = replyToUser
+        }
         
         
         //Compress video and send if it exists
@@ -1214,6 +1226,175 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         cameraImage.addSubview(focusShape)
     }
     
+    
+    
+    
+    internal func replyMode(user: String, replyImage: UIImage) {
+        
+        
+        //Necessary variables
+        let viewWidth = CGFloat(160)
+        let viewHeight = CGFloat(50)
+        let padding = CGFloat(10)
+        let imageSize = CGFloat(30)
+        let closeViewWidth = CGFloat(40)
+        
+        
+        //Initialize views
+        replyView = UIView(frame: CGRect(x: self.view.center.x - viewWidth/2, y: 10, width: viewWidth, height: viewHeight))
+        let primaryBlurView = UIVisualEffectView(frame: replyView.bounds)
+        let label = UILabel(frame: CGRect(x: padding, y: 0, width: viewWidth - imageSize - closeViewWidth - (padding * 2), height: viewHeight))
+        let imageView = UIImageView(frame: CGRect(x: label.bounds.width + padding, y: padding, width: imageSize, height: imageSize))
+        let closeReplyButton = UIButton(frame: CGRect(x: viewWidth - closeViewWidth, y: 0, width: closeViewWidth, height: viewHeight))
+        
+            
+        //Initialize label
+        label.text = "Reply to"
+        label.textColor = UIColor.whiteColor()
+        label.textAlignment = NSTextAlignment.Center
+        
+        //Initialize image
+        imageView.image = replyImage
+        imageView.tintColor = UIColor.whiteColor()
+        
+        //Initialize blur view
+        primaryBlurView.effect = UIBlurEffect(style: UIBlurEffectStyle.Light)
+        
+        //Initialize close button
+        let center = CGPoint(x: closeReplyButton.bounds.width/2, y: viewHeight/2)
+        let closeLayer1 = CAShapeLayer()
+        let closeLayer2 = CAShapeLayer()
+        let borderLayer = CAShapeLayer()
+        let path1 = UIBezierPath()
+        let path2 = UIBezierPath()
+        let path3 = UIBezierPath()
+        let length  = CGFloat(6)
+        
+        path1.moveToPoint(CGPoint(x: center.x - length, y: center.y - length))
+        path1.addLineToPoint(CGPoint(x: center.x + length, y: center.y + length))
+        
+        path2.moveToPoint(CGPoint(x: center.x + length, y: center.y - length))
+        path2.addLineToPoint(CGPoint(x: center.x - length, y: center.y + length))
+        
+        path3.moveToPoint(CGPoint(x: 0, y: 7))
+        path3.addLineToPoint(CGPoint(x: 0, y: viewHeight - 7))
+        
+        closeLayer1.path = path1.CGPath
+        closeLayer1.fillColor = UIColor.clearColor().CGColor
+        closeLayer1.strokeColor = UIColor.whiteColor().CGColor
+        closeLayer1.lineCap = kCALineCapRound
+        
+        closeLayer2.path = path2.CGPath
+        closeLayer2.fillColor = UIColor.clearColor().CGColor
+        closeLayer2.strokeColor = UIColor.whiteColor().CGColor
+        closeLayer2.lineCap = kCALineCapRound
+        
+        borderLayer.path = path3.CGPath
+        borderLayer.fillColor = UIColor.clearColor().CGColor
+        borderLayer.strokeColor = UIColor.whiteColor().CGColor
+        borderLayer.lineCap = kCALineCapRound
+        
+        closeReplyButton.layer.addSublayer(closeLayer1)
+        closeReplyButton.layer.addSublayer(closeLayer2)
+        closeReplyButton.layer.addSublayer(borderLayer)
+        closeReplyButton.tag = 2
+        
+        closeReplyButton.addTarget(self, action: #selector(replyButtonPressed), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        //Add views to view
+        replyView.addSubview(primaryBlurView)
+        replyView.addSubview(label)
+        replyView.addSubview(imageView)
+        replyView.addSubview(closeReplyButton)
+        
+        
+        //Modify reply view
+        replyView.layer.cornerRadius = 10
+        replyView.clipsToBounds = true
+        replyView.alpha = 0
+        
+        self.view.insertSubview(replyView, belowSubview: alertView)
+        
+        UIView.animateWithDuration(1) { 
+            
+            self.replyView.alpha = 1
+        }
+        
+        //Save username for sending beacon
+        replyToUser = user
+        
+    }
+    
+    
+    @IBAction func replyButtonPressed() {
+        
+        //Stop replying
+        stopReplying(true)
+    }
+    
+    
+    internal func stopReplying(clearDetails: Bool) {
+        
+        //Remove view and clear details if you want to
+        if tabBarController?.selectedIndex == 0 {
+            
+            UIView.animateWithDuration(0.4, animations: {
+                
+                self.replyView.alpha = 0
+                
+                }, completion: { (Bool) in
+                    
+                    self.replyView.removeFromSuperview()
+            })
+        }
+        else {
+            
+            replyView.removeFromSuperview()
+        }
+        
+        if clearDetails {
+            replyToUser = ""
+        }
+    }
+    
+    
+    internal func shortenReplyView() {
+        
+        
+        //If reply view exists, modify it so that user can't cancel the reply anymore
+        if replyView.superview != nil {
+            
+            let button = replyView.viewWithTag(2)!
+            let widthToShortenTo = replyView.bounds.width - button.bounds.width
+            
+            UIView.animateWithDuration(0.5, animations: {
+                
+                button.hidden = true
+                self.replyView.frame = CGRect(x: self.view.center.x - widthToShortenTo/2, y: self.replyView.frame.minY, width: widthToShortenTo, height: self.replyView.bounds.height)
+                
+                
+                })
+        }
+    }
+    
+    
+    internal func expandReplyView() {
+        
+        
+        //If reply view exists, give user back control to cancel the reply
+        if replyView.superview != nil {
+            
+            //Modify reply view so that user can't cancel the beacon
+            let button = replyView.viewWithTag(2)!
+            let widthToExpandTo = replyView.bounds.width + button.bounds.width
+            
+            UIView.animateWithDuration(0.5, animations: {
+                
+                button.hidden = false
+                self.replyView.frame = CGRect(x: self.view.center.x - widthToExpandTo/2, y: self.replyView.frame.minY, width: widthToExpandTo, height: self.replyView.bounds.height)
+            })
+        }
+    }
     
     
     
@@ -1698,6 +1879,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func segueToTable(segueToTop: Bool) {
         
+        
+        //Remove replying capability
+        stopReplying(true)
+        
         //Move within tab controller
         self.tabBarController!.tabBar.hidden = false
         self.tabBarController?.selectedIndex = 1
@@ -1712,6 +1897,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     internal func segueToLogin() {
+        
+        
+        //Remove replying capability
+        stopReplying(true)
         
         //Segue to login screen
         print("Segue-ing")
