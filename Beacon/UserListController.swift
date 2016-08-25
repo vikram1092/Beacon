@@ -1057,7 +1057,7 @@ class UserListController: UITableViewController {
         if userList[userListIndex]["sentBy"] as! String == userID && userList[userListIndex]["receivedBy"] == nil {
             
             //Set background color
-            imageBackground.changeBackgroundColor(sendingColor.CGColor)
+            imageBackground.changeBackgroundColor(sendingColor)
             imageBackground.setProgress(0.6)
             
             //Configure subtext
@@ -1080,10 +1080,10 @@ class UserListController: UITableViewController {
             
             //Set background color  & kill any animations
             if userList[userListIndex]["replyTo"] != nil {
-                imageBackground.changeBackgroundColor(replyColor.CGColor)
+                imageBackground.changeBackgroundColor(replyColor)
             }
             else {
-                imageBackground.changeBackgroundColor(defaultColor.CGColor)
+                imageBackground.changeBackgroundColor(defaultColor)
             }
             userList[userListIndex].removeObjectForKey("isAnimating")
             imageBackground.stopAnimating()
@@ -1645,13 +1645,13 @@ class UserListController: UITableViewController {
         
         
         //Check if view is the Country Background class
-        let countryObject = recognizer.view as! CountryBackground
+        let countryView = recognizer.view as! CountryBackground
         let translation = recognizer.translationInView(recognizer.view!.superview)
         let cell = recognizer.view!.superview!.superview as! UITableViewCell
         let slideMapIndicator = cell.viewWithTag(3) as! UIImageView
         let slideReplyIndicator = cell.viewWithTag(4) as! UIImageView
         let countryBackground = cell.viewWithTag(6) as! CountryBackground
-        let threshold = CGFloat(30)
+        let threshold = slideMapIndicator.center.x - slideReplyIndicator.center.x
         
         
         switch recognizer.state {
@@ -1660,11 +1660,29 @@ class UserListController: UITableViewController {
         case .Began:
             
             
+            //Check if beacon is reply eligible
+            let index = tableView.indexPathForCell(cell)!.row
+            let userListIndex = userList.count - index - 1
+            let countryObject = userList[userListIndex]
+            let replyEligible = checkIfReplyEligible(countryObject)
+            
+            
+            //Switch reply indicator on or off based on eligibility
+            if replyEligible {
+                
+                slideReplyIndicator.hidden = false
+            }
+            else {
+                
+                slideReplyIndicator.hidden = true
+            }
+            
+            
             //Save original center
             print("Got country's original point")
             if countryCenter == CGPoint(x: 0, y: 0) {
                 
-                countryCenter = countryObject.center
+                countryCenter = countryView.center
             }
             
             //Hide all other cell subviews & obtain country name for potential map query
@@ -1691,6 +1709,7 @@ class UserListController: UITableViewController {
                 }
             }
             
+            
         case .Ended:
             
             
@@ -1699,7 +1718,7 @@ class UserListController: UITableViewController {
             
             //If moved to the map, go to map and show country.
             //Else if moved to the reply, go to the camera.
-            if countryCenter.x + distance > slideMapIndicator.center.x - (threshold * 2) {
+            if countryCenter.x + distance > slideMapIndicator.center.x - threshold {
                 
                 
                 let index = tableView.indexPathForCell(cell)!.row
@@ -1719,11 +1738,10 @@ class UserListController: UITableViewController {
                     self.tabBarController?.selectedIndex = 2
                 }
                 
-                //Reset visible cells to default values
-                resetVisibleCells()
                 
             }
-            else if countryCenter.x + distance > slideReplyIndicator.center.x - threshold && countryCenter.x + distance < slideReplyIndicator.center.x + threshold/2 {
+            else if !slideReplyIndicator.hidden && countryCenter.x + distance >= slideReplyIndicator.center.x - threshold && countryCenter.x + distance <= slideReplyIndicator.center.x + threshold {
+                
                 
                 //Necessary variables
                 let index = tableView.indexPathForCell(cell)!.row
@@ -1731,19 +1749,25 @@ class UserListController: UITableViewController {
                 let replyToUser = userList[userListIndex].valueForKey("sentBy") as! String
                 let replyImage = countryBackground.getImage()
                 
+                //Reset visible cells
+                resetVisibleCells()
+                
                 //Segue to camera with details
-                segueToCamera(replyToUser, replyImage: replyImage)
+                print("User list reply ID: \(userList[userListIndex])")
+                segueToCamera(userList[userListIndex], replyToUser: replyToUser, replyImage: replyImage)
+                
             }
             
             
             //Move country back and bring back elements
             print("Moving country back")
-            countryObject.changeToCountryMode(true)
+            countryView.changeToCountryMode(false)
+            
             
             UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
                 
                 //Move object first
-                countryObject.center.x = self.countryCenter.x
+                countryView.center.x = self.countryCenter.x
                 
                 //Since content view is the direct subview layer, we have to first go into that
                 for subview in cell.subviews[0].subviews {
@@ -1753,7 +1777,7 @@ class UserListController: UITableViewController {
                         
                         subview.alpha = 1
                     }
-                        //Hide map label
+                    //Hide map label
                     else if subview.tag == 3 || subview.tag == 4 {
  
                         subview.alpha = 0
@@ -1769,7 +1793,7 @@ class UserListController: UITableViewController {
             
             print("Country swipe cancelled")
             //Move object first
-            countryObject.center.x = self.countryCenter.x
+            countryView.center.x = self.countryCenter.x
             
             //Since content view is the direct subview layer, we have to first go into that
             for subview in cell.subviews[0].subviews {
@@ -1794,7 +1818,7 @@ class UserListController: UITableViewController {
             let distance = translation.x
             
             
-            if countryCenter.x + distance > slideMapIndicator.center.x - (threshold * 2) {
+            if countryCenter.x + distance > slideMapIndicator.center.x - threshold {
                 
                 
                 //Change to map indicator view and hide country view continuously
@@ -1808,13 +1832,13 @@ class UserListController: UITableViewController {
                         
                         
                         //Move country to map indicator view
-                        if countryObject.center.x != slideMapIndicator.center.x {
+                        if countryView.center.x != slideMapIndicator.center.x {
                             
-                            countryObject.center = CGPoint(x: slideMapIndicator.center.x, y: countryObject.center.y)
+                            countryView.center = CGPoint(x: slideMapIndicator.center.x, y: countryView.center.y)
                         }
                         
                         //Change reply indicator to default color
-                        slideMapIndicator.tintColor = self.defaultColor
+                        slideMapIndicator.tintColor = countryBackground.getColor()
                         
                         
                         //If slide reply indicator is not gray, turn it to gray
@@ -1828,7 +1852,7 @@ class UserListController: UITableViewController {
                 }
                 
             }
-            else if countryCenter.x + distance > slideReplyIndicator.center.x - threshold && countryCenter.x + distance < slideReplyIndicator.center.x + threshold/2 {
+            else if !slideReplyIndicator.hidden && countryCenter.x + distance >= slideReplyIndicator.center.x - threshold && countryCenter.x + distance <= slideReplyIndicator.center.x + threshold {
                 
                 
                 //Change to reply indicator view and hide country view continuously
@@ -1842,13 +1866,13 @@ class UserListController: UITableViewController {
                         
                         
                         //Move country to reply indicator view
-                        if countryObject.center.x != slideReplyIndicator.center.x {
+                        if countryView.center.x != slideReplyIndicator.center.x {
                             
-                            countryObject.center = CGPoint(x: slideReplyIndicator.center.x, y: countryObject.center.y)
+                            countryView.center = CGPoint(x: slideReplyIndicator.center.x, y: countryView.center.y)
                         }
                         
                         //Change reply indicator to default color
-                        slideReplyIndicator.tintColor = self.defaultColor
+                        slideReplyIndicator.tintColor = countryBackground.getColor()
                         
                         
                         //If slide map indicator is not gray, turn it to gray
@@ -1861,7 +1885,7 @@ class UserListController: UITableViewController {
                 }
                 
             }
-            else if countryCenter.x + distance < slideReplyIndicator.center.x - threshold {
+            else  {
                 
                 
                 //Change to country mode
@@ -1869,16 +1893,16 @@ class UserListController: UITableViewController {
                 
                 //Move country as per slide. Animate if it's coming back into panning control
                 print("turning gray color")
-                if countryObject.center.x == slideMapIndicator.center.x || countryObject.center.x == slideReplyIndicator.center.x {
+                if countryView.center.x == slideMapIndicator.center.x || countryView.center.x == slideReplyIndicator.center.x {
                     
                     UIView.animateWithDuration(0.2, animations: {
                         
-                        countryObject.center.x = translation.x + self.countryCenter.x
+                        countryView.center.x = translation.x + self.countryCenter.x
                     })
                 }
                 else {
                     
-                    countryObject.center.x = translation.x + self.countryCenter.x
+                    countryView.center.x = translation.x + self.countryCenter.x
                 }
                 
                 
@@ -1904,6 +1928,23 @@ class UserListController: UITableViewController {
                 }
             }
         }
+    }
+    
+    
+    internal func checkIfReplyEligible(countryObject: PFObject) -> Bool {
+        
+        //Get details
+        let replied = countryObject.objectForKey("replied")
+        let sentBy = countryObject.objectForKey("sentBy") as! String
+        let receivedBy = countryObject.objectForKey("receivedBy") as? String
+        
+        //Check if object is not already replied to or being sent by current user
+        if replied != nil || (sentBy == userID && receivedBy == nil) {
+            
+            return false
+        }
+        
+        return true
     }
     
     
@@ -2234,14 +2275,14 @@ class UserListController: UITableViewController {
     
     
     
-    internal func segueToCamera(replyToUser: String, replyImage: UIImage) {
+    internal func segueToCamera(replyToObject: PFObject, replyToUser: String, replyImage: UIImage) {
         
         //Move to the camera
         tabBarController!.selectedIndex = 0
         let camera = tabBarController!.viewControllers![0] as! CameraController
         
         //Provide reply details
-        camera.replyMode(replyToUser, replyImage: replyImage)
+        camera.replyMode(replyToObject, user: replyToUser, replyImage: replyImage)
     }
     
     

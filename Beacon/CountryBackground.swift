@@ -25,7 +25,7 @@ class CountryBackground: UIView {
     var countryMode = true
     let transitionTime = 0.2
     
-    var color = BeaconColors().redColor.CGColor
+    var color = BeaconColors().redColor
     
     
     required init?(coder aDecoder: NSCoder) {
@@ -53,7 +53,7 @@ class CountryBackground: UIView {
         
         //Create background layer
         background.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
-        background.fillColor = self.color
+        background.fillColor = self.color.CGColor
         self.layer.addSublayer(background)
         
         //Rotate view for progress bar, and rotate country image back
@@ -81,10 +81,11 @@ class CountryBackground: UIView {
     }
     
     
-    internal func changeBackgroundColor(color: CGColor) {
+    internal func changeBackgroundColor(newColor: UIColor) {
         
-        background.fillColor = color
-        progressLayer.fillColor = color
+        color = newColor
+        background.fillColor = newColor.CGColor
+        progressLayer.fillColor = newColor.CGColor
     }
     
     
@@ -142,19 +143,27 @@ class CountryBackground: UIView {
             shapeView = self.viewWithTag(7) as! ShapeToPathView
             shapeView.changeToReplyMode(animated)
             
-            UIView.animateWithDuration(transitionTime, animations: {
+            if animated {
+                
+                UIView.animateWithDuration(transitionTime, animations: {
+                    
+                    //Hide country view
+                    self.country.alpha = 0
+                    
+                    //Show shape view
+                    self.shapeView.alpha = 1
+                    
+                })
+            }
+            else {
                 
                 //Hide country view
                 self.country.alpha = 0
                 
-                }, completion: { (Bool) in
-                    
-                    UIView.animateWithDuration(self.transitionTime, animations: {
-                        
-                        //Show shape view
-                        self.shapeView.alpha = 1
-                    })
-            })
+                //Show shape view
+                self.shapeView.alpha = 1
+            }
+            
         }
         else if country.alpha != 0 {
             
@@ -182,6 +191,16 @@ class CountryBackground: UIView {
             shapeView = self.viewWithTag(7) as! ShapeToPathView
             shapeView.changeToMapMode()
             
+            
+            UIView.animateWithDuration(transitionTime, animations: {
+                
+                //Hide country view
+                self.country.alpha = 0
+                
+                //Show shape view
+                self.shapeView.alpha = 1
+                
+            })
         }
         else if country.alpha != 0 {
             
@@ -204,32 +223,35 @@ class CountryBackground: UIView {
             replyMode = false
             countryMode = true
             
+            
             //Hide shape view, animate or depending on variable
             if animated {
                 
                 UIView.animateWithDuration(transitionTime, animations: {
                     
+                    //Show country view
+                    self.country.alpha = 1
+                    
+                    //Hide shape view
                     self.shapeView.alpha = 0
                     
-                    }, completion: { (Bool) in
-                        
-                        UIView.animateWithDuration(self.transitionTime, animations: { 
-                            
-                            self.country.alpha = 1
-                        })
                 })
             }
             else {
                 
-                self.shapeView.alpha = 0
+                //Show country view
                 self.country.alpha = 1
+                
+                //Hide shape view
+                self.shapeView.alpha = 0
             }
             
         }
         else {
             
             //Hide the shape view because it glitches with animations
-            self.shapeView.alpha = 0
+            shapeView.alpha = 0
+            country.alpha = 1
         }
     }
     
@@ -237,5 +259,11 @@ class CountryBackground: UIView {
     internal func getImage() -> UIImage {
         
         return country.image!
+    }
+    
+    
+    internal func getColor() -> UIColor {
+        
+        return color
     }
 }

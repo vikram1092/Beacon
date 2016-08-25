@@ -1456,8 +1456,40 @@ DQ
                                     </fragment>
                                     <fragment>
                                         <string key="content">
-A user must not wrongfully report beacons they receive. Doing so will result in a ban.
-3.3	Using this app
+A user must not wrongfully report beacons they receive. Doing so will result in a ban.</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="  ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content" base64-UTF8="YES">
+Cg
+</string>
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                            <font key="NSOriginalFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">3.3	Using this app</string>
+                                        <attributes>
+                                            <font key="NSFont" size="15" name="HelveticaNeue-Light"/>
+                                            <font key="NSOriginalFont" size="15" name="HelveticaNeue-Light"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">
 •</string>
                                         <attributes>
                                             <font key="NSFont" size="13" name="HelveticaNeue"/>

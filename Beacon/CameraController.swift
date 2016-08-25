@@ -68,6 +68,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     var saveMedia = true
     var beaconSending = false
     let userDefaults = NSUserDefaults.standardUserDefaults()
+    var replyToObject = PFObject(className: "photo")
     var replyToUser = ""
     var replyView = UIView()
     
@@ -557,9 +558,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     @IBAction func takePhoto(sender: UITapGestureRecognizer) {
         
         
-        //Shorten reply view
-        self.shortenReplyView()
-        
         //Capture image
         if !stillImageOutput.capturingStillImage && captureSession.running {
             
@@ -629,7 +627,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 self.flashButton.hidden = true
                 self.cameraSwitchButton.hidden = true
                 self.backButton.hidden = true
-                self.shortenReplyView()
                 
                 //Set path for video
                 let videoUrl = NSURL(fileURLWithPath: initialVideoPath)
@@ -907,7 +904,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.cameraSwitchButton.hidden = false
         self.backButton.hidden = false
         self.cameraImage.image = nil
-        self.expandReplyView()
         
         //Remove send beacon tutorial
         self.removeTutorialSendBeaconView()
@@ -1004,10 +1000,15 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         photoObject["spam"] = false
         
         
-        //Set reply user if it's not blank
+        //Set reply user if it's not blank. Also update object locally as replied to
         if replyToUser != "" {
             
+            print("Adding reply details")
             photoObject["replyTo"] = replyToUser
+            
+            replyToObject["replied"] = true
+            replyToObject.pinInBackground()
+            print("Camera reply ID: \(replyToObject)")
         }
         
         
@@ -1229,23 +1230,24 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     
     
-    internal func replyMode(user: String, replyImage: UIImage) {
+    internal func replyMode(object: PFObject, user: String, replyImage: UIImage) {
         
         
         //Necessary variables
-        let viewWidth = CGFloat(160)
+        let viewWidth = CGFloat(120)
         let viewHeight = CGFloat(50)
         let padding = CGFloat(10)
         let imageSize = CGFloat(30)
-        let closeViewWidth = CGFloat(40)
+        let closeViewWidth = CGFloat(0) //40
         
         
         //Initialize views
         replyView = UIView(frame: CGRect(x: self.view.center.x - viewWidth/2, y: 10, width: viewWidth, height: viewHeight))
-        let primaryBlurView = UIVisualEffectView(frame: replyView.bounds)
+        let blurView = UIVisualEffectView(frame: replyView.bounds)
         let label = UILabel(frame: CGRect(x: padding, y: 0, width: viewWidth - imageSize - closeViewWidth - (padding * 2), height: viewHeight))
         let imageView = UIImageView(frame: CGRect(x: label.bounds.width + padding, y: padding, width: imageSize, height: imageSize))
-        let closeReplyButton = UIButton(frame: CGRect(x: viewWidth - closeViewWidth, y: 0, width: closeViewWidth, height: viewHeight))
+        let showCancelButton = UIButton(frame: replyView.bounds)
+        let cancelReplyButton = UIButton(frame: CGRect(x: 0, y: 0, width: viewHeight, height: viewHeight))
         
             
         //Initialize label
@@ -1258,17 +1260,17 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         imageView.tintColor = UIColor.whiteColor()
         
         //Initialize blur view
-        primaryBlurView.effect = UIBlurEffect(style: UIBlurEffectStyle.Light)
+        blurView.effect = UIBlurEffect(style: UIBlurEffectStyle.Light)
+        blurView.tag = 1
         
         //Initialize close button
-        let center = CGPoint(x: closeReplyButton.bounds.width/2, y: viewHeight/2)
+        let center = CGPoint(x: cancelReplyButton.bounds.width/2, y: viewHeight/2)
         let closeLayer1 = CAShapeLayer()
         let closeLayer2 = CAShapeLayer()
-        let borderLayer = CAShapeLayer()
         let path1 = UIBezierPath()
         let path2 = UIBezierPath()
         let path3 = UIBezierPath()
-        let length  = CGFloat(6)
+        let length  = CGFloat(5)
         
         path1.moveToPoint(CGPoint(x: center.x - length, y: center.y - length))
         path1.addLineToPoint(CGPoint(x: center.x + length, y: center.y + length))
@@ -1289,51 +1291,126 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         closeLayer2.strokeColor = UIColor.whiteColor().CGColor
         closeLayer2.lineCap = kCALineCapRound
         
-        borderLayer.path = path3.CGPath
-        borderLayer.fillColor = UIColor.clearColor().CGColor
-        borderLayer.strokeColor = UIColor.whiteColor().CGColor
-        borderLayer.lineCap = kCALineCapRound
+        cancelReplyButton.layer.addSublayer(closeLayer1)
+        cancelReplyButton.layer.addSublayer(closeLayer2)
+        cancelReplyButton.tag = 2
+        cancelReplyButton.userInteractionEnabled = true
         
-        closeReplyButton.layer.addSublayer(closeLayer1)
-        closeReplyButton.layer.addSublayer(closeLayer2)
-        closeReplyButton.layer.addSublayer(borderLayer)
-        closeReplyButton.tag = 2
+        cancelReplyButton.alpha = 0
+        cancelReplyButton.addTarget(self, action: #selector(cancelReplyPressed), forControlEvents: UIControlEvents.TouchUpInside)
         
-        closeReplyButton.addTarget(self, action: #selector(replyButtonPressed), forControlEvents: UIControlEvents.TouchUpInside)
+        showCancelButton.tag = 3
+        showCancelButton.addTarget(self, action: #selector(replyViewInitialPressed), forControlEvents: UIControlEvents.TouchUpInside)
+        
         
         //Add views to view
-        replyView.addSubview(primaryBlurView)
+        replyView.addSubview(blurView)
         replyView.addSubview(label)
         replyView.addSubview(imageView)
-        replyView.addSubview(closeReplyButton)
+        replyView.addSubview(cancelReplyButton)
+        replyView.addSubview(showCancelButton)
         
         
         //Modify reply view
-        replyView.layer.cornerRadius = 10
+        replyView.layer.cornerRadius = viewHeight/2
         replyView.clipsToBounds = true
-        replyView.alpha = 0
         
         self.view.insertSubview(replyView, belowSubview: alertView)
+        replyView.frame = CGRect(x: self.view.center.x, y: 10, width: 0, height: 50)
         
-        UIView.animateWithDuration(1) { 
+        UIView.animateWithDuration(0.5) {
             
-            self.replyView.alpha = 1
+            self.replyView.frame = CGRect(x: self.view.center.x - viewWidth/2, y: 10, width: viewWidth, height: viewHeight)
         }
         
-        //Save username for sending beacon
+        //Save object and username for sending beacon
+        replyToObject = object
         replyToUser = user
         
     }
     
     
-    @IBAction func replyButtonPressed() {
+    @IBAction func replyViewInitialPressed(sender: AnyObject) {
+        
+        
+        print("replyViewInitialPressed")
+        
+        if captureSession.running {
+            
+            //Get cancel buttons
+            let originalWidth = replyView.bounds.width
+            let cancelReplyButton = replyView.viewWithTag(2)!
+            let showCancelButton = replyView.viewWithTag(3)!
+            
+            //Remove show cancel button and bring cancel button to front
+            showCancelButton.removeFromSuperview()
+            replyView.bringSubviewToFront(cancelReplyButton)
+            
+            
+            UIView.animateWithDuration(0.4, animations: {
+                
+                
+                //Hide all views except cancel button
+                for view in self.replyView.subviews {
+                    
+                    if view.tag != 1 && view.tag != 2 {
+                        
+                        view.alpha = 0
+                    }
+                }
+                
+                //Shrink reply view
+                self.replyView.frame = CGRect(x: self.view.center.x - self.replyView.bounds.height/2, y: 10, width: self.replyView.bounds.height, height: self.replyView.bounds.height)
+                
+                cancelReplyButton.frame = self.replyView.bounds
+                cancelReplyButton.alpha = 1
+                
+                
+            }) { (Bool) in
+                
+                //Dispatch block after a certain time. Interruption safe!
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1.5 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
+                    UIView.animateWithDuration(0.4, animations: {
+                        
+                        //Show all views and hide cancel button
+                        for view in self.replyView.subviews {
+                            
+                            if view.tag != 1 && view.tag != 2 {
+                                
+                                view.alpha = 1
+                            }
+                        }
+                        
+                        //Expand reply view and adjust calcel reply button
+                        self.replyView.frame = CGRect(x: self.view.center.x - originalWidth/2, y: 10, width: originalWidth, height: self.replyView.bounds.height)
+                        
+                        
+                        cancelReplyButton.frame = self.replyView.bounds
+                        cancelReplyButton.alpha = 0
+                        
+                        }, completion: { (Bool) in
+                            
+                            //Put back show cancel button
+                            self.replyView.addSubview(showCancelButton)
+                            self.replyView.bringSubviewToFront(showCancelButton)
+                            
+                    })
+                })
+            }
+        }
+    }
+    
+    
+    @IBAction func cancelReplyPressed() {
         
         //Stop replying
+        print("cancelReplyPressed")
         stopReplying(true)
     }
     
     
     internal func stopReplying(clearDetails: Bool) {
+        
         
         //Remove view and clear details if you want to
         if tabBarController?.selectedIndex == 0 {
@@ -1353,48 +1430,11 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         }
         
         if clearDetails {
+            replyToObject = PFObject(className: "photo")
             replyToUser = ""
         }
     }
     
-    
-    internal func shortenReplyView() {
-        
-        
-        //If reply view exists, modify it so that user can't cancel the reply anymore
-        if replyView.superview != nil {
-            
-            let button = replyView.viewWithTag(2)!
-            let widthToShortenTo = replyView.bounds.width - button.bounds.width
-            
-            UIView.animateWithDuration(0.5, animations: {
-                
-                button.hidden = true
-                self.replyView.frame = CGRect(x: self.view.center.x - widthToShortenTo/2, y: self.replyView.frame.minY, width: widthToShortenTo, height: self.replyView.bounds.height)
-                
-                
-                })
-        }
-    }
-    
-    
-    internal func expandReplyView() {
-        
-        
-        //If reply view exists, give user back control to cancel the reply
-        if replyView.superview != nil {
-            
-            //Modify reply view so that user can't cancel the beacon
-            let button = replyView.viewWithTag(2)!
-            let widthToExpandTo = replyView.bounds.width + button.bounds.width
-            
-            UIView.animateWithDuration(0.5, animations: {
-                
-                button.hidden = false
-                self.replyView.frame = CGRect(x: self.view.center.x - widthToExpandTo/2, y: self.replyView.frame.minY, width: widthToExpandTo, height: self.replyView.bounds.height)
-            })
-        }
-    }
     
     
     
@@ -1661,8 +1701,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             catch let error as NSError { print("Error setting audio session category \(error)") }
         }
     }
-    
-    
     
     
     @IBAction func detectPan(recognizer: UIPanGestureRecognizer) {
