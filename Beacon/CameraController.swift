@@ -1051,9 +1051,23 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             //Wait until dispatch group is finished, then proceed
             dispatch_group_wait(compressionGroup, DISPATCH_TIME_FOREVER)
             
+            
             if fileManager.fileExistsAtPath(compressedVideoPath) {
                 
                 photoObject["isVideo"] = true
+                
+                do {
+                    
+                    var fileSize : UInt64
+                    let attr:NSDictionary? = try NSFileManager.defaultManager().attributesOfItemAtPath(compressedVideoPath)
+                    if let _attr = attr {
+                        fileSize = _attr.fileSize();
+                        print("compressed video size: \(fileSize/(1024))")
+                    }
+                    
+                }
+                catch { print("Error")}
+                
                 clearVideoTempFiles()
                 print("saved video to file")
             }
@@ -1127,10 +1141,10 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     {
         
         let urlAsset = AVURLAsset(URL: inputURL, options: nil)
-        let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPresetMediumQuality)
+        let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPreset960x540)
         
         exportSession!.outputURL = outputURL
-        exportSession!.outputFileType = AVFileTypeQuickTimeMovie
+        exportSession!.outputFileType = AVFileTypeMPEG4
         exportSession!.shouldOptimizeForNetworkUse = true
         
         exportSession!.exportAsynchronouslyWithCompletionHandler { () -> Void in

@@ -87,7 +87,7 @@ class ShapeToPathView: UIView {
             
             let width = self.bounds.width
             let pathAnimation = CABasicAnimation(keyPath: "path")
-            pathAnimation.fromValue = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: width, height: width)).CGPath
+            pathAnimation.fromValue = UIBezierPath(arcCenter: self.center, radius: 30, startAngle: CGFloat(M_PI)/2, endAngle: CGFloat(2 * M_PI), clockwise: true)
             pathAnimation.toValue = replyPath
             pathAnimation.duration = 0.4
             pathAnimation.fillMode = kCAFillModeForwards
