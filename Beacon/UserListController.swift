@@ -1078,13 +1078,15 @@ class UserListController: UITableViewController {
         else {
             
             
-            //Set background color  & kill any animations
+            //Set background color to distinguish between new beacon and replies
             if userList[userListIndex]["replyTo"] != nil {
                 imageBackground.changeBackgroundColor(replyColor)
             }
             else {
                 imageBackground.changeBackgroundColor(defaultColor)
             }
+            
+            //Kill any animations
             userList[userListIndex].removeObjectForKey("isAnimating")
             imageBackground.stopAnimating()
             
@@ -1937,6 +1939,7 @@ class UserListController: UITableViewController {
         let replied = countryObject.objectForKey("replied")
         let sentBy = countryObject.objectForKey("sentBy") as! String
         let receivedBy = countryObject.objectForKey("receivedBy") as? String
+        
         
         //Check if object is not already replied to or being sent by current user
         if replied != nil || (sentBy == userID && receivedBy == nil) {

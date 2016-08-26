@@ -32,6 +32,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     var loadedReceivedMarkers = Array<ReceivedAnnotation>()
     var loadedReceivedCoordinates = Array<CLLocationCoordinate2D>()
+    var loadedReceivedMarkerIds = Array<String>()
+    var loadedSentMarkerIds = Array<String>()
     var receivedMarkersAreLoaded = false
     let receivedClusteringManager = ReceivedClusteringManager()
     
@@ -294,9 +296,10 @@ class MapController: UIViewController, MKMapViewDelegate {
                         if latitude != nil {
                             
                             let markerCoord2D = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
+                            
 
                             //Add annotation to map
-                            if !self.loadedInArray(markerCoord2D, array: self.loadedSentMarkers) && !(latitude == 0.0 && longitude == 0.0) {
+                            if !self.loadedInArray(photoObject.objectId!, array: self.loadedSentMarkerIds) && !(latitude == 0.0 && longitude == 0.0) {
                                 
                                 //Configure annotation
                                 print("Loading sent marker")
@@ -304,6 +307,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                                 marker.coordinate = markerCoord2D
                                 
                                 self.loadedSentMarkers.append(marker)
+                                self.loadedSentMarkerIds.append(photoObject.objectId!)
                                 self.sentClusteringManager.addAnnotation(marker)
                             }
                         }
@@ -371,7 +375,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                             
                             
                             //Add annotation to map
-                            if !self.loadedInArray(markerCoord2D, array: self.loadedReceivedMarkers) && !(latitude == 0.0 && longitude == 0.0){
+                            if !self.loadedInArray(photoObject.objectId!, array: self.loadedReceivedMarkerIds) && !(latitude == 0.0 && longitude == 0.0){
                                 
                                 //Configure annotation
                                 print("Loading received marker")
@@ -379,6 +383,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                                 marker.coordinate = markerCoord2D
                                 
                                 self.loadedReceivedMarkers.append(marker)
+                                self.loadedReceivedMarkerIds.append(photoObject.objectId!)
                                 self.receivedClusteringManager.addAnnotation(marker)
                             }
                         }
@@ -522,10 +527,18 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    internal func loadedInArray(location: CLLocationCoordinate2D, array: Array<MKAnnotation>) -> Bool {
+    internal func loadedInArray(objectId: String, array: Array<String>) -> Bool {
         
         
-        for marker in array {
+        //Check if object is already loaded
+        if array.contains(objectId) {
+        
+            return true
+        }
+        /*
+        for object in array {
+            
+            
             
             let coordinate = marker.coordinate
             if location.latitude == coordinate.latitude && location.longitude == coordinate.longitude {
@@ -533,7 +546,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 print("coordinate found")
                 return true
             }
-        }
+        }*/
         
         print("coordinate not found")
         return false

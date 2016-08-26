@@ -84,8 +84,10 @@ class ShapeToPathView: UIView {
         //Change to reply mode with animation or no animation
         if animated {
             
+            
+            let width = self.bounds.width
             let pathAnimation = CABasicAnimation(keyPath: "path")
-            pathAnimation.fromValue = shapeLayer.path
+            pathAnimation.fromValue = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: width, height: width)).CGPath
             pathAnimation.toValue = replyPath
             pathAnimation.duration = 0.4
             pathAnimation.fillMode = kCAFillModeForwards

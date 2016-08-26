@@ -23,12 +23,13 @@ class CountryBackground: UIView {
     var mapMode = false
     var replyMode = false
     var countryMode = true
-    let transitionTime = 0.2
+    let transitionTime = 0.3
     
     var color = BeaconColors().redColor
     
     
     required init?(coder aDecoder: NSCoder) {
+        
         
         super.init(coder: aDecoder)
         
@@ -68,6 +69,7 @@ class CountryBackground: UIView {
     internal func setProgress(progress: Float) {
         
         
+        //Set progress layer
         progressLayer.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
         
         progressLayer.fillColor = UIColor.clearColor().CGColor
@@ -83,6 +85,8 @@ class CountryBackground: UIView {
     
     internal func changeBackgroundColor(newColor: UIColor) {
         
+        
+        //Change all color variables to new color
         color = newColor
         background.fillColor = newColor.CGColor
         progressLayer.fillColor = newColor.CGColor
@@ -91,12 +95,14 @@ class CountryBackground: UIView {
     
     internal func noProgress() {
         
+        //Remove progress layer
         progressLayer.removeFromSuperlayer()
     }
     
     
     internal func startAnimating() {
     
+        //Animate progress layer
         isAnimating = true
         progressView.layer.removeAllAnimations()
         
@@ -113,6 +119,7 @@ class CountryBackground: UIView {
     
     internal func resumeAnimating() {
         
+        //Resume animating if view was animating
         if isAnimating {
             
             progressView.layer.addAnimation(rotateAnimation, forKey: "rotate")
@@ -121,6 +128,7 @@ class CountryBackground: UIView {
     
     
     internal func stopAnimating() {
+        
         
         //Remove animations and hide
         isAnimating = false
@@ -131,6 +139,7 @@ class CountryBackground: UIView {
     internal func changeToReplyMode(animated: Bool) {
         
         
+        //Change view to show reply
         print("changeToReplyMode")
         if !replyMode {
             
@@ -179,6 +188,7 @@ class CountryBackground: UIView {
     internal func changeToMapMode() {
         
         
+        //Change view to show map
         print("changeToMapMode")
         if !mapMode {
             
@@ -216,6 +226,7 @@ class CountryBackground: UIView {
     internal func changeToCountryMode(animated: Bool) {
         
         
+        //Change view to show country
         print("changeToCountryMode")
         if !countryMode {
             
@@ -258,12 +269,14 @@ class CountryBackground: UIView {
     
     internal func getImage() -> UIImage {
         
+        //Get country image
         return country.image!
     }
     
     
     internal func getColor() -> UIColor {
         
+        //Get current color
         return color
     }
 }
