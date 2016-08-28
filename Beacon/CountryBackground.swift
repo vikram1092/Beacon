@@ -279,4 +279,5 @@ class CountryBackground: UIView {
         //Get current color
         return color
     }
+    
 }

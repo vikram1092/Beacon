@@ -33,21 +33,24 @@ class UserListController: UITableViewController {
     var checkingForReplyBeacons = false
     var haveSetAlertAfterSending = false
     var showNoMoreBeaconsAlert = false
+    var segueControlLocked = false
     
     var tutorialTapBeaconView = TutorialView()
     var tutorialSwipeBeaconView = TutorialView()
     var tutorialBeaconTimeView = TutorialView()
     var tutorialReportBeaconView = TutorialView()
+    var tutorialReplyBeaconView = TutorialView()
     var tutorialTapBeaconViewShown = false
     var tutorialSwipeBeaconViewShown = false
     var tutorialBeaconTimeViewShown = false
     var tutorialReportBeaconViewShown = false
+    var tutorialReplyBeaconViewShown = false
     
     var locManager = CLLocationManager()
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
     let defaultColor = BeaconColors().redColor
     let sendingColor = BeaconColors().yellowColor
-    let replyColor = BeaconColors().lightBlueColor
+    let replyColor = BeaconColors().purpleColor
     let refreshBackgroundColor = BeaconColors().blueColor
     let fileManager = NSFileManager.defaultManager()
     let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
@@ -75,6 +78,9 @@ class UserListController: UITableViewController {
         print("viewWillAppear")
         //Retreive user defaults
         getUserDefaults()
+        
+        //Unlock segue control
+        segueControlLocked = false
     }
     
     
@@ -506,11 +512,10 @@ class UserListController: UITableViewController {
             //or the previous beacon's location
             let query = PFQuery(className:"photo")
             query.whereKeyExists("photo")
-            //DEMO CODE - REPLACE BEFORE RELEASE
-            //query.whereKey("sentBy", notEqualTo: userID)
+            query.whereKey("sentBy", notEqualTo: userID)
             query.whereKeyDoesNotExist("receivedBy")
             query.whereKeyDoesNotExist("replyTo")
-            query.orderByAscending("createdAt")
+            query.orderByDescending("createdAt")
             query.limit = userToReceivePhotos
             
             let previous = userList.last
@@ -896,7 +901,7 @@ class UserListController: UITableViewController {
                     self.tableView.reloadData()
                     
                     //Show swipe beacon tutorial view
-                    self.showTutorialTapBeaconView()
+                    self.showTutorialReplyBeaconView()
                     
                     //Save user list
                     print("Saving user list")
@@ -1006,17 +1011,27 @@ class UserListController: UITableViewController {
             
             
             //Display a message when the table is empty
-            let messageLabel = UILabel(frame: CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height))
+            let width = tableView.bounds.width
+            let height = tableView.bounds.height
+            let messageLabel = TableMessageView(frame: CGRect(x: 0, y: 0, width: width, height: height))
             
-            messageLabel.text = "No beacons received yet. Go to the camera and take a beacon!";
+            messageLabel.text = "No beacons received yet.\n\nGo to the camera and take a beacon!";
             messageLabel.textColor = UIColor.darkGrayColor()
             messageLabel.numberOfLines = 0
             messageLabel.textAlignment = NSTextAlignment.Center
             messageLabel.font = UIFont.systemFontOfSize(14)
             messageLabel.sizeToFit()
+            messageLabel.alpha = 0
+            
             
             self.tableView.backgroundView = messageLabel
             self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+            
+            UIView.animateWithDuration(0.3, delay: 0.5, options: UIViewAnimationOptions.CurveLinear, animations: { 
+                
+                messageLabel.alpha = 1
+                
+                }, completion: nil)
         }
         
         return 0
@@ -1051,6 +1066,16 @@ class UserListController: UITableViewController {
         //Configure image sliding and action
         let pan = UIPanGestureRecognizer(target: self, action: #selector(detectPan(_:)))
         imageBackground.addGestureRecognizer(pan)
+        
+        
+        //Configure slide map indicator
+        slideMapIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        slideMapIndicator.tintColor = UIColor.lightGrayColor()
+        
+        
+        //Configure slide reply indicator
+        slideReplyIndicator.image = UIImage(named: "Reply")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        slideReplyIndicator.tintColor = UIColor.lightGrayColor()
         
         
         //Add the country image to its background
@@ -1105,15 +1130,6 @@ class UserListController: UITableViewController {
             //Configure subtext
             subTitleView.textColor = UIColor(red: 166.0/255.0, green: 166.0/255.0, blue: 166.0/255.0, alpha: 1.0)
             subTitleView.text = String(timeString)
-            
-            //Configure slide map indicator
-            slideMapIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-            slideMapIndicator.tintColor = UIColor.lightGrayColor()
-            
-            
-            //Configure slide reply indicator
-            slideReplyIndicator.image = UIImage(named: "Reply")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-            slideReplyIndicator.tintColor = UIColor.lightGrayColor()
         }
         
         
@@ -1216,10 +1232,10 @@ class UserListController: UITableViewController {
         
         
         //Declare spam button
-        let spam = UITableViewRowAction(style: .Normal, title: "Report") { (action, index) -> Void in
+        let report = UITableViewRowAction(style: .Normal, title: "Report") { (action, index) -> Void in
             
             
-            //Get beacon from array
+            //Get beacon object from array
             let userListLength = self.userList.count - 1
             let object = self.userList[userListLength - indexPath.row]
             
@@ -1254,9 +1270,11 @@ class UserListController: UITableViewController {
             tableView.setEditing(false, animated: true)
             
         }
-        spam.backgroundColor = UIColor(red: 254.0/255.0, green: 90.0/255.0, blue: 93.0/255.0, alpha: 1)
         
-        return [spam]
+        //Set background color for reporting
+        report.backgroundColor = UIColor(red: 254.0/255.0, green: 90.0/255.0, blue: 93.0/255.0, alpha: 1)
+        
+        return [report]
     }
     
     
@@ -1291,8 +1309,9 @@ class UserListController: UITableViewController {
             
             
             print("Show photo")
-            //Hide tap beacon tutorial view
+            //Hide reply/tap beacon tutorial view
             removeTutorialTapBeaconView()
+            removeTutorialReplyBeaconView()
             
             //Start UI animation
             let countryBackground = cell.viewWithTag(6) as! CountryBackground
@@ -1396,7 +1415,7 @@ class UserListController: UITableViewController {
                                 }
                                 
                                 //Show swipe beacon tutorial view
-                                self.showTutorialSwipeBeaconView()
+                                self.showTutorialSwipeBeaconView(cell.frame)
 
                             }
                         })
@@ -1451,7 +1470,7 @@ class UserListController: UITableViewController {
                                 }
                                 
                                 //Show swipe beacon tutorial view
-                                self.showTutorialSwipeBeaconView()
+                                self.showTutorialSwipeBeaconView(cell.frame)
 
                             }
                         })
@@ -1687,6 +1706,7 @@ class UserListController: UITableViewController {
                 countryCenter = countryView.center
             }
             
+            
             //Hide all other cell subviews & obtain country name for potential map query
             //Since content view is the direct subview layer, we have to first go into that
             for subview in cell.subviews[0].subviews {
@@ -1720,9 +1740,13 @@ class UserListController: UITableViewController {
             
             //If moved to the map, go to map and show country.
             //Else if moved to the reply, go to the camera.
-            if countryCenter.x + distance > slideMapIndicator.center.x - threshold {
+            if countryCenter.x + distance > slideMapIndicator.center.x - threshold && !segueControlLocked {
                 
                 
+                //Lock segue control
+                segueControlLocked = true
+                
+                //Necessary variables
                 let index = tableView.indexPathForCell(cell)!.row
                 let userListIndex = userList.count - index - 1
                 let geoPoint = userList[userListIndex].valueForKey("sentFrom") as! PFGeoPoint
@@ -1742,8 +1766,11 @@ class UserListController: UITableViewController {
                 
                 
             }
-            else if !slideReplyIndicator.hidden && countryCenter.x + distance >= slideReplyIndicator.center.x - threshold && countryCenter.x + distance <= slideReplyIndicator.center.x + threshold {
+            else if !slideReplyIndicator.hidden && countryCenter.x + distance >= slideReplyIndicator.center.x - threshold && countryCenter.x + distance <= slideReplyIndicator.center.x + threshold  && !segueControlLocked {
                 
+                
+                //Lock segue control
+                segueControlLocked = true
                 
                 //Necessary variables
                 let index = tableView.indexPathForCell(cell)!.row
@@ -1755,7 +1782,6 @@ class UserListController: UITableViewController {
                 resetVisibleCells()
                 
                 //Segue to camera with details
-                print("User list reply ID: \(userList[userListIndex])")
                 segueToCamera(userList[userListIndex], replyToUser: replyToUser, replyImage: replyImage)
                 
             }
@@ -1800,7 +1826,7 @@ class UserListController: UITableViewController {
             //Since content view is the direct subview layer, we have to first go into that
             for subview in cell.subviews[0].subviews {
                 
-                //Ensure that the subview is not the image, its background or the map label
+                //Ensure that the subview is not the image, its background or the slide indicators
                 if subview.tag != 3 && subview.tag != 4 && subview.tag != 5 && subview.tag != 6 {
                     
                     subview.alpha = 1
@@ -1810,6 +1836,12 @@ class UserListController: UITableViewController {
                     
                     let view = subview as! UIImageView
                     view.alpha = 0
+                }
+                else if subview.tag == 6 {
+                    
+                    //Reset country background to country mode
+                    let view = subview as! CountryBackground
+                    view.changeToCountryMode(false)
                 }
             }
             
@@ -1939,12 +1971,25 @@ class UserListController: UITableViewController {
         let replied = countryObject.objectForKey("replied")
         let sentBy = countryObject.objectForKey("sentBy") as! String
         let receivedBy = countryObject.objectForKey("receivedBy") as? String
+        let receivedAt = countryObject.objectForKey("receivedAt") as? NSDate
         
         
-        //Check if object is not already replied to or being sent by current user
-        if replied != nil || (sentBy == userID && receivedBy == nil) {
+        //Check if object is not already replied to, within time, or being sent by current user
+        if (sentBy == userID && receivedBy == nil) {
             
             return false
+        }
+        else if replied != nil {
+            
+            return false
+        }
+        else if receivedAt != nil {
+        
+            //Check if beacon is also within time constraint
+            if !withinTime(receivedAt!) {
+                
+                return false
+            }
         }
         
         return true
@@ -2133,7 +2178,7 @@ class UserListController: UITableViewController {
     
     internal func removeTutorialTapBeaconView() {
         
-        //Remove send beacon tutorial view if it's active
+        //Remove tap beacon tutorial view if it's active
         if userDefaults.objectForKey("tutorialTapBeacon") == nil && tutorialTapBeaconViewShown {
             
             tutorialTapBeaconView.removeView("tutorialTapBeacon")
@@ -2142,23 +2187,33 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func showTutorialSwipeBeaconView() {
+    internal func showTutorialSwipeBeaconView(frame: CGRect) {
         
+        
+        print("showTutorialSwipeBeaconView")
+        
+        //v1.2 Reset of tutorial swipe beacon view
+        if userDefaults.objectForKey("tutorialSwipeBeaconReset") == nil {
+            
+            print("v1.2 -- Reset tutorial swipe beacon")
+            userDefaults.removeObjectForKey("tutorialSwipeBeacon")
+            userDefaults.setBool(true, forKey: "tutorialSwipeBeaconReset")
+            
+        }
         
         //Show label if the user default is nil
-        print("showTutorialSwipeBeaconView")
         if userDefaults.objectForKey("tutorialSwipeBeacon") == nil && !tutorialSwipeBeaconViewShown {
             
-            let heading = "Take It To The Map!"
-            let text = "Swipe the country to the right\nto see it on the map"
+            let heading = "Reply & Explore!"
+            let text = "Swipe the country to the right to\nreply and see it on the map"
             
             dispatch_async(dispatch_get_main_queue(), {
                 
                 
                 //Set bounds and create tutorial view
                 let height = CGFloat(100)
-                let width = CGFloat(210)
-                self.tutorialSwipeBeaconView = TutorialView(frame: CGRect(x: 20, y: self.tableView.frame.minY + self.tableView.rowHeight + 15, width: width, height: height))
+                let width = CGFloat(220)
+                self.tutorialSwipeBeaconView = TutorialView(frame: CGRect(x: 20, y: frame.maxY + 15, width: width, height: height))
                 self.tutorialSwipeBeaconView.pointTriangleUp()
                 self.tutorialSwipeBeaconView.moveTriangle(CGPoint(x: -width/2 + 30, y: 0))
                 self.tutorialSwipeBeaconView.showText(heading, text: text)
@@ -2179,7 +2234,7 @@ class UserListController: UITableViewController {
     
     internal func removeTutorialSwipeBeaconView() {
         
-        //Remove send beacon tutorial view if it's active
+        //Remove swipe beacon tutorial view if it's active
         if userDefaults.objectForKey("tutorialSwipeBeacon") == nil && tutorialSwipeBeaconViewShown {
             
             tutorialSwipeBeaconView.removeView("tutorialSwipeBeacon")
@@ -2227,7 +2282,7 @@ class UserListController: UITableViewController {
     
     internal func removeTutorialBeaconTimeView() {
         
-        //Remove send beacon tutorial view if it's active
+        //Remove beacon time tutorial view if it's active
         if userDefaults.objectForKey("tutorialBeaconTime") != nil && tutorialBeaconTimeViewShown {
             
             tutorialBeaconTimeView.removeView("tutorialBeaconTime")
@@ -2267,7 +2322,7 @@ class UserListController: UITableViewController {
     
     internal func removeTutorialReportBeaconView() {
         
-        //Remove send beacon tutorial view if it's active
+        //Remove report beacon tutorial view if it's active
         if userDefaults.objectForKey("tutorialReportBeacon") == nil && tutorialReportBeaconViewShown {
             
             tutorialReportBeaconView.removeView("tutorialReportBeacon")
@@ -2276,46 +2331,103 @@ class UserListController: UITableViewController {
     }
     
     
+    internal func showTutorialReplyBeaconView() {
+        
+        
+        //Show label if the user default is nil
+        print("showTutorialReplyBeacon")
+        if userDefaults.objectForKey("tutorialReplyBeacon") == nil && !tutorialReplyBeaconViewShown {
+            
+            let heading = "A Reply!"
+            let text = "See someone's response\nto your beacon!"
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+                //Set bounds and create tutorial view
+                let height = CGFloat(100)
+                let width = CGFloat(180)
+                self.tutorialReplyBeaconView = TutorialView(frame: CGRect(x: 20, y: self.tableView.frame.minY + self.tableView.rowHeight + 15, width: width, height: height))
+                self.tutorialReplyBeaconView.pointTriangleUp()
+                self.tutorialReplyBeaconView.moveTriangle(CGPoint(x: -width/2 + 30, y: 0))
+                self.tutorialReplyBeaconView.showText(heading, text: text)
+                
+                //Add the take beacon view
+                self.view.addSubview(self.tutorialReplyBeaconView)
+                self.view.bringSubviewToFront(self.tutorialReplyBeaconView)
+                self.tutorialReplyBeaconViewShown = true
+                
+            })
+        }
+    }
+    
+    
+    internal func removeTutorialReplyBeaconView() {
+        
+        //Remove reply beacon tutorial view if it's active
+        if userDefaults.objectForKey("tutorialReplyBeacon") == nil && tutorialReplyBeaconViewShown {
+            
+            tutorialReplyBeaconView.removeView("tutorialReplyBeacon")
+            tutorialReplyBeaconViewShown = false
+        }
+    }
+    
+    
     
     
     internal func segueToCamera(replyToObject: PFObject, replyToUser: String, replyImage: UIImage) {
         
-        //Move to the camera
-        tabBarController!.selectedIndex = 0
-        let camera = tabBarController!.viewControllers![0] as! CameraController
         
-        //Provide reply details
-        camera.replyMode(replyToObject, user: replyToUser, replyImage: replyImage)
+        //If the table is current view and segue control is not locked, segue
+        if tabBarController!.selectedIndex == 1 {
+            
+            //Move to the camera
+            tabBarController!.selectedIndex = 0
+            let camera = tabBarController!.viewControllers![0] as! CameraController
+            
+            //Provide reply details
+            camera.replyMode(replyToObject, user: replyToUser, replyImage: replyImage)
+            
+            
+            //Remove swipe beacon tutorial view
+            removeTutorialSwipeBeaconView()
+        }
     }
     
     
     internal func segueToMap(location: CLLocationCoordinate2D, country: String?) {
         
-        //Move to the map
-        tabBarController!.selectedIndex = 2
-        let map = tabBarController!.viewControllers![2] as! MapController
         
-        //Switch control if current segment isn't "received"
-        if map.beaconControl.selectedSegmentIndex != 0 {
+        //If the table is current view and segue control is not locked, segue
+        if tabBarController!.selectedIndex == 1 {
             
-            map.beaconControl.selectedSegmentIndex = 0
-            map.beaconControlChanged(map.beaconControl)
-        }
-        
-        //Pan to selected location
-        map.goToCountry(location)
-        
-        
-        //Remove swipe beacon tutorial view
-        removeTutorialSwipeBeaconView()
-        
-        
-        //If the country exists, outline the country
-        if country != nil {
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+            //Move to the map
+            tabBarController!.selectedIndex = 2
+            let map = tabBarController!.viewControllers![2] as! MapController
+            
+            //Switch control if current segment isn't "received"
+            if map.beaconControl.selectedSegmentIndex != 0 {
                 
-                map.getDetailsToDrawCountry(country!)
+                map.beaconControl.selectedSegmentIndex = 0
+                map.beaconControlChanged(map.beaconControl)
+            }
+            
+            //Pan to selected location
+            map.goToCountry(location)
+            
+            
+            //Remove swipe beacon tutorial view
+            removeTutorialSwipeBeaconView()
+            
+            
+            //If the country exists, outline the country
+            if country != nil {
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                    
+                    map.getDetailsToDrawCountry(country!)
+                }
             }
         }
     }

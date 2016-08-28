@@ -598,10 +598,11 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         //Show label if the user default is nil
         print("showTutorialBeaconControlSentView")
+        userDefaults.removeObjectForKey("tutorialBeaconControlSent")
         if userDefaults.objectForKey("tutorialBeaconControlSent") == nil {
             
             let heading = "Beacons You Sent"
-            let text = "Where your beacons went\nafter you sent them"
+            let text = "Where your beacons land\nonce they're delivered"
             
             dispatch_async(dispatch_get_main_queue(), {
                 

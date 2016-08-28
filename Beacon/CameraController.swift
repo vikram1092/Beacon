@@ -866,7 +866,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         let seekTime : CMTime = CMTimeMake(seconds, preferredTimeScale)
         
         //Seek video to beginning
-        print(moviePlayer)
         if moviePlayer.player != nil {
             
             print("restarting")
@@ -1008,7 +1007,6 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             
             replyToObject["replied"] = true
             replyToObject.pinInBackground()
-            print("Camera reply ID: \(replyToObject)")
         }
         
         
@@ -1252,7 +1250,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         let viewHeight = CGFloat(50)
         let padding = CGFloat(10)
         let imageSize = CGFloat(30)
-        let closeViewWidth = CGFloat(0) //40
+        let closeViewWidth = CGFloat(0)
         
         
         //Initialize views
@@ -1329,13 +1327,22 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         replyView.layer.cornerRadius = viewHeight/2
         replyView.clipsToBounds = true
         
-        self.view.insertSubview(replyView, belowSubview: alertView)
-        replyView.frame = CGRect(x: self.view.center.x, y: 10, width: 0, height: 50)
         
-        UIView.animateWithDuration(0.5) {
+        //Add and animate entrance into view
+        let introWidth = CGFloat(50)
+        replyView.frame = CGRect(x: self.view.center.x - introWidth/2, y: 10, width: introWidth, height: 50)
+        label.alpha = 0
+        imageView.alpha = 0
+        
+        self.view.insertSubview(replyView, belowSubview: alertView)
+        
+        UIView.animateWithDuration(0.4) {
             
             self.replyView.frame = CGRect(x: self.view.center.x - viewWidth/2, y: 10, width: viewWidth, height: viewHeight)
+            label.alpha = 1
+            imageView.alpha = 1
         }
+        
         
         //Save object and username for sending beacon
         replyToObject = object

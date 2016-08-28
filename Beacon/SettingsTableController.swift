@@ -60,11 +60,8 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
             saveSwitch.setOn(saveMedia, animated: false)
         }
         
-        //Animate progress bar loading
-        UIView.animateWithDuration(1) { () -> Void in
-            
-            self.countryBackground.setProgress(0.6)
-        }
+        //Set progress bar
+        self.countryBackground.setProgress(0.6)
     }
     
     
