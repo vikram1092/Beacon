@@ -598,7 +598,6 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         //Show label if the user default is nil
         print("showTutorialBeaconControlSentView")
-        userDefaults.removeObjectForKey("tutorialBeaconControlSent")
         if userDefaults.objectForKey("tutorialBeaconControlSent") == nil {
             
             let heading = "Beacons You Sent"

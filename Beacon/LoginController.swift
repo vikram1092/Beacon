@@ -22,7 +22,7 @@ class LoginController: UIViewController {
     
     var userID: String? = nil
     var banned: Bool? = nil
-    var bannedText = "You have been suspended due to some beacons you've sent. Please allow us to investigate and check back later."
+    var bannedText = "You have been suspended due to some activities from you. Please allow us to investigate and check back later."
     let userDefaults = NSUserDefaults.standardUserDefaults()
     
     

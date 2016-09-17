@@ -46,6 +46,9 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         AVNumberOfChannelsKey : NSNumber(int: 1),
         AVEncoderAudioQualityKey : NSNumber(int: Int32(AVAudioQuality.Medium.rawValue)),
         AVEncoderBitRateKey : NSNumber(int: Int32(320000))]
+    var flashMode = false
+    var frontFlash = UIView?()
+    var currentBrightness = CGFloat(0)
     
     //File saving variables
     var locManager = CLLocationManager()
@@ -173,7 +176,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         previewLayer?.hidden = true
         
         //Turn off flash
-        turnTorchOff()
+        turnFlashOff()
         
     }
     
@@ -236,6 +239,8 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         //Clear video temp files
         clearVideoTempFiles()
         
+        //Turn off front flash view
+        frontFlash = nil
     }
     
     
@@ -445,8 +450,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     @IBAction func flashButtonPressed(sender: AnyObject) {
         
-        //Turn on torch if flash is on
-        toggleTorchMode()
+        
+        //Toggle torch mode if user wants flash
+        if !flashMode {
+            
+            //Turn on torch mode
+            turnFlashOn()
+        }
+        else {
+            
+            //Turn off torch mode
+            turnFlashOff()
+        }
     }
     
     
@@ -502,11 +517,23 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                                 //Enable flash
                                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                     
-                                    self.flashButton.enabled = true
+                                    //DEMO CODE
+                                    //self.turnTorchOff()
+                                    //self.flashButton.enabled = true
+                                    
+                                    if self.flashIsOn() {
+                                        
+                                        self.turnFlashOn()
+                                    }
+                                    else {
+                                        
+                                        self.turnFlashOff()
+                                    }
                                 })
                                 
                                 //Configure device modes
                                 self.initializeCaptureDevice()
+                                
                                 
                                 break
                             }
@@ -517,9 +544,18 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                                 //Disable flash
                                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                     
-                                    self.turnTorchOff()
-                                    self.flashButton.enabled = false
+                                    //DEMO CODE
+                                    //self.turnTorchOff()
+                                    //self.flashButton.enabled = false
                                     
+                                    if self.flashIsOn() {
+                                        
+                                        self.turnFlashOn()
+                                    }
+                                    else {
+                                        
+                                        self.turnFlashOff()
+                                    }
                                 })
                                 
                                 //Configure device modes
@@ -565,35 +601,23 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             //Hide take beacon tutorial view
             removeTutorialTakeBeaconView()
             
-            //Take a photo asyncronously and prepare button for sending
-            stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
+            
+            //Flash front device if it's turned on
+            if flashIsOn() && captureDevice!.position == AVCaptureDevicePosition.Front {
+            
+                frontFlash!.alpha = 1
+                currentBrightness = UIScreen.mainScreen().brightness
+                UIScreen.mainScreen().brightness = 1
                 
-                if error != nil {
+                //Dispatch photo sending function with flash on
+                dispatch_after(DISPATCH_TIME_NOW + 1 * NSEC_PER_SEC, dispatch_get_main_queue(), {
                     
-                    print("Error capturing photo: \(error)")
-                }
-                else {
-                    
-                    //Capture image if no errors in connection occurred
-                    let image = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
-                    let data_image = UIImage(data: image)
-                    self.cameraImage.image = data_image
-                    self.captureSession.stopRunning()
-                    
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        
-                        //Change elements on screen
-                        self.turnTorchOff()
-                        self.flashButton.hidden = true
-                        self.cameraSwitchButton.hidden = true
-                        self.backButton.hidden = true
-                        self.closeButton.hidden = false
-                        
-                        //Show send beacon tutorial view and transition to send mode
-                        self.showTutorialSendBeaconView()
-                        self.captureShape.transitionToSendMode()
-                    })
-                }
+                    self.captureStillImage()
+                })
+            }
+            else {
+                
+                captureStillImage()
             }
         }
         else if captureShape.sendView.alpha == 1 && !stillImageOutput.capturingStillImage && !movieFileOutput.recording && !beaconSending {
@@ -606,6 +630,49 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
             sendBeacon()
         }
         print("Pressed!")
+    }
+    
+    
+    internal func captureStillImage() {
+        
+        
+        //Take a photo asyncronously and prepare button for sending without flash
+        stillImageOutput.captureStillImageAsynchronouslyFromConnection(self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)) { (buffer:CMSampleBuffer!, error:NSError!) -> Void in
+            
+            if error != nil {
+                
+                print("Error capturing photo: \(error)")
+            }
+            else {
+                
+                //Capture image if no errors in connection occurred
+                let image = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
+                let data_image = UIImage(data: image)
+                self.cameraImage.image = data_image
+                self.captureSession.stopRunning()
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    //Change elements on screen
+                    self.flashButton.hidden = true
+                    self.cameraSwitchButton.hidden = true
+                    self.backButton.hidden = true
+                    self.closeButton.hidden = false
+                    
+                    
+                    //Turn off front flash if it's turned on
+                    if self.flashIsOn() && self.captureDevice!.position == AVCaptureDevicePosition.Front {
+                        
+                        UIScreen.mainScreen().brightness = self.currentBrightness
+                        self.frontFlash!.alpha = 0
+                    }
+                    
+                    //Show send beacon tutorial view and transition to send mode
+                    self.showTutorialSendBeaconView()
+                    self.captureShape.transitionToSendMode()
+                })
+            }
+        }
     }
     
     
@@ -631,6 +698,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 //Set path for video
                 let videoUrl = NSURL(fileURLWithPath: initialVideoPath)
                 let audioUrl = NSURL(fileURLWithPath: initialAudioPath)
+                
+                
+                //Flash front device if it's turned on
+                if flashIsOn() && captureDevice!.position == AVCaptureDevicePosition.Front {
+                    
+                    frontFlash!.alpha = 0.9
+                    currentBrightness = UIScreen.mainScreen().brightness
+                    UIScreen.mainScreen().brightness = 1
+                }
+                
                 
                 //Set up audio recorder
                 do {
@@ -671,19 +748,28 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     
     internal func stopTakingVideo() {
         
+        
         //Stop everything
         print("Ending video recording")
         videoTimer.invalidate()
         movieFileOutput.stopRecording()
         audioRecorder.stop()
         captureSession.stopRunning()
-        turnTorchOff()
+        
         
         //Change elements on screen
         self.flashButton.hidden = true
         self.cameraSwitchButton.hidden = true
         self.backButton.hidden = true
         self.closeButton.hidden = false
+        
+        
+        //Turn off front flash if it's turned on
+        if self.flashIsOn() && self.captureDevice!.position == AVCaptureDevicePosition.Front {
+            
+            UIScreen.mainScreen().brightness = self.currentBrightness
+            self.frontFlash!.alpha = 0
+        }
         
         //Show send beacon tutorial view and transition to send mode
         self.showTutorialSendBeaconView()
@@ -806,8 +892,17 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
     }
 
     
+    internal func flashIsOn() -> Bool {
+        
+        return flashMode
+    }
+    
+    
     internal func toggleTorchMode() {
         
+        
+        
+        /* DEMO CODE
         //Toggle torch mode if user wants flash and if device has flash
         if captureDevice!.hasTorch {
             
@@ -829,14 +924,16 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                 captureDevice!.torchMode = AVCaptureTorchMode.Off
                 captureDevice!.unlockForConfiguration()
             }
-        }
+        }*/
     }
     
     
-    internal func turnTorchOff() {
+    internal func turnFlashOff() {
         
         //Turn off flash if its on
+        flashMode = false
         flashButton.setImage(UIImage(named: "FlashButtonOff"), forState: UIControlState.Normal)
+        
         if captureDevice != nil {
             
             if captureDevice!.hasTorch {
@@ -852,6 +949,50 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
                     captureDevice!.torchMode = AVCaptureTorchMode.Off
                     captureDevice!.unlockForConfiguration()
                 }
+            }
+            else if captureDevice!.position == AVCaptureDevicePosition.Front && frontFlash?.superview != nil {
+                
+                //Remove front flash and restore brightness
+                UIScreen.mainScreen().brightness = currentBrightness
+                frontFlash!.removeFromSuperview()
+                frontFlash = nil
+                
+            }
+        }
+    }
+    
+    
+    internal func turnFlashOn() {
+        
+        //Turn on flash if its off
+        flashMode = true
+        flashButton.setImage(UIImage(named: "FlashButtonOn"), forState: UIControlState.Normal)
+        
+        if captureDevice != nil {
+            
+            if captureDevice!.hasTorch {
+                
+                //Lock device for configuration
+                do {
+                    try captureDevice!.lockForConfiguration()
+                } catch let error as NSError {print("Error getting lock for device \(error)")}
+                
+                if captureDevice!.torchMode == AVCaptureTorchMode.Off {
+                    
+                    //Turn on torch mode and unlock device
+                    captureDevice!.torchMode = AVCaptureTorchMode.On
+                    captureDevice!.unlockForConfiguration()
+                }
+            }
+            else if captureDevice!.position == AVCaptureDevicePosition.Front {
+                
+                //Initialize front flash, add it when photo or video is taken
+                frontFlash = UIView(frame: self.view.bounds)
+                frontFlash!.backgroundColor = UIColor.whiteColor()
+                frontFlash!.userInteractionEnabled = false
+                frontFlash!.alpha = 0
+                self.view.addSubview(frontFlash!)
+                
             }
         }
     }
@@ -903,6 +1044,12 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         self.cameraSwitchButton.hidden = false
         self.backButton.hidden = false
         self.cameraImage.image = nil
+        
+        //Turn on flash if it's already set to on
+        if flashIsOn() {
+            
+            turnFlashOn()
+        }
         
         //Remove send beacon tutorial
         self.removeTutorialSendBeaconView()
@@ -1703,7 +1850,7 @@ class CameraController: UIViewController, CLLocationManagerDelegate, UITextField
         }
         
         //Turn torch off
-        turnTorchOff()
+        turnFlashOff()
     }
     
     

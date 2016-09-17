@@ -62,7 +62,7 @@
 		D1A3E8A11C78F70A00E115FC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A3E8A01C78F70A00E115FC /* TabBarController.swift */; };
 		D1A40C231D3A6FD0000D3CC5 /* BeaconColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */; };
 		D1A40C251D3A83A6000D3CC5 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A40C241D3A83A6000D3CC5 /* TutorialView.swift */; };
-		D1A7CFC11D7348100000F987 /* reply.svg in Resources */ = {isa = PBXBuildFile; fileRef = D1A7CFC01D7348100000F987 /* reply.svg */; };
+		D1A7CFC71D7384DE0000F987 /* reply.svg in Resources */ = {isa = PBXBuildFile; fileRef = D1A7CFC61D7384DE0000F987 /* reply.svg */; };
 		D1AB163F1D4A9ECE00F0E42C /* LaunchImageCaptureButton@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1AB163E1D4A9ECE00F0E42C /* LaunchImageCaptureButton@x2.png */; };
 		D1AD47001CF7BF210028942F /* SentAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46F91CF7BF210028942F /* SentAnnotation.swift */; };
 		D1AD47011CF7BF210028942F /* SentAnnotationCluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD46FA1CF7BF210028942F /* SentAnnotationCluster.swift */; };
@@ -201,7 +201,7 @@
 		D1A3E8A01C78F70A00E115FC /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D1A40C221D3A6FCF000D3CC5 /* BeaconColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconColors.swift; sourceTree = "<group>"; };
 		D1A40C241D3A83A6000D3CC5 /* TutorialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
-		D1A7CFC01D7348100000F987 /* reply.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = reply.svg; sourceTree = "<group>"; };
+		D1A7CFC61D7384DE0000F987 /* reply.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = reply.svg; sourceTree = "<group>"; };
 		D1AB163E1D4A9ECE00F0E42C /* LaunchImageCaptureButton@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LaunchImageCaptureButton@x2.png"; path = "../../Spore Images/LaunchImageCaptureButton@x2.png"; sourceTree = "<group>"; };
 		D1AD46F91CF7BF210028942F /* SentAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SentAnnotation.swift; sourceTree = "<group>"; };
 		D1AD46FA1CF7BF210028942F /* SentAnnotationCluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SentAnnotationCluster.swift; sourceTree = "<group>"; };
@@ -553,7 +553,7 @@
 				D1D447111D62D98E0062943B /* .gitignore */,
 				D1D447121D62D98E0062943B /* .travis.yml */,
 				D128C4181D6BB8CD006F296C /* globe.svg */,
-				D1A7CFC01D7348100000F987 /* reply.svg */,
+				D1A7CFC61D7384DE0000F987 /* reply.svg */,
 				D1D447171D62D98E0062943B /* LICENSE */,
 				D1D447491D62D98E0062943B /* PocketSVG.h */,
 				D1D4474A1D62D98E0062943B /* PocketSVG.m */,
@@ -672,7 +672,7 @@
 				D1F6763F1D62CDB6000709CB /* CancelPhoto@x2.png in Resources */,
 				D14D43571D21D454009645D1 /* circle_sent_90.png in Resources */,
 				D14D43521D21D454009645D1 /* circle_sent_120.png in Resources */,
-				D1A7CFC11D7348100000F987 /* reply.svg in Resources */,
+				D1A7CFC71D7384DE0000F987 /* reply.svg in Resources */,
 				D1CF44211D42775A004B52A3 /* BeaconLogin@x2.png in Resources */,
 				D1F6763E1D62CDB6000709CB /* CancelPhoto.png in Resources */,
 				D1F6765F1D62CDD7000709CB /* userSettings@x2.png in Resources */,

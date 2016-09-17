@@ -486,6 +486,7 @@ class UserListController: UITableViewController {
     
     internal func updateUserList() {
         
+        
         //Check for new beacons
         checkForNewBeacons(false, sameState: false, sameCity: false, likePrevious: false)
         
