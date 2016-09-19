@@ -53,20 +53,20 @@ class DotView: UIView {
     }
     
     
-    internal func startAnimating(intensity: CGFloat) {
+    internal func startAnimating(_ intensity: CGFloat) {
         
         if !isAnimating {
             
             isAnimating = true
         }
         
-        UIView.animateWithDuration(5, animations: { 
+        UIView.animate(withDuration: 5, animations: { 
             
             self.center = CGPoint(x: self.center.x + intensity, y: self.center.y)
-            }) { (Bool) in
+            }, completion: { (Bool) in
                 
                 self.startAnimating(-intensity)
-        }
+        }) 
     }
     
     

@@ -16,26 +16,20 @@ class BeaconingIndicator: UIView {
     let dot = CAShapeLayer()
     let swirl = CAShapeLayer()
     let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
-    let color = BeaconColors().redColor.CGColor
+    let color = BeaconColors().redColor.cgColor
     var isAnimating = false
+    var initialized = false
     
     
     override init(frame: CGRect) {
         
         super.init(frame: frame)
-        
-        if frame.width > 0.0 {
-            
-            initializeView()
-        }
     }
     
     
     internal required init?(coder aDecoder: NSCoder) {
         
         super.init(coder: aDecoder)
-        
-        initializeView()
     }
     
     
@@ -47,26 +41,31 @@ class BeaconingIndicator: UIView {
     
     internal func initializeView() {
         
-        //Rotate view
-        self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
-        
-        //Set beacon dot
-        let dotBounds = self.bounds.height * 0.80
-        dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width * 0.10, y: self.bounds.height * 0.10, width: dotBounds, height: dotBounds)).CGPath
-        dot.fillColor = color
-        
-        //Set swirl
-        swirl.path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)).CGPath
-        swirl.fillColor = UIColor.clearColor().CGColor
-        swirl.strokeColor = color
-        swirl.strokeStart = 0.4
-        swirl.strokeEnd = 1.0
-        swirl.lineWidth = 2
-        swirl.lineCap = kCALineCapRound
-        
-        //Add sublayers to refreh control
-        self.layer.addSublayer(swirl)
-        self.layer.addSublayer(dot)
+        if !initialized {
+            
+            initialized = true
+            
+            //Rotate view
+            self.transform = CGAffineTransform( rotationAngle: -90.0 * CGFloat(M_PI) / 180.0)
+            
+            //Set beacon dot
+            let dotBounds = self.bounds.height * 0.80
+            dot.path = UIBezierPath(ovalIn: CGRect(x: self.bounds.width * 0.10, y: self.bounds.height * 0.10, width: dotBounds, height: dotBounds)).cgPath
+            dot.fillColor = color
+            
+            //Set swirl
+            swirl.path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)).cgPath
+            swirl.fillColor = UIColor.clear.cgColor
+            swirl.strokeColor = color
+            swirl.strokeStart = 0.4
+            swirl.strokeEnd = 1.0
+            swirl.lineWidth = 2
+            swirl.lineCap = kCALineCapRound
+            
+            //Add sublayers to refreh control
+            self.layer.addSublayer(swirl)
+            self.layer.addSublayer(dot)
+        }
     }
     
     
@@ -74,14 +73,14 @@ class BeaconingIndicator: UIView {
         
         
         let dotBounds = self.bounds.height * 0.80
-        swirl.path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)).CGPath
-        dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width * 0.10, y: self.bounds.height * 0.10, width: dotBounds, height: dotBounds)).CGPath
+        swirl.path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)).cgPath
+        dot.path = UIBezierPath(ovalIn: CGRect(x: self.bounds.width * 0.10, y: self.bounds.height * 0.10, width: dotBounds, height: dotBounds)).cgPath
     }
     
     
     internal func startAnimating() {
         
-        self.hidden = false
+        self.isHidden = false
         isAnimating = true
         
         rotateAnimation.fromValue = -CGFloat(M_PI)/2
@@ -89,9 +88,9 @@ class BeaconingIndicator: UIView {
         rotateAnimation.duration = 1
         rotateAnimation.repeatCount = HUGE
         rotateAnimation.fillMode = kCAFillModeForwards
-        rotateAnimation.removedOnCompletion = false
+        rotateAnimation.isRemovedOnCompletion = false
 
-        self.layer.addAnimation(rotateAnimation, forKey: nil)
+        self.layer.add(rotateAnimation, forKey: nil)
     }
     
     
@@ -99,7 +98,7 @@ class BeaconingIndicator: UIView {
         
         //Remove animations and hide
         self.layer.removeAllAnimations()
-        self.hidden = true
+        self.isHidden = true
         isAnimating = false
     }
     
@@ -112,7 +111,7 @@ class BeaconingIndicator: UIView {
     }
     
     
-    internal func changeColor(color: CGColor) {
+    internal func changeColor(_ color: CGColor) {
         
         dot.fillColor = color
         swirl.strokeColor = color

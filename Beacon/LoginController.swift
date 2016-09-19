@@ -22,8 +22,8 @@ class LoginController: UIViewController {
     
     var userID: String? = nil
     var banned: Bool? = nil
-    var bannedText = "You have been suspended due to some activities from you. Please allow us to investigate and check back later."
-    let userDefaults = NSUserDefaults.standardUserDefaults()
+    var bannedText = "You have been suspended due to some of your activities. Please allow us to investigate and check back later."
+    let userDefaults = UserDefaults.standard
     
     
     override func viewDidLoad() {
@@ -32,29 +32,32 @@ class LoginController: UIViewController {
         super.viewDidLoad()
         
         //Initialize views
-        self.view.sendSubviewToBack(dotViewLeft)
-        self.view.sendSubviewToBack(dotViewRight)
+        self.view.sendSubview(toBack: dotViewLeft)
+        self.view.sendSubview(toBack: dotViewRight)
 
         dotViewLeft.frame = self.view.bounds
         dotViewRight.frame = self.view.bounds
         dotViewLeft.initializeViews()
         dotViewRight.initializeViews()
         
-        beaconingIndicator.changeColor(UIColor.whiteColor().CGColor)
         
     }
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         //Initialize UI objects
         alertButton.alpha = 0
+        
+        
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         //Start animating all views
+        beaconingIndicator.initializeView()
+        beaconingIndicator.changeColor(UIColor.white.cgColor)
         beaconingIndicator.startAnimating()
         
         if !dotViewLeft.isAnimating {
@@ -71,7 +74,7 @@ class LoginController: UIViewController {
     }
     
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         
         //Stop all animations
         dotViewLeft.stopAnimating()
@@ -89,7 +92,7 @@ class LoginController: UIViewController {
         //Handle the userID depending on whether it's valid or not
         if userID == nil {
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { 
+            DispatchQueue.global(qos: .utility).async(execute: {
                 
                 self.generateNewUserID()
             })
@@ -105,10 +108,10 @@ class LoginController: UIViewController {
     internal func getUserDefaults() {
         
         //Get user ID
-        userID = userDefaults.objectForKey("userID") as? String
+        userID = userDefaults.object(forKey: "userID") as? String
         
         //Get banned status
-        banned = userDefaults.boolForKey("banned")
+        banned = userDefaults.bool(forKey: "banned")
     }
     
     
@@ -126,7 +129,7 @@ class LoginController: UIViewController {
         for _ in 0..<length {
             
             let randomIndex = Int(arc4random_uniform(UInt32(characters.characters.count)))
-            let newChar = characters[characters.startIndex.advancedBy(randomIndex)]
+            let newChar = characters[characters.characters.index(characters.startIndex, offsetBy: randomIndex)]
             newUserID.append(newChar)
         }
         
@@ -149,8 +152,7 @@ class LoginController: UIViewController {
                 user["userID"] = self.userID
                 user["banned"] = false
                 
-                user.saveInBackgroundWithBlock {
-                    (success: Bool, error: NSError?) -> Void in
+                user.saveInBackground { (success, error)  in
                     if (success) {
                         
                         // The user has been saved, seque to next screen
@@ -184,59 +186,59 @@ class LoginController: UIViewController {
     
     internal func showWorkingView() {
         
-        dispatch_async(dispatch_get_main_queue()) { 
+        DispatchQueue.main.async { 
             
             if self.workingView.alpha != 1 {
                 
-                UIView.animateWithDuration(0.4) {
+                UIView.animate(withDuration: 0.4, animations: {
                     
                     self.workingView.alpha = 1
-                }
+                }) 
             }
         }
     }
     
     
-    internal func showAlert(text: String) {
+    internal func showAlert(_ text: String) {
         
-        self.alertButton.setTitle(text, forState: .Normal)
-        self.alertButton.titleLabel?.textAlignment = NSTextAlignment.Center
+        self.alertButton.setTitle(text, for: UIControlState())
+        self.alertButton.titleLabel?.textAlignment = NSTextAlignment.center
         
-        UIView.animateWithDuration(0.2, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             
             self.workingView.alpha = 0
-            }) { (Bool) in
+            }, completion: { (Bool) in
                 
-                UIView.animateWithDuration(0.2) { () -> Void in
+                UIView.animate(withDuration: 0.2, animations: { () -> Void in
                     
                     self.alertButton.alpha = 1
-                }
-        }
+                }) 
+        }) 
         
     }
     
     
-    @IBAction func alertButtonPressed(sender: AnyObject) {
+    @IBAction func alertButtonPressed(_ sender: AnyObject) {
     
         
-        UIView.animateWithDuration(0.4, animations: { 
+        UIView.animate(withDuration: 0.4, animations: { 
             
             //Animate label
             self.alertButton.alpha = 0
             
-            }) { (Bool) in
+            }, completion: { (Bool) in
                 
                 //Handle user registration
                 self.handleUserRegistration()
-        }
+        }) 
         
     }
     
     
-    internal func saveID(id: String) {
+    internal func saveID(_ id: String) {
         
         //Save user ID
-        userDefaults.setObject(id, forKey: "userID")
+        userDefaults.set(id, forKey: "userID")
     }
     
     
@@ -245,26 +247,26 @@ class LoginController: UIViewController {
         //Show alert if user is banned
         let query = PFQuery(className: "users")
         query.whereKey("userID", equalTo: userID!)
-        query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
+        query.getFirstObjectInBackground { (userObject, error) -> Void in
             
             if error != nil {
                 
-                print("Error getting user banned status: " + error!.description)
+                print("Error getting user banned status: \(error)")
             }
             else {
                 
-                let bannedStatus = userObject!.objectForKey("banned") as! Bool
+                let bannedStatus = userObject!.object(forKey: "banned") as! Bool
                 
                 if !bannedStatus {
                     
                     //Un-ban user
                     print("User not banned anymore.")
-                    self.userDefaults.removeObjectForKey("banned")
+                    self.userDefaults.removeObject(forKey: "banned")
                     self.segueToNextView("LoginToMain")
                 }
                 else {
                     print("User is still banned!")
-                    dispatch_async(dispatch_get_main_queue(), { 
+                    DispatchQueue.main.async(execute: { 
                         
                         //Show user that they're still banned
                         self.showAlert(self.bannedText)
@@ -275,16 +277,16 @@ class LoginController: UIViewController {
     }
     
     
-    internal func segueToNextView(identifier: String) {
+    internal func segueToNextView(_ identifier: String) {
         
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.async(execute: { () -> Void in
             
             if self.tabBarController == nil {
                 
                     
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                    self.performSegueWithIdentifier(identifier, sender: self)
+                    self.dismiss(animated: true, completion: nil)
+                    self.performSegue(withIdentifier: identifier, sender: self)
             }
             else {
                 
@@ -295,9 +297,9 @@ class LoginController: UIViewController {
     }
     
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    override var preferredStatusBarStyle : UIStatusBarStyle {
         
-        return UIStatusBarStyle.LightContent
+        return UIStatusBarStyle.lightContent
     }
     
     

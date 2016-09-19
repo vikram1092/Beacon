@@ -11,13 +11,13 @@ import UIKit
 class SettingsController: UIViewController {
     
     var userID = ""
-    var userDefaults = NSUserDefaults.standardUserDefaults()
+    var userDefaults = UserDefaults.standard
     
     
     override func viewDidLoad() {
         
         //Retreive user details
-        userID = userDefaults.objectForKey("userID") as! String
+        userID = userDefaults.object(forKey: "userID") as! String
         
         //Run view load as normal
         super.viewDidLoad()
@@ -25,16 +25,16 @@ class SettingsController: UIViewController {
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(true)
     }
     
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    override var preferredStatusBarStyle : UIStatusBarStyle {
         
         print("Status bar style method - Settings Controller")
-        return UIStatusBarStyle.LightContent
+        return UIStatusBarStyle.lightContent
     }
     
     

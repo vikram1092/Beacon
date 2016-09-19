@@ -24,13 +24,13 @@ class TableMessageView: UILabel {
     }
     
     
-    override func drawTextInRect(rect: CGRect) {
+    override func drawText(in rect: CGRect) {
         
         
         let width = CGFloat(180)
         let height = rect.height
         let rect = CGRect(x: self.center.x - width/2, y: 0, width: width, height: height)
         
-        super.drawTextInRect(rect)
+        super.drawText(in: rect)
     }
 }

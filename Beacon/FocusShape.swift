@@ -21,7 +21,7 @@ class FocusShape: UIView {
     init() {
         
         super.init(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        self.userInteractionEnabled = false
+        self.isUserInteractionEnabled = false
     }
     
     
@@ -29,7 +29,7 @@ class FocusShape: UIView {
         
         super.init(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         
-        self.userInteractionEnabled = false
+        self.isUserInteractionEnabled = false
         self.center = drawPoint
         drawFocus(drawPoint)
     }
@@ -41,7 +41,7 @@ class FocusShape: UIView {
     }
     
     
-    internal func drawFocus(focusPoint: CGPoint) {
+    internal func drawFocus(_ focusPoint: CGPoint) {
         
         
         //Remove focus shapes if they're in view and center view on given point
@@ -61,34 +61,34 @@ class FocusShape: UIView {
         
         
         //Define focus shapes
-        focusStrokePrimary.path = UIBezierPath(ovalInRect: CGRect(origin: originalShapeOrigin, size: originalSize)).CGPath
-        focusStrokePrimary.strokeColor = UIColor.whiteColor().CGColor
-        focusStrokePrimary.fillColor = UIColor.clearColor().CGColor
+        focusStrokePrimary.path = UIBezierPath(ovalIn: CGRect(origin: originalShapeOrigin, size: originalSize)).cgPath
+        focusStrokePrimary.strokeColor = UIColor.white.cgColor
+        focusStrokePrimary.fillColor = UIColor.clear.cgColor
         focusStrokePrimary.lineWidth = 3
         focusStrokePrimary.strokeStart = 0.0
         focusStrokePrimary.strokeEnd = 0.6
         focusStrokePrimary.lineCap = kCALineCapRound
         
-        focusStrokePrimaryBorder.path = UIBezierPath(ovalInRect: CGRect(origin: originalShapeOrigin, size: originalSize)).CGPath
-        focusStrokePrimaryBorder.strokeColor = UIColor.lightGrayColor().CGColor
-        focusStrokePrimaryBorder.fillColor = UIColor.clearColor().CGColor
+        focusStrokePrimaryBorder.path = UIBezierPath(ovalIn: CGRect(origin: originalShapeOrigin, size: originalSize)).cgPath
+        focusStrokePrimaryBorder.strokeColor = UIColor.lightGray.cgColor
+        focusStrokePrimaryBorder.fillColor = UIColor.clear.cgColor
         focusStrokePrimaryBorder.lineWidth = focusStrokePrimary.lineWidth + 1.0
         focusStrokePrimaryBorder.strokeStart = focusStrokePrimary.strokeStart
         focusStrokePrimaryBorder.strokeEnd = focusStrokePrimary.strokeEnd
         focusStrokePrimaryBorder.lineCap = kCALineCapRound
         
         
-        focusStrokeSecondary.path = UIBezierPath(ovalInRect: CGRect(origin: originalShapeOrigin, size: originalSize)).CGPath
-        focusStrokeSecondary.strokeColor = UIColor.whiteColor().CGColor
-        focusStrokeSecondary.fillColor = UIColor.clearColor().CGColor
+        focusStrokeSecondary.path = UIBezierPath(ovalIn: CGRect(origin: originalShapeOrigin, size: originalSize)).cgPath
+        focusStrokeSecondary.strokeColor = UIColor.white.cgColor
+        focusStrokeSecondary.fillColor = UIColor.clear.cgColor
         focusStrokeSecondary.lineWidth = 3
         focusStrokeSecondary.strokeStart = 0.7
         focusStrokeSecondary.strokeEnd = 0.9
         focusStrokeSecondary.lineCap = kCALineCapRound
         
-        focusStrokeSecondaryBorder.path = UIBezierPath(ovalInRect: CGRect(origin: originalShapeOrigin, size: originalSize)).CGPath
-        focusStrokeSecondaryBorder.strokeColor = UIColor.lightGrayColor().CGColor
-        focusStrokeSecondaryBorder.fillColor = UIColor.clearColor().CGColor
+        focusStrokeSecondaryBorder.path = UIBezierPath(ovalIn: CGRect(origin: originalShapeOrigin, size: originalSize)).cgPath
+        focusStrokeSecondaryBorder.strokeColor = UIColor.lightGray.cgColor
+        focusStrokeSecondaryBorder.fillColor = UIColor.clear.cgColor
         focusStrokeSecondaryBorder.lineWidth = focusStrokeSecondary.lineWidth + 1.0
         focusStrokeSecondaryBorder.strokeStart = focusStrokeSecondary.strokeStart
         focusStrokeSecondaryBorder.strokeEnd = focusStrokeSecondary.strokeEnd
@@ -117,21 +117,21 @@ class FocusShape: UIView {
         
         //Ease in animation
         let easeIn = CABasicAnimation(keyPath: "path")
-        easeIn.fromValue = UIBezierPath(ovalInRect: CGRect(origin: originalShapeOrigin, size: originalSize)).CGPath
-        easeIn.toValue = UIBezierPath(ovalInRect: CGRect(origin: finalShapeOrigin, size: expandedSize)).CGPath
+        easeIn.fromValue = UIBezierPath(ovalIn: CGRect(origin: originalShapeOrigin, size: originalSize)).cgPath
+        easeIn.toValue = UIBezierPath(ovalIn: CGRect(origin: finalShapeOrigin, size: expandedSize)).cgPath
         easeIn.duration = 0.2
         easeIn.beginTime = 0.0
-        easeIn.removedOnCompletion = false
+        easeIn.isRemovedOnCompletion = false
         easeIn.fillMode = kCAFillModeForwards
         
         
         //Ease out animation
         let easeOut = CABasicAnimation(keyPath: "path")
-        easeOut.fromValue = UIBezierPath(ovalInRect: CGRect(origin: finalShapeOrigin, size: expandedSize)).CGPath
-        easeOut.toValue = UIBezierPath(ovalInRect: CGRect(origin: disappearingOrigin, size: disappearingSize)).CGPath
+        easeOut.fromValue = UIBezierPath(ovalIn: CGRect(origin: finalShapeOrigin, size: expandedSize)).cgPath
+        easeOut.toValue = UIBezierPath(ovalIn: CGRect(origin: disappearingOrigin, size: disappearingSize)).cgPath
         easeOut.duration = 0.2
         easeOut.beginTime = 0.4
-        easeOut.removedOnCompletion = false
+        easeOut.isRemovedOnCompletion = false
         easeOut.fillMode = kCAFillModeForwards
         
         
@@ -141,22 +141,22 @@ class FocusShape: UIView {
         rotate.toValue = 3 * CGFloat(M_PI)/2
         rotate.duration = 0.8
         rotate.fillMode = kCAFillModeForwards
-        rotate.removedOnCompletion = false
+        rotate.isRemovedOnCompletion = false
         
         
         //Initialize animation group
         animationGroup.animations = [easeIn, easeOut]
         animationGroup.duration = 0.8
-        animationGroup.removedOnCompletion = false
+        animationGroup.isRemovedOnCompletion = false
         animationGroup.fillMode = kCAFillModeForwards
         
         
         //Add animation group
-        self.layer.addAnimation(rotate, forKey: nil)
-        focusStrokePrimary.addAnimation(animationGroup, forKey: nil)
-        focusStrokePrimaryBorder.addAnimation(animationGroup, forKey: nil)
-        focusStrokeSecondary.addAnimation(animationGroup, forKey: nil)
-        focusStrokeSecondaryBorder.addAnimation(animationGroup, forKey: nil)
+        self.layer.add(rotate, forKey: nil)
+        focusStrokePrimary.add(animationGroup, forKey: nil)
+        focusStrokePrimaryBorder.add(animationGroup, forKey: nil)
+        focusStrokeSecondary.add(animationGroup, forKey: nil)
+        focusStrokeSecondaryBorder.add(animationGroup, forKey: nil)
         CATransaction.commit()
     
     }

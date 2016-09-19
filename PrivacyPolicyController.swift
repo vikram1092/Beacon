@@ -23,9 +23,9 @@ class PrivacyPolicyController: UIViewController {
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
-        textView.scrollEnabled = true
+        textView.isScrollEnabled = true
     }
     
     

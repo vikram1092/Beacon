@@ -24,6 +24,7 @@ class CountryBackground: UIView {
     var replyMode = false
     var countryMode = true
     let transitionTime = 0.3
+    var initialized = false
     
     var color = BeaconColors().redColor
     
@@ -36,43 +37,48 @@ class CountryBackground: UIView {
         initializeViews()
         
         //Register for interruption notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CountryBackground.resumeAnimating), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CountryBackground.resumeAnimating), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+        
         
     }
     
     
     internal func initializeViews() {
         
-        
-        let frame = super.frame
-        
-        //Create view
-        progressView.frame = self.bounds
-        progressView.backgroundColor = UIColor.clearColor()
-        progressView.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI)/2)
-        self.addSubview(progressView)
-        
-        //Create background layer
-        background.path = UIBezierPath(ovalInRect: CGRect(x: 4.0, y: 4.0, width: frame.width - 8, height: frame.height - 8)).CGPath
-        background.fillColor = self.color.CGColor
-        self.layer.addSublayer(background)
-        
-        //Rotate view for progress bar, and rotate country image back
-        country = self.viewWithTag(5) as! UIImageView
-        shapeView = self.viewWithTag(7) as! ShapeToPathView
-        self.bringSubviewToFront(shapeView)
-        self.bringSubviewToFront(country)
-        
+        //Initialize if not initialized already
+        if !initialized {
+            
+            initialized = true
+            let useFrame = CGRect(x: 0, y: 0, width: 75, height: 75)
+            
+            //Create view
+            progressView.frame = useFrame
+            progressView.backgroundColor = UIColor.clear
+            progressView.transform = CGAffineTransform(rotationAngle: -CGFloat(M_PI)/2)
+            self.addSubview(progressView)
+            
+            //Create background layer
+            background.path = UIBezierPath(ovalIn: CGRect(x: 4.0, y: 4.0, width: useFrame.width - 8, height: useFrame.height - 8)).cgPath
+            background.fillColor = self.color.cgColor
+            self.layer.addSublayer(background)
+            
+            //Rotate view for progress bar, and rotate country image back
+            country = self.viewWithTag(5) as! UIImageView
+            shapeView = self.viewWithTag(7) as! ShapeToPathView
+            self.bringSubview(toFront: shapeView)
+            self.bringSubview(toFront: country)
+        }
     }
     
     
-    internal func setProgress(progress: Float) {
+    internal func setProgress(_ progress: Float) {
         
         
         //Set progress layer
-        progressLayer.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        let useFrame = CGRect(x: 0, y: 0, width: 75, height: 75)
+        progressLayer.path = UIBezierPath(ovalIn: useFrame).cgPath
         
-        progressLayer.fillColor = UIColor.clearColor().CGColor
+        progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.strokeColor = background.fillColor
         progressLayer.lineWidth = 2.5
         progressLayer.strokeStart = 1.0 - CGFloat(progress)
@@ -83,13 +89,13 @@ class CountryBackground: UIView {
     }
     
     
-    internal func changeBackgroundColor(newColor: UIColor) {
+    internal func changeBackgroundColor(_ newColor: UIColor) {
         
         
         //Change all color variables to new color
         color = newColor
-        background.fillColor = newColor.CGColor
-        progressLayer.fillColor = newColor.CGColor
+        background.fillColor = newColor.cgColor
+        progressLayer.fillColor = newColor.cgColor
     }
     
     
@@ -102,6 +108,7 @@ class CountryBackground: UIView {
     
     internal func startAnimating() {
     
+        
         //Animate progress layer
         isAnimating = true
         progressView.layer.removeAllAnimations()
@@ -112,7 +119,7 @@ class CountryBackground: UIView {
         rotateAnimation.repeatCount = HUGE
         
         
-        progressView.layer.addAnimation(rotateAnimation, forKey: "rotate")
+        progressView.layer.add(rotateAnimation, forKey: "rotate")
     
     }
     
@@ -122,7 +129,7 @@ class CountryBackground: UIView {
         //Resume animating if view was animating
         if isAnimating {
             
-            progressView.layer.addAnimation(rotateAnimation, forKey: "rotate")
+            progressView.layer.add(rotateAnimation, forKey: "rotate")
         }
     }
     
@@ -136,7 +143,7 @@ class CountryBackground: UIView {
     }
     
     
-    internal func changeToReplyMode(animated: Bool) {
+    internal func changeToReplyMode(_ animated: Bool) {
         
         
         //Change view to show reply
@@ -154,7 +161,7 @@ class CountryBackground: UIView {
             
             if animated {
                 
-                UIView.animateWithDuration(transitionTime, animations: {
+                UIView.animate(withDuration: transitionTime, animations: {
                     
                     //Hide country view
                     self.country.alpha = 0
@@ -176,7 +183,7 @@ class CountryBackground: UIView {
         }
         else if country.alpha != 0 {
             
-            UIView.animateWithDuration(self.transitionTime, animations: {
+            UIView.animate(withDuration: self.transitionTime, animations: {
                 
                 //Hide the country view because it glitches with animations
                 self.country.alpha = 0
@@ -202,7 +209,7 @@ class CountryBackground: UIView {
             shapeView.changeToMapMode()
             
             
-            UIView.animateWithDuration(transitionTime, animations: {
+            UIView.animate(withDuration: transitionTime, animations: {
                 
                 //Hide country view
                 self.country.alpha = 0
@@ -214,7 +221,7 @@ class CountryBackground: UIView {
         }
         else if country.alpha != 0 {
             
-            UIView.animateWithDuration(self.transitionTime, animations: {
+            UIView.animate(withDuration: self.transitionTime, animations: {
                 
                 //Hide the country view because it glitches with animations
                 self.country.alpha = 0
@@ -223,7 +230,7 @@ class CountryBackground: UIView {
     }
     
     
-    internal func changeToCountryMode(animated: Bool) {
+    internal func changeToCountryMode(_ animated: Bool) {
         
         
         //Change view to show country
@@ -238,7 +245,7 @@ class CountryBackground: UIView {
             //Hide shape view, animate or depending on variable
             if animated {
                 
-                UIView.animateWithDuration(transitionTime, animations: {
+                UIView.animate(withDuration: transitionTime, animations: {
                     
                     //Show country view
                     self.country.alpha = 1

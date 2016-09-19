@@ -10,10 +10,10 @@ import Foundation
 import CoreLocation
 import MapKit
 
-public class SentAnnotation : NSObject {
+open class SentAnnotation : NSObject {
     
-    public var coordinate = CLLocationCoordinate2D(latitude: 39.208407, longitude: -76.799555)
-    public var title: String? = ""
+    open var coordinate = CLLocationCoordinate2D(latitude: 39.208407, longitude: -76.799555)
+    open var title: String? = ""
     
 }
 

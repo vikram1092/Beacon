@@ -15,7 +15,7 @@ import AVFoundation
 class MainController: UIViewController {
     
     
-    let userDefaults = NSUserDefaults.standardUserDefaults()
+    let userDefaults = UserDefaults.standard
     
     @IBOutlet var navBar: UINavigationBar!
     @IBOutlet var table: UIView!
@@ -30,7 +30,7 @@ class MainController: UIViewController {
         navBar.clipsToBounds = true
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         //Run like usual
         super.viewDidAppear(true)
@@ -43,10 +43,10 @@ class MainController: UIViewController {
     }
     
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    override var preferredStatusBarStyle : UIStatusBarStyle {
         
         print("Status bar style method - Main Controller")
-        return UIStatusBarStyle.LightContent
+        return UIStatusBarStyle.lightContent
     }
     
 }

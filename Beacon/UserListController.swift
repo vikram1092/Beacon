@@ -48,17 +48,18 @@ class UserListController: UITableViewController {
     
     var locManager = CLLocationManager()
     var beaconRefresh = BeaconRefresh(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+    var refreshInitialized = false
     let defaultColor = BeaconColors().redColor
     let sendingColor = BeaconColors().yellowColor
     let replyColor = BeaconColors().purpleColor
     let refreshBackgroundColor = BeaconColors().blueColor
-    let fileManager = NSFileManager.defaultManager()
-    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+    let fileManager = FileManager.default
+    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
     let videoPath = NSTemporaryDirectory() + "receivedVideo.mp4"
     let tableVideoPrefix = NSTemporaryDirectory() + "tableVideo_"
     let tableVideoBounds = CGRect(x: 0, y: 0, width: 85, height: 85)
-    let userDefaults = NSUserDefaults.standardUserDefaults()
-    let calendar = NSCalendar.currentCalendar()
+    let userDefaults = UserDefaults.standard
+    let calendar = Calendar.current
     
     
     
@@ -67,13 +68,13 @@ class UserListController: UITableViewController {
         //Load view as usual
         super.viewDidLoad()
         
-        initializeRefreshControl()
         
+        initializeRefreshControl()
         tableView.decelerationRate = UIScrollViewDecelerationRateFast
     }
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         print("viewWillAppear")
         //Retreive user defaults
@@ -84,7 +85,7 @@ class UserListController: UITableViewController {
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         //Run like usual
         print("viewDidAppear")
@@ -95,21 +96,21 @@ class UserListController: UITableViewController {
         
         //Check user login status
         print("Checking user login status")
-        if userDefaults.objectForKey("userID") != nil {
+        if userDefaults.object(forKey: "userID") != nil {
             
             //Check if user is banned in background
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            DispatchQueue.global(qos: .utility).async(execute: { () -> Void in
                 
                 self.userIsBanned()
             })
             
             //Get userToReceivePhotos
-            if userDefaults.integerForKey("userToReceivePhotos") > 0 {
-                userToReceivePhotos = userDefaults.integerForKey("userToReceivePhotos")
+            if userDefaults.integer(forKey: "userToReceivePhotos") > 0 {
+                userToReceivePhotos = userDefaults.integer(forKey: "userToReceivePhotos")
             }
             
             //Load user list
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
+            DispatchQueue.global(qos: .userInitiated).async(execute: { () -> Void in
                 
                 //Load user list
                 self.loadUserList()
@@ -121,7 +122,12 @@ class UserListController: UITableViewController {
     }
     
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidLayoutSubviews() {
+        
+    }
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
         
         //Reload visible rows
         print("viewDidDisappear")
@@ -129,6 +135,8 @@ class UserListController: UITableViewController {
         refreshControl!.endRefreshing()
         beaconRefresh.stopAnimating()
         removeTutorialBeaconTimeView()
+        
+        showNoMoreBeaconsAlert = false
     }
     
     
@@ -139,29 +147,29 @@ class UserListController: UITableViewController {
         //Show alert if user is banned
         let query = PFQuery(className: "users")
         query.whereKey("userID", equalTo: userID)
-        query.getFirstObjectInBackgroundWithBlock { (userObject, error) -> Void in
+        query.getFirstObjectInBackground { (userObject, error) -> Void in
             
             if error != nil {
                 
-                print("Error getting user banned status: " + error!.description)
+                print("Error getting user banned status: \(error)")
             }
             else {
                 
-                let bannedStatus = userObject!.objectForKey("banned") as! BooleanLiteralType
+                let bannedStatus = userObject!.object(forKey: "banned") as! BooleanLiteralType
                 
                 if bannedStatus {
                     
                     //Alert user about ban, mark user as banned & segue to login
                     print("User banned.")
-                    let alert = UIAlertController(title: "You've been banned", message: "Allow us to investigate this issue & check back soon.", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
+                    let alert = UIAlertController(title: "You've been banned", message: "Allow us to investigate this issue & check back soon.", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: { (UIAlertAction) -> Void in
                         
                         self.segueToLogin()
                     }))
                     
-                    self.userDefaults.setBool(true, forKey: "banned")
+                    self.userDefaults.set(true, forKey: "banned")
                     
-                    self.presentViewController(alert, animated: true, completion: nil)
+                    self.present(alert, animated: true, completion: nil)
                 }
                 else {
                     print("User is not banned!")
@@ -174,30 +182,30 @@ class UserListController: UITableViewController {
     internal func getUserDefaults() {
         
         //Retreive user details
-        if userDefaults.objectForKey("userID") != nil {
+        if userDefaults.object(forKey: "userID") != nil {
             
-            userID = userDefaults.objectForKey("userID") as! String
+            userID = userDefaults.object(forKey: "userID") as! String
         }
         
-        if userDefaults.objectForKey("userLatitude") != nil {
+        if userDefaults.object(forKey: "userLatitude") != nil {
             
-            userLatitude = userDefaults.objectForKey("userLatitude") as! Double
-            userLongitude = userDefaults.objectForKey("userLongitude") as! Double
+            userLatitude = NSNumber(value: userDefaults.object(forKey: "userLatitude") as! Double)
+            userLongitude = NSNumber(value: userDefaults.object(forKey: "userLongitude") as! Double)
         }
         
-        if userDefaults.objectForKey("userCountry") != nil {
+        if userDefaults.object(forKey: "userCountry") != nil {
             
-            userCountry = userDefaults.objectForKey("userCountry") as! String
+            userCountry = userDefaults.object(forKey: "userCountry") as! String
         }
         
-        if userDefaults.objectForKey("userState") != nil {
+        if userDefaults.object(forKey: "userState") != nil {
             
-            userState = userDefaults.objectForKey("userState") as! String
+            userState = userDefaults.object(forKey: "userState") as! String
         }
         
-        if userDefaults.objectForKey("userCity") != nil {
+        if userDefaults.object(forKey: "userCity") != nil {
             
-            userCity = userDefaults.objectForKey("userCity") as! String
+            userCity = userDefaults.object(forKey: "userCity") as! String
         }
     }
     
@@ -207,17 +215,17 @@ class UserListController: UITableViewController {
         //Clean old photos to save local space
         for object in userList {
             
-            if object.objectForKey("receivedAt") != nil {
+            if object.object(forKey: "receivedAt") != nil {
                 
-                if(!withinTime(object.objectForKey("receivedAt") as! NSDate)) {
+                if(!withinTime(object.object(forKey: "receivedAt") as! Date)) {
                     
-                    object.removeObjectForKey("photo")
+                    object.remove(forKey: "photo")
                 }
             }
         }
         
         //Save everything
-        PFObject.pinAllInBackground(userList)
+        PFObject.pinAll(inBackground: userList)
     }
     
     
@@ -231,11 +239,11 @@ class UserListController: UITableViewController {
         query.whereKey("localTag", equalTo: userID)
         
         query.addAscendingOrder("localCreationTag")
-        query.findObjectsInBackgroundWithBlock { (objects, retreivalError) -> Void in
+        query.findObjectsInBackground { (objects, retreivalError) -> Void in
             
             if retreivalError != nil {
                 
-                print("Problem retreiving list: " + retreivalError!.description)
+                print("Problem retreiving list: \(retreivalError!)")
             }
             else if objects!.count > 0 && objects!.count != self.userList.count {
                 
@@ -244,7 +252,7 @@ class UserListController: UITableViewController {
                 self.userList = objects!
                 print("Reloading table after local retreival")
                 
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     
                     //Update table
                     self.tableView.reloadData()
@@ -260,7 +268,7 @@ class UserListController: UITableViewController {
             else {
                 
                 //Nothing has changed, update user list if it's not already updating
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                DispatchQueue.global(qos: .utility).async(execute: { () -> Void in
                     
                     if !self.checkingForNewBeacons {
                         self.updateUserList()
@@ -295,7 +303,7 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func sendUnsentPhoto(photoObject: PFObject, updateUserList: Bool) {
+    internal func sendUnsentPhoto(_ photoObject: PFObject, updateUserList: Bool) {
         
         //Check if geopoint exists and political data doesnt.
         //If so, call the method for it and revert back here through it.
@@ -321,11 +329,11 @@ class UserListController: UITableViewController {
             
             
             //Update cell to let user know photo is processing
-            photoObject.removeObjectForKey("sendingStatus")
+            photoObject.remove(forKey: "sendingStatus")
             photoObject.setObject(true, forKey: "isAnimating")
             
             if cell != nil {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     
                     subTitleView!.text = "Sending..."
                     countryBackground!.startAnimating()
@@ -346,20 +354,20 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func sendPhotoToDatabase(photoObj: PFObject, updateUserList: Bool) {
+    internal func sendPhotoToDatabase(_ photoObj: PFObject, updateUserList: Bool) {
         
         
         print("sendPhotoToDatabase")
         //Create media file for object before sending since local datastore does not persist PFFiles
-        let filePath = documentsDirectory + (photoObj.objectForKey("filePath") as! String)
+        let filePath = documentsDirectory + (photoObj.object(forKey: "filePath") as! String)
         
         //If photo exists, send the object. If not, delete it
-        if fileManager.fileExistsAtPath(filePath) {
+        if fileManager.fileExists(atPath: filePath) {
             
             
             //Save photo object
-            photoObj["photo"] = PFFile(data: NSData(contentsOfFile: filePath)!)
-            photoObj.saveInBackgroundWithBlock { (saved, error) -> Void in
+            photoObj["photo"] = PFFile(data: try! Data(contentsOf: URL(fileURLWithPath: filePath)))
+            photoObj.saveInBackground { (saved, error) -> Void in
                 
                 
                 if error != nil {
@@ -369,15 +377,15 @@ class UserListController: UITableViewController {
                     
                     //Let user know
                     photoObj.setObject("Ready", forKey: "sendingStatus")
-                    photoObj.removeObjectForKey("isAnimating")
-                    self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
+                    photoObj.remove(forKey: "isAnimating")
+                    self.sendingList.remove(at: self.sendingList.index(of: photoObj)!)
                     
                     let cell = self.getCellForObject(photoObj)
                     let countryBackground = cell?.viewWithTag(6) as? CountryBackground
                     let subTitleView = cell?.viewWithTag(2) as? UILabel
                     
                     if cell != nil {
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        DispatchQueue.main.async(execute: { () -> Void in
                             
                             
                             subTitleView!.text = "Sending failed"
@@ -394,10 +402,10 @@ class UserListController: UITableViewController {
                     
                     if self.userList.contains(photoObj) {
                         
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        DispatchQueue.main.async(execute: { () -> Void in
                             
                             
-                            if photoObj.objectForKey("replyTo") == nil {
+                            if photoObj.object(forKey: "replyTo") == nil {
                                 
                                 //Update user photo variables
                                 self.updateUserPhotos()
@@ -405,11 +413,11 @@ class UserListController: UITableViewController {
                             
                             
                             //Remove from user list and table and clear local path
-                            self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
-                            self.userList.removeAtIndex(self.userList.indexOf(photoObj)!)
+                            self.sendingList.remove(at: self.sendingList.index(of: photoObj)!)
+                            self.userList.remove(at: self.userList.index(of: photoObj)!)
                             self.tableView.reloadData()
                             
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                            DispatchQueue.global(qos: .utility).async(execute: { () -> Void in
                                 
                                 self.clearLocalFile(filePath)
                             })
@@ -418,7 +426,7 @@ class UserListController: UITableViewController {
                             if updateUserList {
                                 
                                 //Update table twith new photo
-                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                                DispatchQueue.global(qos: .utility).async(execute: { () -> Void in
                                     
                                     //Update user list and table
                                     self.updateUserList()
@@ -432,14 +440,14 @@ class UserListController: UITableViewController {
                     
                     //If sending fails, let user know
                     photoObj.setObject("Ready", forKey: "sendingStatus")
-                    photoObj.removeObjectForKey("isAnimating")
-                    self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
+                    photoObj.remove(forKey: "isAnimating")
+                    self.sendingList.remove(at: self.sendingList.index(of: photoObj)!)
                     
                     let cell = self.getCellForObject(photoObj)
                     let countryBackground = cell?.viewWithTag(6) as? CountryBackground
                     let subTitleView = cell?.viewWithTag(2) as? UILabel
                     
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         if cell != nil {
                             if subTitleView!.text == "Sending..." {
@@ -455,16 +463,16 @@ class UserListController: UITableViewController {
             
             
             //Remove from local datastore and temporary sending list
-            self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObj)!)
+            self.sendingList.remove(at: self.sendingList.index(of: photoObj)!)
             photoObj.unpinInBackground()
             
             //If table contains photo, delete it from everywhere
             if userList.contains(photoObj) {
                 
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     
                     //Remove from user list and table
-                    self.userList.removeAtIndex(self.userList.indexOf(photoObj)!)
+                    self.userList.remove(at: self.userList.index(of: photoObj)!)
                     self.tableView.reloadData()
                 })
             }
@@ -474,13 +482,13 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func getCellForObject(photoObject: PFObject) -> UITableViewCell? {
+    internal func getCellForObject(_ photoObject: PFObject) -> UITableViewCell? {
         
         
-        let indexPath = NSIndexPath(forRow: userList.count - 1 - userList.indexOf(photoObject)!
-            , inSection: 0)
+        let indexPath = IndexPath(row: userList.count - 1 - userList.index(of: photoObject)!
+            , section: 0)
         
-        return tableView.cellForRowAtIndexPath(indexPath)
+        return tableView.cellForRow(at: indexPath)
     }
     
     
@@ -495,7 +503,7 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func checkForNewBeacons(sameCountry: Bool, sameState: Bool, sameCity: Bool, likePrevious: Bool) {
+    internal func checkForNewBeacons(_ sameCountry: Bool, sameState: Bool, sameCity: Bool, likePrevious: Bool) {
         
         
         //Initialize for subtracting from userToReceivePhotos list
@@ -516,7 +524,7 @@ class UserListController: UITableViewController {
             query.whereKey("sentBy", notEqualTo: userID)
             query.whereKeyDoesNotExist("receivedBy")
             query.whereKeyDoesNotExist("replyTo")
-            query.orderByDescending("createdAt")
+            query.order(byDescending: "createdAt")
             query.limit = userToReceivePhotos
             
             let previous = userList.last
@@ -603,13 +611,13 @@ class UserListController: UITableViewController {
             
             
             //Query with above conditions
-            query.findObjectsInBackgroundWithBlock({ (beacons, error) -> Void in
+            query.findObjectsInBackground(block: { (beacons, error) -> Void in
                 
                 
                 if error != nil {
                     
                     //Display error and trigger flag
-                    print("Photo query error: " + error!.description)
+                    print("Photo query error: \(error)")
                     self.checkingForNewBeacons = false
                 }
                 else if beacons!.count < 1 {
@@ -633,11 +641,11 @@ class UserListController: UITableViewController {
                                 
                                 self.showNoMoreBeaconsAlert = false
                                 
-                                dispatch_async(dispatch_get_main_queue(), {
+                                DispatchQueue.main.async(execute: {
                                     
-                                    let alert = UIAlertController(title: "Beacons To Come!", message: "Users will be sending beacons soon, check back to get them!", preferredStyle: UIAlertControllerStyle.Alert)
-                                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:nil))
-                                    self.presentViewController(alert, animated: true, completion: nil)
+                                    let alert = UIAlertController(title: "Beacons To Come!", message: "Users will be sending beacons soon, check back to get them!", preferredStyle: UIAlertControllerStyle.alert)
+                                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler:nil))
+                                    self.present(alert, animated: true, completion: nil)
                                 })
                             }
                         }
@@ -690,13 +698,13 @@ class UserListController: UITableViewController {
                         photoObject["unread"] = true
                         
                         //Attach receipt details to object
-                        photoObject["receivedAt"] = NSDate()
+                        photoObject["receivedAt"] = Date()
                         photoObject["receivedBy"] = self.userID
                         photoObject["receivedCountry"] = self.userCountry
                         
                         //Add local parameters
                         photoObject["localTag"] = self.userID
-                        photoObject["localCreationTag"] = NSDate()
+                        photoObject["localCreationTag"] = Date()
                         
                         //Add geographic details
                         if self.userState != "" {
@@ -709,7 +717,7 @@ class UserListController: UITableViewController {
                             photoObject["receivedCity"] = self.userCity
                         }
                         
-                        if self.userDefaults.objectForKey("userLatitude") != nil   {
+                        if self.userDefaults.object(forKey: "userLatitude") != nil   {
                             
                             photoObject["receivedLatitude"] = self.userLatitude
                             photoObject["receivedLongitude"] = self.userLongitude
@@ -736,7 +744,7 @@ class UserListController: UITableViewController {
                             
                             //Save object to database
                             print("Saving object!")
-                            object.saveInBackgroundWithBlock({ (saved, error) -> Void in
+                            object.saveInBackground(block: { (saved, error) -> Void in
                                 
                                 if error != nil {
                                     print("Error saving object to DB: \(error)")
@@ -752,7 +760,7 @@ class UserListController: UITableViewController {
                     }
                     
                     print("Reloading table after new objects")
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         //Reload table
                         self.tableView.reloadData()
@@ -767,7 +775,7 @@ class UserListController: UITableViewController {
                         //Reset user photos to zero once photos are retreived
                         print("Resetting user photos")
                         self.userToReceivePhotos -= userReceivedPhotos
-                        self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
+                        self.userDefaults.set(self.userToReceivePhotos, forKey: "userToReceivePhotos")
                         
                     })
                     
@@ -779,7 +787,7 @@ class UserListController: UITableViewController {
                 //Stop refreshing
                 if !self.checkingForNewBeacons && !self.checkingForReplyBeacons {
                     
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         self.refreshControl!.endRefreshing()
                     })
@@ -789,7 +797,7 @@ class UserListController: UITableViewController {
         else {
             
             //Stop refreshing
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 
                 print("Ending")
                 self.checkingForNewBeacons = false
@@ -815,10 +823,10 @@ class UserListController: UITableViewController {
         query.whereKeyExists("photo")
         query.whereKey("replyTo", equalTo: userID)
         query.whereKeyDoesNotExist("receivedBy")
-        query.orderByDescending("createdAt")
+        query.order(byDescending: "createdAt")
         
         
-        query.findObjectsInBackgroundWithBlock { (beacons, error) in
+        query.findObjectsInBackground { (beacons, error) in
             
             if error != nil {
                 
@@ -837,13 +845,13 @@ class UserListController: UITableViewController {
                     beacon["unread"] = true
                     
                     //Attach receipt details to object
-                    beacon["receivedAt"] = NSDate()
+                    beacon["receivedAt"] = Date()
                     beacon["receivedBy"] = self.userID
                     beacon["receivedCountry"] = self.userCountry
                     
                     //Add local parameters
                     beacon["localTag"] = self.userID
-                    beacon["localCreationTag"] = NSDate()
+                    beacon["localCreationTag"] = Date()
                     
                     //Add geographic details
                     if self.userState != "" {
@@ -856,7 +864,7 @@ class UserListController: UITableViewController {
                         beacon["receivedCity"] = self.userCity
                     }
                     
-                    if self.userDefaults.objectForKey("userLatitude") != nil   {
+                    if self.userDefaults.object(forKey: "userLatitude") != nil   {
                         
                         beacon["receivedLatitude"] = self.userLatitude
                         beacon["receivedLongitude"] = self.userLongitude
@@ -880,7 +888,7 @@ class UserListController: UITableViewController {
                         
                         //Save object to database
                         print("Saving object!")
-                        object.saveInBackgroundWithBlock({ (saved, error) -> Void in
+                        object.saveInBackground(block: { (saved, error) -> Void in
                             
                             if error != nil {
                                 print("Error saving object to DB: \(error)")
@@ -896,7 +904,7 @@ class UserListController: UITableViewController {
                 }
                 
                 print("Reloading table after new objects")
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     
                     //Reload table
                     self.tableView.reloadData()
@@ -916,7 +924,7 @@ class UserListController: UITableViewController {
             
             if !self.checkingForNewBeacons {
                 
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     
                     self.refreshControl!.endRefreshing()
                 })
@@ -927,10 +935,10 @@ class UserListController: UITableViewController {
 
     
 
-    @IBAction func refreshControl(sender: AnyObject) {
+    @IBAction func refreshControl(_ sender: AnyObject) {
         
         //Enable no more beacons alert, refresh data and reload table within that function
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+        DispatchQueue.global(qos: .utility).async { () -> Void in
             
             self.updateUserList()
         }
@@ -940,35 +948,40 @@ class UserListController: UITableViewController {
     internal func initializeRefreshControl() {
         
         
-        //Remove existing views
-        for subview in refreshControl!.subviews {
-
-            subview.removeFromSuperview()
+        if !refreshInitialized {
+            
+            //Trigger flag
+            refreshInitialized = true
+            
+            //Remove existing views
+            for subview in refreshControl!.subviews {
+                
+                subview.removeFromSuperview()
+            }
+            
+            //Add custom views
+            beaconRefresh = BeaconRefresh(frame: refreshControl!.bounds)
+            refreshControl!.addSubview(beaconRefresh)
+            
+            //Set background color
+            refreshControl!.backgroundColor = refreshBackgroundColor
+            
+            //Add target
+            self.refreshControl!.addTarget(self, action: #selector(refreshNeeded), for: UIControlEvents.valueChanged)
         }
-        
-        //Add custom views
-        beaconRefresh = BeaconRefresh(frame: (refreshControl?.bounds)!)
-        refreshControl!.addSubview(beaconRefresh)
-
-        //Set background color
-        refreshControl!.backgroundColor = refreshBackgroundColor
-        
-        //Add target
-        self.refreshControl!.addTarget(self, action: #selector(refreshNeeded), forControlEvents: UIControlEvents.ValueChanged)
-
     }
     
     
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         //Get ratio of distance pulled and update the refresh control accordingly
         let pullDistance = max(0.0, -scrollView.contentOffset.y)
-        if scrollView.contentOffset.y == 0.0 && !refreshControl!.refreshing && beaconRefresh.isAnimating {
+        if scrollView.contentOffset.y == 0.0 && !refreshControl!.isRefreshing && beaconRefresh.isAnimating {
             
             //Stop animating if done refreshing and the beacon is still animating
             beaconRefresh.stopAnimating()
         }
-        if pullDistance <= 100.0 && !refreshControl!.refreshing && !beaconRefresh.isAnimating {
+        else if pullDistance <= 100.0 && !refreshControl!.isRefreshing && !beaconRefresh.isAnimating {
             
             //Update views
             let pullMax = min(max(pullDistance, 0.0), refreshControl!.bounds.height)
@@ -977,10 +990,10 @@ class UserListController: UITableViewController {
     }
     
     
-    override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
         //Refresh table
-        if refreshControl!.refreshing {
+        if refreshControl!.isRefreshing {
             
             updateUserList()
         }
@@ -998,13 +1011,13 @@ class UserListController: UITableViewController {
     
     
     
-    internal override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    internal override func numberOfSections(in tableView: UITableView) -> Int {
         
         
         //Handle the table if empty
         if userList.count > 0 {
             
-            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.singleLine
             self.tableView.backgroundView = nil
             return 1
         }
@@ -1017,18 +1030,18 @@ class UserListController: UITableViewController {
             let messageLabel = TableMessageView(frame: CGRect(x: 0, y: 0, width: width, height: height))
             
             messageLabel.text = "No beacons received yet.\n\nGo to the camera and take a beacon!";
-            messageLabel.textColor = UIColor.darkGrayColor()
+            messageLabel.textColor = UIColor.darkGray
             messageLabel.numberOfLines = 0
-            messageLabel.textAlignment = NSTextAlignment.Center
-            messageLabel.font = UIFont.systemFontOfSize(14)
+            messageLabel.textAlignment = NSTextAlignment.center
+            messageLabel.font = UIFont.systemFont(ofSize: 14)
             messageLabel.sizeToFit()
             messageLabel.alpha = 0
             
             
             self.tableView.backgroundView = messageLabel
-            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.none
             
-            UIView.animateWithDuration(0.3, delay: 0.5, options: UIViewAnimationOptions.CurveLinear, animations: { 
+            UIView.animate(withDuration: 0.3, delay: 0.5, options: UIViewAnimationOptions.curveLinear, animations: { 
                 
                 messageLabel.alpha = 1
                 
@@ -1039,13 +1052,13 @@ class UserListController: UITableViewController {
     }
     
     
-    internal override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    internal override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
         print("cellForRowAtIndexPath")
         //Initialize variables:
         //Array is printed backwards so userListLength is initialized
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
         let titleView = cell.viewWithTag(1) as! UILabel
         let subTitleView = cell.viewWithTag(2) as! UILabel
         let imageView = cell.viewWithTag(5) as! UIImageView
@@ -1053,8 +1066,8 @@ class UserListController: UITableViewController {
         let slideMapIndicator = cell.viewWithTag(3) as! UIImageView
         let slideReplyIndicator = cell.viewWithTag(4) as! UIImageView
         
-        let userListIndex = userList.count - 1 - indexPath.row
-        let date = userList[userListIndex]["receivedAt"] as? NSDate
+        let userListIndex = userList.count - 1 - (indexPath as NSIndexPath).row
+        let date = userList[userListIndex]["receivedAt"] as? Date
         let countryCode = userList[userListIndex]["countryCode"] as? String
         
         
@@ -1070,13 +1083,13 @@ class UserListController: UITableViewController {
         
         
         //Configure slide map indicator
-        slideMapIndicator.image = UIImage(named: "Globe")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        slideMapIndicator.tintColor = UIColor.lightGrayColor()
+        slideMapIndicator.image = UIImage(named: "Globe")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        slideMapIndicator.tintColor = UIColor.lightGray
         
         
         //Configure slide reply indicator
-        slideReplyIndicator.image = UIImage(named: "Reply")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        slideReplyIndicator.tintColor = UIColor.lightGrayColor()
+        slideReplyIndicator.image = UIImage(named: "Reply")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        slideReplyIndicator.tintColor = UIColor.lightGray
         
         
         //Add the country image to its background
@@ -1113,7 +1126,7 @@ class UserListController: UITableViewController {
             }
             
             //Kill any animations
-            userList[userListIndex].removeObjectForKey("isAnimating")
+            userList[userListIndex].remove(forKey: "isAnimating")
             imageBackground.stopAnimating()
             
             
@@ -1136,20 +1149,20 @@ class UserListController: UITableViewController {
         
         //Configure text & map image
         //Account for states if country is USA
-        imageView.image = countryTable.getCountryImage(countryCode!).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        imageView.image = countryTable.getCountryImage(countryCode!).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         
         if state != nil && countryCode == "us" {
             
             //State variable is a state code
             if state!.characters.count == 2 {
                 
-                titleView.text = (countryTable.getStateName(state!.lowercaseString) + ", " + country)
+                titleView.text = (countryTable.getStateName(state!.lowercased()) + ", " + country)
                 
                 
                 //Set image for state if it exists. If not, use country image
-                if countryTable.getStateImage(state!.lowercaseString) != UIImage(named: "Countries/Unknown/128.png"){
+                if countryTable.getStateImage(state!.lowercased()) != UIImage(named: "Countries/Unknown/128.png"){
                     
-                    imageView.image = countryTable.getStateImage(state!.lowercaseString).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                    imageView.image = countryTable.getStateImage(state!.lowercased()).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
                 }
             }
             //State variable is not a state code
@@ -1159,7 +1172,7 @@ class UserListController: UITableViewController {
                 if stateCode != "Unknown" {
                     
                     titleView.text = state! + ", " + country
-                    imageView.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                    imageView.image = countryTable.getStateImage(stateCode).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
                 }
                 else if city != nil {
                     
@@ -1186,24 +1199,24 @@ class UserListController: UITableViewController {
         //Configure unread or read. Bold for unread and medium for read.
         if userList[userListIndex]["unread"] != nil && withinTime(date!) {
             
-            titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightBold)
+            titleView.font = UIFont.systemFont(ofSize: titleView.font.pointSize, weight: UIFontWeightBold)
         }
         else {
             
-            titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+            titleView.font = UIFont.systemFont(ofSize: titleView.font.pointSize, weight: UIFontWeightMedium)
         }
         
         return cell
     }
     
     
-    internal override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    internal override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return userList.count
     }
     
     
-    internal override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    internal override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         
         
         //Remove report beacon tutorial view
@@ -1212,13 +1225,13 @@ class UserListController: UITableViewController {
         
         //Get user list information
         let userListLength = self.userList.count - 1
-        let toBeSent = userList[userListLength - indexPath.row]["sentBy"] as! String == userID && userList[userListLength - indexPath.row]["receivedBy"] == nil
+        let toBeSent = userList[userListLength - (indexPath as NSIndexPath).row]["sentBy"] as! String == userID && userList[userListLength - (indexPath as NSIndexPath).row]["receivedBy"] == nil
         
         
         //If photo is not to be sent, check if expired
         if !toBeSent {
             
-            let date = userList[userListLength - indexPath.row]["receivedAt"] as! NSDate
+            let date = userList[userListLength - (indexPath as NSIndexPath).row]["receivedAt"] as! Date
             
             if withinTime(date) {
                 
@@ -1229,27 +1242,27 @@ class UserListController: UITableViewController {
     }
     
     
-    internal override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    internal override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
         
         //Declare spam button
-        let report = UITableViewRowAction(style: .Normal, title: "Report") { (action, index) -> Void in
+        let report = UITableViewRowAction(style: .normal, title: "Report") { (action, index) -> Void in
             
             
             //Get beacon object from array
             let userListLength = self.userList.count - 1
-            let object = self.userList[userListLength - indexPath.row]
+            let object = self.userList[userListLength - (indexPath as NSIndexPath).row]
             
             
             //Show alert controller to ensure report action
-            let alert = UIAlertController(title: "", message: "Are you sure you want to report this beacon? Wrongful reporting will count against you.", preferredStyle: UIAlertControllerStyle.ActionSheet)
+            let alert = UIAlertController(title: "", message: "Are you sure you want to report this beacon? Wrongful reporting will count against you.", preferredStyle: UIAlertControllerStyle.actionSheet)
             
             //Add confirmation button
-            alert.addAction(UIAlertAction(title: "Report", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) -> Void in
+            alert.addAction(UIAlertAction(title: "Report", style: UIAlertActionStyle.default, handler: { (UIAlertAction) -> Void in
                 
                 
                 //Update object and - if applicable - user in background
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+                DispatchQueue.global(qos: .utility).async(execute: { () -> Void in
                     
                     //Update object
                     print("Reported")
@@ -1257,15 +1270,15 @@ class UserListController: UITableViewController {
                     object.saveInBackground()
                     
                     //Run method to check if user ban-worthy
-                    self.banUser(object.objectForKey("sentBy") as! String)
+                    self.banUser(object.object(forKey: "sentBy") as! String)
                 })
             }))
             
             //Add cancel button
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
             
             //Present alert controller
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
             
             //End editing view
             tableView.setEditing(false, animated: true)
@@ -1279,7 +1292,7 @@ class UserListController: UITableViewController {
     }
     
     
-    internal override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    internal override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         
         tableView.reloadData()
@@ -1287,15 +1300,15 @@ class UserListController: UITableViewController {
     }
     
     
-    internal override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    internal override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         
         //Deselect row
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        tableView.deselectRow(at: indexPath, animated: false)
         
         //Flip index to access correct array element & check time constraint of photos
-        let cell = tableView.cellForRowAtIndexPath(indexPath)!
-        let userListIndex = userList.count - 1 - indexPath.row
+        let cell = tableView.cellForRow(at: indexPath)!
+        let userListIndex = userList.count - 1 - (indexPath as NSIndexPath).row
         
         
         //If photo to be sent by user, send.
@@ -1306,7 +1319,7 @@ class UserListController: UITableViewController {
             print("Send photo")
             sendUnsentPhoto(userList[userListIndex], updateUserList: true)
         }
-        else if withinTime(userList[userListIndex].objectForKey("receivedAt") as! NSDate) {
+        else if withinTime(userList[userListIndex].object(forKey: "receivedAt") as! Date) {
             
             
             print("Show photo")
@@ -1332,7 +1345,7 @@ class UserListController: UITableViewController {
             
             
             //Initialize superior VC variables
-            let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
+            let grandparent = self.parent?.parent?.parent as! SnapController
             grandparent.snap.image = nil
             
             //Get variable to know if media is a video
@@ -1349,7 +1362,7 @@ class UserListController: UITableViewController {
             //Handle for videos and pictures uniqeuly
             if isVideo {
                 
-                objectToDisplay.getDataInBackgroundWithBlock({ (videoData, videoError) -> Void in
+                objectToDisplay.getDataInBackground(block: { (videoData, videoError) -> Void in
                     
                     if videoError != nil {
                         print("Error converting video: \(videoError)")
@@ -1357,26 +1370,26 @@ class UserListController: UITableViewController {
                     else {
                         
                         //Write video to a file
-                        videoData?.writeToFile(self.videoPath, atomically: true)
+                        try? videoData?.write(to: URL(fileURLWithPath: self.videoPath), options: [.atomic])
                         
                         //Initialize movie layer
                         print("Initilizing video player")
-                        let player = AVPlayer(URL: NSURL(fileURLWithPath: self.videoPath))
+                        let player = AVPlayer(url: URL(fileURLWithPath: self.videoPath))
                         grandparent.moviePlayer = AVPlayerLayer(player: player)
                         
                         //Set video gravity
                         grandparent.moviePlayer.videoGravity = AVLayerVideoGravityResizeAspectFill
                         
                         //Set close function
-                        NSNotificationCenter.defaultCenter().addObserver(self,
+                        NotificationCenter.default.addObserver(self,
                             selector: #selector(self.closeVideo),
-                            name: AVPlayerItemDidPlayToEndTimeNotification,
+                            name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
                             object: grandparent.moviePlayer.player!.currentItem)
                         
                         
                         
                         //Update UI in main queue
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        DispatchQueue.main.async(execute: { () -> Void in
                             
                             //Show video to user if user is still on the user list tab
                             if self.tabBarController?.selectedIndex == 1 {
@@ -1388,14 +1401,14 @@ class UserListController: UITableViewController {
                                     
                                     grandparent.toggleStatusBar()
                                 }
-                                grandparent.snap.userInteractionEnabled = true
-                                grandparent.snap.backgroundColor = UIColor.blackColor()
+                                grandparent.snap.isUserInteractionEnabled = true
+                                grandparent.snap.backgroundColor = UIColor.black
                                 grandparent.moviePlayer.frame = grandparent.snap.bounds
                                 grandparent.snap.layer.addSublayer(grandparent.moviePlayer)
                                 grandparent.snap.alpha = 1
                                 
                                 //Bring timer to front
-                                grandparent.snap.bringSubviewToFront(grandparent.snapTimer)
+                                grandparent.snap.bringSubview(toFront: grandparent.snapTimer)
                                 
                                 //Play video
                                 grandparent.moviePlayer.player!.play()
@@ -1409,10 +1422,10 @@ class UserListController: UITableViewController {
                                 if self.userList[userListIndex]["unread"] != nil {
                                     
                                     let titleView = cell.viewWithTag(1) as! UILabel
-                                    self.userList[userListIndex].removeObjectForKey("unread")
+                                    self.userList[userListIndex].remove(forKey: "unread")
                                     self.userList[userListIndex].pinInBackground()
                                     
-                                    titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+                                    titleView.font = UIFont.systemFont(ofSize: titleView.font.pointSize, weight: UIFontWeightMedium)
                                 }
                                 
                                 //Show swipe beacon tutorial view
@@ -1427,22 +1440,22 @@ class UserListController: UITableViewController {
                 
                 grandparent.snap.file = objectToDisplay
                 
-                grandparent.snap.loadInBackground { (photoData, photoConvError) -> Void in
+                grandparent.snap.load { (photoData, photoConvError) -> Void in
                     
                     //Stop animation
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         countryBackground.stopAnimating()
                     })
                     
                     if photoConvError != nil {
                         
-                        print("Error converting photo from file: " + photoConvError!.description)
+                        print("Error converting photo from file: \(photoConvError!)")
                     }
                     else {
                         
                         //Stop animation
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        DispatchQueue.main.async(execute: { () -> Void in
                             
                             //Show photo to user if user is still on user list tab
                             if self.tabBarController?.selectedIndex == 1 {
@@ -1453,7 +1466,7 @@ class UserListController: UITableViewController {
                                     grandparent.toggleStatusBar()
                                 }
                                 
-                                grandparent.snap.userInteractionEnabled = true
+                                grandparent.snap.isUserInteractionEnabled = true
                                 
                                 //Hide timer
                                 grandparent.snapTimer.alpha = 0
@@ -1464,10 +1477,10 @@ class UserListController: UITableViewController {
                                 if self.userList[userListIndex]["unread"] != nil {
                                     
                                     let titleView = cell.viewWithTag(1) as! UILabel
-                                    self.userList[userListIndex].removeObjectForKey("unread")
+                                    self.userList[userListIndex].remove(forKey: "unread")
                                     self.userList[userListIndex].pinInBackground()
                                     
-                                    titleView.font = UIFont.systemFontOfSize(titleView.font.pointSize, weight: UIFontWeightMedium)
+                                    titleView.font = UIFont.systemFont(ofSize: titleView.font.pointSize, weight: UIFontWeightMedium)
                                 }
                                 
                                 //Show swipe beacon tutorial view
@@ -1486,7 +1499,7 @@ class UserListController: UITableViewController {
             print("Snap expired")
             
             //Get cell views
-            let cell = tableView.cellForRowAtIndexPath(indexPath)!
+            let cell = tableView.cellForRow(at: indexPath)!
             let titleView = cell.viewWithTag(1) as! UILabel
             let subTitleView = cell.viewWithTag(2) as! UILabel
             let imageView = cell.viewWithTag(5) as! UIImageView
@@ -1497,25 +1510,25 @@ class UserListController: UITableViewController {
             
             
             //Animate country image view spin
-            UIView.animateWithDuration(duration/2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+            UIView.animate(withDuration: duration/2, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
                 
                 
-                imageView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
+                imageView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI))
                 
                 }, completion: { (Bool) in
                     
                     //Change image bounds to original upon completion
-                    UIView.animateWithDuration(duration/2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+                    UIView.animate(withDuration: duration/2, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                         
                         
-                        imageView.transform = CGAffineTransformMakeRotation(2 * CGFloat(M_PI))
+                        imageView.transform = CGAffineTransform(rotationAngle: 2 * CGFloat(M_PI))
                         
                         }, completion: nil)
             })
             
             
             //Animate text views' glide
-            UIView.animateWithDuration(duration/4, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
+            UIView.animate(withDuration: duration/4, delay: 0.0, options: UIViewAnimationOptions.curveLinear, animations: {
                 
                 titleView.center = CGPoint(x: titleView.center.x + textIntensity, y: titleView.center.y)
                 subTitleView.center = CGPoint(x: subTitleView.center.x - textIntensity/3, y: subTitleView.center.y)
@@ -1523,7 +1536,7 @@ class UserListController: UITableViewController {
                 }, completion: { (Bool) in
                     
                     //Move text views back
-                    UIView.animateWithDuration(duration + duration/3, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.TransitionNone, animations: {
+                    UIView.animate(withDuration: duration + duration/3, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.0, options: UIViewAnimationOptions(), animations: {
                         
                         
                         titleView.center = CGPoint(x: titleView.center.x - textIntensity, y: titleView.center.y)
@@ -1545,14 +1558,14 @@ class UserListController: UITableViewController {
             for indexPath in tableView.indexPathsForVisibleRows! {
                 
                 //Animate cell if it is supposed to be animating
-                let userListIndex = userList.count - 1 - indexPath.row
+                let userListIndex = userList.count - 1 - (indexPath as NSIndexPath).row
                 
-                if let animating = userList[userListIndex].objectForKey("isAnimating") as? Bool {
+                if let animating = userList[userListIndex].object(forKey: "isAnimating") as? Bool {
                     
                     if animating {
                         
                         print("resuming cell")
-                        let cell = tableView.cellForRowAtIndexPath(indexPath)
+                        let cell = tableView.cellForRow(at: indexPath)
                         let countryBackground = cell!.viewWithTag(6) as! CountryBackground
                         countryBackground.startAnimating()
                     }
@@ -1562,7 +1575,7 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func banUser(sentBy: String) {
+    internal func banUser(_ sentBy: String) {
         
         
         
@@ -1570,7 +1583,7 @@ class UserListController: UITableViewController {
         let countQuery = PFQuery(className: "photo")
         countQuery.whereKey("sentBy", equalTo: sentBy)
         countQuery.whereKey("spam", equalTo: true)
-        countQuery.findObjectsInBackgroundWithBlock { (rows, rowsError) -> Void in
+        countQuery.findObjectsInBackground { (rows, rowsError) -> Void in
             
             //Display error getting row count
             if rowsError != nil {
@@ -1582,7 +1595,7 @@ class UserListController: UITableViewController {
                 //Query to ban user
                 let query = PFQuery(className: "users")
                 query.whereKey("userID", equalTo: sentBy)
-                query.getFirstObjectInBackgroundWithBlock({ (userObject, userError) -> Void in
+                query.getFirstObjectInBackground(block: { (userObject, userError) -> Void in
                     
                     if userError != nil {
                         
@@ -1606,21 +1619,21 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func loopTableVideo(notification: NSNotification) {
+    internal func loopTableVideo(_ notification: Notification) {
         
         //Loop video
         print("Looping table video")
         let player = notification.object as! AVPlayer
-        player.currentItem?.seekToTime(kCMTimeZero)
+        player.currentItem?.seek(to: kCMTimeZero)
         player.play()
     }
     
     
     internal func closeVideo() {
         
-        let grandparent = self.parentViewController?.parentViewController?.parentViewController as! SnapController
+        let grandparent = self.parent?.parent?.parent as! SnapController
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.async(execute: { () -> Void in
             
             //Send close function
             grandparent.closeBeacon()
@@ -1642,18 +1655,18 @@ class UserListController: UITableViewController {
     internal func updateUserPhotos() {
     
         self.userToReceivePhotos += 1
-        self.userDefaults.setInteger(self.userToReceivePhotos, forKey: "userToReceivePhotos")
+        self.userDefaults.set(self.userToReceivePhotos, forKey: "userToReceivePhotos")
         print("Saved userToReceivePhotos")
     }
     
     
-    internal func clearLocalFile(filePath: String) {
+    internal func clearLocalFile(_ filePath: String) {
         
         do {
             
-            if fileManager.fileExistsAtPath(filePath) {
+            if fileManager.fileExists(atPath: filePath) {
                 
-                try fileManager.removeItemAtPath(filePath)
+                try fileManager.removeItem(atPath: filePath)
             }
         }
         catch let error as NSError {
@@ -1663,12 +1676,12 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func detectPan(recognizer: UIPanGestureRecognizer) {
+    internal func detectPan(_ recognizer: UIPanGestureRecognizer) {
         
         
         //Check if view is the Country Background class
         let countryView = recognizer.view as! CountryBackground
-        let translation = recognizer.translationInView(recognizer.view!.superview)
+        let translation = recognizer.translation(in: recognizer.view!.superview)
         let cell = recognizer.view!.superview!.superview as! UITableViewCell
         let slideMapIndicator = cell.viewWithTag(3) as! UIImageView
         let slideReplyIndicator = cell.viewWithTag(4) as! UIImageView
@@ -1679,11 +1692,11 @@ class UserListController: UITableViewController {
         switch recognizer.state {
             
             
-        case .Began:
+        case .began:
             
             
             //Check if beacon is reply eligible
-            let index = tableView.indexPathForCell(cell)!.row
+            let index = (tableView.indexPath(for: cell)! as NSIndexPath).row
             let userListIndex = userList.count - index - 1
             let countryObject = userList[userListIndex]
             let replyEligible = checkIfReplyEligible(countryObject)
@@ -1692,11 +1705,11 @@ class UserListController: UITableViewController {
             //Switch reply indicator on or off based on eligibility
             if replyEligible {
                 
-                slideReplyIndicator.hidden = false
+                slideReplyIndicator.isHidden = false
             }
             else {
                 
-                slideReplyIndicator.hidden = true
+                slideReplyIndicator.isHidden = true
             }
             
             
@@ -1715,7 +1728,7 @@ class UserListController: UITableViewController {
                 //Ensure that the subview is not the image, its background, or the map label
                 if subview.tag != 3 && subview.tag != 4 && subview.tag != 5 && subview.tag != 6 {
                     
-                    UIView.animateWithDuration(0.1, animations: { () -> Void in
+                    UIView.animate(withDuration: 0.1, animations: { () -> Void in
                         
                         subview.alpha = 0
                     })
@@ -1725,7 +1738,7 @@ class UserListController: UITableViewController {
                     
                     let view = subview as! UIImageView
                     
-                    UIView.animateWithDuration(0.1, animations: { () -> Void in
+                    UIView.animate(withDuration: 0.1, animations: { () -> Void in
                         
                         view.alpha = 1
                     })
@@ -1733,7 +1746,7 @@ class UserListController: UITableViewController {
             }
             
             
-        case .Ended:
+        case .ended:
             
             
             //Calculate distance fraction
@@ -1748,10 +1761,10 @@ class UserListController: UITableViewController {
                 segueControlLocked = true
                 
                 //Necessary variables
-                let index = tableView.indexPathForCell(cell)!.row
+                let index = (tableView.indexPath(for: cell)! as NSIndexPath).row
                 let userListIndex = userList.count - index - 1
-                let geoPoint = userList[userListIndex].valueForKey("sentFrom") as! PFGeoPoint
-                let sentCountry = userList[userListIndex].valueForKey("countryCode") as? String
+                let geoPoint = userList[userListIndex].value(forKey: "sentFrom") as! PFGeoPoint
+                let sentCountry = userList[userListIndex].value(forKey: "countryCode") as? String
                 
                 if !(geoPoint.latitude == 0.0 && geoPoint.longitude == 0.0) {
                     
@@ -1767,16 +1780,16 @@ class UserListController: UITableViewController {
                 
                 
             }
-            else if !slideReplyIndicator.hidden && countryCenter.x + distance >= slideReplyIndicator.center.x - threshold && countryCenter.x + distance <= slideReplyIndicator.center.x + threshold  && !segueControlLocked {
+            else if !slideReplyIndicator.isHidden && countryCenter.x + distance >= slideReplyIndicator.center.x - threshold && countryCenter.x + distance <= slideReplyIndicator.center.x + threshold  && !segueControlLocked {
                 
                 
                 //Lock segue control
                 segueControlLocked = true
                 
                 //Necessary variables
-                let index = tableView.indexPathForCell(cell)!.row
+                let index = (tableView.indexPath(for: cell)! as NSIndexPath).row
                 let userListIndex = userList.count - index - 1
-                let replyToUser = userList[userListIndex].valueForKey("sentBy") as! String
+                let replyToUser = userList[userListIndex].value(forKey: "sentBy") as! String
                 let replyImage = countryBackground.getImage()
                 
                 //Reset visible cells
@@ -1793,7 +1806,7 @@ class UserListController: UITableViewController {
             countryView.changeToCountryMode(false)
             
             
-            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: UIViewAnimationOptions.curveLinear, animations: { () -> Void in
                 
                 //Move object first
                 countryView.center.x = self.countryCenter.x
@@ -1817,7 +1830,7 @@ class UserListController: UITableViewController {
                 }, completion: nil)
             
             
-        case .Cancelled:
+        case .cancelled:
             
             
             print("Country swipe cancelled")
@@ -1861,9 +1874,9 @@ class UserListController: UITableViewController {
                 
                 
                 //If indicator is inactive, turn it active
-                if slideMapIndicator.tintColor == UIColor.lightGrayColor() {
+                if slideMapIndicator.tintColor == UIColor.lightGray {
                     
-                    UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+                    UIView.animate(withDuration: 0.3, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                         
                         
                         //Move country to map indicator view
@@ -1877,17 +1890,17 @@ class UserListController: UITableViewController {
                         
                         
                         //If slide reply indicator is not gray, turn it to gray
-                        if slideReplyIndicator.tintColor != UIColor.lightGrayColor() {
+                        if slideReplyIndicator.tintColor != UIColor.lightGray {
                             
                             //Bring country back to panning and change tint
-                            slideReplyIndicator.tintColor = UIColor.lightGrayColor()
+                            slideReplyIndicator.tintColor = UIColor.lightGray
                         }
                         
                         }, completion: nil)
                 }
                 
             }
-            else if !slideReplyIndicator.hidden && countryCenter.x + distance >= slideReplyIndicator.center.x - threshold && countryCenter.x + distance <= slideReplyIndicator.center.x + threshold {
+            else if !slideReplyIndicator.isHidden && countryCenter.x + distance >= slideReplyIndicator.center.x - threshold && countryCenter.x + distance <= slideReplyIndicator.center.x + threshold {
                 
                 
                 //Change to reply indicator view and hide country view continuously
@@ -1895,9 +1908,9 @@ class UserListController: UITableViewController {
                 
                 
                 //If indicator is inactive, turn it active
-                if slideReplyIndicator.tintColor == UIColor.lightGrayColor() {
+                if slideReplyIndicator.tintColor == UIColor.lightGray {
                     
-                    UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+                    UIView.animate(withDuration: 0.3, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                         
                         
                         //Move country to reply indicator view
@@ -1911,10 +1924,10 @@ class UserListController: UITableViewController {
                         
                         
                         //If slide map indicator is not gray, turn it to gray
-                        if slideMapIndicator.tintColor != UIColor.lightGrayColor() {
+                        if slideMapIndicator.tintColor != UIColor.lightGray {
                             
                             //Bring country back to panning and change tint
-                            slideMapIndicator.tintColor = UIColor.lightGrayColor()
+                            slideMapIndicator.tintColor = UIColor.lightGray
                         }
                     }, completion: nil)
                 }
@@ -1930,7 +1943,7 @@ class UserListController: UITableViewController {
                 print("turning gray color")
                 if countryView.center.x == slideMapIndicator.center.x || countryView.center.x == slideReplyIndicator.center.x {
                     
-                    UIView.animateWithDuration(0.2, animations: {
+                    UIView.animate(withDuration: 0.2, animations: {
                         
                         countryView.center.x = translation.x + self.countryCenter.x
                     })
@@ -1943,22 +1956,22 @@ class UserListController: UITableViewController {
                 
                 
                 //If slide reply indicator is not gray, turn it to gray
-                if slideReplyIndicator.tintColor != UIColor.lightGrayColor() {
+                if slideReplyIndicator.tintColor != UIColor.lightGray {
                     
-                    UIView.animateWithDuration(0.3, animations: {
+                    UIView.animate(withDuration: 0.3, animations: {
                         
                         //Bring country back to panning and change tint
-                        slideReplyIndicator.tintColor = UIColor.lightGrayColor()
+                        slideReplyIndicator.tintColor = UIColor.lightGray
                     })
                 }
                 
                 //If slide map indicator is not gray, turn it to gray
-                if slideMapIndicator.tintColor != UIColor.lightGrayColor() {
+                if slideMapIndicator.tintColor != UIColor.lightGray {
                     
-                    UIView.animateWithDuration(0.3, animations: {
+                    UIView.animate(withDuration: 0.3, animations: {
                         
                         //Bring country back to panning and change tint
-                        slideMapIndicator.tintColor = UIColor.lightGrayColor()
+                        slideMapIndicator.tintColor = UIColor.lightGray
                     })
                 }
             }
@@ -1966,13 +1979,13 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func checkIfReplyEligible(countryObject: PFObject) -> Bool {
+    internal func checkIfReplyEligible(_ countryObject: PFObject) -> Bool {
         
         //Get details
-        let replied = countryObject.objectForKey("replied")
-        let sentBy = countryObject.objectForKey("sentBy") as! String
-        let receivedBy = countryObject.objectForKey("receivedBy") as? String
-        let receivedAt = countryObject.objectForKey("receivedAt") as? NSDate
+        let replied = countryObject.object(forKey: "replied")
+        let sentBy = countryObject.object(forKey: "sentBy") as! String
+        let receivedBy = countryObject.object(forKey: "receivedBy") as? String
+        let receivedAt = countryObject.object(forKey: "receivedAt") as? Date
         
         
         //Check if object is not already replied to, within time, or being sent by current user
@@ -2035,12 +2048,12 @@ class UserListController: UITableViewController {
         print("reloadVisibleRows")
         if self.tableView != nil {
             
-            self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
+            self.tableView.reloadRows(at: self.tableView.indexPathsForVisibleRows!, with: UITableViewRowAnimation.none)
         }
     }
     
     
-    internal func getPoliticalDetails(locGeoPoint: PFGeoPoint, photoObject: PFObject) {
+    internal func getPoliticalDetails(_ locGeoPoint: PFGeoPoint, photoObject: PFObject) {
         
         
         //Initialize coordinate details
@@ -2053,15 +2066,15 @@ class UserListController: UITableViewController {
             if locationError != nil {
                 
                 //Update cell to let user know sending failed
-                print("Reverse geocoder error: " + locationError!.description)
+                print("Reverse geocoder error: \(locationError!)")
                 photoObject.setObject("Ready", forKey: "sendingStatus")
-                photoObject.removeObjectForKey("isAnimating")
-                self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObject)!)
+                photoObject.remove(forKey: "isAnimating")
+                self.sendingList.remove(at: self.sendingList.index(of: photoObject)!)
                 let cell = self.getCellForObject(photoObject)
                 let countryBackground = cell?.viewWithTag(6) as? CountryBackground
                 let subTitleView = cell?.viewWithTag(2) as? UILabel
                 
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     
                     if cell != nil {
                         if subTitleView!.text == "Sending..." {
@@ -2074,8 +2087,8 @@ class UserListController: UITableViewController {
             else if placemarks!.count > 0 {
                 
                 //Get and save object's country, state & city
-                print("Geo location country code: \(placemarks![0].locality), \(placemarks![0].administrativeArea), \(placemarks![0].ISOcountryCode!)")
-                photoObject["countryCode"] = placemarks![0].ISOcountryCode!.lowercaseString
+                print("Geo location country code: \(placemarks![0].locality), \(placemarks![0].administrativeArea), \(placemarks![0].isoCountryCode!)")
+                photoObject["countryCode"] = placemarks![0].isoCountryCode!.lowercased()
                 
                 
                 if placemarks![0].administrativeArea != nil {
@@ -2093,33 +2106,33 @@ class UserListController: UITableViewController {
                 if self.userList.contains(photoObject) {
                     
                     let cell = self.getCellForObject(photoObject)
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         if cell != nil {
                             
                             if self.tableView.visibleCells.contains(cell!) {
                                 
-                                self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: UITableViewRowAnimation.None)
+                                self.tableView.reloadRows(at: self.tableView.indexPathsForVisibleRows!, with: UITableViewRowAnimation.none)
                             }
                         }
                     })
                 }
                 
                 //Save object locally, then send to database
-                photoObject.pinInBackgroundWithBlock({ (saved, error) -> Void in
+                photoObject.pinInBackground(block: { (saved, error) -> Void in
                     
                     if error != nil {
                         
                         //Let user know the sending process failed
                         print("Error saving location updated object: \(error)")
                         photoObject.setObject("Ready", forKey: "sendingStatus")
-                        photoObject.removeObjectForKey("isAnimating")
-                        self.sendingList.removeAtIndex(self.sendingList.indexOf(photoObject)!)
+                        photoObject.remove(forKey: "isAnimating")
+                        self.sendingList.remove(at: self.sendingList.index(of: photoObject)!)
                         let cell = self.getCellForObject(photoObject)
                         let countryBackground = cell?.viewWithTag(6) as? CountryBackground
                         let subTitleView = cell?.viewWithTag(2) as? UILabel
                         
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        DispatchQueue.main.async(execute: { () -> Void in
                             
                             if cell != nil {
                                 if subTitleView!.text == "Sending..." {
@@ -2153,12 +2166,12 @@ class UserListController: UITableViewController {
         
         //Show label if the user default is nil
         print("showTutorialTapBeaconView")
-        if userDefaults.objectForKey("tutorialTapBeacon") == nil && !tutorialTapBeaconViewShown {
+        if userDefaults.object(forKey: "tutorialTapBeacon") == nil && !tutorialTapBeaconViewShown {
             
             let heading = "You Got A Beacon!"
             let text = "Tap to open it!"
             
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 
                 
                 //Set bounds and create tutorial view
@@ -2170,7 +2183,7 @@ class UserListController: UITableViewController {
                 
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialTapBeaconView)
-                self.view.bringSubviewToFront(self.tutorialTapBeaconView)
+                self.view.bringSubview(toFront: self.tutorialTapBeaconView)
                 self.tutorialTapBeaconViewShown = true
             })
         }
@@ -2180,7 +2193,7 @@ class UserListController: UITableViewController {
     internal func removeTutorialTapBeaconView() {
         
         //Remove tap beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialTapBeacon") == nil && tutorialTapBeaconViewShown {
+        if userDefaults.object(forKey: "tutorialTapBeacon") == nil && tutorialTapBeaconViewShown {
             
             tutorialTapBeaconView.removeView("tutorialTapBeacon")
             tutorialTapBeaconViewShown = false
@@ -2188,27 +2201,27 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func showTutorialSwipeBeaconView(frame: CGRect) {
+    internal func showTutorialSwipeBeaconView(_ frame: CGRect) {
         
         
         print("showTutorialSwipeBeaconView")
         
         //v1.2 Reset of tutorial swipe beacon view
-        if userDefaults.objectForKey("tutorialSwipeBeaconReset") == nil {
+        if userDefaults.object(forKey: "tutorialSwipeBeaconReset") == nil {
             
             print("v1.2 -- Reset tutorial swipe beacon")
-            userDefaults.removeObjectForKey("tutorialSwipeBeacon")
-            userDefaults.setBool(true, forKey: "tutorialSwipeBeaconReset")
+            userDefaults.removeObject(forKey: "tutorialSwipeBeacon")
+            userDefaults.set(true, forKey: "tutorialSwipeBeaconReset")
             
         }
         
         //Show label if the user default is nil
-        if userDefaults.objectForKey("tutorialSwipeBeacon") == nil && !tutorialSwipeBeaconViewShown {
+        if userDefaults.object(forKey: "tutorialSwipeBeacon") == nil && !tutorialSwipeBeaconViewShown {
             
             let heading = "Reply & Explore!"
             let text = "Swipe the country to the right to\nreply and see it on the map"
             
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 
                 
                 //Set bounds and create tutorial view
@@ -2221,7 +2234,7 @@ class UserListController: UITableViewController {
                 
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialSwipeBeaconView)
-                self.view.bringSubviewToFront(self.tutorialSwipeBeaconView)
+                self.view.bringSubview(toFront: self.tutorialSwipeBeaconView)
                 self.tutorialSwipeBeaconViewShown = true
             })
         }
@@ -2236,7 +2249,7 @@ class UserListController: UITableViewController {
     internal func removeTutorialSwipeBeaconView() {
         
         //Remove swipe beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialSwipeBeacon") == nil && tutorialSwipeBeaconViewShown {
+        if userDefaults.object(forKey: "tutorialSwipeBeacon") == nil && tutorialSwipeBeaconViewShown {
             
             tutorialSwipeBeaconView.removeView("tutorialSwipeBeacon")
             tutorialSwipeBeaconViewShown = false
@@ -2249,12 +2262,12 @@ class UserListController: UITableViewController {
         
         //Show label if the user default is nil
         print("showTutorialBeaconTimeView")
-        if userDefaults.objectForKey("tutorialBeaconTime") == nil && !tutorialBeaconTimeViewShown {
+        if userDefaults.object(forKey: "tutorialBeaconTime") == nil && !tutorialBeaconTimeViewShown {
             
             let heading = "Time Left"
             let text = "You can see the beacon until\nthe circle disappears"
             
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 
                 
                 //Set bounds and create tutorial view
@@ -2267,9 +2280,9 @@ class UserListController: UITableViewController {
                 
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialBeaconTimeView)
-                self.view.bringSubviewToFront(self.tutorialBeaconTimeView)
+                self.view.bringSubview(toFront: self.tutorialBeaconTimeView)
                 self.tutorialBeaconTimeViewShown = true
-                self.userDefaults.setBool(true, forKey: "tutorialBeaconTime")
+                self.userDefaults.set(true, forKey: "tutorialBeaconTime")
                 
             })
         }
@@ -2284,7 +2297,7 @@ class UserListController: UITableViewController {
     internal func removeTutorialBeaconTimeView() {
         
         //Remove beacon time tutorial view if it's active
-        if userDefaults.objectForKey("tutorialBeaconTime") != nil && tutorialBeaconTimeViewShown {
+        if userDefaults.object(forKey: "tutorialBeaconTime") != nil && tutorialBeaconTimeViewShown {
             
             tutorialBeaconTimeView.removeView("tutorialBeaconTime")
             tutorialBeaconTimeViewShown = false
@@ -2297,13 +2310,13 @@ class UserListController: UITableViewController {
         
         //Show label if the user default is nil
         print("showTutorialReportBeaconView")
-        if userDefaults.objectForKey("tutorialReportBeacon") == nil && !tutorialReportBeaconViewShown && !tutorialBeaconTimeViewShown {
+        if userDefaults.object(forKey: "tutorialReportBeacon") == nil && !tutorialReportBeaconViewShown && !tutorialBeaconTimeViewShown {
             
             let heading = "Naughty Beacon?"
             let text = "Swipe left to report it."
             tutorialReportBeaconViewShown = true
             
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 
                 
                 //Set bounds and create tutorial view
@@ -2315,7 +2328,7 @@ class UserListController: UITableViewController {
                 
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialReportBeaconView)
-                self.view.bringSubviewToFront(self.tutorialReportBeaconView)
+                self.view.bringSubview(toFront: self.tutorialReportBeaconView)
             })
         }
     }
@@ -2324,7 +2337,7 @@ class UserListController: UITableViewController {
     internal func removeTutorialReportBeaconView() {
         
         //Remove report beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialReportBeacon") == nil && tutorialReportBeaconViewShown {
+        if userDefaults.object(forKey: "tutorialReportBeacon") == nil && tutorialReportBeaconViewShown {
             
             tutorialReportBeaconView.removeView("tutorialReportBeacon")
             tutorialBeaconTimeViewShown = false
@@ -2337,12 +2350,12 @@ class UserListController: UITableViewController {
         
         //Show label if the user default is nil
         print("showTutorialReplyBeacon")
-        if userDefaults.objectForKey("tutorialReplyBeacon") == nil && !tutorialReplyBeaconViewShown {
+        if userDefaults.object(forKey: "tutorialReplyBeacon") == nil && !tutorialReplyBeaconViewShown {
             
             let heading = "A Reply!"
             let text = "See someone's response\nto your beacon!"
             
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 
                 
                 //Set bounds and create tutorial view
@@ -2355,7 +2368,7 @@ class UserListController: UITableViewController {
                 
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialReplyBeaconView)
-                self.view.bringSubviewToFront(self.tutorialReplyBeaconView)
+                self.view.bringSubview(toFront: self.tutorialReplyBeaconView)
                 self.tutorialReplyBeaconViewShown = true
                 
             })
@@ -2366,7 +2379,7 @@ class UserListController: UITableViewController {
     internal func removeTutorialReplyBeaconView() {
         
         //Remove reply beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialReplyBeacon") == nil && tutorialReplyBeaconViewShown {
+        if userDefaults.object(forKey: "tutorialReplyBeacon") == nil && tutorialReplyBeaconViewShown {
             
             tutorialReplyBeaconView.removeView("tutorialReplyBeacon")
             tutorialReplyBeaconViewShown = false
@@ -2376,7 +2389,7 @@ class UserListController: UITableViewController {
     
     
     
-    internal func segueToCamera(replyToObject: PFObject, replyToUser: String, replyImage: UIImage) {
+    internal func segueToCamera(_ replyToObject: PFObject, replyToUser: String, replyImage: UIImage) {
         
         
         //If the table is current view and segue control is not locked, segue
@@ -2396,7 +2409,7 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func segueToMap(location: CLLocationCoordinate2D, country: String?) {
+    internal func segueToMap(_ location: CLLocationCoordinate2D, country: String?) {
         
         
         //If the table is current view and segue control is not locked, segue
@@ -2425,7 +2438,7 @@ class UserListController: UITableViewController {
             //If the country exists, outline the country
             if country != nil {
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                DispatchQueue.global(qos: .utility).async { () -> Void in
                     
                     map.getDetailsToDrawCountry(country!)
                 }
@@ -2438,17 +2451,17 @@ class UserListController: UITableViewController {
         
         //Segue to login screen
         print("Segue-ing")
-        performSegueWithIdentifier("UserListToLoginSegue", sender: self)
+        performSegue(withIdentifier: "UserListToLoginSegue", sender: self)
         
     }
     
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         
-        if segue.identifier == "UserListToLoginSegue" && segue.destinationViewController.isViewLoaded() {
+        if segue.identifier == "UserListToLoginSegue" && segue.destination.isViewLoaded {
             
-            let loginController = segue.destinationViewController as! LoginController
+            let loginController = segue.destination as! LoginController
             
             //Set buttons on appearance
             loginController.alertButton.alpha = 0
@@ -2458,7 +2471,7 @@ class UserListController: UITableViewController {
     
     
     
-    internal func changeAudioSession(category: String) {
+    internal func changeAudioSession(_ category: String) {
         
         //If audio session isn't already the new category, change it
         if AVAudioSession.sharedInstance().category != category {
@@ -2466,7 +2479,7 @@ class UserListController: UITableViewController {
             do {
                 
                 print("Changing session")
-                try AVAudioSession.sharedInstance().setCategory(category, withOptions: [AVAudioSessionCategoryOptions.MixWithOthers, AVAudioSessionCategoryOptions.DefaultToSpeaker])
+                try AVAudioSession.sharedInstance().setCategory(category, with: [AVAudioSessionCategoryOptions.mixWithOthers, AVAudioSessionCategoryOptions.defaultToSpeaker])
                 AVAudioSession.sharedInstance()
                 try AVAudioSession.sharedInstance().setActive(true)
             }
@@ -2475,13 +2488,13 @@ class UserListController: UITableViewController {
     }
     
         
-    internal func withinTime(date: NSDate) -> BooleanLiteralType {
+    internal func withinTime(_ date: Date) -> BooleanLiteralType {
         
         //Get calendar and current date, compare it to given date
-        let difference = calendar.components([.Day, .WeekOfYear, .Month, .Year], fromDate: date, toDate: NSDate(), options: [])
+        let difference = (calendar as NSCalendar).components([.day, .weekOfYear, .month, .year], from: date, to: Date(), options: [])
         
         //Compare all components of the difference to see if it's greater than 1 day
-        if difference.year > 0 || difference.month > 0 || difference.weekOfYear > 0 || difference.day >= 1
+        if difference.year! > 0 || difference.month! > 0 || difference.weekOfYear! > 0 || difference.day! >= 1
         {
             return false
         }
@@ -2490,11 +2503,11 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func getTimeFraction(date: NSDate) -> Float {
+    internal func getTimeFraction(_ date: Date) -> Float {
         
         //Get calendar and current date, compare it to given date
-        let difference = calendar.components([.Day, .Hour, .Minute], fromDate: date, toDate: NSDate(), options: [])
-        let timeElapsed = (difference.day * 24 * 60) + (difference.hour * 60) + (difference.minute)
+        let difference = (calendar as NSCalendar).components([.day, .hour, .minute], from: date, to: Date(), options: [])
+        let timeElapsed = (difference.day! * 24 * 60) + (difference.hour! * 60) + (difference.minute)!
         
         //Return fraction of elapsed time over one day
         return (1.0 - Float(timeElapsed)/1440) * 0.98
@@ -2502,63 +2515,63 @@ class UserListController: UITableViewController {
     }
     
     
-    internal func timeSinceDate(date:NSDate, numericDates:Bool) -> String {
+    internal func timeSinceDate(_ date:Date, numericDates:Bool) -> String {
         
-        let now = NSDate()
-        let earliest = now.earlierDate(date)
+        let now = Date()
+        let earliest = (now as NSDate).earlierDate(date)
         let latest = (earliest == now) ? date : now
-        let components:NSDateComponents = calendar.components([.Minute, .Hour, .Day, .WeekOfYear, .Month, .Year, .Second], fromDate: earliest, toDate: latest, options: [])
+        let components:DateComponents = (calendar as NSCalendar).components([.minute, .hour, .day, .weekOfYear, .month, .year, .second], from: earliest, to: latest, options: [])
         
-        if (components.year >= 2) {
-            return "\(components.year) years ago"
-        } else if (components.year >= 1){
+        if (components.year! >= 2) {
+            return "\(components.year!) years ago"
+        } else if (components.year! >= 1){
             if (numericDates){
                 return "1 year ago"
             } else {
                 return "Last year"
             }
-        } else if (components.month >= 2) {
-            return "\(components.month) months ago"
-        } else if (components.month >= 1){
+        } else if (components.month! >= 2) {
+            return "\(components.month!) months ago"
+        } else if (components.month! >= 1){
             if (numericDates){
                 return "1 month ago"
             } else {
                 return "Last month"
             }
-        } else if (components.weekOfYear >= 2) {
-            return "\(components.weekOfYear) weeks ago"
-        } else if (components.weekOfYear >= 1){
+        } else if (components.weekOfYear! >= 2) {
+            return "\(components.weekOfYear!) weeks ago"
+        } else if (components.weekOfYear! >= 1){
             if (numericDates){
                 return "1 week ago"
             } else {
                 return "Last week"
             }
-        } else if (components.day >= 2) {
-            return "\(components.day) days ago"
-        } else if (components.day >= 1){
+        } else if (components.day! >= 2) {
+            return "\(components.day!) days ago"
+        } else if (components.day! >= 1){
             if (numericDates){
                 return "1 day ago"
             } else {
                 return "Yesterday"
             }
-        } else if (components.hour >= 2) {
-            return "\(components.hour) hours ago"
-        } else if (components.hour >= 1){
+        } else if (components.hour! >= 2) {
+            return "\(components.hour!) hours ago"
+        } else if (components.hour! >= 1){
             if (numericDates){
                 return "1 hour ago"
             } else {
                 return "An hour ago"
             }
-        } else if (components.minute >= 2) {
-            return "\(components.minute) minutes ago"
-        } else if (components.minute >= 1){
+        } else if (components.minute! >= 2) {
+            return "\(components.minute!) minutes ago"
+        } else if (components.minute! >= 1){
             if (numericDates){
                 return "1 minute ago"
             } else {
                 return "A minute ago"
             }
-        } else if (components.second >= 3) {
-            return "\(components.second) seconds ago"
+        } else if (components.second! >= 3) {
+            return "\(components.second!) seconds ago"
         } else {
             return "Just now"
         }

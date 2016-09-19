@@ -14,7 +14,7 @@ class Dot: UIView {
     
     
     let dot = CAShapeLayer()
-    let color = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.3).CGColor
+    let color = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.3).cgColor
     let bound = 3
     
     
@@ -24,7 +24,7 @@ class Dot: UIView {
         
         //Set dot
         let dotBounds = self.bounds.height
-        dot.path = UIBezierPath(ovalInRect: CGRect(x: self.bounds.width, y: self.bounds.height, width: dotBounds, height: dotBounds)).CGPath
+        dot.path = UIBezierPath(ovalIn: CGRect(x: self.bounds.width, y: self.bounds.height, width: dotBounds, height: dotBounds)).cgPath
         dot.fillColor = color
         
         self.layer.addSublayer(dot)
@@ -35,7 +35,7 @@ class Dot: UIView {
         super.init(frame: CGRect(x: 0, y: 0, width: bound, height: bound))
         
         //Set dot
-        dot.path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: bound, height: bound)).CGPath
+        dot.path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: bound, height: bound)).cgPath
         dot.fillColor = color
         
         self.layer.addSublayer(dot)

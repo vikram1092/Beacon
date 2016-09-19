@@ -14,7 +14,7 @@ class SnapTimer: UIView {
     
     var timer = CAShapeLayer()
     var timerView = UIView()
-    var timerBackground = UIView()
+    var timerBackground = CAShapeLayer()
     
     
     required init?(coder aDecoder: NSCoder) {
@@ -22,26 +22,27 @@ class SnapTimer: UIView {
         
         super.init(coder: aDecoder)
         
-        let frame = super.frame
-        self.transform = CGAffineTransformMakeRotation( -90.0 * CGFloat(M_PI) / 180.0)
+        let frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        self.transform = CGAffineTransform( rotationAngle: -90.0 * CGFloat(M_PI) / 180.0)
         
         //Set background
-        timerBackground = UIView(frame: self.bounds)
-        let blurView = UIVisualEffectView(frame: self.bounds)
-        blurView.effect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
+        /*
+        timerBackground = UIView(frame: frame)
+        let blurView = UIVisualEffectView(frame: frame)
+        blurView.effect = UIBlurEffect(style: UIBlurEffectStyle.dark)
         timerBackground.addSubview(blurView)
         timerBackground.layer.cornerRadius = self.bounds.width/2
         timerBackground.clipsToBounds = true
-        
-        /*
-        timerBackground.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        timerBackground.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).CGColor
         */
         
+        timerBackground.path = UIBezierPath(ovalIn: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).cgPath
+        timerBackground.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
+        
+        
         //Set timer
-        timer.path = UIBezierPath(ovalInRect: CGRect(x: 3.0, y: 3.0, width: frame.width - 6.0, height: frame.height - 6.0)).CGPath
-        timer.fillColor = UIColor.clearColor().CGColor
-        timer.strokeColor = UIColor.whiteColor().CGColor
+        timer.path = UIBezierPath(ovalIn: CGRect(x: 3.0, y: 3.0, width: frame.width - 6.0, height: frame.height - 6.0)).cgPath
+        timer.fillColor = UIColor.clear.cgColor
+        timer.strokeColor = UIColor.white.cgColor
         timer.lineWidth = 2
         timer.strokeStart = 0.0
         timer.strokeEnd = 1.0
@@ -51,13 +52,13 @@ class SnapTimer: UIView {
         timerView = UIView(frame: self.bounds)
         
         //Add sub layers to the view's layer
-        self.addSubview(timerBackground)
+        self.layer.addSublayer(timerBackground)
         timerView.layer.addSublayer(timer)
         self.addSubview(timerView)
     }
     
     
-    internal func startTimer(duration: CMTime) {
+    internal func startTimer(_ duration: CMTime) {
         
         //Turn on
         print("Turning timer on")
@@ -71,10 +72,10 @@ class SnapTimer: UIView {
         animation.duration = duration.seconds + 0.3
         animation.fromValue = 0.0
         animation.toValue = 1.0
-        animation.removedOnCompletion = false
+        animation.isRemovedOnCompletion = false
         animation.fillMode = kCAFillModeForwards
         
-        timer.addAnimation(animation, forKey: nil)
+        timer.add(animation, forKey: nil)
         
     }
     

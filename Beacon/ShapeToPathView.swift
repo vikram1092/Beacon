@@ -14,8 +14,8 @@ class ShapeToPathView: UIView {
     
     
     // Define CGPaths from SVG files
-    let mapPath = PocketSVG.pathFromSVGFileNamed("globe").takeUnretainedValue()
-    let replyPath = PocketSVG.pathFromSVGFileNamed("reply").takeUnretainedValue()
+    let mapPath = PocketSVG.path(fromSVGFileNamed: "globe").takeUnretainedValue()
+    let replyPath = PocketSVG.path(fromSVGFileNamed: "reply").takeUnretainedValue()
     let shapeLayer = CAShapeLayer()
     
     
@@ -48,11 +48,11 @@ class ShapeToPathView: UIView {
         
         //Set initial shape
         shapeLayer.path = replyPath
-        shapeLayer.strokeColor = UIColor.whiteColor().CGColor
+        shapeLayer.strokeColor = UIColor.white.cgColor
         shapeLayer.strokeStart = 0.0
         shapeLayer.strokeEnd = 1.0
         shapeLayer.lineWidth = 2
-        shapeLayer.fillColor = UIColor.clearColor().CGColor
+        shapeLayer.fillColor = UIColor.clear.cgColor
         shapeLayer.lineCap = kCALineCapRound
         
         self.layer.addSublayer(shapeLayer)
@@ -70,14 +70,14 @@ class ShapeToPathView: UIView {
         pathAnimation.toValue = mapPath
         pathAnimation.duration = 0.4
         pathAnimation.fillMode = kCAFillModeForwards
-        pathAnimation.removedOnCompletion = false
+        pathAnimation.isRemovedOnCompletion = false
         
-        shapeLayer.addAnimation(pathAnimation, forKey: nil)
+        shapeLayer.add(pathAnimation, forKey: nil)
     
     }
     
     
-    internal func changeToReplyMode(animated: Bool) {
+    internal func changeToReplyMode(_ animated: Bool) {
         
         
         print("changeToReplyMode")
@@ -90,9 +90,9 @@ class ShapeToPathView: UIView {
             pathAnimation.toValue = replyPath
             pathAnimation.duration = 0.4
             pathAnimation.fillMode = kCAFillModeForwards
-            pathAnimation.removedOnCompletion = false
+            pathAnimation.isRemovedOnCompletion = false
             
-            shapeLayer.addAnimation(pathAnimation, forKey: nil)
+            shapeLayer.add(pathAnimation, forKey: nil)
         }
         else {
             

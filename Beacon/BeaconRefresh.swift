@@ -42,13 +42,14 @@ class BeaconRefresh: UIView {
         let originX = self.center.x - size/2.0
         
         beaconIndicator = BeaconingIndicator(frame: CGRect(x: originX, y: initialDepth, width: size, height: size))
-        beaconIndicator.changeColor(UIColor.whiteColor().CGColor)
+        beaconIndicator.initializeView()
+        beaconIndicator.changeColor(UIColor.white.cgColor)
         
         self.addSubview(beaconIndicator)
     }
     
     
-    internal func updateViews(ratio: CGFloat) {
+    internal func updateViews(_ ratio: CGFloat) {
         
         //Update view to rotate as per scroll ratio given
         if !beaconIndicator.isAnimating {
@@ -56,7 +57,7 @@ class BeaconRefresh: UIView {
             let depth = min(max(50,initialDepth + ratio * 2), finalDepth)
             let rotation = (depth - initialDepth) * CGFloat(M_PI)/(finalDepth - initialDepth)
             let offset = (-3 * CGFloat(M_PI)/2)
-            beaconIndicator.transform = CGAffineTransformMakeRotation(rotation + offset)
+            beaconIndicator.transform = CGAffineTransform(rotationAngle: rotation + offset)
         }
     }
     

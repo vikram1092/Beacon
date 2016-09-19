@@ -13,9 +13,9 @@ class CountryTable {
     
     
     
-    internal func getCountryImage(countryCode: String) -> UIImage {
+    internal func getCountryImage(_ countryCode: String) -> UIImage {
         
-        let link  = "Countries/" + countryCode.lowercaseString + "/128.png"
+        let link  = "Countries/" + countryCode.lowercased() + "/128.png"
         
         if let image = UIImage(named: link) {
             
@@ -26,15 +26,15 @@ class CountryTable {
     }
     
     
-    internal func getCountryName(countryCode: String) -> String {
+    internal func getCountryName(_ countryCode: String) -> String {
         
         var countryName = "Unknown"
-        print("Country:" + countryCode.lowercaseString)
+        print("Country:" + countryCode.lowercased())
         
         //Find country and obtain the 2 digit ISO code
         for country in countryTable {
             
-            if country[1] == countryCode.lowercaseString {
+            if country[1] == countryCode.lowercased() {
                 countryName = country[0]
                 break
             }
@@ -44,16 +44,16 @@ class CountryTable {
     }
     
     
-    internal func getStateName(stateCode: String) -> String {
+    internal func getStateName(_ stateCode: String) -> String {
         
         
         var stateName = "Unknown"
-        print("State:" + stateCode.lowercaseString)
+        print("State:" + stateCode.lowercased())
         
         //Find state and obtain name from the 2 digit code
         for state in usaStateTable {
             
-            if state[1] == stateCode.lowercaseString {
+            if state[1] == stateCode.lowercased() {
                 stateName = state[0]
                 break
             }
@@ -63,16 +63,16 @@ class CountryTable {
     }
     
     
-    internal func getStateCode(stateName: String) -> String {
+    internal func getStateCode(_ stateName: String) -> String {
         
         
         var stateCode = "Unknown"
-        print("State:" + stateCode.lowercaseString)
+        print("State:" + stateCode.lowercased())
         
         //Find state and obtain name from the 2 digit code
         for state in usaStateTable {
             
-            if state[0].lowercaseString == stateName.lowercaseString {
+            if state[0].lowercased() == stateName.lowercased() {
                 stateCode = state[1]
                 break
             }
@@ -82,9 +82,9 @@ class CountryTable {
     }
     
     
-    internal func getStateImage(stateCode: String) -> UIImage {
+    internal func getStateImage(_ stateCode: String) -> UIImage {
         
-        let link  = "Countries/States of the United States/" + stateCode.lowercaseString + "/128.png"
+        let link  = "Countries/States of the United States/" + stateCode.lowercased() + "/128.png"
         
         if let image = UIImage(named: link) {
             

@@ -20,7 +20,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     var countries = NSArray()
     var userID = ""
-    var userDefaults = NSUserDefaults.standardUserDefaults()
+    var userDefaults = UserDefaults.standard
     var userList = Array<PFObject>()
     var countryColor = UIColor()
     var countriesAreLoaded = true
@@ -59,14 +59,14 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         //Initialize corner radius for beacon control
         beaconControl.layer.cornerRadius = 15.0
-        beaconControl.layer.borderColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue:203.0/255.0, alpha: 1).CGColor
+        beaconControl.layer.borderColor = UIColor(red: 50.0/255.0, green: 137.0/255.0, blue:203.0/255.0, alpha: 1).cgColor
         beaconControl.layer.borderWidth = 1.5
         beaconControl.layer.masksToBounds = true
         
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         
         //Load view as normal
@@ -80,7 +80,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             self.activityIndicator.startAnimating()
             
             //Dispatch processes on another thread
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+            DispatchQueue.global(qos: .utility).async { () -> Void in
                 
                 self.loadSentMarkers()
                 self.loadReceivedMarkers()
@@ -92,7 +92,14 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidLayoutSubviews() {
+        
+        
+        activityIndicator.initializeView()
+    }
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
         
         
         //Remove all overlays
@@ -107,14 +114,14 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         
         //Get user details
-        if userDefaults.objectForKey("userID") != nil {
+        if userDefaults.object(forKey: "userID") != nil {
             
-            userID = userDefaults.objectForKey("userID") as! String
+            userID = userDefaults.object(forKey: "userID") as! String
         }
     }
     
     
-    internal func goToCountry(location: CLLocationCoordinate2D) {
+    internal func goToCountry(_ location: CLLocationCoordinate2D) {
 
         
         let span = MKCoordinateSpan(latitudeDelta: 4, longitudeDelta: 4)
@@ -125,7 +132,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    internal func getDetailsToDrawCountry(countryCode: String) {
+    internal func getDetailsToDrawCountry(_ countryCode: String) {
         
         
         //Set countries loaded flag
@@ -143,12 +150,12 @@ class MapController: UIViewController, MKMapViewDelegate {
         //Get index of country
         for countryElement in countries {
             
-            let isoCode = countryElement.objectForKey("properties")!.objectForKey("ISO_A2") as! String
+            let isoCode = ((countryElement as AnyObject).object(forKey: "properties")! as AnyObject).object(forKey: "ISO_A2") as! String
             
             //Check if current JSON country iso code matches with desired country
-            if isoCode == countryCode.uppercaseString {
+            if isoCode == countryCode.uppercased() {
                 
-                index = countries.indexOfObject(countryElement)
+                index = countries.index(of: countryElement)
                 break
             }
         }
@@ -162,16 +169,16 @@ class MapController: UIViewController, MKMapViewDelegate {
 
             //Check if country is one polygon or multiple.
             //If multiple, handle each one of them
-            if countries[index].objectForKey("geometry")!.objectForKey("type") as! String == "Polygon" {
+            if ((countries[index] as AnyObject).object(forKey: "geometry")! as AnyObject).object(forKey: "type") as! String == "Polygon" {
                 
                 //Get single polygon and draw
-                let polygon = countries[index].objectForKey("geometry")!.objectForKey("coordinates") as! NSMutableArray
+                let polygon = ((countries[index] as AnyObject).object(forKey: "geometry")! as AnyObject).object(forKey: "coordinates") as! NSMutableArray
                 drawCountry(polygon, color: color)
             }
             else {
                 
                 //Get array of polygons and draw all of them
-                let polygons = countries[index].objectForKey("geometry")!.objectForKey("coordinates") as! NSMutableArray
+                let polygons = ((countries[index] as AnyObject).object(forKey: "geometry")! as AnyObject).object(forKey: "coordinates") as! NSMutableArray
                 
                 for polygon in polygons {
                     
@@ -186,7 +193,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         //Stop activity indicator if the countries are already loaded
         if self.sentMarkersAreLoaded && self.receivedMarkersAreLoaded {
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 
                 self.activityIndicator.stopAnimating()
             })
@@ -198,22 +205,22 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         
         //Load array of country JSON objects
-        let filePath = NSBundle.mainBundle().pathForResource("Countries", ofType: "geojson")
-        let data = NSData(contentsOfFile: filePath!)!
+        let filePath = Bundle.main.path(forResource: "Countries", ofType: "geojson")
+        let data = try! Data(contentsOf: URL(fileURLWithPath: filePath!))
         
         do {
             
             //Instantiate country GeoJSON data
-            let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+            let json = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! NSDictionary
             
             //Get array of countries from JSON
-            countries = json.objectForKey("features") as! NSArray
+            countries = json.object(forKey: "features") as! NSArray
         }
         catch let error as NSError { print("Error getting GeoJSON data:" + error.description) }
     }
 
     
-    internal func drawCountry(polygon: NSMutableArray, color: UIColor) {
+    internal func drawCountry(_ polygon: NSMutableArray, color: UIColor) {
         
         
         //Configure path
@@ -247,7 +254,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         
         //Add polygon to map in main thread if map is the selected index
-        let pointer = UnsafeMutablePointer<CLLocationCoordinate2D>(path)
+        let pointer = UnsafeMutablePointer<CLLocationCoordinate2D>(mutating: path)
         let country = CountryPolyline(coordinates: pointer, count: path.count)
         
         //Assign color
@@ -255,10 +262,10 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         if self.tabBarController?.selectedIndex == 2 {
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 
                 print("Adding polygon!")
-                self.mapView.addOverlay(country)
+                self.mapView.add(country)
             })
         }
     }
@@ -270,16 +277,16 @@ class MapController: UIViewController, MKMapViewDelegate {
         sentMarkersAreLoaded = false
         
         //Load markers for where user's photos went
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+        DispatchQueue.global(qos: .utility).async { () -> Void in
             
             //Mark markers as not loaded and run query
             let query = PFQuery(className: "photo")
             query.whereKey("sentBy", equalTo: self.userID)
             query.whereKeyExists("receivedLatitude")
-            query.orderByDescending("createdAt")
+            query.order(byDescending: "createdAt")
             query.limit = 1000
             
-            query.findObjectsInBackgroundWithBlock { (photoObjects, markerError) -> Void in
+            query.findObjectsInBackground { (photoObjects, markerError) -> Void in
                 
                 if markerError != nil {
                     
@@ -290,8 +297,8 @@ class MapController: UIViewController, MKMapViewDelegate {
                     //For each row received, get location and plot on map
                     for photoObject in photoObjects! {
                         
-                        let latitude = photoObject.objectForKey("receivedLatitude") as? Double
-                        let longitude = photoObject.objectForKey("receivedLongitude") as? Double
+                        let latitude = photoObject.object(forKey: "receivedLatitude") as? Double
+                        let longitude = photoObject.object(forKey: "receivedLongitude") as? Double
                         
                         if latitude != nil {
                             
@@ -318,7 +325,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 //Perform clustering after load
                 if self.beaconControl.selectedSegmentIndex == 1 {
                     
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         self.performClustering()
                     })
@@ -329,7 +336,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 
                 if self.countriesAreLoaded && self.receivedMarkersAreLoaded {
                     
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         self.activityIndicator.stopAnimating()
                     })
@@ -345,17 +352,17 @@ class MapController: UIViewController, MKMapViewDelegate {
         receivedMarkersAreLoaded = false
         
         //Load markers for where user's photos went
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+        DispatchQueue.global(qos: .utility).async { () -> Void in
             
             //Mark markers as not loaded and run query
             let query = PFQuery(className: "photo")
             query.whereKey("receivedBy", equalTo: self.userID)
             query.whereKeyExists("sentFrom")
-            query.orderByDescending("receivedAt")
+            query.order(byDescending: "receivedAt")
             query.fromLocalDatastore()
             query.limit = 1000
             
-            query.findObjectsInBackgroundWithBlock { (photoObjects, markerError) -> Void in
+            query.findObjectsInBackground { (photoObjects, markerError) -> Void in
                 
                 if markerError != nil {
                     
@@ -366,9 +373,9 @@ class MapController: UIViewController, MKMapViewDelegate {
                     //For each row received, get location and plot on map
                     for photoObject in photoObjects! {
                         
-                        if photoObject.objectForKey("sentFrom") != nil {
+                        if photoObject.object(forKey: "sentFrom") != nil {
                             
-                            let coordinates = photoObject.objectForKey("sentFrom") as! PFGeoPoint
+                            let coordinates = photoObject.object(forKey: "sentFrom") as! PFGeoPoint
                             let latitude = coordinates.latitude
                             let longitude = coordinates.longitude
                             let markerCoord2D = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -394,7 +401,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 //Perform clustering after load
                 if self.beaconControl.selectedSegmentIndex == 0 {
                     
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         self.performClustering()
                     })
@@ -405,7 +412,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 
                 if self.countriesAreLoaded && self.sentMarkersAreLoaded {
                     
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         
                         self.activityIndicator.stopAnimating()
                     })
@@ -417,7 +424,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     
     
-    internal func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+    internal func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         
         
         let polylineRenderer = MKPolylineRenderer(overlay: overlay)
@@ -428,7 +435,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    internal func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    internal func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         
         
         //Restrict zoom level
@@ -445,7 +452,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     internal func performClustering() {
         
         
-        NSOperationQueue().addOperationWithBlock({
+        OperationQueue().addOperation({
             
             let mapBoundsWidth = Double(self.mapView.bounds.size.width)
             let mapRectWidth:Double = self.mapView.visibleMapRect.size.width
@@ -466,29 +473,29 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    internal func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         
         var reuseId = ""
         var view = MKAnnotationView()
         
-        if annotation.isKindOfClass(SentAnnotationCluster) {
+        if annotation.isKind(of: SentAnnotationCluster.self) {
             
             reuseId = "Cluster"
             view = SentAnnotationClusterView(annotation: annotation, reuseIdentifier: reuseId, options: nil)
         }
-        if annotation.isKindOfClass(ReceivedAnnotationCluster) {
+        if annotation.isKind(of: ReceivedAnnotationCluster.self) {
             
             reuseId = "Cluster"
             view = ReceivedAnnotationClusterView(annotation: annotation, reuseIdentifier: reuseId, options: nil)
         }
         else if annotation is SentAnnotation {
             
-            view = SentBeacon(color: sentColor)
+            view = SentBeacon(annotation: SentAnnotation(), reuseIdentifier: nil)
         }
         else if annotation is ReceivedAnnotation {
             
-            view = ReceivedBeacon(color: receivedColor)
+            view = ReceivedBeacon(annotation: SentAnnotation(), reuseIdentifier: nil)
         }
         else {
             view.annotation = annotation
@@ -500,7 +507,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     
     
-    @IBAction func beaconControlChanged(sender: AnyObject) {
+    @IBAction func beaconControlChanged(_ sender: AnyObject) {
         
         
         //First remove all existing annotations
@@ -527,7 +534,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     
-    internal func loadedInArray(objectId: String, array: Array<String>) -> Bool {
+    internal func loadedInArray(_ objectId: String, array: Array<String>) -> Bool {
         
         
         //Check if object is already loaded
@@ -560,12 +567,12 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         //Show label if the user default is nil
         print("showTutorialBeaconControlReceivedView")
-        if userDefaults.objectForKey("tutorialBeaconControlReceived") == nil {
+        if userDefaults.object(forKey: "tutorialBeaconControlReceived") == nil {
             
             let heading = "Received Beacons"
             let text = "Where you got beacons from"
             
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 
                 
                 //Set bounds and create tutorial view
@@ -577,7 +584,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialBeaconControlReceivedView)
-                self.view.bringSubviewToFront(self.tutorialBeaconControlReceivedView)
+                self.view.bringSubview(toFront: self.tutorialBeaconControlReceivedView)
             })
         }
     }
@@ -586,7 +593,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     internal func removeTutorialBeaconControlReceivedView() {
         
         //Remove take beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialBeaconControlReceived") == nil {
+        if userDefaults.object(forKey: "tutorialBeaconControlReceived") == nil {
             
             tutorialBeaconControlReceivedView.removeView("tutorialBeaconControlReceived")
         }
@@ -598,12 +605,12 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         //Show label if the user default is nil
         print("showTutorialBeaconControlSentView")
-        if userDefaults.objectForKey("tutorialBeaconControlSent") == nil {
+        if userDefaults.object(forKey: "tutorialBeaconControlSent") == nil {
             
             let heading = "Beacons You Sent"
             let text = "Where your beacons land\nonce they're delivered"
             
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 
                 
                 //Set bounds and create tutorial view
@@ -615,7 +622,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 
                 //Add the take beacon view
                 self.view.addSubview(self.tutorialBeaconControlSentView)
-                self.view.bringSubviewToFront(self.tutorialBeaconControlSentView)
+                self.view.bringSubview(toFront: self.tutorialBeaconControlSentView)
             })
         }
     }
@@ -624,7 +631,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     internal func removeTutorialBeaconControlSentView() {
         
         //Remove take beacon tutorial view if it's active
-        if userDefaults.objectForKey("tutorialBeaconControlSent") == nil {
+        if userDefaults.object(forKey: "tutorialBeaconControlSent") == nil {
             
             tutorialBeaconControlSentView.removeView("tutorialBeaconControlSent")
         }
@@ -633,10 +640,10 @@ class MapController: UIViewController, MKMapViewDelegate {
     
 
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    override var preferredStatusBarStyle : UIStatusBarStyle {
         
         print("Status bar style method - Map Controller")
-        return UIStatusBarStyle.Default
+        return UIStatusBarStyle.default
     }
     
     

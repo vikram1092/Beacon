@@ -11,7 +11,7 @@ import UIKit
 class SettingsTableController: UITableViewController, UIGestureRecognizerDelegate {
     
     
-    let userDefaults = NSUserDefaults.standardUserDefaults()
+    let userDefaults = UserDefaults.standard
     var userID = ""
     var userCountry = ""
     var userState = ""
@@ -30,11 +30,11 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         //Run view load as normal
         super.viewDidLoad()
         
-        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        self.navigationController?.navigationBar.tintColor = UIColor.white
     }
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         //Run as normal
         super.viewWillAppear(animated)
@@ -47,16 +47,16 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         //Run as normal
         super.viewDidAppear(animated)
         
         //Turn switch to user saved state
-        if userDefaults.objectForKey("saveMedia") != nil {
+        if userDefaults.object(forKey: "saveMedia") != nil {
             
             //Set save switch to user preference
-            let saveMedia = userDefaults.boolForKey("saveMedia")
+            let saveMedia = userDefaults.bool(forKey: "saveMedia")
             saveSwitch.setOn(saveMedia, animated: false)
         }
         
@@ -65,41 +65,41 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     }
     
     
-    internal override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    internal override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
         
-        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        let cell = tableView.cellForRow(at: indexPath)
         
         //Perform logout if tag matches Logout button tag
         if cell!.tag == 2 {
             
-            performSegueWithIdentifier("TermsOfUseSegue", sender: self)
+            performSegue(withIdentifier: "TermsOfUseSegue", sender: self)
         }
         else if cell!.tag == 3 {
             
-            performSegueWithIdentifier("PrivacyPolicySegue", sender: self)
+            performSegue(withIdentifier: "PrivacyPolicySegue", sender: self)
         }
         else if cell!.tag == 4 {
             
-            performSegueWithIdentifier("AboutSegue", sender: self)
+            performSegue(withIdentifier: "AboutSegue", sender: self)
         }
-        cell!.selected = false
+        cell!.isSelected = false
     }
     
     
-    @IBAction func saveSwitchFlipped(sender: AnyObject) {
+    @IBAction func saveSwitchFlipped(_ sender: AnyObject) {
         
         
         //Set saving on or off depending on trigger
-        if saveSwitch.on {
+        if saveSwitch.isOn {
             
-            userDefaults.setBool(true, forKey: "saveMedia")
+            userDefaults.set(true, forKey: "saveMedia")
         }
         else {
             
-            userDefaults.setBool(false, forKey: "saveMedia")
+            userDefaults.set(false, forKey: "saveMedia")
         }
     }
     
@@ -108,24 +108,24 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
         
         
         //Retreive user details
-        if userDefaults.objectForKey("userID") != nil {
+        if userDefaults.object(forKey: "userID") != nil {
             
-            userID = userDefaults.objectForKey("userID") as! String
+            userID = userDefaults.object(forKey: "userID") as! String
         }
         
-        if userDefaults.objectForKey("userCountry") != nil {
+        if userDefaults.object(forKey: "userCountry") != nil {
             
-            userCountry = userDefaults.objectForKey("userCountry") as! String
+            userCountry = userDefaults.object(forKey: "userCountry") as! String
         }
         
-        if userDefaults.objectForKey("userState") != nil {
+        if userDefaults.object(forKey: "userState") != nil {
             
-            userState = userDefaults.objectForKey("userState") as! String
+            userState = userDefaults.object(forKey: "userState") as! String
         }
         
-        if userDefaults.objectForKey("userCity") != nil {
+        if userDefaults.object(forKey: "userCity") != nil {
             
-            userCity = userDefaults.objectForKey("userCity") as! String
+            userCity = userDefaults.object(forKey: "userCity") as! String
         }
     }
     
@@ -145,11 +145,11 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
                 //Set image for state if it exists. If not, use country image
                 if countryTable.getStateImage(userState) == UIImage(named: "Countries/Unknown/128.png") {
                     
-                    countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                    countryPicture.image = countryTable.getCountryImage(userCountry).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
                 }
                 else {
                     
-                    countryPicture.image = countryTable.getStateImage(userState).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                    countryPicture.image = countryTable.getStateImage(userState).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
                 }
             }
             else {
@@ -159,30 +159,30 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
                 if stateCode == "Unknown" {
                     
                     text = countryTable.getCountryName(userCountry)
-                    countryPicture.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                    countryPicture.image = countryTable.getStateImage(stateCode).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
                 }
                 else {
                     
                     text = userState + ", " + countryTable.getCountryName(userCountry)
-                    countryPicture.image = countryTable.getStateImage(stateCode).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                    countryPicture.image = countryTable.getStateImage(stateCode).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
                 }
             }
         }
         else if userCity != "" {
             
             text = userCity + ", " + countryTable.getCountryName(userCountry)
-            countryPicture.image = countryTable.getCountryImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            countryPicture.image = countryTable.getCountryImage(userCountry).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         }
         else if userCountry != "" {
             
             text = countryTable.getCountryName(userCountry)
-            countryPicture.image = countryTable.getStateImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            countryPicture.image = countryTable.getStateImage(userCountry).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         }
         else {
             
             //Below function will return an unknown image
             text = "Unknown"
-            countryPicture.image = countryTable.getStateImage(userCountry).imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            countryPicture.image = countryTable.getStateImage(userCountry).withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         }
         
         
@@ -190,7 +190,7 @@ class SettingsTableController: UITableViewController, UIGestureRecognizerDelegat
     }
     
     
-    internal func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    internal func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         
         if(navigationController!.viewControllers.count > 1){
             return true

@@ -22,8 +22,9 @@ class CaptureShape: UIView {
     let secondaryColor = BeaconColors().blueColor
     var sendView = UILabel()
     let recordingDuration = 10.0
-    var timer = NSTimer()
+    var timer = Timer()
     var timerValue = 0.0
+    var initialized = false
     
     //Declare shape layers
     let auxRing = CAShapeLayer()
@@ -36,75 +37,81 @@ class CaptureShape: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         
-        
         super.init(coder: aDecoder)
-        
-        //Initialize variables
-        let frame = super.frame
-        self.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI)/2)
-        
-        
-        //Set auxRing
-        auxRing.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        auxRing.fillColor = UIColor.clearColor().CGColor
-        auxRing.strokeColor = UIColor.whiteColor().CGColor
-        auxRing.lineWidth = 5
-        auxRing.strokeStart = 0.05
-        auxRing.strokeEnd = 0.35
-        auxRing.lineCap = kCALineCapRound
+    }
+    
+    
+    internal func initializeViews() {
         
         
-        //Set auxRing's border
-        border2.path = auxRing.path
-        border2.fillColor = UIColor.clearColor().CGColor
-        border2.strokeColor = UIColor.blackColor().CGColor
-        border2.lineWidth = auxRing.lineWidth + 0.5
-        border2.strokeStart = auxRing.strokeStart
-        border2.strokeEnd = auxRing.strokeEnd
-        border2.lineCap = kCALineCapRound
-        
-        
-        
-        //Set beaconRing
-        beaconRing.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        beaconRing.fillColor = UIColor.clearColor().CGColor
-        beaconRing.strokeColor = UIColor.whiteColor().CGColor
-        beaconRing.lineWidth = 5
-        beaconRing.strokeStart = 0.4
-        beaconRing.strokeEnd = 1
-        beaconRing.borderWidth = 1
-        beaconRing.borderColor = UIColor.blackColor().CGColor
-        beaconRing.lineCap = kCALineCapRound
-        
-        
-        //Set beaconRing's border
-        border1.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        border1.fillColor = beaconRing.fillColor
-        border1.strokeColor = UIColor.blackColor().CGColor
-        border1.lineWidth = beaconRing.lineWidth + 0.5
-        border1.strokeStart = beaconRing.strokeStart
-        border1.strokeEnd = beaconRing.strokeEnd
-        border1.borderColor = UIColor.blackColor().CGColor
-        border1.lineCap = kCALineCapRound
-        
-        
-        //Add all to view
-        self.layer.addSublayer(border2)
-        self.layer.addSublayer(auxRing)
-        self.layer.addSublayer(border1)
-        self.layer.addSublayer(beaconRing)
-        
-        
-        //Initialize sending view
-        sendView = self.viewWithTag(1) as! UILabel
-        sendView.backgroundColor = secondaryColor
-        sendView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI)/2)
-        sendView.clipsToBounds = true
-        sendView.layer.cornerRadius = sendView.bounds.width/2
-        sendView.layer.borderWidth = 0.5
-        
-        
-        
+        if !initialized {
+            
+            //Initialize variables
+            initialized = true
+            let frame = self.bounds
+            self.transform = CGAffineTransform(rotationAngle: -CGFloat(M_PI)/2)
+            
+            
+            //Set auxRing
+            auxRing.path = UIBezierPath(ovalIn: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).cgPath
+            auxRing.fillColor = UIColor.clear.cgColor
+            auxRing.strokeColor = UIColor.white.cgColor
+            auxRing.lineWidth = 5
+            auxRing.strokeStart = 0.05
+            auxRing.strokeEnd = 0.35
+            auxRing.lineCap = kCALineCapRound
+            
+            
+            //Set auxRing's border
+            border2.path = auxRing.path
+            border2.fillColor = UIColor.clear.cgColor
+            border2.strokeColor = UIColor.black.cgColor
+            border2.lineWidth = auxRing.lineWidth + 0.5
+            border2.strokeStart = auxRing.strokeStart
+            border2.strokeEnd = auxRing.strokeEnd
+            border2.lineCap = kCALineCapRound
+            
+            
+            
+            //Set beaconRing
+            beaconRing.path = UIBezierPath(ovalIn: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).cgPath
+            beaconRing.fillColor = UIColor.clear.cgColor
+            beaconRing.strokeColor = UIColor.white.cgColor
+            beaconRing.lineWidth = 5
+            beaconRing.strokeStart = 0.4
+            beaconRing.strokeEnd = 1
+            beaconRing.borderWidth = 1
+            beaconRing.borderColor = UIColor.black.cgColor
+            beaconRing.lineCap = kCALineCapRound
+            
+            
+            //Set beaconRing's border
+            border1.path = UIBezierPath(ovalIn: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).cgPath
+            border1.fillColor = beaconRing.fillColor
+            border1.strokeColor = UIColor.black.cgColor
+            border1.lineWidth = beaconRing.lineWidth + 0.5
+            border1.strokeStart = beaconRing.strokeStart
+            border1.strokeEnd = beaconRing.strokeEnd
+            border1.borderColor = UIColor.black.cgColor
+            border1.lineCap = kCALineCapRound
+            
+            
+            //Add all to view
+            self.layer.addSublayer(border2)
+            self.layer.addSublayer(auxRing)
+            self.layer.addSublayer(border1)
+            self.layer.addSublayer(beaconRing)
+            
+            
+            //Initialize sending view
+            sendView = self.viewWithTag(1) as! UILabel
+            sendView.backgroundColor = secondaryColor
+            sendView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI)/2)
+            sendView.clipsToBounds = true
+            sendView.layer.cornerRadius = sendView.bounds.width/2
+            sendView.layer.borderWidth = 0.5
+
+        }
     }
     
     
@@ -118,7 +125,7 @@ class CaptureShape: UIView {
         
         
         //Start timer
-        timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(incrementTimer), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(incrementTimer), userInfo: nil, repeats: true)
         timer.fire()
         
         
@@ -127,14 +134,14 @@ class CaptureShape: UIView {
         
         
         //Add animations to layers
-        beaconRing.addAnimation(expansion, forKey: "expansion")
-        border1.addAnimation(expansion, forKey: "expansion")
-        auxRing.addAnimation(expansion, forKey: "expansion")
-        border2.addAnimation(expansion, forKey: "expansion")
-        record.addAnimation(expansion, forKey: "expansion")
-        record2.addAnimation(expansion, forKey: "expansion")
-        record.addAnimation(progress, forKey: "progress")
-        record2.addAnimation(progress2, forKey: "progress")
+        beaconRing.add(expansion, forKey: "expansion")
+        border1.add(expansion, forKey: "expansion")
+        auxRing.add(expansion, forKey: "expansion")
+        border2.add(expansion, forKey: "expansion")
+        record.add(expansion, forKey: "expansion")
+        record2.add(expansion, forKey: "expansion")
+        record.add(progress, forKey: "progress")
+        record2.add(progress2, forKey: "progress")
         
     }
     
@@ -143,18 +150,18 @@ class CaptureShape: UIView {
         
         
         //Initialize recording layer 1
-        record.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        record.fillColor = UIColor.clearColor().CGColor
-        record.strokeColor = primaryColor.CGColor
+        record.path = UIBezierPath(ovalIn: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).cgPath
+        record.fillColor = UIColor.clear.cgColor
+        record.strokeColor = primaryColor.cgColor
         record.lineWidth = beaconRing.lineWidth
         record.strokeStart = 0.4
         record.strokeEnd = 0.4
         record.lineCap = kCALineCapRound
         
         //Initialize recording layer 2
-        record2.path = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        record2.fillColor = UIColor.clearColor().CGColor
-        record2.strokeColor = secondaryColor.CGColor
+        record2.path = UIBezierPath(ovalIn: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).cgPath
+        record2.fillColor = UIColor.clear.cgColor
+        record2.strokeColor = secondaryColor.cgColor
         record2.lineWidth = beaconRing.lineWidth
         record2.strokeStart = auxRing.strokeStart
         record2.strokeEnd = auxRing.strokeStart
@@ -171,7 +178,7 @@ class CaptureShape: UIView {
         progress.fromValue = 0.4
         progress.toValue = 1.0
         progress.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        progress.removedOnCompletion = false
+        progress.isRemovedOnCompletion = false
         progress.fillMode = kCAFillModeBoth
         
         //Configure recording animation
@@ -179,14 +186,14 @@ class CaptureShape: UIView {
         progress2.fromValue = 0.05
         progress2.toValue = 0.35
         progress2.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        progress2.removedOnCompletion = false
+        progress2.isRemovedOnCompletion = false
         progress2.fillMode = kCAFillModeBoth
         
         //Configure expansion for beaconRing
         expansion.duration = 0.5
-        expansion.fromValue = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
-        expansion.toValue = UIBezierPath(ovalInRect: CGRect(x: -6.0, y: -6.0, width: frame.width + 12, height: frame.height + 12)).CGPath
-        expansion.removedOnCompletion = false
+        expansion.fromValue = UIBezierPath(ovalIn: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).cgPath
+        expansion.toValue = UIBezierPath(ovalIn: CGRect(x: -6.0, y: -6.0, width: frame.width + 12, height: frame.height + 12)).cgPath
+        expansion.isRemovedOnCompletion = false
         expansion.fillMode = kCAFillModeBoth
         
     }
@@ -214,12 +221,12 @@ class CaptureShape: UIView {
             //Initialize and add animations
             initializeAnimations()
             
-            beaconRing.addAnimation(expansion, forKey: "expansion")
-            border1.addAnimation(expansion, forKey: "expansion")
-            auxRing.addAnimation(expansion, forKey: "expansion")
-            border2.addAnimation(expansion, forKey: "expansion")
-            record.addAnimation(expansion, forKey: "expansion")
-            record2.addAnimation(expansion, forKey: "expansion")
+            beaconRing.add(expansion, forKey: "expansion")
+            border1.add(expansion, forKey: "expansion")
+            auxRing.add(expansion, forKey: "expansion")
+            border2.add(expansion, forKey: "expansion")
+            record.add(expansion, forKey: "expansion")
+            record2.add(expansion, forKey: "expansion")
         }
         
         //Do animations to transition
@@ -252,8 +259,8 @@ class CaptureShape: UIView {
             }
         }
         
-        record.addAnimation(progress, forKey: nil)
-        record2.addAnimation(progress2, forKey: nil)
+        record.add(progress, forKey: nil)
+        record2.add(progress2, forKey: nil)
         
         CATransaction.commit()
     }
@@ -268,7 +275,7 @@ class CaptureShape: UIView {
         rotate.duration = 20
         rotate.repeatCount = HUGE
         rotate.fillMode = kCAFillModeForwards
-        rotate.removedOnCompletion = false
+        rotate.isRemovedOnCompletion = false
         
         
         //Counter spin animation for send view
@@ -277,10 +284,10 @@ class CaptureShape: UIView {
         reverseRotate.duration = 20
         reverseRotate.repeatCount = HUGE
         reverseRotate.fillMode = kCAFillModeForwards
-        reverseRotate.removedOnCompletion = false
+        reverseRotate.isRemovedOnCompletion = false
         
-        self.layer.addAnimation(rotate, forKey: nil)
-        sendView.layer.addAnimation(reverseRotate, forKey: nil)
+        self.layer.add(rotate, forKey: nil)
+        sendView.layer.add(reverseRotate, forKey: nil)
         
     }
     
@@ -288,10 +295,10 @@ class CaptureShape: UIView {
     internal func showSendView() {
         
         //Show send view
-        UIView.animateWithDuration(0.5) { 
+        UIView.animate(withDuration: 0.5, animations: { 
             
             self.sendView.alpha = 1.0
-        }
+        }) 
     }
     
     
@@ -312,7 +319,7 @@ class CaptureShape: UIView {
         record.removeAllAnimations()
         record2.removeAllAnimations()
         
-        let originalPath = UIBezierPath(ovalInRect: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).CGPath
+        let originalPath = UIBezierPath(ovalIn: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)).cgPath
         beaconRing.path = originalPath
         auxRing.path = originalPath
         border1.path = originalPath

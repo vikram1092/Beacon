@@ -14,36 +14,40 @@ class ReceivedBeacon: MKAnnotationView {
     
     var beaconShape = CAShapeLayer()
     var beaconStroke = CAShapeLayer()
+    let color = BeaconColors().redColor
     
     
     required init?(coder aDecoder: NSCoder) {
         
         super.init(coder: aDecoder)
+        
+        drawAnnotation(color: color)
+        
     }
     
     
-    internal init(color: UIColor) {
+    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         
-        let frameBounds = 20
-        super.init(frame: CGRect(x: -frameBounds/2, y: -frameBounds/2, width: frameBounds, height: frameBounds))
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
         
-        drawAnnotation(color)
+        drawAnnotation(color: color)
     }
     
     
     internal func drawAnnotation(color: UIColor) {
         
-        beaconShape.path = UIBezierPath(ovalInRect: self.bounds).CGPath
-        beaconShape.fillColor = color.CGColor
+        
+        let factor = CGFloat(20)
+        
+        beaconShape.path = UIBezierPath(ovalIn: CGRect(x: -factor/2, y: -factor/2, width: factor, height: factor)).cgPath
+        beaconShape.fillColor = color.cgColor
         beaconShape.strokeStart = 0.0
         beaconShape.strokeEnd = 1.0
         
-        let factor = self.bounds.width
-        let startPoint  = factor * 0.0
-        let size = factor
-        beaconStroke.path = UIBezierPath(ovalInRect: CGRect(x: startPoint, y: startPoint, width: size, height: size)).CGPath
-        beaconStroke.fillColor = UIColor.clearColor().CGColor
-        beaconStroke.strokeColor = UIColor.whiteColor().CGColor
+        
+        beaconStroke.path = UIBezierPath(ovalIn: CGRect(x: -factor/2, y: -factor/2, width: factor, height: factor)).cgPath
+        beaconStroke.fillColor = UIColor.clear.cgColor
+        beaconStroke.strokeColor = UIColor.white.cgColor
         beaconStroke.lineWidth = 2
         beaconStroke.strokeStart = 0
         beaconStroke.strokeEnd = 1
@@ -52,6 +56,6 @@ class ReceivedBeacon: MKAnnotationView {
         self.layer.addSublayer(beaconShape)
         self.layer.addSublayer(beaconStroke)
         
-        self.userInteractionEnabled = false
+        self.isUserInteractionEnabled = false
     }
 }

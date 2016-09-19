@@ -12,12 +12,12 @@ import UIKit
 class TabBarController: UITabBarController {
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(true)
     }
     
-    override func childViewControllerForStatusBarStyle() -> UIViewController? {
+    override var childViewControllerForStatusBarStyle : UIViewController? {
         
         print("Status bar style method - Tab Bar Controller")
         if self.selectedViewController == nil {
@@ -27,7 +27,7 @@ class TabBarController: UITabBarController {
         return self.selectedViewController
     }
     
-    override func childViewControllerForStatusBarHidden() -> UIViewController? {
+    override var childViewControllerForStatusBarHidden : UIViewController? {
         
         print("Status bar hiding method - Tab Bar Controller")
         if self.selectedViewController == nil {
